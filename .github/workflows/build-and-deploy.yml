@@ -1,4 +1,4 @@
-name: Build and Trigger Deployment
+name: Build and Upload Artifact
 
 on:
   push:
@@ -30,12 +30,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-app-build
-          path: out/
-
-      - name: Trigger infrastructure deployment
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
-            https://api.github.com/repos/Nessi-Fishing-Supply/Nessi-Infra/dispatches \
-            -d '{"event_type": "deploy", "client_payload": {"environment": "${{ github.ref_name }}", "build_id": "${{ github.sha }}"}}'
+          path: out/  # This is your build directory
