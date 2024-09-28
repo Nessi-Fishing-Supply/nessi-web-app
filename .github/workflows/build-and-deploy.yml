@@ -31,5 +31,5 @@ jobs:
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/your-org/nessi-infra/dispatches \
+            https://api.github.com/repos/Nessi-Fishing-Supply/Nessi-Infra/dispatches \
             -d '{"event_type": "deploy", "client_payload": {"environment": "${{ github.ref_name }}", "build_id": "${{ github.sha }}"}}'
