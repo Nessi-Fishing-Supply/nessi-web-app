@@ -32,13 +32,17 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-2'
         run: |
-          if [ "${{ github.ref_name }}" == "dev" ]; then
-            aws s3 sync ./out s3://nessi-webapp-dev --delete;
-          elif [ "${{ github.ref_name }}" == "staging" ]; then
-            aws s3 sync ./out s3://nessi-webapp-staging --delete;
-          elif [ "${{ github.ref_name }}" == "main" ]; then
-            aws s3 sync ./out s3://nessi-webapp-prod --delete;
-          fi
+          aws s3 sync ./out s3://nessi-webapp-${{ github.ref_name }} --delete
+
+      - name: Invalidate CloudFront Cache
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-2'
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
 
       - name: Trigger Nessi Infra Workflow
         uses: peter-evans/repository-dispatch@v3
