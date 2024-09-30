@@ -32,7 +32,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-2'
         run: |
-          aws s3 sync ./out s3://nessi-webapp-${{ github.ref_name }}-203918872163-us-east-2-artifacts --delete
+          if [ "${{ github.ref_name }}" == "dev" ]; then
+            aws s3 sync ./out s3://nessi-webapp-dev-203918872163-us-east-2-artifacts --delete;
+          elif [ "${{ github.ref_name }}" == "staging" ]; then
+            aws s3 sync ./out s3://nessi-webapp-staging-203918872163-us-east-2-artifacts --delete;
+          elif [ "${{ github.ref_name }}" == "main" ]; then
+            aws s3 sync ./out s3://nessi-webapp-prod-203918872163-us-east-2-artifacts --delete;
+          fi
 
       - name: Trigger Nessi Infra Workflow
         uses: peter-evans/repository-dispatch@v2
@@ -41,4 +47,3 @@ jobs:
           repository: Nessi-Fishing-Supply/Nessi-Infra
           event-type: deploy-infra
           client-payload: '{"ref": "${{ github.ref }}", "branch": "${{ github.ref_name }}"}'
-
