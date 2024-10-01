@@ -1,3 +1,5 @@
+"use client"; // Add this at the top of your component
+
 import React from 'react';
 import styles from './Navbar.module.scss';
 import NotificationBar from '@components/NotificationBar';
@@ -5,8 +7,13 @@ import LogoFull from '@logos/logo_full.svg';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { HiSearch } from 'react-icons/hi';
 import Link from 'next/link';
+import { useState } from 'react';
+import Modal from '@components/Modal';
 
 export default function Navbar() {
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const toggleModal = () => setModalOpen((prev) => !prev);
+
   return (
     <nav>
       <NotificationBar />
@@ -19,7 +26,11 @@ export default function Navbar() {
           </button>
         </form>
         <button className={styles.button}>Sell Your Gear</button>
-        <a className={styles.link}>Sign Up / Log In</a>
+        <button onClick={toggleModal}  className={styles.link}>Sign Up / Log In</button>
+        <Modal isOpen={isModalOpen} onClose={toggleModal} >
+          <h2>Hello, I am a Modal!</h2>
+          <p>Here is some content inside the modal</p>
+        </Modal>
         <HiOutlineShoppingBag className={styles.icon}/>
       </div>
       <div className={styles.categories}>
