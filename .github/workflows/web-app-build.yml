@@ -29,15 +29,27 @@ jobs:
       - name: Build Next.js App
         run: npm run build
 
-      - name: Get AWS Account ID
-        id: get-account-id
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-2'
+      - name: Set Environment Variables for AWS
         run: |
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          echo "account_id=$ACCOUNT_ID" >> $GITHUB_ENV
+          # Determine the correct S3 bucket and CloudFront distribution ID based on the branch
+          case "${{ github.ref_name }}" in
+            "dev")
+              echo "BUCKET_NAME=nessi-webapp-dev-${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
+              echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }}" >> $GITHUB_ENV
+              ;;
+            "staging")
+              echo "BUCKET_NAME=nessi-webapp-staging-${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
+              echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_STAGING }}" >> $GITHUB_ENV
+              ;;
+            "main")
+              echo "BUCKET_NAME=nessi-webapp-prod-${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
+              echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_PROD }}" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "Branch not recognized. Exiting."
+              exit 1
+              ;;
+          esac
 
       - name: Upload to S3
         env:
@@ -45,19 +57,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-2'
         run: |
-          # Determine the correct bucket based on the branch name and account ID
-          if [[ "${{ github.ref_name }}" == "dev" ]]; then
-            BUCKET_NAME="nessi-webapp-dev-${{ env.account_id }}"
-          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
-            BUCKET_NAME="nessi-webapp-staging-${{ env.account_id }}"
-          elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            BUCKET_NAME="nessi-webapp-prod-${{ env.account_id }}"
-          else
-            echo "Branch not recognized. Exiting."
-            exit 1
-          fi
-
-          # Upload to the correct S3 bucket
+          # Upload to the determined S3 bucket
           aws s3 sync ./out s3://$BUCKET_NAME --delete
 
       - name: Invalidate CloudFront Cache
@@ -66,19 +66,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-2'
         run: |
-          # Determine the correct CloudFront distribution ID based on the branch
-          if [[ "${{ github.ref_name }}" == "dev" ]]; then
-            DISTRIBUTION_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }}"
-          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
-            DISTRIBUTION_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_STAGING }}"
-          elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            DISTRIBUTION_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_PROD }}"
-          else
-            echo "Branch not recognized. Exiting."
-            exit 1
-          fi
-
-          # Invalidate CloudFront cache for the correct distribution
+          # Invalidate CloudFront cache for the determined distribution ID
           aws cloudfront create-invalidation \
             --distribution-id $DISTRIBUTION_ID \
             --paths "/*"
