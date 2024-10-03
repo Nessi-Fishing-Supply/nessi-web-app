@@ -1,0 +1,36 @@
+.selectWrapper {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    color: #111827;
+    font-size: 16px;
+    outline: none;
+  
+    &:focus {
+      border-color: #3b82f6;
+    }
+  
+    &:hover {
+      border-color: #3b82f6;
+    }
+  }
+  
+  .errorText {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .helperText {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  

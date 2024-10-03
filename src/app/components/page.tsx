@@ -4,6 +4,10 @@ import React, { useState } from 'react';
 import Button from '@components/controls/Button';
 import styles from './components.module.css';
 import { HiShoppingBag, HiArrowRight } from 'react-icons/hi';
+import ResetPasswordForm from '@components/forms/ResetPassword';
+import ForgotPasswordForm from '@components/forms/ForgotPassword';
+import LoginForm from '@components/forms/Login';
+import RegisterForm from '@components/forms/Registration';
 
 export default function Components() {
     const [loading, setLoading] = useState(false);
@@ -13,8 +17,27 @@ export default function Components() {
         setTimeout(() => setLoading(false), 3000);
     };
 
+    // Handlers to simulate form submission
+    const handleRegisterSubmit = (data: any) => {
+        console.log('Register Form Data:', data);
+    };
+
+    const handleLoginSubmit = (data: any) => {
+        console.log('Login Form Data:', data);
+    };
+
+    const handleForgotPasswordSubmit = (data: any) => {
+        console.log('Forgot Password Form Data:', data);
+    };
+
+    const handleResetPasswordSubmit = (data: any) => {
+        console.log('Reset Password Form Data:', data);
+    };
+
     return (
         <div style={{ padding: '20px' }}>
+
+            {/* Typescale */}
             <h1>H1: Lorem Ipsum Dolor</h1>
             <h2>H2: Lorem Ipsum Dolor</h2>
             <h3>H3: Lorem Ipsum Dolor</h3>
@@ -25,6 +48,7 @@ export default function Components() {
             <p className='font-size--sm'>sm: Lorem Ipsum Dolor</p>
             <p className='font-size--xs'>xs: Lorem Ipsum Dolor</p>
 
+            {/* Buttons */}
             <p style={{ fontWeight: 'bold', paddingTop: '100px' }}>Button Variants</p>
             <div className={styles.section}>
                 <Button
@@ -130,22 +154,44 @@ export default function Components() {
             </div>
             <p style={{ fontWeight: 'bold' }}>Global Disabled Buttons</p>
             <div className={styles.section}>
-            <Button
-                onClick={handleLoadingClick}
-                style="primary"
-                disabled
-            >
-                Disabled Solid
-            </Button>
-            <Button
-                onClick={handleLoadingClick}
-                style="secondary"
-                outline={true}
-                disabled
-            >
-                Disabled Outline
-            </Button>
+                <Button
+                    onClick={handleLoadingClick}
+                    style="primary"
+                    disabled
+                >
+                    Disabled Solid
+                </Button>
+                <Button
+                    onClick={handleLoadingClick}
+                    style="secondary"
+                    outline={true}
+                    disabled
+                >
+                    Disabled Outline
+                </Button>
             </div>
+
+            {/* FORMS */}
+            <p style={{ fontWeight: 'bold', paddingTop: '100px' }}>Input Component</p>
+            <section>
+                <h2>Register Form</h2>
+                <RegisterForm onSubmit={handleRegisterSubmit} />
+            </section>
+
+            <section>
+                <h2>Login Form</h2>
+                <LoginForm onSubmit={handleLoginSubmit} />
+            </section>
+
+            <section>
+                <h2>Forgot Password Form</h2>
+                <ForgotPasswordForm onSubmit={handleForgotPasswordSubmit} />
+            </section>
+
+            <section>
+                <h2>Reset Password Form</h2>
+                <ResetPasswordForm onSubmit={handleResetPasswordSubmit} />
+            </section>
         </div>
     );
 }

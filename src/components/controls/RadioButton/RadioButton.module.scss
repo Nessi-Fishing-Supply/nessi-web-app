@@ -1,0 +1,22 @@
+.radioButtonWrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  .radioGroupLabel {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #111827;
+  }
+  
+  .radioOption {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .radio {
+    margin-right: 8px;
+  }
+  
