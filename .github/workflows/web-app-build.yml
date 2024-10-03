@@ -23,47 +23,40 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Run ESLint (non-blocking)
+        run: npm run lint || true
+
       - name: Build Next.js App
         run: npm run build
 
-      - name: Get AWS Account ID
-        id: get-account-id
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-2'
-        run: |
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          echo "account_id=$ACCOUNT_ID" >> $GITHUB_ENV
+      - name: Set AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-2'
 
-      - name: Upload to S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-2'
+      - name: Set Bucket Name
         run: |
-          # Determine the correct bucket based on the branch name and account ID
           if [[ "${{ github.ref_name }}" == "dev" ]]; then
-            BUCKET_NAME="nessi-webapp-dev-${{ env.account_id }}"
+            echo "BUCKET_NAME=nessi-webapp-dev-${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
           elif [[ "${{ github.ref_name }}" == "staging" ]]; then
-            BUCKET_NAME="nessi-webapp-staging-${{ env.account_id }}"
+            echo "BUCKET_NAME=nessi-webapp-staging-${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            BUCKET_NAME="nessi-webapp-prod-${{ env.account_id }}"
+            echo "BUCKET_NAME=nessi-webapp-prod-${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
           else
             echo "Branch not recognized. Exiting."
             exit 1
           fi
 
-          # Upload to the correct S3 bucket
+      - name: Upload to S3
+        run: |
           aws s3 sync ./out s3://$BUCKET_NAME --delete
+        env:
+          BUCKET_NAME: ${{ env.BUCKET_NAME }}
 
       - name: Invalidate CloudFront Cache
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-2'
         run: |
-          # Determine the correct CloudFront distribution ID based on the branch
           if [[ "${{ github.ref_name }}" == "dev" ]]; then
             DISTRIBUTION_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }}"
           elif [[ "${{ github.ref_name }}" == "staging" ]]; then
@@ -75,7 +68,6 @@ jobs:
             exit 1
           fi
 
-          # Invalidate CloudFront cache for the correct distribution
           aws cloudfront create-invalidation \
             --distribution-id $DISTRIBUTION_ID \
             --paths "/*"

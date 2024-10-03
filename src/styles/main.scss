@@ -1,9 +1,15 @@
-// Variable Imports
+////////////////////
+/// Main Imports
+////////////////////
 
-:root {
-    --test-color: purple;
+* {
+    box-sizing: border-box;
 }
 
+// Normalize
+@import 'normalize.css';
+
+// Variables
 @import "variables/_breakpoints.scss";
 @import "variables/_buttons.scss";
 @import "variables/_colors.scss";
