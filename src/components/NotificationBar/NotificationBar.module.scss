@@ -1,0 +1,31 @@
+.container {
+    background-color: var(--color-primary-base);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-base);
+    padding: var(--space-sm) var(--space-base);
+}
+
+.text {
+    color: var(--color-light);
+    font-size: 12px;
+    text-transform: capitalize;
+    text-align: center;
+    margin: 0;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xxs);
+    color: var(--color-secondary-base);
+    font-weight: 600;
+    font-weight: 14px;
+}
+
+.icon {
+    width: var(--space-md);
+    height: var(--space-md);
+}
