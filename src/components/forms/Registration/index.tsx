@@ -4,8 +4,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Input from '@components/controls/Input';
 import Checkbox from '@components/controls/Checkbox';
+import './AuthForm.scss';
 
-const RegisterForm: React.FC<{ onSubmit: (data: any) => void }> = ({ onSubmit }) => {
+// Define the structure of the form data
+interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  terms: boolean;
+}
+
+const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = ({ onSubmit }) => {
   // Scoped validation schema
   const registrationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -16,7 +25,7 @@ const RegisterForm: React.FC<{ onSubmit: (data: any) => void }> = ({ onSubmit })
     terms: Yup.bool().oneOf([true], 'You must accept the terms and conditions').required(),
   });
 
-  const methods = useForm({
+  const methods = useForm<RegisterFormData>({
     resolver: yupResolver(registrationSchema),
     mode: 'onBlur',
   });

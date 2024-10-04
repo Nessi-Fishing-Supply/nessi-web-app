@@ -3,8 +3,15 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Input from '@components/controls/Input';
+import './AuthForm.scss';
 
-const ResetPasswordForm: React.FC<{ onSubmit: (data: any) => void }> = ({ onSubmit }) => {
+// Define the structure of the form data
+interface ResetPasswordFormData {
+  password: string;
+  confirmPassword: string;
+}
+
+const ResetPasswordForm: React.FC<{ onSubmit: (data: ResetPasswordFormData) => void }> = ({ onSubmit }) => {
   // Scoped validation schema
   const resetPasswordSchema = Yup.object().shape({
     password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
@@ -13,7 +20,7 @@ const ResetPasswordForm: React.FC<{ onSubmit: (data: any) => void }> = ({ onSubm
       .required('Confirm Password is required'),
   });
 
-  const methods = useForm({
+  const methods = useForm<ResetPasswordFormData>({
     resolver: yupResolver(resetPasswordSchema),
     mode: 'onBlur',
   });
