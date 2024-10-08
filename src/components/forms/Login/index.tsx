@@ -8,6 +8,7 @@ import Checkbox from '@components/controls/Checkbox';
 import AppleIcon from '@icons/apple.svg';
 import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
+import Link from 'next/link';
 
 interface LoginFormData {
   email: string;
@@ -37,11 +38,15 @@ const LoginForm: React.FC<{ onSubmit: (data: LoginFormData) => void }> = ({ onSu
         <Button
           type="submit"
           fullWidth={true}
-          onClick={function (): void {
-            throw new Error('Function not implemented.');
-          }}        >
+          marginBottom={true}
+          onClick={() => console.log('Submit Form')}>
           Submit
         </Button>
+        <div className="passwordLink">
+          <Link href="#">
+            Forgot your password?
+          </Link>
+        </div>
         <div className="divider">
           <hr />
           <p>OR</p>

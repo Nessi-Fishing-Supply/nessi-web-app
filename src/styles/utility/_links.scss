@@ -1,0 +1,10 @@
+.passwordLink {
+    display: flex;
+    justify-content: center;
+
+    > a {
+        color: var(--color-primary);
+        text-align: center;
+        font-size: var(--font-size-sm);
+    }
+}
