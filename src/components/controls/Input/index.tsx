@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import styles from './Input.module.scss';
 
@@ -20,18 +20,19 @@ const Input: React.FC<InputProps> = ({
   placeholder,
 }) => {
   const { control } = useFormContext();
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field, fieldState: { error, isTouched, isDirty } }) => (
-        <div className={`${styles.inputWrapper}`}>
+        <div className={`${styles.wrapper}`}>
           {label && <label className={styles.label} htmlFor={name}>{label}</label>}
-          <div className={`${styles.inputContainer} 
+          <div className={`${styles.container} 
               ${error ? styles.error : ''} 
               ${isTouched && !error && isDirty ? styles.success : ''} 
-              ${isTouched ? styles.focused : ''}`}
+              ${isFocused ? styles.focused : ''}`}
           >
             <input
               id={name}
@@ -39,6 +40,8 @@ const Input: React.FC<InputProps> = ({
               placeholder={placeholder}
               {...field}
               className={styles.input}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
             />
             {icon && <span className={styles.icon}>{icon}</span>}
           </div>

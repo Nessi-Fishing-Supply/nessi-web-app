@@ -7,7 +7,10 @@ type ButtonProps = {
   onClick: () => void;
   type?: 'button' | 'submit';
   style?: 'primary' | 'secondary' | 'dark' | 'light';
+  fullWidth?: boolean;
+  round?: boolean;
   outline?: boolean;
+  marginBottom?: boolean;
   disabled?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
@@ -21,8 +24,11 @@ export default function Button({
   onClick,
   type = 'button',
   style = 'primary',
+  fullWidth = false,
+  round = false,
   outline = false,
   disabled = false,
+  marginBottom = false,
   icon = null,
   iconPosition = 'right',
   loading = false,
@@ -54,7 +60,13 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`${styles[style]} ${ outline ? styles.outline : ''}`}
+      className={`
+        ${styles[style]}
+        ${ outline ? styles.outline : ''}
+        ${ round ? styles.round : ''}
+        ${ fullWidth ? styles.fullWidth : ''}
+        ${ marginBottom ? styles.marginBottom : ''}
+      `}
       disabled={isDisabled}
       aria-label={ariaLabel || undefined}
     >

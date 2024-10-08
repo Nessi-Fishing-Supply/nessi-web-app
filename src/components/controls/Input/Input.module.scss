@@ -1,46 +1,43 @@
-.inputWrapper {
-  margin-bottom: 24px;
+.wrapper {
+  margin-bottom: var(--space-base);
   display: flex;
   flex-direction: column;
 }
 
 .label {
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #111827; /* Dark text color for labels */
+  margin-bottom: var(--space-xs);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
 }
 
-.inputContainer {
+.container {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid #d1d5db; /* Light gray border by default */
-  border-radius: 8px;
-  background-color: #f9fafb; /* Light gray background */
-  padding: 10px 12px;
+  border: 1px solid var(--color-dark);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-base);
   transition: border-color 0.2s ease;
 
   &:hover {
-    border-color: #3b82f6; /* Blue border on hover */
+    border-color: var(--color-primary--light);
   }
 
   &.focused {
-    border-color: #3b82f6; /* Blue border on focus */
+    border-color: var(--color-primary--light);
   }
 
   &.error {
-    border-color: #ef4444; /* Red border on error */
-    background-color: #fee2e2; /* Light red background for error */
+    border-color: var(--color-error);
   }
 
   &.success {
-    border-color: #10b981; /* Green border for success */
-    background-color: #ecfdf5; /* Light green background for success */
+    border-color: var(--color-success);
   }
 
   &.disabled {
-    background-color: #f3f4f6; /* Disabled background */
-    border-color: #e5e7eb; /* Disabled border */
+    background-color: var(--color-gray-300);
+    border-color: var(--color-gray-300);
   }
 }
 
@@ -49,28 +46,28 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 16px;
-  color: #111827; /* Dark text color for input */
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
   
   &::placeholder {
-    color: #6b7280; /* Placeholder text color */
+    color: var(--color-gray-500);
   }
 
   &:disabled {
-    color: #9ca3af; /* Disabled text color */
+    color: var(--color-gray-300);
   }
 }
 
 .icon {
   position: absolute;
-  right: 12px;
+  right: var(--space-base);
   display: flex;
   align-items: center;
-  color: #6b7280; /* Gray color for icons */
+  color: var(--color-dark);
   cursor: pointer;
 
   &:hover {
-    color: #111827; /* Darker icon color on hover */
+    color: var(--color-primary);
   }
 
   &:disabled {
@@ -79,13 +76,13 @@
 }
 
 .helperText {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #6b7280; /* Gray color for helper text */
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-dark);
 }
 
 .errorText {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #ef4444; /* Red color for error text */
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
 }

@@ -97,3 +97,13 @@
         text-decoration: none;
     }
 }
+
+// Modal Styles
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+
+    > h6 {
+        margin-bottom: 0;
+    }
+}

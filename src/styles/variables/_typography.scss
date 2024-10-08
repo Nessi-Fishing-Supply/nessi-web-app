@@ -33,28 +33,35 @@
 ////////////////////////
 /// Headings and Paragraph Styles
 ////////////////////////
+
 h1 {
   font-size: var(--font-size-4xl);
+  margin: 0 0 var(--space-base) 0;
 }
 
 h2 {
   font-size: var(--font-size-3xl);
+  margin: 0 0 var(--space-base) 0;
 }
 
 h3 {
   font-size: var(--font-size-2xl);
+  margin: 0 0 var(--space-base) 0;
 }
 
 h4 {
   font-size: var(--font-size-xl);
+  margin: 0 0 var(--space-base) 0;
 }
 
 h5 {
   font-size: var(--font-size-lg);
+  margin: 0 0 var(--space-base) 0;
 }
 
 h6 {
   font-size: var(--font-size-md);
+  margin: 0 0 var(--space-base) 0;
 }
 
 p {

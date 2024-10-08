@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './Modal.module.scss';
+import { HiOutlineX } from 'react-icons/hi';
 
 interface ModalProps {
   isOpen: boolean;
@@ -53,7 +54,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
     >
       <div className={styles.modalContent} ref={modalRef} tabIndex={-1}>
         <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
-          &times;
+          <HiOutlineX />
         </button>
         {children}
       </div>

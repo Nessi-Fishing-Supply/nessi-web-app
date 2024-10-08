@@ -33,6 +33,21 @@
     animation: spin 1s linear infinite;
   }
 
+  // Set full width
+  &.fullWidth {
+    width: 100%;
+  }
+
+  // Set border radius
+  &.round {
+    border-radius: var(--radius-2xl);
+  }
+
+  // Set margin bottom {
+  &.marginBottom {
+    margin-bottom: var(--space-base);
+  }
+
   // Base Outline styles
   &.outline {
     background-color: transparent;
