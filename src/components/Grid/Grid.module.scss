@@ -1,0 +1,28 @@
+@import '../../styles/variables/breakpoints';
+
+.container {
+    display: grid;
+    gap: var(--space-base);
+    width: 100%;
+    grid-template-columns: 1fr;
+
+    @include breakpoint(md) {
+        &[data-columns="2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        &[data-columns="3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        &[data-columns="4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    @include breakpoint(lg) {
+        &[data-columns="5"] {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+}

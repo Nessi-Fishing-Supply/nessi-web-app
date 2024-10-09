@@ -8,7 +8,8 @@ import Checkbox from '@components/controls/Checkbox';
 import AppleIcon from '@icons/apple.svg';
 import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
-import Link from 'next/link';
+import Divider from '@components/Divider';
+import AppLink from '@components/controls/AppLink';
 
 interface LoginFormData {
   email: string;
@@ -42,16 +43,10 @@ const LoginForm: React.FC<{ onSubmit: (data: LoginFormData) => void }> = ({ onSu
           onClick={() => console.log('Submit Form')}>
           Submit
         </Button>
-        <div className="passwordLink">
-          <Link href="/fogot-password">
-            Forgot your password?
-          </Link>
-        </div>
-        <div className="divider">
-          <hr />
-          <p>OR</p>
-          <hr />
-        </div>
+        <AppLink fullWidth center underline size="sm" href="/forgot-password">
+          Forgot your password?
+        </AppLink>
+        <Divider text="OR" />
         <Button
           style="dark"
           outline={true}

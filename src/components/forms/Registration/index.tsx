@@ -8,6 +8,8 @@ import AppleIcon from '@icons/apple.svg';
 import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
 import Button from '@components/controls/Button';
+import Grid from '@components/Grid';
+import Divider from '@components/Divider';
 
 interface RegisterFormData {
   firstName: string;
@@ -34,10 +36,10 @@ const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = (
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="authForm">
-        <div className="simpleGrid">
-          <Input name="firstName" label="First Name" type="text" isRequired />
-          <Input name="lastName" label="Last Name" type="text" isRequired />
-        </div>
+        <Grid columns={2}>
+        <Input name="firstName" label="First Name" type="text" isRequired />
+        <Input name="lastName" label="Last Name" type="text" isRequired />
+        </Grid>
         <Input name="email" label="Email" type="email" isRequired />
         <Input name="password" label="Password" type="password" showPasswordStrength isRequired />
         <Checkbox name="terms" label="I accept the terms and conditions" isRequired />
@@ -47,11 +49,7 @@ const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = (
           onClick={() => console.log('Submit Form')}>
           Sign Up
         </Button>
-        <div className="divider">
-          <hr />
-          <p>OR</p>
-          <hr />
-        </div>
+        <Divider text="OR" />
         <Button
           style="dark"
           outline
