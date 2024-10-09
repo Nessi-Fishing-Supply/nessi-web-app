@@ -26,6 +26,10 @@ jobs:
       - name: Run ESLint (non-blocking)
         run: npm run lint || true
 
+      - name: Clear Next.js cache
+        run: rm -rf .next
+
+
       - name: Build Next.js App
         run: npm run build
 

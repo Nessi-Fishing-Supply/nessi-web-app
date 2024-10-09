@@ -1,0 +1,54 @@
+.link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    transition: all 0.25s ease;
+
+    // Underline Optional
+    &.underline {
+        text-decoration: underline;
+    }
+
+    // Sizes
+    &.sm {
+        font-size: var(--font-size-sm);
+    }
+
+    &.md {
+        font-size: var(--font-size-base);
+    }
+
+    // Width
+    &.fullWidth {
+        width: 100%;
+    }
+
+    // Center
+    &.center {
+        justify-content: center;
+    }
+
+    // Styles
+    &.primary {
+        color: var(--color-primary);
+
+        &:hover {
+            color: var(--color-primary--dark);
+        }
+    }
+
+    &.secondary {
+        color: var(--color-secondary);
+
+        &:hover {
+            color: var(--color-secondary--dark);
+        }
+    }
+  }
+
+  .icon {
+    width: var(--space-base);
+    height: var(--space-base);
+  }
+  
