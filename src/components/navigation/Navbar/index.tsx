@@ -2,13 +2,13 @@
 
 import React from 'react';
 import styles from './Navbar.module.scss';
-import NotificationBar from '@components/NotificationBar';
+import NotificationBar from '@components/navigation/NotificationBar';
 import LogoFull from '@logos/logo_full.svg';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { HiSearch } from 'react-icons/hi';
 import Link from 'next/link';
 import { useState } from 'react';
-import Modal from '@components/Modal';
+import Modal from '@components/layout/Modal';
 import LoginForm from '@components/forms/Login';
 import Button from '@components/controls/Button';
 import RegisterForm from '@components/forms/Registration';
