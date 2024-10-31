@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import styles from './Checkbox.module.scss';
 import { HiOutlineCheck } from 'react-icons/hi';
@@ -9,7 +9,7 @@ interface CheckboxProps {
   isRequired?: boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ name, label, isRequired = false }) => {
+const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({ name, label, isRequired = false }, ref) => {
   const { control } = useFormContext();
 
   return (
@@ -23,6 +23,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ name, label, isRequired = false }) 
             type="checkbox"
             id={name}
             {...field}
+            ref={ref}
             className={styles.checkboxInput}
           />
 
@@ -40,6 +41,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ name, label, isRequired = false }) 
       )}
     />
   );
-};
+});
+
+Checkbox.displayName = 'Checkbox';
 
 export default Checkbox;

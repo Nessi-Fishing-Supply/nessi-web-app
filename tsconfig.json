@@ -20,10 +20,14 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./src/*"],
+      "@styles/*": ["styles/*"],
       "@components/*": ["components/*"],
       "@images/*": ["assets/images/*"],
       "@icons/*": ["assets/icons/*"],
       "@logos/*": ["assets/logos/*"],
+      "@services/*": ["services/*"],
+      "@context/*": ["context/*"],
+
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

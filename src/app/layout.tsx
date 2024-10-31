@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google'; //Import global font
-import '../styles/main.scss'; //Import global styles
+import { Inter } from 'next/font/google';
+import '@styles/main.scss';
 import Navbar from "@components/navigation/Navbar";
+import { AuthProvider } from '@context/auth';
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,9 +24,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        {children}
-        <div id="modal-root"></div>
+        <AuthProvider>
+          <Navbar />
+          {children}
+          <div id="modal-root"></div>
+        </AuthProvider>
       </body>
     </html>
   );

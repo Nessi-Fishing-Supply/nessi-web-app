@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "next": "^14.2.14",
     "normalize.css": "^8.0.1",
     "punycode": "^2.3.1",

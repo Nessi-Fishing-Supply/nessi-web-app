@@ -59,11 +59,9 @@ const AppLink: React.FC<AppLinkProps> = ({
 
   // Handle internal Next.js links
   return (
-    <NextLink href={href} passHref>
-      <a className={linkClassName} {...props}>
-        {children}
-        {icon && <span className={styles.icon}>{icon}</span>}
-      </a>
+    <NextLink href={href} passHref className={linkClassName} {...props}>
+      {children}
+      {icon && <span className={styles.icon}>{icon}</span>}
     </NextLink>
   );
 };

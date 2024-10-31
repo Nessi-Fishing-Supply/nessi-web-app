@@ -67,6 +67,7 @@ const Input: React.FC<InputProps> = ({
     <Controller
       name={name}
       control={control}
+      defaultValue=""
       render={({ field, fieldState: { error, isTouched, isDirty } }) => (
         <div className={`${styles.wrapper}`}>
           {label && (

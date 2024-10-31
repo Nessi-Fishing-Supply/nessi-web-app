@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Input from '@components/controls/Input';
 import Button from '@components/controls/Button';
 import Checkbox from '@components/controls/Checkbox';
-import AppleIcon from '@icons/apple.svg';
 import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
 import Divider from '@components/layout/Divider';
 import AppLink from '@components/controls/AppLink';
+import { login } from '@services/auth';
+import { useAuth } from '@context/auth';
 
 interface LoginFormData {
   email: string;
@@ -17,12 +18,16 @@ interface LoginFormData {
   stayLoggedIn?: boolean;
 }
 
-const LoginForm: React.FC<{ onSubmit: (data: LoginFormData) => void }> = ({ onSubmit }) => {
+const LoginForm: React.FC = () => {
+  const { setAuthenticated, setToken } = useAuth();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // Validation schema for the form
   const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
-    stayLoggedIn: Yup.boolean(),
+    // stayLoggedIn: Yup.boolean(),
   });
 
   const methods = useForm<LoginFormData>({
@@ -30,16 +35,41 @@ const LoginForm: React.FC<{ onSubmit: (data: LoginFormData) => void }> = ({ onSu
     mode: 'onBlur',
   });
 
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const response = await login(data);
+      console.log('Login response:', response); // Log the response
+      const { AccessToken } = response;
+      if (!AccessToken) {
+        throw new Error('AccessToken is missing in the response');
+      }
+      setAuthenticated(true);
+      setToken(AccessToken);
+      if (data.stayLoggedIn) {
+        localStorage.setItem('authToken', AccessToken);
+      }
+      setSuccessMessage('Login successful!');
+      setErrorMessage(null);
+    } catch (error) {
+      console.error('Login failed:', error);
+      setErrorMessage('Login failed. Please try again.');
+      setSuccessMessage(null);
+    }
+  };
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="authForm">
+        {successMessage && <div className="successMessage">{successMessage}</div>}
+        {errorMessage && <div className="errorMessage">{errorMessage}</div>}
         <Input name="email" label="Email" type="email" isRequired />
         <Input name="password" label="Password" type="password" isRequired />
-        <Checkbox label="Stay logged in" {...methods.register('stayLoggedIn')} />
+        {/* TODO: Add Stay Logged In Logic */}
+        {/* <Checkbox label="Stay logged in" {...methods.register('stayLoggedIn')} /> */}
         <Button
           type="submit"
-          fullWidth={true}
-          marginBottom={true}
+          fullWidth
+          marginBottom
           onClick={() => console.log('Submit Form')}>
           Submit
         </Button>
@@ -49,10 +79,10 @@ const LoginForm: React.FC<{ onSubmit: (data: LoginFormData) => void }> = ({ onSu
         <Divider text="OR" />
         <Button
           style="dark"
-          outline={true}
-          fullWidth={true}
-          round={true}
-          marginBottom={true}
+          outline
+          fullWidth
+          round
+          marginBottom
           icon={<GoogleIcon />}
           iconPosition='left'
           onClick={() => console.log('Google SSO')}>
@@ -60,24 +90,13 @@ const LoginForm: React.FC<{ onSubmit: (data: LoginFormData) => void }> = ({ onSu
         </Button>
         <Button
           style="dark"
-          outline={true}
-          fullWidth={true}
-          round={true}
-          marginBottom={true}
+          outline
+          fullWidth
+          round
           icon={<FacebookIcon />}
           iconPosition='left'
           onClick={() => console.log('Facebook SSO')}>
           Continue with Facebook
-        </Button>
-        <Button
-          style="dark"
-          outline={true}
-          fullWidth={true}
-          round={true}
-          icon={<AppleIcon />}
-          iconPosition='left'
-          onClick={() => console.log('Apple SSO')}>
-          Continue with Apple
         </Button>
       </form>
     </FormProvider>
