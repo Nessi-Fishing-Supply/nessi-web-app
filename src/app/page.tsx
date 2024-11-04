@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { getUserProfile } from "@services/user";
 import { useAuth } from '@context/auth';
 import { logout } from "@services/auth";
-import VerifyEmailBanner from "@components/banners/VerifyEmail/VerifyEmailBanner";
+import VerifyEmailBanner from "@components/banners/VerifyEmail";
 
 export default function Home() {
   const { isAuthenticated, token, setAuthenticated, setToken, userProfile, setUserProfile } = useAuth();
