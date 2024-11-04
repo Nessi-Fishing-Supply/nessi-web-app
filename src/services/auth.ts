@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useAuth } from '@context/auth';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? process.env.NEXT_PUBLIC_API_URL 
@@ -34,9 +33,14 @@ export const resetPassword = async (data: { token: string; newPassword: string; 
   return response.data;
 };
 
-export const confirmEmail = async (data: {}) => {
-  const response = await axiosInstance.post('/auth/confirm-email', data);
-  return response.data;
+export const verifyEmail = async (token: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.post('/auth/verify-email', { token });
+    return response.data;
+  } catch (error) {
+    console.error('Error verifying email:', error);
+    return { success: false, message: 'Verification failed' };
+  }
 };
 
 export const logout = async (token: string, setAuthenticated: (isAuthenticated: boolean) => void, setToken: (token: string | null) => void) => {

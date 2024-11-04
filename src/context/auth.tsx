@@ -1,12 +1,15 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import { UserProfileDto } from '@services/user';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   setAuthenticated: (isAuthenticated: boolean) => void;
   setToken: (token: string | null) => void;
+  userProfile: UserProfileDto | null;
+  setUserProfile: (profile: UserProfileDto | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,6 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfileDto | null>(null);
 
   useEffect(() => {
     // Initialize authentication state from local storage
@@ -34,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, setAuthenticated, setToken }}>
+    <AuthContext.Provider value={{ isAuthenticated, token, setAuthenticated, setToken, userProfile, setUserProfile }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getUserProfile, UserProfileDto } from "@services/user";
+import { useEffect } from "react";
+import { getUserProfile } from "@services/user";
 import { useAuth } from '@context/auth';
 import { logout } from "@services/auth";
+import VerifyEmailBanner from "@components/banners/VerifyEmail/VerifyEmailBanner";
 
 export default function Home() {
-  const [userProfile, setUserProfile] = useState<UserProfileDto | null>(null);
-  const { isAuthenticated, token, setAuthenticated, setToken } = useAuth();
+  const { isAuthenticated, token, setAuthenticated, setToken, userProfile, setUserProfile } = useAuth();
 
   useEffect(() => {
     async function fetchUserProfile() {
@@ -41,6 +41,7 @@ export default function Home() {
   return (
     <div>
       <main>
+        <VerifyEmailBanner />
         <h1>Home - Dev!</h1>
         {isAuthenticated ? (
           userProfile ? (
