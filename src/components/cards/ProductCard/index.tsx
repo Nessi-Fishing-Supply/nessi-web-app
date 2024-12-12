@@ -19,7 +19,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onProductDeleted }) => {
-  const { token } = useAuth();
+  const { token, userProfile } = useAuth();
   const router = useRouter();
   const price = typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price).toFixed(2);
 
@@ -54,7 +54,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onProductDeleted }) 
       <p>Price: ${price}</p>
       <p>Status: {product.status}</p>
       <p>Id: {product.id}</p>
-      <button onClick={handleDelete}>Delete Product</button>
+      {userProfile?.id === product.userId && (
+        <button onClick={handleDelete}>Delete Product</button>
+      )}
       <button onClick={handleViewDetails}>View Details</button>
     </div>
   );
