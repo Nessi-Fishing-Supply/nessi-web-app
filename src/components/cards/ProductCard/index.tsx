@@ -17,7 +17,7 @@ interface ProductCardProps {
   onProductDeleted: (id: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onProductDeleted = () => {} }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onProductDeleted }) => {
   const { token } = useAuth();
   const price = typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price).toFixed(2);
 

@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5003/products';
 
+const getHeaders = (token: string) => ({
+  Authorization: `${token}`
+});
+
 export const createProduct = async (product: {
   title: string;
   description: string;
@@ -9,12 +13,13 @@ export const createProduct = async (product: {
   images: { url: string, name: string }[];
   userId: string;
 }, token: string) => {
-  const headers = {
-    Authorization: `${token}`
+  const formattedProduct = {
+    ...product,
+    images: product.images.map(image => ({ image_url: image.url }))
   };
   try {
-    const response = await axios.post(API_URL, product, {
-      headers
+    const response = await axios.post(API_URL, formattedProduct, {
+      headers: getHeaders(token)
     });
     if (response.status === 201) {
       return response.data;
@@ -34,7 +39,7 @@ export const getAllProducts = async () => {
   const response = await axios.get(API_URL);
   return response.data.map((product: any) => ({
     ...product,
-    images: product.images.map((url: string) => ({ image_url: url }))
+    images: product.images.map((image: { image_url: string }) => ({ image_url: image.image_url }))
   }));
 };
 
@@ -44,12 +49,9 @@ export const getProductById = async (id: string) => {
 };
 
 export const deleteProduct = async (id: string, token: string) => {
-  const headers = {
-    Authorization: `${token}`
-  };
   try {
     const response = await axios.delete(`${API_URL}/${id}`, {
-      headers
+      headers: getHeaders(token)
     });
     return response.data;
   } catch (error: unknown) {
@@ -65,16 +67,13 @@ export const deleteProduct = async (id: string, token: string) => {
 };
 
 export const getProductsByUserId = async (token: string) => {
-  const headers = {
-    Authorization: `${token}`
-  };
   try {
     const response = await axios.get(`${API_URL}/user`, {
-      headers
+      headers: getHeaders(token)
     });
     return response.data.map((product: any) => ({
       ...product,
-      images: product.images.map((url: string) => ({ image_url: url }))
+      images: product.images.map((image: { image_url: string }) => ({ image_url: image.image_url }))
     }));
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -91,12 +90,13 @@ export const updateProduct = async (id: string, product: {
   price?: number;
   images?: { url: string }[];
 }, token: string) => {
-  const headers = {
-    Authorization: `${token}`
+  const formattedProduct = {
+    ...product,
+    images: product.images ? product.images.map(image => ({ image_url: image.url })) : undefined
   };
   try {
-    const response = await axios.put(`${API_URL}/${id}`, product, {
-      headers
+    const response = await axios.put(`${API_URL}/${id}`, formattedProduct, {
+      headers: getHeaders(token)
     });
     return response.data;
   } catch (error: unknown) {
