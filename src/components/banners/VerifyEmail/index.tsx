@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { verifyEmail, resendVerificationEmail } from "@services/auth";
 import { getUserProfile } from "@services/user";
 import { useAuth } from '@context/auth';
 import styles from './VerifyEmail.module.scss'
-import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import { HiOutlineExclamationCircle, HiOutlineXCircle, HiOutlineCheckCircle } from 'react-icons/hi';
 import Button from '@components/controls/Button';
 
 export default function VerifyEmailBanner() {
@@ -15,8 +15,8 @@ export default function VerifyEmailBanner() {
   const { isAuthenticated, token, setUserProfile, userProfile } = useAuth();
   const searchParams = useSearchParams();
   const hasRunEffect = useRef(false);
+  const [showBanner, setShowBanner] = useState<boolean>(true);
 
-  // Grab user profile
   useEffect(() => {
     async function fetchUserProfile() {
       if (isAuthenticated && token) {
@@ -24,6 +24,12 @@ export default function VerifyEmailBanner() {
           const profile = await getUserProfile(token);
           if (profile) {
             setUserProfile(profile);
+            if (profile.emailVerified) {
+              localStorage.setItem('emailVerified', 'true');
+              setShowBanner(false);
+            } else {
+              setShowBanner(true);
+            }
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);
@@ -31,10 +37,11 @@ export default function VerifyEmailBanner() {
       }
     }
 
-    fetchUserProfile();
+    if (isAuthenticated) {
+      fetchUserProfile();
+    }
   }, [isAuthenticated, token, setUserProfile]);
 
-  // Verify email
   useEffect(() => {
     async function verifyEmail() {
       if (isAuthenticated && !hasRunEffect.current && !verificationInProgress) {
@@ -51,13 +58,16 @@ export default function VerifyEmailBanner() {
       }
     }
 
-    verifyEmail();
+    if (isAuthenticated) {
+      verifyEmail();
+    }
   }, [searchParams, isAuthenticated, userProfile?.emailVerified, verificationInProgress]);
 
   // Check if email is already verified
   const checkIfEmailAlreadyVerified = async (): Promise<boolean> => {
     if (userProfile?.emailVerified) {
       setVerificationMessage(null);
+      setShowBanner(false); // Hide the banner if email is already verified
       return true;
     }
 
@@ -67,6 +77,7 @@ export default function VerifyEmailBanner() {
         if (profile && profile.emailVerified) {
           setUserProfile(profile);
           setVerificationMessage(null);
+          setShowBanner(false); // Hide the banner if email is already verified
           return true;
         }
       } catch (error) {
@@ -90,14 +101,17 @@ export default function VerifyEmailBanner() {
         if (updatedProfile) {
           setUserProfile(updatedProfile);
         }
+        localStorage.setItem('emailVerified', 'true'); // Store flag in local storage
+        setTimeout(() => {
+          setShowBanner(false); // Hide the banner after showing the success message
+        }, 5000);
       } else {
         setVerificationMessage('Email verification failed. Please try again.');
       }
     } catch (error) {
       console.error('Error during email verification:', error);
-      if (verificationInProgress) {
-        setVerificationMessage('Verification failed. Please try again later.');
-      }
+      setVerificationMessage('Verification failed. Please try again later.');
+      setVerificationInProgress(false);
     }
   };
 
@@ -113,20 +127,46 @@ export default function VerifyEmailBanner() {
     }
   };
 
+  useEffect(() => {
+    if (verificationMessage?.includes('successfully')) {
+      const timer = setTimeout(() => {
+        setShowBanner(false);
+      }, 5000); // Hide the banner after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [verificationMessage]);
+
+  if (!isAuthenticated || !showBanner) {
+    return null;
+  }
+
+  const getIcon = () => {
+    if (verificationMessage?.includes('successfully')) {
+      return <HiOutlineCheckCircle className={styles.iconSuccess} />;
+    } else if (verificationMessage?.includes('failed')) {
+      return <HiOutlineXCircle className={styles.iconError} />;
+    } else {
+      return <HiOutlineExclamationCircle className={styles.iconAlert} />;
+    }
+  };
+
   return (
     <>
-    <div className={styles.container}>
-    {verificationMessage && <p className="banner">{verificationMessage}</p>}
-      {userProfile && !userProfile.emailVerified && !verificationMessage && (
-        <div>
+      {userProfile && (
+        <div className={styles.container}>
           <div className={styles.message}>
-            <HiOutlineExclamationCircle className={styles.icon} />
-            <p>{userProfile.firstName}, We sent an email to {userProfile.email}! Please click the link to verify your email and get full access to Nessi Fishing Supply.</p>
+            {getIcon()}
+            {verificationMessage ? (
+              <p>{verificationMessage}</p>
+            ) : (
+              <p>{userProfile.firstName}, We sent an email to {userProfile.email}. Please click the link to verify your email and get full access to Nessi Fishing Supply.</p>
+            )}
           </div>
-          <Button onClick={handleResendVerificationEmail}>Resend Verification Email</Button>
+          {!userProfile.emailVerified && (
+            <Button onClick={handleResendVerificationEmail}>Resend Verification Email</Button>
+          )}
         </div>
       )}
-    </div>
     </>
   );
 }
