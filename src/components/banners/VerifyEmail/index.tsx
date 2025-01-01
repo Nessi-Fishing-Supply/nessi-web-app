@@ -17,6 +17,7 @@ export default function VerifyEmailBanner() {
   const hasRunEffect = useRef(false);
   const [showBanner, setShowBanner] = useState<boolean>(true);
 
+  // Fetch user profile on component mount or when authentication state changes
   useEffect(() => {
     async function fetchUserProfile() {
       if (isAuthenticated && token) {
@@ -42,11 +43,11 @@ export default function VerifyEmailBanner() {
     }
   }, [isAuthenticated, token, setUserProfile]);
 
+  // Verify email if a verification token is present in the URL
   useEffect(() => {
     async function verifyEmail() {
       if (isAuthenticated && !hasRunEffect.current && !verificationInProgress) {
         hasRunEffect.current = true;
-        // Check if user profile is already verified
         const alreadyVerified = await checkIfEmailAlreadyVerified();
         if (!alreadyVerified) {
           const verificationToken = searchParams.get('token');
@@ -67,7 +68,7 @@ export default function VerifyEmailBanner() {
   const checkIfEmailAlreadyVerified = async (): Promise<boolean> => {
     if (userProfile?.emailVerified) {
       setVerificationMessage(null);
-      setShowBanner(false); // Hide the banner if email is already verified
+      setShowBanner(false);
       return true;
     }
 
@@ -77,7 +78,7 @@ export default function VerifyEmailBanner() {
         if (profile && profile.emailVerified) {
           setUserProfile(profile);
           setVerificationMessage(null);
-          setShowBanner(false); // Hide the banner if email is already verified
+          setShowBanner(false);
           return true;
         }
       } catch (error) {
@@ -88,22 +89,22 @@ export default function VerifyEmailBanner() {
     return false;
   };
 
+  // Handle email verification process
   const handleEmailVerification = async (verificationToken: string) => {
-    if (verificationInProgress) return; // Prevent multiple calls
+    if (verificationInProgress) return;
 
     try {
       const result = await verifyEmail(verificationToken);
       if (result.success || result.message.includes('successfully')) {
         setVerificationMessage('Your email was verified successfully!');
         setVerificationInProgress(false);
-        // Update user profile to reflect email verification
         const updatedProfile = await getUserProfile(token);
         if (updatedProfile) {
           setUserProfile(updatedProfile);
         }
-        localStorage.setItem('emailVerified', 'true'); // Store flag in local storage
+        localStorage.setItem('emailVerified', 'true');
         setTimeout(() => {
-          setShowBanner(false); // Hide the banner after showing the success message
+          setShowBanner(false);
         }, 5000);
       } else {
         setVerificationMessage('Email verification failed. Please try again.');
@@ -115,6 +116,7 @@ export default function VerifyEmailBanner() {
     }
   };
 
+  // Handle resending of verification email
   const handleResendVerificationEmail = async () => {
     if (userProfile?.email) {
       try {
@@ -127,11 +129,12 @@ export default function VerifyEmailBanner() {
     }
   };
 
+  // Hide the banner after showing a success message for 5 seconds
   useEffect(() => {
     if (verificationMessage?.includes('successfully')) {
       const timer = setTimeout(() => {
         setShowBanner(false);
-      }, 5000); // Hide the banner after 5 seconds
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [verificationMessage]);
@@ -140,6 +143,7 @@ export default function VerifyEmailBanner() {
     return null;
   }
 
+  // Get the appropriate icon based on the verification message
   const getIcon = () => {
     if (verificationMessage?.includes('successfully')) {
       return <HiOutlineCheckCircle className={styles.iconSuccess} />;
