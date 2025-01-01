@@ -1,6 +1,20 @@
 .container {
+    background-color: var(--color-gray-50);
+    padding: var(--space-base) var(--space-md);
+    color: var(--color-gray-700);
+
+    > div {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.message {
     display: flex;
-    background-color: var(--color-dark);
-    padding: 0 var(--space-md);
-    color: var(--color-white);
+    align-items: center;
+    gap: var(--space-xs);
+
+    > svg {
+        color: var(--color-secondary);
+    }
 }

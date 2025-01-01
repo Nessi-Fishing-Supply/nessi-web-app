@@ -6,6 +6,8 @@ import { verifyEmail, resendVerificationEmail } from "@services/auth";
 import { getUserProfile } from "@services/user";
 import { useAuth } from '@context/auth';
 import styles from './VerifyEmail.module.scss'
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import Button from '@components/controls/Button';
 
 export default function VerifyEmailBanner() {
   const [verificationMessage, setVerificationMessage] = useState<string | null>(null);
@@ -117,9 +119,11 @@ export default function VerifyEmailBanner() {
     {verificationMessage && <p className="banner">{verificationMessage}</p>}
       {userProfile && !userProfile.emailVerified && !verificationMessage && (
         <div>
-          <p>{userProfile.firstName}, please complete the following:</p>
-          <p>Check your email ({userProfile.email}) and click "Confirm my Email" to get full access to Nessi.</p>
-          <button onClick={handleResendVerificationEmail}>Resend Verification Email</button>
+          <div className={styles.message}>
+            <HiOutlineExclamationCircle className={styles.icon} />
+            <p>{userProfile.firstName}, We sent an email to {userProfile.email}! Please click the link to verify your email and get full access to Nessi Fishing Supply.</p>
+          </div>
+          <Button onClick={handleResendVerificationEmail}>Resend Verification Email</Button>
         </div>
       )}
     </div>
