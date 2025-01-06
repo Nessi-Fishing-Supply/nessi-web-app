@@ -5,6 +5,8 @@ import { useAuth } from '@context/auth';
 import { getProductsByUserId } from '@services/product';
 import ProductForm from '@components/forms/product';
 import ProductCard from '@components/cards/product-card';
+import Button from '@components/controls/button'; // Import Button component
+import Modal from '@components/layout/modal'; // Import Modal component
 import axios from 'axios';
 
 interface Product {
@@ -20,6 +22,7 @@ interface Product {
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const { token } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,6 +45,7 @@ const Products: React.FC = () => {
 
   const handleProductCreated = (products: Product[]) => {
     setProducts(products);
+    setIsModalOpen(false);
   };
 
   const handleProductDeleted = (id: string) => {
@@ -52,7 +56,10 @@ const Products: React.FC = () => {
     <div>
       <h1>Products</h1>
       <p>Welcome to your products!</p>
-      <ProductForm onProductCreated={handleProductCreated} />
+      <Button onClick={() => setIsModalOpen(true)}>Add a New Product</Button> {/* Add button to open modal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}> {/* Add Modal component */}
+        <ProductForm onProductCreated={handleProductCreated} />
+      </Modal>
       {products.length === 0 ? (
         <p>You don't have any products currently.</p>
       ) : (

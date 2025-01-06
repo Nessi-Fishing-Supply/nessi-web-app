@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useAuth } from '@context/auth';
 import { createProduct, getProductsByUserId } from '@services/product';
 import axios from 'axios';
-import styles from './ProductForm.module.scss';
+import { useForm, FormProvider } from 'react-hook-form';
+import Input from '@components/controls/input';
+import Textarea from '@components/controls/text-area';
+import Button from '@components/controls/button';
 
 const ProductForm: React.FC<{ onProductCreated: (products: any[]) => void }> = ({ onProductCreated }) => {
+  const methods = useForm();
   const [newProduct, setNewProduct] = useState({
     title: '',
     description: '',
     price: 0,
-    images: [{ url: '', name: '' }],
+    images: [{ id: Date.now(), url: '', name: '' }],
     userId: ''
   });
   const { token, userProfile } = useAuth();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewProduct(prevState => ({
       ...prevState,
@@ -22,14 +26,14 @@ const ProductForm: React.FC<{ onProductCreated: (products: any[]) => void }> = (
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setNewProduct(prevState => {
           const images = [...prevState.images];
-          images[index] = { url: reader.result as string, name: file.name };
+          images[index] = { ...images[index], url: reader.result as string, name: file.name };
           return { ...prevState, images };
         });
       };
@@ -40,11 +44,11 @@ const ProductForm: React.FC<{ onProductCreated: (products: any[]) => void }> = (
   const addImageField = () => {
     setNewProduct(prevState => ({
       ...prevState,
-      images: [...prevState.images, { url: '', name: '' }]
+      images: [...prevState.images, { id: Date.now(), url: '', name: '' }]
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (token && userProfile) {
       const product = { ...newProduct, userId: userProfile.id };
@@ -56,7 +60,7 @@ const ProductForm: React.FC<{ onProductCreated: (products: any[]) => void }> = (
           title: '',
           description: '',
           price: 0,
-          images: [{ url: '', name: '' }],
+          images: [{ id: Date.now(), url: '', name: '' }],
           userId: ''
         });
       } catch (error) {
@@ -70,42 +74,44 @@ const ProductForm: React.FC<{ onProductCreated: (products: any[]) => void }> = (
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="title"
-        value={newProduct.title}
-        onChange={handleInputChange}
-        placeholder="Title"
-        required
-      />
-      <textarea
-        name="description"
-        value={newProduct.description}
-        onChange={handleInputChange}
-        placeholder="Description"
-        required
-      />
-      <input
-        type="number"
-        name="price"
-        value={newProduct.price}
-        onChange={handleInputChange}
-        placeholder="Price"
-        required
-      />
-      {newProduct.images.map((image, index) => (
-        <input
-          key={index}
-          type="file"
-          className={styles['file-input']}
-          onChange={(e) => handleImageChange(e, index)}
-          required
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          name="title"
+          value={newProduct.title}
+          onChange={(e) => handleInputChange(e as ChangeEvent<HTMLInputElement>)}
+          placeholder="Title"
+          isRequired
         />
-      ))}
-      <button type="button" onClick={addImageField}>Add Another Image</button>
-      <button type="submit">Add Product</button>
-    </form>
+        <Textarea
+          name="description"
+          value={newProduct.description}
+          onChange={(e) => handleInputChange(e as ChangeEvent<HTMLTextAreaElement>)}
+          placeholder="Description"
+          isRequired
+        />
+        <Input
+          type="number"
+          name="price"
+          value={String(newProduct.price)}
+          onChange={(e) => handleInputChange(e as ChangeEvent<HTMLInputElement>)}
+          placeholder="Price"
+          isRequired
+        />
+        {newProduct.images.map((image, index) => (
+          <Input
+            key={image.id}
+            type="file"
+            name={`image-${index}`}
+            onChange={(e) => handleImageChange(e as ChangeEvent<HTMLInputElement>, index)}
+            isRequired
+          />
+        ))}
+        <Button type="button" style="secondary" outline onClick={addImageField}>Add Another Image</Button>
+        <Button type="submit">Add Product</Button>
+      </form>
+    </FormProvider>
   );
 };
 

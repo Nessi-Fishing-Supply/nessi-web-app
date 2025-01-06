@@ -7,25 +7,33 @@ import { FaCheckCircle } from 'react-icons/fa';
 interface InputProps {
   name: string;
   label?: string;
+  value?: string;
   helperText?: string;
   icon?: React.ReactNode;
   type?: string;
   placeholder?: string;
   isRequired?: boolean;
   showPasswordStrength?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const Input: React.FC<InputProps> = ({
   name,
   label,
+  value,
   helperText,
   icon,
   type = 'text',
   placeholder,
   isRequired = false,
   showPasswordStrength = false,
+  onChange,
 }) => {
-  const { control } = useFormContext();
+  const formContext = useFormContext();
+  if (!formContext) {
+    return null;
+  }
+  const { control } = formContext;
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
@@ -103,6 +111,7 @@ const Input: React.FC<InputProps> = ({
               type={type === 'password' && isPasswordVisible ? 'text' : type}
               placeholder={placeholder}
               {...field}
+              value={value}
               className={styles.input}
               onFocus={() => setIsFocused(true)}
               onBlur={(e) => {
@@ -113,6 +122,7 @@ const Input: React.FC<InputProps> = ({
               }}
               onChange={(e) => {
                 field.onChange(e);
+                if (onChange) onChange(e);
                 if (type === 'password' && showPasswordStrength) {
                   checkPasswordStrength(e.target.value);
                   setShowProgressBar(!!e.target.value);
