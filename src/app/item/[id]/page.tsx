@@ -1,6 +1,5 @@
 import { getProductById, getAllProducts, Product } from '@services/product';
 import ProductClientComponent from './ItemIdPage';
-import { GetStaticPropsContext } from 'next';
 
 export async function generateStaticParams() {
   const products = await getAllProducts();
