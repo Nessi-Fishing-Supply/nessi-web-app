@@ -3,7 +3,7 @@
 import React, { Suspense } from 'react';
 import { Inter } from 'next/font/google';
 import '@styles/main.scss';
-import Navbar from "@components/navigation/navbar";
+import Navbar from "@components/navigation/nav-bar";
 import { AuthProvider } from '@context/auth';
 import VerifyEmailBanner from "@components/banners/verify-email";
 
