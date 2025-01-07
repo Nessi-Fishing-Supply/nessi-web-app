@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import styles from './ProductCard.module.scss';
-import { useAuth } from '@context/auth';
 import { useRouter } from 'next/navigation';
 import Pill from '@components/indicators/pill';
 import { FaTruck, FaTag } from 'react-icons/fa';
@@ -75,7 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onProductDeleted }) 
         >
           {product.images.map((image, index) => (
             <SwiperSlide key={index}>
-              <Image src={image.image_url} alt={`${product.title} image ${index + 1}`} layout="fill" objectFit="cover" />
+              <Image src={image.url} alt={`${product.title} image ${index + 1}`} layout="fill" objectFit="cover" />
             </SwiperSlide>
           ))}
         </Swiper>

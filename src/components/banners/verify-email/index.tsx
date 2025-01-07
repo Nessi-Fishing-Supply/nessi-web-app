@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 import { verifyEmail, resendVerificationEmail } from "@services/auth";
 import { getUserProfile } from "@services/user";
@@ -21,7 +21,7 @@ export default function VerifyEmailBanner() {
   const shouldRender = isAuthenticated;
 
   // Check if email is already verified
-  const checkIfEmailAlreadyVerified = async (): Promise<boolean> => {
+  const checkIfEmailAlreadyVerified = useCallback(async (): Promise<boolean> => {
     if (userProfile?.emailVerified) {
       setVerificationMessage(null);
       setShowBanner(false);
@@ -43,10 +43,10 @@ export default function VerifyEmailBanner() {
     }
 
     return false;
-  };
+  }, [isAuthenticated, token, userProfile, setUserProfile]);
 
   // Handle email verification process
-  const handleEmailVerification = async (verificationToken: string) => {
+  const handleEmailVerification = useCallback(async (verificationToken: string) => {
     if (verificationInProgress) return;
 
     try {
@@ -70,7 +70,7 @@ export default function VerifyEmailBanner() {
       setVerificationMessage('Verification failed. Please try again later.');
       setVerificationInProgress(false);
     }
-  };
+  }, [verificationInProgress, token, setUserProfile]);
 
   // Fetch user profile on component mount or when authentication state changes
   useEffect(() => {

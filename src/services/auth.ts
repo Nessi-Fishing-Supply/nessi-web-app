@@ -64,12 +64,11 @@ export const refreshToken = async (refreshToken: string) => {
   try {
     const response = await axiosInstance.post('/auth/refresh-token', { refreshToken });
     return response.data;
-  } catch (error) {
-    const err = error as any;
-    if (err.response) {
-      console.error('Error refreshing token:', err.response.data);
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Error refreshing token:', error.response.data);
     }
-    throw err;
+    throw error;
   }
 };
 

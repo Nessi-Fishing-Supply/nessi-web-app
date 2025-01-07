@@ -3,7 +3,7 @@ import styles from './Pill.module.scss';
 
 interface PillProps {
   color?: 'primary' | 'secondary' | 'error' | 'success' | 'warning' | 'default';
-  children: string;
+  children: React.ReactNode;
   className?: string;
 }
 

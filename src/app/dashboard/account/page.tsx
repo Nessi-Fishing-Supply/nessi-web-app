@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAuth } from '@context/auth';
 import { getUserProfile } from '@services/user';
 import { logout, resendVerificationEmail } from '@services/auth';
@@ -9,7 +9,7 @@ import axios from 'axios';
 const Account: React.FC = () => {
   const { isAuthenticated, token, setAuthenticated, setToken, userProfile, setUserProfile } = useAuth();
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       if (token) {
         await logout(token, setAuthenticated, setToken);
@@ -18,7 +18,7 @@ const Account: React.FC = () => {
     } catch (error) {
       console.error('Logout failed:', error);
     }
-  };
+  }, [token, setAuthenticated, setToken, setUserProfile]);
 
   useEffect(() => {
     async function fetchUserProfile() {

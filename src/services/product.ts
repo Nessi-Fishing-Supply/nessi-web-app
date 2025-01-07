@@ -46,9 +46,9 @@ export const getAllProducts = async (): Promise<Product[]> => {
   const response = await axios.get(API_URL);
   return response.data.map((product: any) => ({
     ...product,
-    images: product.images.map((image: { image_url: string, image_name: string }) => ({
-      image_url: image.image_url,
-      image_name: image.image_name
+    images: product.images.map((image: { image_url: string, name: string }) => ({
+      url: image.image_url,
+      name: image.name
     }))
   }));
 };
@@ -59,9 +59,9 @@ export const getProductById = async (id: string) => {
   return {
     ...product,
     price: parseFloat(product.price),
-    images: product.images.map((image: { image_url: string; image_name?: string }) => ({
-      image_url: image.image_url,
-      image_name: image.image_name || 'Image'
+    images: product.images.map((image: { image_url: string; name: string }) => ({
+      url: image.image_url,
+      name: image.name
     }))
   };
 };
@@ -91,9 +91,9 @@ export const getProductsByUserId = async (token: string): Promise<Product[]> => 
     });
     return response.data.map((product: any) => ({
       ...product,
-      images: product.images.map((image: { image_url: string, image_name: string }) => ({
-        image_url: image.image_url,
-        image_name: image.image_name
+      images: product.images.map((image: { image_url: string, name: string }) => ({
+        url: image.image_url,
+        name: image.name
       }))
     }));
   } catch (error) {
@@ -109,11 +109,11 @@ export const updateProduct = async (id: string, product: {
   title?: string;
   description?: string;
   price?: number;
-  images?: { url: string }[];
+  images?: { url: string, name: string }[];
 }, token: string) => {
   const formattedProduct = {
     ...product,
-    images: product.images ? product.images.map(image => ({ image_url: image.url })) : undefined
+    images: product.images ? product.images.map(image => ({ url: image.url, name: image.name })) : undefined
   };
   try {
     const response = await axios.put(`${API_URL}/${id}`, formattedProduct, {
