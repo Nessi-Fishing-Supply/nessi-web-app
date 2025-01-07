@@ -17,6 +17,11 @@ export default function VerifyEmailBanner() {
   const hasRunEffect = useRef(false);
   const [showBanner, setShowBanner] = useState<boolean>(true);
 
+  // Global authentication check
+  if (!isAuthenticated) {
+    return null;
+  }
+
   // Fetch user profile on component mount or when authentication state changes
   useEffect(() => {
     async function fetchUserProfile() {
