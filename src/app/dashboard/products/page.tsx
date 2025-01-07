@@ -39,16 +39,12 @@ const Products: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleProductDeleted = (id: string) => {
-    setProducts(products.filter(product => product.id !== id));
-  };
-
   return (
     <div>
       <h1>Products</h1>
       <p>Welcome to your products!</p>
-      <Button onClick={() => setIsModalOpen(true)}>Add a New Product</Button> {/* Add button to open modal */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}> {/* Add Modal component */}
+      <Button onClick={() => setIsModalOpen(true)}>Add a New Product</Button>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ProductForm onProductCreated={handleProductCreated} />
       </Modal>
       {products.length === 0 ? (
@@ -56,7 +52,7 @@ const Products: React.FC = () => {
       ) : (
         <Grid columns={4}>
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} onProductDeleted={handleProductDeleted} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </Grid>
       )}
