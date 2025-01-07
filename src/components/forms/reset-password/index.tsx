@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useSearchParams, useRouter } from 'next/navigation'; // Updated import
 import { resetPassword } from '@services/auth';
-import Input from '@components/controls/input';
+import Input from '@components/controls/input-temp';
 import Button from '@components/controls/button';
 
 // Define the structure of the form data

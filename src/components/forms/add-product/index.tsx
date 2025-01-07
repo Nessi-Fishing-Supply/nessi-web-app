@@ -3,7 +3,7 @@ import { useAuth } from '@context/auth';
 import { createProduct, getProductsByUserId } from '@services/product';
 import axios from 'axios';
 import { useForm, FormProvider } from 'react-hook-form';
-import Input from '@components/controls/input';
+import Input from '@components/controls/input-temp';
 import Textarea from '@components/controls/text-area';
 import Button from '@components/controls/button';
 import { Product as ProductType } from '@services/product';
