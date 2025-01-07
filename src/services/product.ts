@@ -14,6 +14,8 @@ export interface Product {
   price: number;
   images: { url: string, name: string }[];
   userId: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const createProduct = async (product: Product, token: string) => {
