@@ -15,10 +15,9 @@ import { Product as ProductType } from '@services/product';
 
 interface ProductCardProps {
   product: ProductType;
-  onProductDeleted: (id: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onProductDeleted }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const price = typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : `$${parseFloat(product.price).toFixed(2)}`;
 

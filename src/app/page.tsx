@@ -25,10 +25,6 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const handleProductDeleted = (id: string) => {
-    setProducts(products.filter(product => product.id !== id));
-  };
-
   return (
     <div>
       <main>
@@ -37,7 +33,7 @@ export default function Home() {
         ) : (
           <Grid columns={4}>
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} onProductDeleted={handleProductDeleted} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </Grid>
         )}
