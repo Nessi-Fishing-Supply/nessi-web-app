@@ -9,10 +9,14 @@ export async function generateStaticParams() {
   }));
 }
 
-const ProductPage = async ({ params }: GetStaticPropsContext<{ id: string }>) => {
-  const product = await getProductById(params!.id);
+export default async function Page({ params }: { params: { id: string } }) {
+  const { id } = await params;
+
+  if (!id) {
+    return <p>No product found</p>;
+  }
+
+  const product = await getProductById(id);
 
   return <ProductClientComponent product={product} />;
-};
-
-export default ProductPage;
+}

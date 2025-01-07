@@ -2,18 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-interface Product {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  status: string;
-  userId: string;
-  created_at: string;
-  updated_at: string;
-  images: { image_url: string; image_name: string }[];
-}
+import { Product } from '@services/product';
 
 const ProductClientComponent = ({ product }: { product: Product }) => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +25,15 @@ const ProductClientComponent = ({ product }: { product: Product }) => {
       <p>Price: ${product.price}</p>
       <div>
         {product.images.map((image, index) => (
-          <Image key={index} src={image.image_url} alt={image.image_name} width={500} height={500} />
+          image.url ? (
+            <Image
+              key={index}
+              src={image.url}
+              alt={product.title}
+              width={500}
+              height={500}
+            />
+          ) : null
         ))}
       </div>
     </div>
