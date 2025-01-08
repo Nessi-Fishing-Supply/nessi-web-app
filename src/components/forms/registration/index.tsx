@@ -8,7 +8,7 @@ import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
 import Button from '@components/controls/button';
 import Grid from '@components/layout/grid';
-import Divider from '@components/layout/divider';
+import Divider from '@components/layout/divider-temp';
 import { register as registerUser } from '@services/auth';
 import { useAuth } from '@context/auth';
 

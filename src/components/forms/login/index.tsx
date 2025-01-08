@@ -7,7 +7,7 @@ import Button from '@components/controls/button';
 import Checkbox from '@components/controls/checkbox';
 import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
-import Divider from '@components/layout/divider';
+import Divider from '@components/layout/divider-temp';
 import AppLink from '@components/controls/app-link';
 import { login, refreshToken } from '@services/auth';
 import { useAuth } from '@context/auth';
