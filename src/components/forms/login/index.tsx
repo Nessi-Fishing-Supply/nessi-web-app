@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Input from '@components/controls/input';
 import Button from '@components/controls/button';
-import Checkbox from '@components/controls/checkbox-temp';
+import Checkbox from '@components/controls/checkbox';
 import GoogleIcon from '@icons/google.svg';
 import FacebookIcon from '@icons/facebook.svg';
 import Divider from '@components/layout/divider';
