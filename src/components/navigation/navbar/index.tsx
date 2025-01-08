@@ -8,7 +8,7 @@ import { HiBell, HiOutlineShoppingBag, HiUser, HiOutlineHome, HiOutlineUserCircl
 import { HiSearch } from 'react-icons/hi';
 import Link from 'next/link';
 import { useState } from 'react';
-import Modal from '@components/layout/modal-temp';
+import Modal from '@components/layout/modal';
 import LoginForm from '@components/forms/login';
 import Button from '@components/controls/button';
 import RegisterForm from '@components/forms/registration';
