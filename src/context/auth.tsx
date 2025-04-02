@@ -1,45 +1,32 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { UserProfileDto, getUserProfile } from '@services/user'; // Import getUserProfile
-import axios from 'axios'; // Import axios
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  setAuthenticated: (value: boolean) => void;
   token: string | null;
-  setAuthenticated: (isAuthenticated: boolean) => void;
-  setToken: (token: string | null) => void;
-  userProfile: UserProfileDto | null;
-  setUserProfile: (profile: UserProfileDto | null) => void;
+  setToken: (value: string | null) => void;
+  user: any;
+  setUser: (user: any) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfileDto | null>(null);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const fetchUserProfile = async (token: string) => {
-      try {
-        const profile = await getUserProfile(token);
-        setUserProfile(profile);
-      } catch (error: unknown) { 
-        if (axios.isAxiosError(error) && error.message === 'Unauthorized') {
-          setAuthenticated(false);
-          setToken(null);
-        } else {
-          console.error('Unexpected error fetching user profile:', error);
-        }
-      }
-    };
-
     const storedToken = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('user');
     if (storedToken) {
       setToken(storedToken);
       setAuthenticated(true);
-      fetchUserProfile(storedToken); // Fetch user profile if token exists
+    }
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
@@ -51,8 +38,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [token]);
 
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, setAuthenticated, setToken, userProfile, setUserProfile }}>
+    <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, token, setToken, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );

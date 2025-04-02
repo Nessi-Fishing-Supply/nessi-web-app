@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,7 +12,6 @@ import Button from '@components/controls/button';
 import Grid from '@components/layout/grid';
 import Divider from '@components/layout/divider';
 import { register as registerUser } from '@services/auth';
-import { useAuth } from '@context/auth';
 
 interface RegisterFormData {
   firstName: string;
@@ -22,7 +23,7 @@ interface RegisterFormData {
 
 const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = ({ onSubmit }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { setAuthenticated, setToken } = useAuth();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const registrationSchema = Yup.object().shape({
@@ -44,10 +45,9 @@ const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = (
       const response = await registerUser(data);
       console.log('Registration successful:', response);
       setErrorMessage(null);
-      setAuthenticated(true);
-      setToken(response.loginResponse.AccessToken);
+      setSuccessMessage('Registration successful! Please check your inbox to verify your email before logging in.');
       onSubmit(data);
-    } catch (error: unknown) { // Changed 'any' to 'unknown'
+    } catch (error: unknown) {
       console.error('Registration failed:', error);
       if (error instanceof Error) {
         setErrorMessage(error.message);
@@ -63,22 +63,19 @@ const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="authForm">
         {errorMessage && <div className="errorMessage">{errorMessage}</div>}
+        {successMessage && <div className="successMessage">{successMessage}</div>}
+
         <Grid columns={2}>
-        <Input name="firstName" label="First Name" type="text" isRequired />
-        <Input name="lastName" label="Last Name" type="text" isRequired />
+          <Input name="firstName" label="First Name" type="text" isRequired />
+          <Input name="lastName" label="Last Name" type="text" isRequired />
         </Grid>
         <Input name="email" label="Email" type="email" isRequired />
         <Input name="password" label="Password" type="password" showPasswordStrength isRequired />
-        {/* TODO: Terms is not setup. We don't have terms and conditions yet */}
         <Checkbox name="terms" label="I accept the terms and conditions" isRequired />
-        <Button
-          type="submit"
-          fullWidth
-          onClick={() => console.log('Submit Form')}
-          loading={isLoading}>
+        <Button type="submit" fullWidth loading={isLoading}>
           Sign Up
         </Button>
-        <Divider text="OR" />
+        {/* <Divider text="OR" />
         <Button
           style="dark"
           outline
@@ -86,8 +83,9 @@ const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = (
           round
           marginBottom
           icon={<GoogleIcon />}
-          iconPosition='left'
-          onClick={() => console.log('Google SSO')}>
+          iconPosition="left"
+          onClick={() => console.log('Google SSO')}
+        >
           Continue with Google
         </Button>
         <Button
@@ -96,10 +94,11 @@ const RegisterForm: React.FC<{ onSubmit: (data: RegisterFormData) => void }> = (
           fullWidth
           round
           icon={<FacebookIcon />}
-          iconPosition='left'
-          onClick={() => console.log('Facebook SSO')}>
+          iconPosition="left"
+          onClick={() => console.log('Facebook SSO')}
+        >
           Continue with Facebook
-        </Button>
+        </Button> */}
       </form>
     </FormProvider>
   );

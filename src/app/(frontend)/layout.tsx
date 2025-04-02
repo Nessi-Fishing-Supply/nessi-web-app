@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google';
 import '@styles/main.scss';
 import Navbar from "@components/navigation/navbar";
 import { AuthProvider } from '@context/auth';
-import VerifyEmailBanner from "@components/banners/verify-email";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,7 +24,6 @@ export default function RootLayout({
         <AuthProvider>
           <Suspense fallback={<div>Loading...</div>}>
             <Navbar />
-            <VerifyEmailBanner />
           </Suspense>
           {children}
           <div id="modal-root"></div>

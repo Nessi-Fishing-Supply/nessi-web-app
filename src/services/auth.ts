@@ -1,91 +1,97 @@
-import axios from 'axios';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? process.env.NEXT_PUBLIC_API_URL 
-  : 'http://localhost:5002';
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY || (process.env.NODE_ENV === 'production' ? 'your_production_api_key_here' : '');
+// Register
+export const register = async (data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  terms: boolean;
+}) => {
+  const res = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
 
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${API_KEY}`,
-  },
-});
-
-export const register = async (data: { firstName: string; lastName: string; email: string; password: string; terms: boolean }) => {
-  const response = await axiosInstance.post('/auth/register', data);
-  return response.data;
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Registration failed');
+  return json;
 };
 
-export const login = async (data: { email: string; password: string; rememberMe: boolean }) => {
-  const response = await axiosInstance.post('/auth/login', data);
-  const { AccessToken, RefreshToken, ExpiresIn } = response.data;
-  const expiryTime = new Date().getTime() + ExpiresIn * 1000; // Use the actual expiration time returned by the server
-  return { AccessToken, RefreshToken, expiryTime };
+// Login
+export const login = async (data: {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}) => {
+  const res = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Login failed');
+
+  const { session, user } = json;
+  return {
+    accessToken: session.access_token,
+    refreshToken: session.refresh_token,
+    expiresIn: session.expires_in,
+    user,
+  };
 };
 
-export const forgotPassword = async (data: { email: string }): Promise<{ success: boolean; message: string }> => {
-  try {
-    const response = await axiosInstance.post('/auth/forgot-password', data);
-    return { success: true, message: response.data.message };
-  } catch (error) {
-    console.error('Error sending forgot password email:', error);
-    return { success: false, message: 'Failed to send reset link' };
+// Logout
+export const logout = async (): Promise<void> => {
+  const res = await fetch('/api/auth/logout', {
+    method: 'POST',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    const { error } = await res.json();
+    throw new Error(error || 'Logout failed');
   }
 };
 
-export const resetPassword = async (data: { token: string; newPassword: string; confirmNewPassword: string }) => {
-  const response = await axiosInstance.post('/auth/reset-password', data);
-  return response.data;
+// Profile
+export const getUserProfile = async () => {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) throw new Error(error.message);
+  return data.user;
 };
 
-export const verifyEmail = async (token: string): Promise<{ success: boolean; message: string }> => {
-  try {
-    const response = await axiosInstance.post('/auth/verify-email', { token });
-    return response.data;
-  } catch (error) {
-    console.error('Error verifying email:', error);
-    return { success: false, message: 'Verification failed' };
-  }
+// Forgot Password
+export const forgotPassword = async (data: { email: string }): Promise<{ message: string }> => {
+  const res = await fetch('/api/auth/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to send reset link');
+  return json;
 };
 
-export const resendVerificationEmail = async (email: string): Promise<{ success: boolean; message: string }> => {
-  try {
-    const response = await axiosInstance.post('/auth/resend-verification-email', { email });
-    return { success: true, message: response.data.message };
-  } catch (error) {
-    console.error('Error resending verification email:', error);
-    return { success: false, message: 'Failed to resend verification email' };
+// Reset Password
+export const resetPassword = async (data: {
+  newPassword: string;
+  confirmNewPassword: string;
+}) => {
+  if (data.newPassword !== data.confirmNewPassword) {
+    throw new Error('Passwords do not match');
   }
-};
 
-export const refreshToken = async (refreshToken: string) => {
-  try {
-    const response = await axiosInstance.post('/auth/refresh-token', { refreshToken });
-    return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      console.error('Error refreshing token:', error.response.data);
-    }
-    throw error;
-  }
-};
+  const supabase = createClientComponentClient();
+  const { error } = await supabase.auth.updateUser({ password: data.newPassword });
 
-export const logout = async (token: string, setAuthenticated: (isAuthenticated: boolean) => void, setToken: (token: string | null) => void) => {
-  try {
-    const response = await axiosInstance.post('/auth/logout', {}, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    setAuthenticated(false);
-    setToken(null);
-    return response.data;
-  } catch (error) {
-    console.error('Logout failed:', error);
-    setAuthenticated(false);
-    setToken(null);
-    throw error;
-  }
+  if (error) throw new Error(error.message);
+  return { message: 'Password updated successfully' };
 };
