@@ -56,20 +56,23 @@ export default function Navbar() {
   }, [loginQuery]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      return; // Exit early if not authenticated
+    }
+
     const fetchUser = async () => {
-      if (isAuthenticated) {
-        try {
-          const user = await getUserProfile();
-          setUser(user);
-        } catch (err) {
-          const error = err as Error;
-          console.error('Failed to fetch user:', error);
-          if (error.message === 'Auth session missing!') {
-            setAuthenticated(false);
-          }
+      try {
+        const user = await getUserProfile();
+        setUser(user);
+      } catch (err) {
+        const error = err as Error;
+        console.error('Failed to fetch user:', error);
+        if (error.message === 'Auth session missing!') {
+          setAuthenticated(false);
         }
       }
     };
+
     fetchUser();
   }, [isAuthenticated, setAuthenticated]);
 
