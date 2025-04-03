@@ -1,0 +1,28 @@
+////////////////////
+/// Main Imports
+////////////////////
+
+// Normalize
+@use '~normalize.css/normalize' as *;
+
+// Variables
+@use "variables/animations" as *;
+@use "variables/colors" as *;
+@use "variables/spacing" as *;
+@use "variables/typography" as *;
+@use "variables/shadows" as *;
+@use "variables/radius" as *;
+
+// Mixins
+@use "mixins/breakpoints" as *;
+
+// Utilities
+@use "utilities/forms" as *;
+@use "utilities/swiper" as *;
+@use "utilities/tables" as *;
+@use "utilities/typography" as *;
+
+// Global Styles
+* {
+    box-sizing: border-box;
+}

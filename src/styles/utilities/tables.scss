@@ -1,5 +1,5 @@
-@import "typography";
-@import "breakpoints";
+@use '@styles/mixins/breakpoints' as *;
+@use '@styles/utilities/typography' as *;
 
 table {
   margin: var(--space-md) 0;

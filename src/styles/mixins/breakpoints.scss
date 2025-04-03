@@ -1,3 +1,5 @@
+@use "sass:map";
+
 ////////////////////////
 /// Breakpoint Variables
 ////////////////////////
@@ -12,7 +14,7 @@ $breakpoints: (
 /// Breakpoint Mixin
 ////////////////////////
 @mixin breakpoint($breakpoint) {
-  $size: map-get($breakpoints, $breakpoint);
+  $size: map.get($breakpoints, $breakpoint);
 
   // Apply styles for larger screens
   @if $size {

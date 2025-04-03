@@ -1,4 +1,4 @@
-@import "typography";
+@use '@styles/mixins/breakpoints' as *;
 
 input,
 textarea {

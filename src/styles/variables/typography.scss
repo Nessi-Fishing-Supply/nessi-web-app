@@ -1,3 +1,5 @@
+@use '@styles/mixins/breakpoints' as *;
+
 ////////////////////////
 /// Typography Variables
 ////////////////////////
@@ -28,62 +30,4 @@
   :root {
     --font-scale-ratio: 1.309; // Desktop Ratio
   }
-}
-
-////////////////////////
-/// Headings and Paragraph Styles
-////////////////////////
-
-h1 {
-  font-size: var(--font-size-4xl);
-  margin: 0 0 var(--space-base) 0;
-  font-weight: 700;
-}
-
-h2 {
-  font-size: var(--font-size-3xl);
-  margin: 0 0 var(--space-base) 0;
-  font-weight: 700;
-}
-
-h3 {
-  font-size: var(--font-size-2xl);
-  margin: 0 0 var(--space-base) 0;
-  font-weight: 700;
-}
-
-h4 {
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-base) 0;
-  font-weight: 700;
-}
-
-h5 {
-  font-size: var(--font-size-lg);
-  margin: 0 0 var(--space-base) 0;
-  font-weight: 500;
-}
-
-h6 {
-  font-size: var(--font-size-md);
-  margin: 0 0 var(--space-base) 0;
-  font-weight: 500;
-}
-
-p {
-  font-size: var(--font-size-base);
-  font-weight: 400;
-}
-
-////////////////////////
-/// Utility Classes for Smaller Sizes
-////////////////////////
-.font-size--sm {
-  font-size: var(--font-size-sm);
-  font-weight: 400;
-}
-
-.font-size--xs {
-  font-size: var(--font-size-xs);
-  font-weight: 400;
 }
