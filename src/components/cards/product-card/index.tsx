@@ -81,8 +81,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <Image
                   src={image.imageUrl}
                   alt={`${product.title} image ${index + 1}`}
-                  layout="fill"
                   objectFit="cover"
+                  width={300}
+                  height={300}
                 />
               </SwiperSlide>
             ) : null

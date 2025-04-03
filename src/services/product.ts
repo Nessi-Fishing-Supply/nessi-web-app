@@ -6,7 +6,7 @@ const BASE_URL = isServer
   : '/api/products';
 
 // Create a new product
-export async function createProduct(data: Partial<Product>) {
+export async function createProduct(data: Partial<Product & { images: { url: string }[] }>) {
   const res = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
@@ -17,7 +17,7 @@ export async function createProduct(data: Partial<Product>) {
   });
 
   if (!res.ok) throw new Error('Failed to create product');
-  return res.json() as Promise<Product>;
+  return res.json() as Promise<ProductWithImages>;
 }
 
 // Get all products
@@ -70,3 +70,18 @@ export async function deleteProduct(id: string) {
   if (!res.ok) throw new Error('Failed to delete product');
   return res.json() as Promise<{ success: boolean }>;
 }
+
+// Upload product image
+export async function uploadProductImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch("/api/products/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const { url } = await res.json();
+  return url;
+}
+

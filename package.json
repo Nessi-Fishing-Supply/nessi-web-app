@@ -18,6 +18,7 @@
     "@neondatabase/serverless": "^1.0.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.49.4",
+    "@vercel/blob": "^0.27.3",
     "axios": "^1.8.4",
     "dotenv": "^16.4.7",
     "next": "15.3.0-canary.29",

@@ -59,6 +59,32 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
   const { id } = await context.params;
 
   try {
+    const images = await db.query.productImages.findMany({
+      where: eq(productImages.productId, id),
+    });
+
+    for (const image of images) {
+      try {
+        const url = image.imageUrl;
+        if (!url || !url.startsWith('https://')) continue;
+
+        const blobKey = new URL(url).pathname.slice(1);
+
+        const res = await fetch(`https://api.vercel.com/v2/blob/${blobKey}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+          },
+        });
+
+        if (!res.ok) {
+          console.warn(`Failed to delete blob ${blobKey}:`, await res.text());
+        }
+      } catch (err) {
+        console.warn(`Error deleting blob: ${image.imageUrl}`, err);
+      }
+    }
+
     await db.delete(productImages).where(eq(productImages.productId, id));
     await db.delete(products).where(eq(products.id, id));
 
