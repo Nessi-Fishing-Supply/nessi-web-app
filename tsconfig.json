@@ -21,7 +21,7 @@
         "name": "next"
       }
     ],
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -46,6 +46,12 @@
       ],
       "@context/*": [
         "context/*"
+      ],
+      "@libs/*": [
+        "src/libs/*"
+      ],
+      "@/db/schema": [
+        "src/db/schema"
       ]
     },
     "target": "ES2017"

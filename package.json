@@ -6,10 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:pull": "drizzle-kit pull",
+    "db:check": "drizzle-kit check"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
+    "@neondatabase/serverless": "^1.0.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.49.4",
     "axios": "^1.8.4",
@@ -31,8 +37,12 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "@types/swiper": "^6.0.0",
+    "drizzle-kit": "^0.30.6",
+    "drizzle-orm": "^0.41.0",
     "eslint": "^9.23.0",
     "eslint-config-next": "^15.2.4",
+    "pg": "^8.14.1",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }
 }

@@ -37,6 +37,7 @@ const nextConfig = {
       '@images': path.resolve(__dirname, 'src/assets/images'),
       '@icons': path.resolve(__dirname, 'src/assets/icons'),
       '@logos': path.resolve(__dirname, 'src/assets/logos'),
+      '@libs': path.resolve(__dirname, 'src/libs'),
     };
 
     return config;
