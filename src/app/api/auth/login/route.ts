@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       message: 'Login successful',
       session: authData.session,
       user: authData.user,
+      accessToken: authData.session?.access_token, // Include access token explicitly
     }, { status: 200 });
   } catch (error: unknown) {
     console.error('Login error:', error);

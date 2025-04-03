@@ -62,7 +62,11 @@ export default function Navbar() {
           const user = await getUserProfile();
           setUser(user);
         } catch (err) {
-          console.error('Failed to fetch user:', err);
+          const error = err as Error;
+          console.error('Failed to fetch user:', error);
+          if (error.message === 'Auth session missing!') {
+            setAuthenticated(false);
+          }
         }
       }
     };

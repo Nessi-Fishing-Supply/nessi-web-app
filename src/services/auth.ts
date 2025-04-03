@@ -30,9 +30,13 @@ export const login = async (data: LoginData) => {
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Login failed');
 
-    const { session, user } = json;
+    const { session, user, accessToken } = json;
+
+    // Store the access token securely (e.g., in cookies or localStorage)
+    localStorage.setItem('accessToken', accessToken);
+
     return {
-      accessToken: session.access_token,
+      accessToken,
       user,
     };
   } catch (error) {
@@ -57,6 +61,10 @@ export const logout = async (): Promise<void> => {
 export const getUserProfile = async () => {
   try {
     const supabase = createClientComponentClient();
+    const token = localStorage.getItem('accessToken'); // Retrieve token
+
+    if (!token) throw new Error('Auth session missing!');
+
     const { data, error } = await supabase.auth.getUser();
 
     if (error) throw new Error(error.message);
