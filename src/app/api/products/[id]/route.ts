@@ -2,6 +2,7 @@ import { db } from '@libs/db';
 import { products, productImages } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
+import { del } from '@vercel/blob';
 
 // GET /api/products/[id]
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
@@ -64,24 +65,14 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
     });
 
     for (const image of images) {
+      if (!image.imageUrl) continue;
+
       try {
-        const url = image.imageUrl;
-        if (!url || !url.startsWith('https://')) continue;
-
-        const blobKey = new URL(url).pathname.slice(1);
-
-        const res = await fetch(`https://api.vercel.com/v2/blob/${blobKey}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-          },
-        });
-
-        if (!res.ok) {
-          console.warn(`Failed to delete blob ${blobKey}:`, await res.text());
-        }
+        // ✅ Use SDK method — pass full URL
+        await del(image.imageUrl);
+        console.log(`✅ Deleted blob: ${image.imageUrl}`);
       } catch (err) {
-        console.warn(`Error deleting blob: ${image.imageUrl}`, err);
+        console.warn(`❌ Failed to delete blob at ${image.imageUrl}`, err);
       }
     }
 
@@ -94,3 +85,4 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+

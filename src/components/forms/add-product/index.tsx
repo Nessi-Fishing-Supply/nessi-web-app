@@ -2,7 +2,7 @@
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useAuth } from "@context/auth";
-import { createProduct } from "@services/product";
+import { createProduct, uploadProductImage } from "@services/product";
 import axios from "axios";
 import { useForm, FormProvider } from "react-hook-form";
 import Input from "@components/controls/input";
@@ -19,11 +19,16 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
   const methods = useForm();
   const { token } = useAuth();
 
-  const [newProduct, setNewProduct] = useState({
+  const [newProduct, setNewProduct] = useState<{
+    title: string;
+    description: string;
+    price: string;
+    images: { id: number; file: File | null; url: string; name: string }[];
+  }>({
     title: "",
     description: "",
     price: "",
-    images: [{ id: Date.now(), url: "", name: "" }],
+    images: [{ id: Date.now(), file: null, url: "", name: "" }],
   });
 
   const handleInputChange = (
@@ -33,46 +38,25 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
     setNewProduct((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log(`Uploading image ${file.name}...`);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const res = await fetch("/api/products/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      console.log("Upload result:", data);
-
-      if (!data.url) throw new Error("Upload failed");
-
-      setNewProduct((prev) => {
-        const updatedImages = [...prev.images];
-        updatedImages[index] = {
-          ...updatedImages[index],
-          name: file.name,
-          url: data.url,
-        };
-
-        console.log("Updated image state:", updatedImages);
-        return { ...prev, images: updatedImages };
-      });
-    } catch (err) {
-      console.error("Image upload failed:", err);
-    }
+    setNewProduct((prev) => {
+      const updatedImages = [...prev.images];
+      updatedImages[index] = {
+        ...updatedImages[index],
+        file,
+        name: file.name,
+      };
+      return { ...prev, images: updatedImages };
+    });
   };
 
   const addImageField = () => {
     setNewProduct((prev) => ({
       ...prev,
-      images: [...prev.images, { id: Date.now(), url: "", name: "" }],
+      images: [...prev.images, { id: Date.now(), file: null, url: "", name: "" }],
     }));
   };
 
@@ -83,9 +67,23 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
     try {
       const user = await getUserProfile();
 
+      // Upload images during form submission
+      const uploadedImages = await Promise.all(
+        newProduct.images.map(async (image) => {
+          if (!image.file) return image;
+
+          const url = await uploadProductImage(image.file);
+          return {
+            ...image,
+            url,
+          };
+        })
+      );
+
       const payload = {
         ...newProduct,
         price: parseFloat(newProduct.price),
+        images: uploadedImages.map(({ url, name }) => ({ url, name })),
         userId: user.id,
       };
 
@@ -95,7 +93,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
 
       const fullProduct: ProductWithImages = {
         ...createdProduct,
-        images: newProduct.images.map((img) => ({
+        images: uploadedImages.map((img) => ({
           id: `${Date.now()}-${img.name}`,
           imageUrl: img.url,
           productId: createdProduct.id,
@@ -111,7 +109,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
         title: "",
         description: "",
         price: "",
-        images: [{ id: Date.now(), url: "", name: "" }],
+        images: [{ id: Date.now(), file: null, url: "", name: "" }],
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
