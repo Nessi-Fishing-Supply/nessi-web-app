@@ -1,4 +1,4 @@
-import { RegisterData, LoginData, ResetPasswordData, AuthResponse } from './auth';
+import { RegisterData, LoginData, AuthResponse } from './auth';
 
 // Base props for all auth forms with generic type support
 export interface AuthFormProps<TData = any, TResponse = TData> {

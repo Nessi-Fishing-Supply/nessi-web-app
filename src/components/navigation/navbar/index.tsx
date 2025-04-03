@@ -18,7 +18,7 @@ import NotificationBar from '@/components/navigation/notification-bar';
 import Modal from '@/components/layout/modal';
 import LoginForm from '@/components/forms/login';
 import RegisterForm from '@/components/forms/registration';
-import { Input, Button, AppLink, Dropdown, DropdownItem, DropdownTitle } from '@/components/controls';
+import { Button, AppLink, Dropdown, DropdownItem, DropdownTitle } from '@/components/controls';
 
 // Assets
 import LogoFull from '@/assets/logos/logo_full.svg';

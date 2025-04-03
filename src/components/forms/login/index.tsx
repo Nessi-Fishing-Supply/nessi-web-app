@@ -45,11 +45,11 @@ const LoginForm: React.FC<AuthFormProps<LoginFormData>> = ({
       setUser(user);
       setError(null);
       router.push(redirectUrl);
-      onSuccess && onSuccess(data);
+      onSuccess?.call(null, data);
     } catch (error: unknown) {
       const err = error as { message?: string };
       setError(err.message || 'Login failed. Please try again.');
-      onError && onError(err);
+      onError?.call(null, err);
     } finally {
       setLoading(false);
     }

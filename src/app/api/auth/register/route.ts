@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: 'Registration successful! A verification email has been sent.',
     }, { status: 201 });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error('Registration error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
       session: authData.session,
       user: authData.user,
     }, { status: 200 });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error('Login error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
