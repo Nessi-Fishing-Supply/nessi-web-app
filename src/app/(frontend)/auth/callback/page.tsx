@@ -1,13 +1,12 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import styles from './Callback.module.scss';
 import ResetPasswordForm from '@/components/forms/reset-password';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const status = searchParams?.get('status');
 
   if (status === 'recovery') {
