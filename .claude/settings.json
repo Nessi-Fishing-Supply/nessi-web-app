@@ -20,7 +20,23 @@
       "Bash(gh auth status:*)",
       "Bash(gh repo view:*)",
       "Bash(ISSUE_URL*:*)",
-      "Bash(ITEM_ID*:*)"
+      "Bash(ITEM_ID*:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git branch:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git merge:*)",
+      "Bash(git stash:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git remote:*)",
+      "Bash(git tag:*)"
     ]
   },
   "enabledPlugins": {
