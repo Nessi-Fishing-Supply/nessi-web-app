@@ -66,6 +66,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
 
     try {
       const user = await getUserProfile();
+      if (!user) return;
 
       // Upload images during form submission
       const uploadedImages = await Promise.all(

@@ -1,105 +1,70 @@
-import { createSupabaseBrowser } from '@/libs/supabase';
-import { RegisterData, LoginData, ResetPasswordData, AuthResponse } from '@/types/auth';
+import { createClient } from '@/libs/supabase/client';
 
-// Register new user
-export const register = async (data: RegisterData): Promise<AuthResponse> => {
-  try {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.error || 'Registration failed');
-    return json;
-  } catch (error) {
-    throw error instanceof Error ? error : new Error('An unexpected error occurred');
-  }
-};
-
-// Authenticate user and create session
-export const login = async (data: LoginData) => {
-  try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.error || 'Login failed');
-
-    const { user, accessToken } = json;
-
-    // Store the access token securely (e.g., in cookies or localStorage)
-    localStorage.setItem('accessToken', accessToken);
-
-    return {
-      accessToken,
-      user,
-    };
-  } catch (error) {
-    throw error instanceof Error ? error : new Error('An unexpected error occurred');
-  }
-};
-
-// End user session
-export const logout = async (): Promise<void> => {
-  const res = await fetch('/api/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  });
-
-  if (!res.ok) {
-    const { error } = await res.json();
-    throw new Error(error || 'Logout failed');
-  }
-};
-
-// Get current user profile
-export const getUserProfile = async () => {
-  try {
-    const supabase = createSupabaseBrowser();
-    const token = localStorage.getItem('accessToken'); // Retrieve token
-
-    if (!token) throw new Error('Auth session missing!');
-
-    const { data, error } = await supabase.auth.getUser();
-
-    if (error) throw new Error(error.message);
-    return data.user;
-  } catch (error) {
-    throw error instanceof Error ? error : new Error('Failed to fetch user profile');
-  }
-};
-
-// Send password reset email
-export const forgotPassword = async (data: { email: string }): Promise<{ message: string }> => {
-  const res = await fetch('/api/auth/forgot-password', {
+export const register = async (data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  terms: boolean;
+}) => {
+  const res = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 
   const json = await res.json();
-  if (!res.ok) throw new Error(json.error || 'Failed to send reset link');
+  if (!res.ok) throw new Error(json.error || 'Registration failed');
   return json;
 };
 
-// Update user password
-export const resetPassword = async (data: ResetPasswordData): Promise<AuthResponse> => {
-  try {
-    if (data.newPassword !== data.confirmNewPassword) {
-      throw new Error('Passwords do not match');
-    }
+export const login = async (data: { email: string; password: string }) => {
+  const supabase = createClient();
+  const { data: authData, error } = await supabase.auth.signInWithPassword({
+    email: data.email,
+    password: data.password,
+  });
 
-    const supabase = createSupabaseBrowser();
-    const { error } = await supabase.auth.updateUser({ password: data.newPassword });
+  if (error) throw new Error(error.message);
+  return { user: authData.user, session: authData.session };
+};
 
-    if (error) throw new Error(error.message);
-    return { message: 'Password updated successfully' };
-  } catch (error) {
-    throw error instanceof Error ? error : new Error('Failed to reset password');
+export const logout = async () => {
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
+};
+
+export const getUserProfile = async () => {
+  const supabase = createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error) throw new Error(error.message);
+  return user;
+};
+
+export const forgotPassword = async (data: { email: string }) => {
+  const supabase = createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+    redirectTo: `${window.location.origin}/api/auth/callback?type=recovery`,
+  });
+
+  if (error) throw new Error(error.message);
+  return { message: 'Reset link sent! Check your email.' };
+};
+
+export const resetPassword = async (data: {
+  newPassword: string;
+  confirmNewPassword: string;
+}) => {
+  if (data.newPassword !== data.confirmNewPassword) {
+    throw new Error('Passwords do not match');
   }
+
+  const supabase = createClient();
+  const { error } = await supabase.auth.updateUser({
+    password: data.newPassword,
+  });
+
+  if (error) throw new Error(error.message);
+  return { message: 'Password updated successfully' };
 };

@@ -23,6 +23,7 @@ const Products: React.FC = () => {
 
       try {
         const user = await getUserProfile();
+        if (!user) return;
         const data = await getUserProducts(user.id); // ✅ Pass userId, not token
         setProducts(data);
       } catch (error) {

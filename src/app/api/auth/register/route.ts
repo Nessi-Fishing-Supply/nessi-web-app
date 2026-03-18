@@ -1,30 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServer } from '@/libs/supabase';
-import { RegisterData } from '@/types/auth';
+import { createAdminClient } from '@/libs/supabase/admin';
+import { NextResponse } from 'next/server';
 
-// Handle new user registration
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const data = await req.json() as RegisterData;
+    const { firstName, lastName, email, password, terms } = await req.json();
 
-    if (!data.email?.trim() || !data.password?.trim() || !data.firstName?.trim() || !data.lastName?.trim()) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    if (!firstName || !lastName || !email || !password || !terms) {
+      return NextResponse.json(
+        { error: 'All fields are required and terms must be accepted' },
+        { status: 400 }
+      );
     }
 
-    if (!data.terms) {
-      return NextResponse.json({ error: 'Terms must be accepted' }, { status: 400 });
-    }
+    const supabase = createAdminClient();
 
-    const supabase = createSupabaseServer();
-    const { error } = await supabase.auth.signUp({
-      email: data.email.toLowerCase(),
-      password: data.password,
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
       options: {
-        data: {
-          firstName: data.firstName.trim(),
-          lastName: data.lastName.trim(),
-        },
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        data: { firstName, lastName },
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?type=signup`,
       },
     });
 
@@ -32,13 +27,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({
-      message: 'Registration successful! A verification email has been sent.',
-    }, { status: 201 });
-  } catch (error: unknown) {
+    return NextResponse.json(
+      { message: 'Registration successful. Please check your email to verify your account.' },
+      { status: 201 }
+    );
+  } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'An unexpected error occurred' },
       { status: 500 }
     );
   }

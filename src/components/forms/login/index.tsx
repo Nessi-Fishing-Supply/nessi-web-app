@@ -35,13 +35,13 @@ const LoginForm: React.FC<AuthFormProps<LoginFormData>> = ({
   const handleSubmit = async (data: LoginData) => {
     setLoading(true);
     try {
-      const { accessToken, user } = await login({
+      const { user } = await login({
         email: data.email,
         password: data.password,
       });
 
       setAuthenticated(true);
-      setToken(accessToken);
+      setToken(null);
       setUser(user);
       setError(null);
       router.push(redirectUrl);
