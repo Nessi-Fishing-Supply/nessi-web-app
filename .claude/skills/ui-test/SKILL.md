@@ -1,7 +1,7 @@
 ---
 name: ui-test
 description: Run Playwright UI tests against the dev server — verifies pages render, interactions work, and there are no console errors
-user_invokable: true
+user-invocable: true
 arguments:
   - name: scope
     description: "Optional scope (e.g., 'home', 'dashboard', 'auth', 'product', 'all'). Defaults to 'all'."

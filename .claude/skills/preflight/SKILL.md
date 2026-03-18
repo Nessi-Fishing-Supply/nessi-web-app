@@ -1,7 +1,7 @@
 ---
 name: preflight
 description: Comprehensive quality gate — runs build, lint, typecheck, format, tests, and produces a structured pass/fail report
-user_invokable: true
+user-invocable: true
 arguments:
   - name: scope
     description: "Optional scope to limit checks (e.g., 'lint', 'build', 'tests', 'all'). Defaults to 'all'."

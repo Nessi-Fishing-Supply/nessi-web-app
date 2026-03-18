@@ -1,7 +1,7 @@
 ---
 name: conductor-status
 description: Read-only status dashboard showing current conductor progress, health checks, and next action
-user_invokable: true
+user-invocable: true
 ---
 
 # Conductor Status

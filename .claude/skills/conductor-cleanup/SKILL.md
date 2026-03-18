@@ -1,7 +1,7 @@
 ---
 name: conductor-cleanup
 description: Prune expired depot entries past their retention period
-user_invokable: true
+user-invocable: true
 ---
 
 # Conductor Cleanup

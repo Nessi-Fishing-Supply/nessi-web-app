@@ -1,7 +1,7 @@
 ---
 name: db-migrate
 description: Generate Supabase SQL migrations with RLS policies, then regenerate TypeScript types
-user_invokable: true
+user-invocable: true
 arguments:
   - name: change
     description: "Description of the database change (e.g., 'add orders table with buyer_id, seller_id, product_id, status, total')"

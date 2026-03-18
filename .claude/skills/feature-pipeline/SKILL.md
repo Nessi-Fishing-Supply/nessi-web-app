@@ -1,7 +1,7 @@
 ---
 name: feature-pipeline
 description: Full feature pipeline — design research, ticket generation, and autonomous execution in one command
-user_invokable: true
+user-invocable: true
 arguments:
   - name: feature
     description: "Feature to design, ticket, and build (e.g., 'buyer-seller messaging')"

@@ -1,7 +1,7 @@
 ---
 name: audit
 description: Quick combined quality + marketplace audit — runs preflight checks and marketplace UX review in one command
-user_invokable: true
+user-invocable: true
 ---
 
 # Quick Audit

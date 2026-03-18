@@ -1,7 +1,7 @@
 ---
 name: design-spec
 description: Research C2C marketplace patterns and generate a design specification for a feature — replaces the need for design comps
-user_invokable: true
+user-invocable: true
 arguments:
   - name: feature
     description: "Feature or flow to design (e.g., 'search and filters', 'seller profile page', 'checkout flow')"

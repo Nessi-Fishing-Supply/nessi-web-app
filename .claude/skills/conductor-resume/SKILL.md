@@ -1,7 +1,7 @@
 ---
 name: conductor-resume
 description: Resume an interrupted conductor track from its last persisted state
-user_invokable: true
+user-invocable: true
 ---
 
 # Conductor Resume

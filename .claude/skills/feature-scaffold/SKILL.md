@@ -1,7 +1,7 @@
 ---
 name: feature-scaffold
 description: Scaffold a new feature domain with directory structure, CLAUDE.md, types, services, hooks, and components following established patterns
-user_invokable: true
+user-invocable: true
 arguments:
   - name: domain
     description: "Feature domain name in kebab-case (e.g., 'messaging', 'orders', 'seller-profiles')"
