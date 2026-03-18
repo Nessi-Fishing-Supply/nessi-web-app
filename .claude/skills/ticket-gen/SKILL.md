@@ -2,7 +2,7 @@
 name: ticket-gen
 description: Break a feature or task into execution-ready GitHub issues for the conductor to pick up
 user-invocable: true
-argument-hint: [feature description]
+argument-hint: "[feature description]"
 ---
 
 # Ticket Generation

@@ -2,7 +2,7 @@
 name: ui-test
 description: Run Playwright UI tests against the dev server — verifies pages render, interactions work, and there are no console errors
 user-invocable: true
-argument-hint: [scope: home, dashboard, auth, product, or all]
+argument-hint: "[scope: home, dashboard, auth, product, or all]"
 ---
 
 # UI Test

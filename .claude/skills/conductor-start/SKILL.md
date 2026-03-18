@@ -2,7 +2,7 @@
 name: conductor-start
 description: Main conductor entry point — fetches a GitHub issue, plans implementation, and executes the full autonomous workflow through to PR creation
 user-invocable: true
-argument-hint: [issue number, e.g. #42]
+argument-hint: "[issue number, e.g. #42]"
 ---
 
 # Conductor Start

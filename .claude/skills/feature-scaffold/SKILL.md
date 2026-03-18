@@ -2,7 +2,7 @@
 name: feature-scaffold
 description: Scaffold a new feature domain with directory structure, CLAUDE.md, types, services, hooks, and components following established patterns
 user-invocable: true
-argument-hint: [domain-name] [description]
+argument-hint: "[domain-name] [description]"
 ---
 
 # Feature Scaffold

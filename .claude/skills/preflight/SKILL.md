@@ -2,7 +2,7 @@
 name: preflight
 description: Comprehensive quality gate — runs build, lint, typecheck, format, tests, and produces a structured pass/fail report
 user-invocable: true
-argument-hint: [scope: lint, build, tests, or all]
+argument-hint: "[scope: lint, build, tests, or all]"
 ---
 
 # Preflight Check

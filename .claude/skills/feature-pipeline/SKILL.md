@@ -2,7 +2,7 @@
 name: feature-pipeline
 description: Full feature pipeline — design research, ticket generation, and autonomous execution in one command
 user-invocable: true
-argument-hint: [feature to design, ticket, and build]
+argument-hint: "[feature to design, ticket, and build]"
 ---
 
 # Feature Pipeline

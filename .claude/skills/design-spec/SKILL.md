@@ -2,7 +2,7 @@
 name: design-spec
 description: Research C2C marketplace patterns and generate a design specification for a feature — replaces the need for design comps
 user-invocable: true
-argument-hint: [feature or flow to design]
+argument-hint: "[feature or flow to design]"
 ---
 
 # Design Spec Generator

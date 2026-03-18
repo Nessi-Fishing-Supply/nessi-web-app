@@ -2,7 +2,7 @@
 name: db-migrate
 description: Generate Supabase SQL migrations with RLS policies, then regenerate TypeScript types
 user-invocable: true
-argument-hint: [database change description]
+argument-hint: "[database change description]"
 ---
 
 # Database Migration Generator
