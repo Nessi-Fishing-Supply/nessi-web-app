@@ -30,6 +30,23 @@ Parse the feature description. If the description is vague or ambiguous, ask the
 
 Keep the interview short — 2-4 questions max, only what's genuinely unclear.
 
+### Step 1.5: Check for Design Spec
+
+If the feature description references a design spec file (e.g., "see docs/design-specs/search-filters.md"):
+1. Read the design spec
+2. Use its component breakdown as the basis for ticket decomposition
+3. Include the design spec path in each ticket body so the plan-architect can reference it
+4. Use the spec's acceptance criteria directly in the ticket AC section
+
+If no design spec exists, suggest creating one:
+```
+💡 No design spec found for this feature.
+   Run /design-spec "{feature}" first to generate a research-backed spec.
+   This produces better tickets with UX details the conductor can follow.
+
+   Continue without a design spec? (y/n)
+```
+
 ### Step 2: Codebase Scan
 
 Launch the **ticket-generator** agent with:

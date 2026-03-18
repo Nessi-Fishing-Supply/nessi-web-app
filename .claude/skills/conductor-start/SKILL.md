@@ -66,7 +66,7 @@ Display a boarding banner:
 2. Launch the **plan-architect** agent with:
    - Full issue content (title, description, acceptance criteria, comments)
    - Instruction to scan the codebase for relevant patterns, existing files, and conventions
-   - The project's tech stack context (Next.js 15 App Router, Supabase, Drizzle ORM, SCSS)
+   - The project's tech stack context (Next.js 16 App Router, React 19, Supabase Auth + PostgreSQL + Storage, Tanstack Query, Zustand, SCSS with CSS Modules)
 3. Write the agent's output to `plan.md` in the track directory
 4. Parse the plan to populate `state.json` phase/task structure
 5. Persist `state.json` to disk
@@ -89,7 +89,27 @@ Display the plan summary:
       ```
    b. For each task in the phase:
       - Update `state.json` with current task, persist to disk
-      - Launch **task-executor** agent with task details + relevant spec context from plan.md
+
+      #### Expert Context Pre-Loading (within implementation loop)
+
+      If the current task has `Expert Domains` specified in the plan:
+      1. For each expert domain, launch the corresponding expert agent with the task context
+      2. Collect expert guidance (recommended patterns, gotchas, code examples)
+      3. Include the expert guidance in the task-executor's prompt as "Expert Context"
+      4. This happens BEFORE task-executor starts, not reactively during execution
+
+      Expert agent mapping:
+      | Domain | Agent |
+      |--------|-------|
+      | supabase | supabase-expert |
+      | nextjs | nextjs-expert |
+      | vercel | vercel-expert |
+      | scss | scss-expert |
+      | state-management | state-management-expert |
+
+      Multiple expert agents can be launched in parallel for a single task.
+
+      - Launch **task-executor** agent with task details + relevant spec context from plan.md + any expert context collected above
       - **On success**: Mark task complete in state, reset `failureCount.currentTask`, persist
       - **On failure**: Apply failure escalation (see below)
    c. At phase boundary:
@@ -106,10 +126,10 @@ Display the plan summary:
 ### Step 4: Review
 
 1. Update `state.json` → `status: "reviewing"`, persist to disk
-2. Launch **review-orchestrator** agent to run quality checks (`pnpm build`, `pnpm lint`)
-3. If `/preflight` skill is available, invoke it
+2. Invoke the `/preflight` skill (it runs build, lint, typecheck, format, tests)
+3. Parse preflight output into findings format ([B], [W], [I])
 4. Write findings to `findings.md`, append to `review-log.md`
-5. If clean → `status: "complete"`. If issues → `status: "needs_fixes"`
+5. If all checks pass → `status: "complete"`. If any [B] blocking findings → `status: "needs_fixes"`
 
 ### Step 5: Fix (if needed)
 
