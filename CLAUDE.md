@@ -51,7 +51,7 @@ Image uploads use Supabase Storage (`product-images` bucket) via `src/app/api/pr
 - `src/features/products/` — Products domain: services, types, product display and form components (see its CLAUDE.md)
 - `src/app/api/` — API routes (auth, products, upload)
 - `src/app/(frontend)/` — UI pages (App Router with route group)
-- `src/features/shared/` — Shared hooks (useForm, useFormState) and types (FormState)
+- `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
 - `src/components/` — Shared React components: controls, layout, navigation, indicators
 - `src/types/` — Generated/infra types (database.ts)
 - `src/libs/` — Infrastructure: Supabase clients (`supabase/`), query client (`query-client.ts`), providers (`providers.tsx`), Zustand utilities (`create-selectors.ts`)
@@ -85,9 +85,19 @@ Required in `.env.local` (see `.env.local.example`): `NEXT_PUBLIC_SUPABASE_URL`,
 - **Vercel Speed Insights** (`@vercel/speed-insights`) — real user Core Web Vitals. Auto-enabled on Vercel.
 - Both are included in the root layout and require no configuration.
 
+## Naming Conventions
+
+All file and folder names use **kebab-case**, enforced by `eslint-plugin-check-file`:
+
+- **TypeScript files:** `use-form-state.ts`, `product-card.tsx` (not `useFormState.ts` or `ProductCard.tsx`)
+- **SCSS modules:** `button.module.scss`, `product-card.module.scss` (not `Button.module.scss`)
+- **Folders:** `forgot-password-form/`, `product-card/` (not `forgotPasswordForm/`)
+- **Exceptions:** Next.js dynamic routes `[id]` and route groups `(frontend)` are excluded from enforcement
+- **Exports:** React components use PascalCase (`export default function LoginForm`), hooks use camelCase with `use` prefix (`export function useAllProducts`)
+
 ## Code Quality
 
-- **ESLint** — `next/core-web-vitals` + `next/typescript` + `eslint-config-prettier`. `@typescript-eslint/no-explicit-any` is disabled.
+- **ESLint** — `next/core-web-vitals` + `next/typescript` + `eslint-config-prettier` + `eslint-plugin-check-file`. `@typescript-eslint/no-explicit-any` is disabled.
 - **Prettier** — Single quotes, trailing commas, 100 char width. Config in `.prettierrc`.
 - **Stylelint** — `stylelint-config-standard-scss`. Config in `.stylelintrc.json`.
 - **Vitest** — Unit tests with `@testing-library/react` and jsdom. Config in `vitest.config.mts`.

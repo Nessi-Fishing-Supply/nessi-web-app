@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import styles from './Grid.module.scss';
+import styles from './grid.module.scss';
 
 interface GridProps {
   columns?: number;

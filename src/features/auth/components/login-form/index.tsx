@@ -5,7 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema } from '@/features/auth/validations/auth';
 import { LoginData } from '@/features/auth/types/auth';
-import { useFormState } from '@/features/shared/hooks/useFormState';
+import { useFormState } from '@/features/shared/hooks/use-form-state';
 import { Input, Button, AppLink } from '@/components/controls';
 import { login } from '@/features/auth/services/auth';
 import { AuthFormProps, LoginFormData } from '@/features/auth/types/forms';

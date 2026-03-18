@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import styles from './Callback.module.scss';
+import styles from './callback.module.scss';
 import ResetPasswordForm from '@/features/auth/components/reset-password-form';
 
 function CallbackContent() {

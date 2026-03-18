@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './Modal.module.scss';
+import styles from './modal.module.scss';
 import { HiOutlineX } from 'react-icons/hi';
 
 interface ModalProps {

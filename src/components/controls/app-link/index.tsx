@@ -1,6 +1,6 @@
 import React, { AnchorHTMLAttributes, ReactNode } from 'react';
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
-import styles from './AppLink.module.scss';
+import styles from './app-link.module.scss';
 
 // Props for external links
 interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
-import styles from './Navbar.module.scss';
+import styles from './navbar.module.scss';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {

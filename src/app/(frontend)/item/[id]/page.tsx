@@ -1,6 +1,6 @@
 import { createClient } from '@/libs/supabase/server';
 import { notFound } from 'next/navigation';
-import ProductClientComponent from './ItemIdPage';
+import ProductClientComponent from './item-id-page';
 import type { ProductWithImages } from '@/features/products/types/product';
 import type { Metadata } from 'next';
 

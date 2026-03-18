@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { useFormState } from './useFormState';
+import { useFormState } from './use-form-state';
 
 describe('useFormState', () => {
   it('initializes with default state', () => {

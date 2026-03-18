@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Favorite.module.scss';
+import styles from './favorite.module.scss';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 interface FavoriteProps {

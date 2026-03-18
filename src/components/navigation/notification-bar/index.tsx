@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './NotificationBar.module.scss';
+import styles from './notification-bar.module.scss';
 import { HiChevronRight } from 'react-icons/hi';
 
 export default function NotificationBar() {

@@ -5,7 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerSchema } from '@/features/auth/validations/auth';
 import { RegisterData } from '@/features/auth/types/auth';
-import { useFormState } from '@/features/shared/hooks/useFormState';
+import { useFormState } from '@/features/shared/hooks/use-form-state';
 import { Input, Button, Checkbox } from '@/components/controls';
 import { register as registerUser } from '@/features/auth/services/auth';
 import Grid from '@/components/layout/grid';

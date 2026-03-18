@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ProductReviews.module.scss';
+import styles from './product-reviews.module.scss';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 
 interface ProductReviewsProps {

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import styles from './ForgotPassword.module.scss';
+import styles from './forgot-password.module.scss';
 import ForgotPasswordForm from '@/features/auth/components/forgot-password-form';
 
 export default function ForgotPassword() {

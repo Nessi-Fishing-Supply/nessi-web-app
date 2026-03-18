@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import styles from './Input.module.scss';
+import styles from './input.module.scss';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { FaCheckCircle } from 'react-icons/fa';
 

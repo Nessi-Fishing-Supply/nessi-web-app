@@ -71,6 +71,14 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm test:run`     | Vitest (single run)                 |
 | `pnpm db:types`     | Generate types from Supabase schema |
 
+## Conventions
+
+- **File and folder names**: kebab-case everywhere (`use-form-state.ts`, `button.module.scss`), enforced by ESLint
+- **Component exports**: PascalCase (`export default function LoginForm`)
+- **Hook exports**: camelCase with `use` prefix (`export function useAllProducts`)
+- **Data fetching**: Tanstack Query hooks, not `useEffect` + `useState`
+- **Client state**: Zustand stores in `features/{domain}/stores/`
+
 ## Project Structure
 
 ```
@@ -78,7 +86,7 @@ src/
 ├── features/              # Domain logic (feature-based organization)
 │   ├── auth/              # Auth: services, types, validations, context, components
 │   ├── products/          # Products: services, types, hooks, components
-│   └── shared/            # Shared hooks (useForm, useFormState) and types
+│   └── shared/            # Shared hooks (use-form, use-form-state) and types
 ├── components/            # Shared UI components (controls, layout, navigation)
 ├── app/                   # Next.js App Router pages and API routes
 │   ├── (frontend)/        # UI pages (route group)

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Pill.module.scss';
+import styles from './pill.module.scss';
 
 interface PillProps {
   color?: 'primary' | 'secondary' | 'error' | 'success' | 'warning' | 'default';

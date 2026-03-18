@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './SideNav.module.scss';
+import styles from './side-nav.module.scss';
 import { HiOutlineHome, HiOutlineUserCircle, HiOutlineShoppingBag } from 'react-icons/hi'; // Import the product icon
 import AppLink from '@/components/controls/app-link';
 

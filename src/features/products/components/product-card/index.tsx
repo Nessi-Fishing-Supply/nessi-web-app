@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import styles from './ProductCard.module.scss';
+import styles from './product-card.module.scss';
 import { useRouter } from 'next/navigation';
 import Pill from '@/components/indicators/pill';
 import { FaTruck, FaTag } from 'react-icons/fa';

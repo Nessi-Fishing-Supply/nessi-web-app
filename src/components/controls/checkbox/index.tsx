@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import styles from './Checkbox.module.scss';
+import styles from './checkbox.module.scss';
 import { HiOutlineCheck } from 'react-icons/hi';
 
 interface CheckboxProps {
