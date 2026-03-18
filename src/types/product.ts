@@ -1,20 +1,12 @@
-export interface Product {
-    id: string;
-    title: string;
-    description?: string;
-    price: number;
-    userId: string;
-    createdAt: string;
-  }
-  
-  export interface ProductImage {
-    id: string;
-    imageUrl: string;
-    productId: string;
-    createdAt: string;
-  }
-  
-  export interface ProductWithImages extends Product {
-    images: ProductImage[];
-  }
-  
+import type { Database } from './database';
+
+export type Product = Database['public']['Tables']['products']['Row'];
+export type ProductInsert = Database['public']['Tables']['products']['Insert'];
+export type ProductUpdate = Database['public']['Tables']['products']['Update'];
+
+export type ProductImage = Database['public']['Tables']['product_images']['Row'];
+export type ProductImageInsert = Database['public']['Tables']['product_images']['Insert'];
+
+export type ProductWithImages = Product & {
+  product_images: ProductImage[];
+};

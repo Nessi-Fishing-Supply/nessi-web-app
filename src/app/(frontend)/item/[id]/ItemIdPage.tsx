@@ -14,11 +14,11 @@ const ProductClientComponent = ({ product }: { product: ProductWithImages }) => 
       <p>Price: ${typeof product.price === 'string' ? parseFloat(product.price).toFixed(2) : product.price.toFixed(2)}</p>
 
       <div>
-        {product.images.map((image, index) => (
-          image.imageUrl && (
+        {product.product_images.map((image, index) => (
+          image.image_url && (
             <Image
               key={index}
-              src={image.imageUrl}
+              src={image.image_url}
               alt={`${product.title} image ${index + 1}`}
               width={500}
               height={500}

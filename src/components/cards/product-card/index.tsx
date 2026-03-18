@@ -75,11 +75,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           navigation
           pagination={{ clickable: true }}
         >
-          {product.images.map((image, index) =>
-            image.imageUrl ? (
+          {product.product_images.map((image, index) =>
+            image.image_url ? (
               <SwiperSlide key={index}>
                 <Image
-                  src={image.imageUrl}
+                  src={image.image_url}
                   alt={`${product.title} image ${index + 1}`}
                   objectFit="cover"
                   width={300}

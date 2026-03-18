@@ -88,11 +88,11 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
 
       const fullProduct: ProductWithImages = {
         ...createdProduct,
-        images: uploadedImages.map((img) => ({
+        product_images: uploadedImages.map((img) => ({
           id: `${Date.now()}-${img.name}`,
-          imageUrl: img.url,
-          productId: createdProduct.id,
-          createdAt: new Date().toISOString(),
+          image_url: img.url,
+          product_id: createdProduct.id,
+          created_at: new Date().toISOString(),
         })),
       };
 
