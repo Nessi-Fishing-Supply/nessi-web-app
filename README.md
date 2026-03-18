@@ -1,6 +1,6 @@
 # Nessi Web App
 
-A C2C e-commerce marketplace built with Next.js, Supabase, and deployed on Vercel.
+A C2C e-commerce marketplace for buying and selling fishing gear — built with Next.js, Supabase, and deployed on Vercel.
 
 ![Nessi Web App Logo](/src/assets/logos/logo_full.svg)
 
@@ -16,15 +16,21 @@ Nessi is a consumer-to-consumer marketplace where users can:
 
 ## Tech Stack
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (React 19), App Router
-- **Backend**: [Supabase](https://supabase.com/) — Auth, PostgreSQL, Storage
-- **State**: [Tanstack Query](https://tanstack.com/query) (server), [Zustand](https://zustand.docs.pmnd.rs/) (client)
-- **Styling**: SCSS Modules, CSS custom properties
-- **Forms**: React Hook Form + Yup validation
-- **Testing**: Vitest + Testing Library
-- **Code Quality**: ESLint, Prettier, Stylelint, TypeScript strict
-- **CI/CD**: GitHub Actions, [Vercel](https://vercel.com/)
-- **Observability**: Vercel Analytics + Speed Insights
+| Category               | Technology                                                                 |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Framework**          | [Next.js 16](https://nextjs.org/) (React 19), App Router                   |
+| **Backend**            | [Supabase](https://supabase.com/) — Auth, PostgreSQL, Storage              |
+| **Server State**       | [Tanstack Query](https://tanstack.com/query)                               |
+| **Client State**       | [Zustand](https://zustand.docs.pmnd.rs/)                                   |
+| **Styling**            | SCSS Modules, CSS custom properties                                        |
+| **Forms**              | React Hook Form + Yup validation                                           |
+| **Icons**              | [react-icons](https://react-icons.github.io/react-icons/) (tree-shakeable) |
+| **Testing**            | Vitest + Testing Library                                                   |
+| **Code Quality**       | ESLint, Prettier, Stylelint, TypeScript strict                             |
+| **CI/CD**              | GitHub Actions, [Vercel](https://vercel.com/)                              |
+| **Observability**      | Vercel Analytics + Speed Insights                                          |
+| **SEO**                | Dynamic metadata with OG tags per page                                     |
+| **Image Optimization** | Next.js Image with Supabase Storage remote patterns                        |
 
 ## Getting Started
 
@@ -58,27 +64,18 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Script              | Description                         |
-| ------------------- | ----------------------------------- |
-| `pnpm dev`          | Start dev server                    |
-| `pnpm build`        | Production build                    |
-| `pnpm lint`         | ESLint                              |
-| `pnpm lint:styles`  | Stylelint (SCSS)                    |
-| `pnpm typecheck`    | TypeScript type checking            |
-| `pnpm format`       | Prettier (write)                    |
-| `pnpm format:check` | Prettier (verify)                   |
-| `pnpm test`         | Vitest (watch)                      |
-| `pnpm test:run`     | Vitest (single run)                 |
-| `pnpm db:types`     | Generate types from Supabase schema |
-
-## Conventions
-
-- **File and folder names**: kebab-case everywhere (`use-form-state.ts`, `button.module.scss`), enforced by ESLint
-- **Component exports**: PascalCase (`export default function LoginForm`)
-- **Hook exports**: camelCase with `use` prefix (`export function useAllProducts`)
-- **Data fetching**: Tanstack Query hooks, not `useEffect` + `useState`
-- **Client state**: Zustand stores in `features/{domain}/stores/`
-- **Icons**: `react-icons` for UI icons; `src/assets/` for brand logos only
+| Script              | Description                                    |
+| ------------------- | ---------------------------------------------- |
+| `pnpm dev`          | Start dev server                               |
+| `pnpm build`        | Production build                               |
+| `pnpm lint`         | ESLint (includes file naming enforcement)      |
+| `pnpm lint:styles`  | Stylelint (SCSS)                               |
+| `pnpm typecheck`    | TypeScript type checking                       |
+| `pnpm format`       | Prettier (write)                               |
+| `pnpm format:check` | Prettier (verify)                              |
+| `pnpm test`         | Vitest (watch mode)                            |
+| `pnpm test:run`     | Vitest (single run, used in CI)                |
+| `pnpm db:types`     | Generate TypeScript types from Supabase schema |
 
 ## Project Structure
 
@@ -97,6 +94,70 @@ src/
 ├── styles/                # Global SCSS variables, mixins, utilities
 └── assets/                # Brand assets (logos only — UI icons use react-icons)
 ```
+
+## Architecture Decisions
+
+### Feature-Based Organization
+
+Domain code lives in `src/features/{domain}/` — each feature owns its services, types, hooks, validations, and components. Each feature has a `CLAUDE.md` for AI-assisted development context. Shared UI primitives stay in `src/components/`.
+
+### State Management
+
+- **Server state**: Tanstack Query with domain-specific hooks in `features/{domain}/hooks/` (e.g., `useAllProducts`, `useUserProducts`). Never use `useEffect` + `useState` for data fetching.
+- **Client state**: Zustand stores in `features/{domain}/stores/` with auto-generated selectors via `createSelectors` utility.
+- **Auth state**: Supabase `onAuthStateChange` via React Context (`useAuth()` hook).
+
+### Data Layer
+
+- Supabase PostgreSQL with Row Level Security (RLS) for access control
+- Supabase Storage for image uploads (per-user paths, RLS-enforced)
+- TypeScript types auto-generated from database schema (`pnpm db:types`)
+
+### Error Handling
+
+- `error.tsx` boundaries at root and dashboard levels
+- `not-found.tsx` for 404 pages
+- `loading.tsx` for navigation transitions
+- API routes return structured JSON error responses
+
+### Route Protection
+
+`proxy.ts` intercepts all requests — refreshes Supabase sessions and redirects unauthenticated users from `/dashboard/*` to `/`.
+
+## Conventions
+
+| Area              | Convention                                            | Enforcement                |
+| ----------------- | ----------------------------------------------------- | -------------------------- |
+| File names        | kebab-case (`use-form-state.ts`)                      | `eslint-plugin-check-file` |
+| Folder names      | kebab-case (`product-card/`)                          | `eslint-plugin-check-file` |
+| SCSS modules      | kebab-case (`button.module.scss`)                     | `eslint-plugin-check-file` |
+| Component exports | PascalCase (`export default function LoginForm`)      | Code review                |
+| Hook exports      | camelCase with `use` prefix (`useAllProducts`)        | Code review                |
+| Data fetching     | Tanstack Query hooks, not `useEffect`                 | Code review                |
+| UI icons          | `react-icons`, not custom SVGs                        | Documented convention      |
+| Brand assets      | `src/assets/logos/` only                              | Documented convention      |
+| CSS in modules    | Flat class names, not BEM (module scoping handles it) | Documented convention      |
+
+## CI/CD
+
+GitHub Actions runs on every push to `main` and every PR:
+
+1. ESLint (includes file naming rules)
+2. Stylelint (SCSS)
+3. TypeScript type checking
+4. Prettier format verification
+5. Vitest tests
+6. Next.js production build
+
+Vercel deploys automatically on push to `main` (production) and on PR branches (preview).
+
+## Future Roadmap
+
+Not yet implemented — address before or during launch:
+
+- **Email transactional layer** — Resend + React Email for order confirmations, shipping notifications, seller alerts
+- **Rate limiting** — Application-level rate limiting on API routes (product creation, image uploads)
+- **Error monitoring** — Sentry for error aggregation, alerting, and stack traces in production
 
 ## License
 
