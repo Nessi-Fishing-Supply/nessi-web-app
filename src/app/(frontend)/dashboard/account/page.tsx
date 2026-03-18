@@ -1,44 +1,20 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { useAuth } from '@/context/auth';
-import { getUserProfile, logout } from '@/services/auth';
+import { logout } from '@/services/auth';
 
 const Account: React.FC = () => {
-  const { isAuthenticated, setAuthenticated, setToken } = useAuth();
-  const [user, setUser] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, isAuthenticated, isLoading } = useAuth();
 
-  const handleLogout = useCallback(async () => {
+  const handleLogout = async () => {
     try {
       await logout();
-      setAuthenticated(false);
-      setToken(null);
-      setUser(null);
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);
     }
-  }, [setAuthenticated, setToken]);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (isAuthenticated) {
-        try {
-          const profile = await getUserProfile();
-          setUser(profile);
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
-          await handleLogout();
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [isAuthenticated, handleLogout]);
+  };
 
   const firstName = user?.user_metadata?.firstName ?? '';
   const lastName = user?.user_metadata?.lastName ?? '';
@@ -49,7 +25,7 @@ const Account: React.FC = () => {
   return (
     <div>
       <h1>Account</h1>
-      {loading ? (
+      {isLoading ? (
         <p>Loading user profile...</p>
       ) : isAuthenticated && user ? (
         <div>

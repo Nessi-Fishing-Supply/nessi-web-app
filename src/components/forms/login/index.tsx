@@ -8,8 +8,6 @@ import { LoginData } from '@/types/auth';
 import { useFormState } from '@/hooks/useFormState';
 import { Input, Button, AppLink } from '@/components/controls';
 import { login } from '@/services/auth';
-import { useAuth } from '@/context/auth';
-import { useRouter } from 'next/navigation';
 import { AuthFormProps, LoginFormData } from '@/types/forms';
 
 /**
@@ -23,10 +21,8 @@ const LoginForm: React.FC<AuthFormProps<LoginFormData>> = ({
   onError,
   redirectUrl = '/dashboard' 
 }) => {
-  const { setAuthenticated, setToken, setUser } = useAuth();
   const { isLoading, error, setLoading, setError } = useFormState();
-  const router = useRouter();
-  
+
   const methods = useForm<LoginData>({
     resolver: yupResolver(loginSchema),
     mode: 'onBlur',
@@ -35,17 +31,14 @@ const LoginForm: React.FC<AuthFormProps<LoginFormData>> = ({
   const handleSubmit = async (data: LoginData) => {
     setLoading(true);
     try {
-      const { user } = await login({
+      await login({
         email: data.email,
         password: data.password,
       });
 
-      setAuthenticated(true);
-      setToken(null);
-      setUser(user);
       setError(null);
-      router.push(redirectUrl);
       onSuccess?.call(null, data);
+      window.location.href = redirectUrl;
     } catch (error) {
       const err = error as Error;
       setError(err.message || 'Login failed. Please try again.');

@@ -14,18 +14,18 @@ import Grid from '@/components/layout/grid';
 const Products: React.FC = () => {
   const [products, setProducts] = useState<ProductWithImages[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { token } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!token) return;
+      if (!isAuthenticated) return;
 
       try {
         const data = await getUserProducts();
         setProducts(data);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
-          console.error('Unauthorized access - please check your token.');
+          console.error('Unauthorized access.');
         } else {
           console.error('Error fetching products:', error as Error);
         }
@@ -33,7 +33,7 @@ const Products: React.FC = () => {
     };
 
     fetchProducts();
-  }, [token]);
+  }, [isAuthenticated]);
 
   const handleProductCreated = (newProduct: ProductWithImages) => {
     setProducts(prev => [...prev, newProduct]);

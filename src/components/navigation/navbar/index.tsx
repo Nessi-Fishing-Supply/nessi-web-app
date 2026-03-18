@@ -25,8 +25,7 @@ import LogoFull from '@/assets/logos/logo_full.svg';
 
 // Auth
 import { useAuth } from '@/context/auth';
-import { logout, getUserProfile } from '@/services/auth';
-import { User } from '@supabase/supabase-js';
+import { logout } from '@/services/auth';
 
 /**
  * Main navigation component
@@ -39,9 +38,8 @@ export default function Navbar() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
 
-  const { isAuthenticated, setAuthenticated, setToken } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
   const loginQuery = searchParams?.get('login');
 
@@ -51,33 +49,10 @@ export default function Navbar() {
     }
   }, [loginQuery]);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      return; // Exit early if not authenticated
-    }
-
-    const fetchUser = async () => {
-      try {
-        const user = await getUserProfile();
-        setUser(user);
-      } catch (err) {
-        const error = err as Error;
-        console.error('Failed to fetch user:', error);
-        if (error.message === 'Auth session missing!') {
-          setAuthenticated(false);
-        }
-      }
-    };
-
-    fetchUser();
-  }, [isAuthenticated, setAuthenticated]);
-
   const handleLogout = async () => {
     try {
       await logout();
-      setAuthenticated(false);
-      setToken(null);
-      setUser(null);
+      window.location.href = '/';
     } catch (err) {
       console.error('Logout failed:', err);
     }
