@@ -4,16 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Nessi is an e-commerce web application built with Next.js 15 (App Router), Supabase Auth, Drizzle ORM on Neon PostgreSQL, and deployed on Vercel.
+Nessi is an e-commerce web application built with Next.js 16 (App Router), Supabase Auth, Supabase PostgreSQL, and deployed on Vercel.
 
 ## Commands
 
 - **Dev server:** `pnpm dev`
 - **Build:** `pnpm build`
 - **Lint:** `pnpm lint`
-- **DB generate migrations:** `pnpm db:generate`
-- **DB push schema:** `pnpm db:migrate`
-- **DB studio:** `pnpm db:studio`
+- **DB generate types:** `pnpm db:types`
 
 Package manager is **pnpm** (v10.13.1). Do not use npm or yarn.
 
@@ -25,15 +23,19 @@ Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Ro
 
 ### Authentication
 
-- **Server-side:** API routes in `src/app/api/auth/` call Supabase using a service role client from `src/libs/supabase.ts`
-- **Client-side:** `src/context/auth.tsx` provides an `AuthProvider`/`useAuth` context that stores auth state in localStorage
-- User ID is passed to product API routes via the `x-user-id` header
+- **Cookie-based sessions** via `@supabase/ssr` — no localStorage
+- **proxy.ts** refreshes Supabase sessions on every request
+- **Server-side:** API routes use server client from `src/libs/supabase/server.ts` (user JWT from cookies)
+- **Client-side:** Components use browser client from `src/libs/supabase/client.ts`
+- **Admin operations:** Registration uses admin client from `src/libs/supabase/admin.ts` (bypasses RLS)
+- `src/context/auth.tsx` provides `useAuth()` hook wrapping Supabase session state
 
 ### Database
 
-- Drizzle ORM configured in `src/libs/db.ts` connecting to Neon PostgreSQL
-- Schema defined in `src/db/schema/` (products + productImages tables with relations)
-- Drizzle config in `drizzle.config.ts`, migrations output to `migrations/`
+- Supabase PostgreSQL accessed via `@supabase/supabase-js` + `@supabase/ssr`
+- Three client utilities in `src/libs/supabase/`: browser (`client.ts`), server (`server.ts`), admin (`admin.ts`)
+- Row Level Security (RLS) policies enforce access control at the database level
+- Types generated from Supabase schema via `pnpm db:types` into `src/types/database.ts`
 
 ### File Storage
 
@@ -59,7 +61,7 @@ SCSS with CSS Modules for component-scoped styles. Global variables in `src/styl
 
 ## Environment Variables
 
-Required in `.env.local`: `DATABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `BLOB_READ_WRITE_TOKEN`, `NEXT_PUBLIC_APP_URL`.
+Required in `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `BLOB_READ_WRITE_TOKEN`, `NEXT_PUBLIC_APP_URL`.
 
 ## ESLint
 
