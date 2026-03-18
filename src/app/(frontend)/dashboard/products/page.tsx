@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context';
-import { getUserProducts } from '@/features/products/services/product';
+import { useUserProducts } from '@/features/products/hooks/use-products';
 import type { ProductWithImages } from '@/features/products/types/product';
 import ProductForm from '@/features/products/components/add-product-form';
 import ProductCard from '@/features/products/components/product-card';
@@ -11,29 +12,22 @@ import Modal from '@/components/layout/modal';
 import Grid from '@/components/layout/grid';
 
 const Products: React.FC = () => {
-  const [products, setProducts] = useState<ProductWithImages[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (!isAuthenticated) return;
-
-      try {
-        const data = await getUserProducts();
-        setProducts(data);
-      } catch {
-        // Failed to load products — empty state shown
-      }
-    };
-
-    fetchProducts();
-  }, [isAuthenticated]);
+  const queryClient = useQueryClient();
+  const { data: products = [], isLoading } = useUserProducts(isAuthenticated);
 
   const handleProductCreated = (newProduct: ProductWithImages) => {
-    setProducts((prev) => [...prev, newProduct]);
+    queryClient.setQueryData<ProductWithImages[]>(['products', 'user'], (old = []) => [
+      ...old,
+      newProduct,
+    ]);
     setIsModalOpen(false);
   };
+
+  if (isLoading) {
+    return <p>Loading your products...</p>;
+  }
 
   return (
     <div>

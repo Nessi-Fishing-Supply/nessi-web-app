@@ -1,31 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { getAllProducts } from '@/features/products/services/product';
-import { ProductWithImages } from '@/features/products/types/product';
+import React from 'react';
+import { useAllProducts } from '@/features/products/hooks/use-products';
 import ProductCard from '@/features/products/components/product-card';
 import Grid from '@/components/layout/grid';
 
 export default function Home() {
-  const [products, setProducts] = useState<ProductWithImages[]>([]);
+  const { data: products = [], isLoading } = useAllProducts();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await getAllProducts();
-        setProducts(
-          data.map((product) => ({
-            ...product,
-            price: typeof product.price === 'number' ? product.price : parseFloat(product.price),
-          })),
-        );
-      } catch {
-        // Failed to load products — empty state shown
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  if (isLoading) {
+    return <p>Loading products...</p>;
+  }
 
   return (
     <div>

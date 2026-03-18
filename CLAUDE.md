@@ -61,6 +61,12 @@ Image uploads use Supabase Storage (`product-images` bucket) via `src/app/api/pr
 
 Domain-specific code lives in `src/features/{domain}/` with its own services, types, validations, and components. Each feature has a `CLAUDE.md` for AI-assisted context. Shared UI primitives remain in `src/components/`, shared hooks and types in `src/features/shared/`.
 
+### State Management
+
+- **Server state (data fetching):** Tanstack Query (`@tanstack/react-query`). All data fetching should use `useQuery`/`useMutation` hooks, not `useEffect` + `useState`. Query hooks live in `features/{domain}/hooks/`. The `QueryClientProvider` is configured in `src/libs/providers.tsx` with 60s default `staleTime`.
+- **Client state (UI/app state):** Zustand for cross-component client state (cart, filters, multi-step flows). Stores live in `features/{domain}/stores/`. Use the `createSelectors` utility from `src/libs/create-selectors.ts` for auto-generated typed selectors.
+- **Auth state:** Supabase `onAuthStateChange` via `AuthProvider` in `src/features/auth/context.tsx`. Access with `useAuth()`.
+
 ### Styling
 
 SCSS with CSS Modules for component-scoped styles. Global variables in `src/styles/variables/`, responsive breakpoints in `src/styles/mixins/breakpoints.scss`.

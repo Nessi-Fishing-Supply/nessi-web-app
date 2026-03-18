@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.scss';
 import Navbar from '@/components/navigation/navbar';
-import { AuthProvider } from '@/features/auth/context';
+import Providers from '@/libs/providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,13 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
+        <Providers>
           <Suspense fallback={<div>Loading...</div>}>
             <Navbar />
           </Suspense>
           {children}
           <div id="modal-root"></div>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
