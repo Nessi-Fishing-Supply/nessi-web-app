@@ -1,5 +1,21 @@
 import { createClient } from '@/libs/supabase/client';
 
+export const AUTH_TIMEOUT_MS = 8000;
+
+export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error('Something went wrong. Check your connection and try again.'));
+    }, ms);
+  });
+
+  return Promise.race([
+    promise.finally(() => clearTimeout(timer)),
+    timeout,
+  ]);
+};
+
 export const register = async (data: {
   firstName: string;
   lastName: string;
@@ -7,23 +23,39 @@ export const register = async (data: {
   password: string;
   terms: boolean;
 }) => {
-  const res = await fetch('/api/auth/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
 
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error || 'Registration failed');
-  return json;
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal: controller.signal,
+    });
+
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Registration failed');
+    return json;
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('Something went wrong. Check your connection and try again.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 };
 
 export const login = async (data: { email: string; password: string }) => {
   const supabase = createClient();
-  const { data: authData, error } = await supabase.auth.signInWithPassword({
-    email: data.email,
-    password: data.password,
-  });
+  const { data: authData, error } = await withTimeout(
+    supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    }),
+    AUTH_TIMEOUT_MS,
+  );
 
   if (error) throw new Error(error.message);
   return { user: authData.user, session: authData.session };
@@ -47,9 +79,12 @@ export const getUserProfile = async () => {
 
 export const forgotPassword = async (data: { email: string }) => {
   const supabase = createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?type=recovery`,
-  });
+  const { error } = await withTimeout(
+    supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?type=recovery`,
+    }),
+    AUTH_TIMEOUT_MS,
+  );
 
   if (error) throw new Error(error.message);
   return { message: 'Reset link sent! Check your email.' };
@@ -61,9 +96,12 @@ export const resetPassword = async (data: { newPassword: string; confirmNewPassw
   }
 
   const supabase = createClient();
-  const { error } = await supabase.auth.updateUser({
-    password: data.newPassword,
-  });
+  const { error } = await withTimeout(
+    supabase.auth.updateUser({
+      password: data.newPassword,
+    }),
+    AUTH_TIMEOUT_MS,
+  );
 
   if (error) throw new Error(error.message);
   return { message: 'Password updated successfully' };
@@ -71,10 +109,13 @@ export const resetPassword = async (data: { newPassword: string; confirmNewPassw
 
 export const resendVerification = async (data: { email: string }) => {
   const supabase = createClient();
-  const { error } = await supabase.auth.resend({
-    type: 'signup',
-    email: data.email,
-  });
+  const { error } = await withTimeout(
+    supabase.auth.resend({
+      type: 'signup',
+      email: data.email,
+    }),
+    AUTH_TIMEOUT_MS,
+  );
 
   if (error) throw new Error(error.message);
   return { message: 'Verification email sent!' };
