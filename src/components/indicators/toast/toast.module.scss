@@ -2,12 +2,9 @@
 
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  bottom: 0;
   right: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: center;
   padding: var(--space-sm);
   pointer-events: none;
 
@@ -25,7 +22,7 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
-  animation: slide-down 0.3s ease-out;
+  animation: slide-up 0.3s ease-out;
   box-shadow: var(--shadow-lg);
 }
 
@@ -121,10 +118,10 @@
   }
 }
 
-@keyframes slide-down {
+@keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(-16px);
+    transform: translateY(16px);
   }
 
   to {
