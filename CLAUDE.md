@@ -86,6 +86,8 @@ When adding a new feature domain:
 
 SCSS with CSS Modules for component-scoped styles. Global variables in `src/styles/variables/`, responsive breakpoints in `src/styles/mixins/breakpoints.scss`. CSS Modules use flat class names (not BEM) since module scoping makes BEM redundant.
 
+**Mobile-first is mandatory.** Nessi is a consumer marketplace — the majority of users browse, buy, and list gear on their phones. All styles must be written for the smallest screen first, then progressively enhanced with `@include breakpoint()` for larger viewports. Never write `max-width` media queries or desktop-first styles that get overridden downward. See `src/styles/CLAUDE.md` for the full mobile-first guide.
+
 ### SEO
 
 - Root metadata with title template (`%s | Nessi`) in `src/app/(frontend)/metadata.ts`
