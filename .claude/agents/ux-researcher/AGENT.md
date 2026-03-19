@@ -25,6 +25,8 @@ These are the platforms you study for UX patterns. Each has strengths worth lear
 | **Facebook Marketplace** | Zero-friction listing, category browsing, saved searches, shipping vs local toggle |
 | **eBay** | Search & filters, condition grading, price history, seller reputation system |
 | **Vinted** | No seller fees messaging, buyer protection, shipping label generation |
+| **Etsy** | Niche marketplace UX, seller storefront branding, reviews with buyer photos, search SEO |
+| **Reverb** | Gear-specific condition grading, spec-driven listings, price guide/history, shipping protection |
 
 ## Niche Context
 
