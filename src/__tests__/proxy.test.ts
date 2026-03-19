@@ -7,7 +7,7 @@ vi.mock('@supabase/ssr', () => ({
 
 vi.mock('next/server', () => {
   const NextResponse = {
-    next: vi.fn((_init?: unknown) => ({ cookies: { set: vi.fn() }, _type: 'next' })),
+    next: vi.fn(() => ({ cookies: { set: vi.fn() }, _type: 'next' })),
     redirect: vi.fn((url: URL) => ({ _type: 'redirect', url: url.toString() })),
   };
   return { NextResponse };
@@ -42,7 +42,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(NextResponse.next).mockReturnValue({ cookies: { set: vi.fn() }, _type: 'next' } as any);
   vi.mocked(NextResponse.redirect).mockImplementation(
-    (url: URL) => ({ _type: 'redirect', url: url.toString() }) as any,
+    (url: string | URL) => ({ _type: 'redirect', url: url.toString() }) as any,
   );
 });
 
@@ -50,7 +50,7 @@ describe('proxy — /auth/forgot-password', () => {
   it('redirects authenticated user to /', async () => {
     mockGetUser({ id: 'user-1' });
     const request = makeRequest('/auth/forgot-password');
-    const response = await proxy(request);
+    await proxy(request);
     expect(NextResponse.redirect).toHaveBeenCalledOnce();
     const redirectArg = vi.mocked(NextResponse.redirect).mock.calls[0][0] as URL;
     expect(redirectArg.pathname).toBe('/');
@@ -84,7 +84,7 @@ describe('proxy — /dashboard', () => {
   it('redirects unauthenticated user to /', async () => {
     mockGetUser(null);
     const request = makeRequest('/dashboard');
-    const response = await proxy(request);
+    await proxy(request);
     expect(NextResponse.redirect).toHaveBeenCalledOnce();
     const redirectArg = vi.mocked(NextResponse.redirect).mock.calls[0][0] as URL;
     expect(redirectArg.pathname).toBe('/');
