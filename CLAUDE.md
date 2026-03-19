@@ -170,16 +170,17 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 
 ### Agents (14 total — invoked by skills, not directly)
 
-| Layer | Agents |
-|-------|--------|
+| Layer     | Agents                                                                                                                                 |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Conductor | plan-architect, task-executor, phase-verifier, review-orchestrator, finding-resolver, debug-investigator, pr-creator, ticket-generator |
-| Design | ux-researcher, marketplace-audit |
-| Testing | test-author, ui-tester, a11y-auditor |
-| Debugging | browser-debug |
+| Design    | ux-researcher, marketplace-audit                                                                                                       |
+| Testing   | test-author, ui-tester, a11y-auditor                                                                                                   |
+| Debugging | browser-debug                                                                                                                          |
 
 ### Skill Authoring Notes
 
 When creating new skills for this project:
+
 - Use `user-invocable: true` (hyphenated, not underscored)
 - Use `argument-hint: "quoted string"` (not `arguments:` YAML blocks)
 - Use `metadata.filePattern` for dynamic triggers

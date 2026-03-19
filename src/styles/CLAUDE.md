@@ -8,6 +8,7 @@ Nessi is a consumer marketplace where the majority of traffic comes from mobile 
 
 1. **Base styles = mobile styles.** The un-media-queried CSS is what phones see. No exceptions.
 2. **Scale up with `@include breakpoint()`.** Use the project's `min-width` mixin to add tablet/desktop overrides:
+
    ```scss
    .card {
      padding: var(--space-sm);
@@ -19,6 +20,7 @@ Nessi is a consumer marketplace where the majority of traffic comes from mobile 
      }
    }
    ```
+
 3. **Never use `max-width` media queries.** They indicate desktop-first thinking. If you find yourself writing one, refactor: make the mobile layout the default, then override upward.
 4. **Never use `@media (max-width: ...)` directly.** Always use `@include breakpoint()` for consistency. The available breakpoints are:
    - `sm` — 480px (large phones / small tablets)
@@ -30,6 +32,7 @@ Nessi is a consumer marketplace where the majority of traffic comes from mobile 
 ### Common Patterns
 
 **Stacked-to-horizontal layouts:**
+
 ```scss
 .container {
   display: flex;
@@ -44,6 +47,7 @@ Nessi is a consumer marketplace where the majority of traffic comes from mobile 
 ```
 
 **Single-to-multi-column grids:**
+
 ```scss
 .grid {
   display: grid;
@@ -61,6 +65,7 @@ Nessi is a consumer marketplace where the majority of traffic comes from mobile 
 ```
 
 **Touch-friendly tap targets:**
+
 - Buttons and interactive elements must be at least 44x44px on mobile (WCAG 2.5.8).
 - Use generous padding rather than relying on the text content to meet the minimum.
 
@@ -79,14 +84,14 @@ Nessi is a consumer marketplace where the majority of traffic comes from mobile 
 
 All visual values come from CSS custom properties defined in `src/styles/variables/`:
 
-| File | Tokens | Notes |
-|------|--------|-------|
-| `colors.scss` | `--color-*` | Brand, neutrals, grayscale, system (error/warning/success) |
-| `spacing.scss` | `--space-*` | 8px grid system, 11 levels from `3xs` to `5xl` |
-| `typography.scss` | `--font-size-*`, `--font-family-*` | Modular scale, responsive via breakpoint |
-| `radius.scss` | `--radius-*` | 5 levels from `sm` (4px) to `2xl` (40px) |
-| `shadows.scss` | `--shadow-*` | 7 elevation levels plus modal shadow |
-| `animations.scss` | `--transition-*` | Shared transition timing |
+| File              | Tokens                             | Notes                                                      |
+| ----------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `colors.scss`     | `--color-*`                        | Brand, neutrals, grayscale, system (error/warning/success) |
+| `spacing.scss`    | `--space-*`                        | 8px grid system, 11 levels from `3xs` to `5xl`             |
+| `typography.scss` | `--font-size-*`, `--font-family-*` | Modular scale, responsive via breakpoint                   |
+| `radius.scss`     | `--radius-*`                       | 5 levels from `sm` (4px) to `2xl` (40px)                   |
+| `shadows.scss`    | `--shadow-*`                       | 7 elevation levels plus modal shadow                       |
+| `animations.scss` | `--transition-*`                   | Shared transition timing                                   |
 
 **Do not hardcode colors, spacing, font sizes, or shadows.** Always use the corresponding token. If a new value is needed, add it to the appropriate variables file first.
 

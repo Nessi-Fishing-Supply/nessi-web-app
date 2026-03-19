@@ -85,11 +85,12 @@ ENHANCED PIPELINE
 ### Task 1: Create the UX Researcher Agent
 
 **Files:**
+
 - Create: `.claude/agents/ux-researcher/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: ux-researcher
 description: Researches C2C marketplace UX patterns from successful platforms and produces structured design briefs
@@ -108,19 +109,20 @@ You are the UX Researcher — you study successful C2C marketplace platforms and
 
 These are the platforms you study for UX patterns. Each has strengths worth learning from:
 
-| Platform | Strengths to Study |
-|----------|-------------------|
-| **Mercari** | Mobile-first simplicity, streamlined listing flow, clean product cards, condition badges |
-| **OfferUp** | Local-first UX, trust signals, quick messaging, location-based discovery |
-| **Poshmark** | Social selling, community features, "closet" concept, offer/counter-offer flow |
-| **Depop** | Gen-Z aesthetics, profile-as-storefront, explore/discover feed |
-| **Facebook Marketplace** | Zero-friction listing, category browsing, saved searches, shipping vs local toggle |
-| **eBay** | Search & filters, condition grading, price history, seller reputation system |
-| **Vinted** | No seller fees messaging, buyer protection, shipping label generation |
+| Platform                 | Strengths to Study                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| **Mercari**              | Mobile-first simplicity, streamlined listing flow, clean product cards, condition badges |
+| **OfferUp**              | Local-first UX, trust signals, quick messaging, location-based discovery                 |
+| **Poshmark**             | Social selling, community features, "closet" concept, offer/counter-offer flow           |
+| **Depop**                | Gen-Z aesthetics, profile-as-storefront, explore/discover feed                           |
+| **Facebook Marketplace** | Zero-friction listing, category browsing, saved searches, shipping vs local toggle       |
+| **eBay**                 | Search & filters, condition grading, price history, seller reputation system             |
+| **Vinted**               | No seller fees messaging, buyer protection, shipping label generation                    |
 
 ## Niche Context
 
 Nessi is specifically for **fishing gear** — rods, reels, lures, tackle, waders, electronics (fish finders, trolling motors), boats/kayaks, and accessories. This means:
+
 - Items range from $5 lures to $50,000 boats — the UI must handle both
 - Condition matters enormously (a reel's drag system, a rod's guides)
 - Specifications are important (rod length, power, action; reel gear ratio, line capacity)
@@ -149,15 +151,19 @@ Produce a structured design brief:
 # Design Brief: {Feature Name}
 
 ## Research Summary
+
 {2-3 paragraphs: what was studied, key findings, overall recommendation}
 
 ## Competitor Analysis
-| Platform | Approach | Strengths | Weaknesses |
-|----------|----------|-----------|------------|
-| {name} | {how they do it} | {what works} | {what doesn't} |
+
+| Platform | Approach         | Strengths    | Weaknesses     |
+| -------- | ---------------- | ------------ | -------------- |
+| {name}   | {how they do it} | {what works} | {what doesn't} |
 
 ## Recommended Pattern
+
 {Detailed description of the recommended UX pattern, including:}
+
 - Layout structure (what goes where)
 - Information hierarchy (primary, secondary, tertiary)
 - Interaction flow (step by step user journey)
@@ -166,8 +172,11 @@ Produce a structured design brief:
 - Empty states and loading states
 
 ## Component Specifications
+
 {For each UI component in the feature:}
+
 ### {Component Name}
+
 - **Purpose:** {what it does}
 - **Content:** {what data it displays}
 - **Interactions:** {what the user can do with it}
@@ -175,14 +184,18 @@ Produce a structured design brief:
 - **Responsive:** {how it adapts mobile → desktop}
 
 ## Fishing-Specific Adaptations
+
 {How this feature should be customized for the fishing gear vertical}
 
 ## Accessibility Notes
+
 {Key a11y considerations for this feature}
 
 ## Out of Scope
+
 {What this design brief explicitly does NOT cover}
 ```
+````
 
 ## Rules
 
@@ -193,7 +206,8 @@ Produce a structured design brief:
 - Reference existing Nessi components from `src/components/` when they can be reused
 - Think mobile-first — fishing gear buyers browse on phones at the lake
 - Consider the full range of Nessi's product catalog ($5 lures to $50K boats)
-```
+
+````
 
 - [ ] **Step 2: Verify the agent file is valid**
 
@@ -205,13 +219,14 @@ Expected: Valid frontmatter with name, model, tools
 ```bash
 git add .claude/agents/ux-researcher/AGENT.md
 git commit -m "feat(agents): add ux-researcher agent for C2C marketplace design intelligence"
-```
+````
 
 ---
 
 ### Task 2: Create the Design Spec Skill
 
 **Files:**
+
 - Create: `.claude/skills/design-spec/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
@@ -240,13 +255,14 @@ Feature to design: `{{ feature }}`
 ### Step 1: Scope the Feature
 
 Parse the feature description. If it's broad (e.g., "messaging"), break it into sub-features and ask the user which to focus on:
+```
 
-```
 🎨 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Design Spec — {feature}
-   Scoping...
+Design Spec — {feature}
+Scoping...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+
+````
 
 Ask 2-3 focused questions:
 - What's the primary user goal for this feature?
@@ -300,7 +316,7 @@ Take the research brief and codebase context, then produce a full design spec:
 
 ## Acceptance Criteria
 {Testable conditions for each user story}
-```
+````
 
 ### Step 4: Save and Offer Next Steps
 
@@ -332,7 +348,8 @@ Next steps:
 - Include accessibility notes (not as an afterthought — inline with each component)
 - Never produce wireframes or visual mockups — produce structured specifications
 - The spec is a living document — it can be updated as implementation reveals new needs
-```
+
+````
 
 - [ ] **Step 2: Create the design-specs docs directory**
 
@@ -343,18 +360,19 @@ Run: `mkdir -p docs/design-specs`
 ```bash
 git add .claude/skills/design-spec/SKILL.md
 git commit -m "feat(skills): add design-spec skill for research-driven feature design"
-```
+````
 
 ---
 
 ### Task 3: Create the Marketplace Audit Agent
 
 **Files:**
+
 - Create: `.claude/agents/marketplace-audit/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: marketplace-audit
 description: Audits existing Nessi features against C2C marketplace best practices — UX, trust signals, conversion, accessibility
@@ -372,6 +390,7 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 ## Audit Categories
 
 ### 1. Trust & Safety
+
 - Seller verification signals (profile completeness, join date, transaction count)
 - Product condition transparency (photos, descriptions, condition badges)
 - Price fairness signals (market comparisons, price history)
@@ -379,6 +398,7 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - Reporting mechanisms
 
 ### 2. Conversion Optimization
+
 - Listing creation friction (steps, required fields, image upload flow)
 - Search-to-purchase funnel (discovery → detail → action)
 - Call-to-action clarity and placement
@@ -386,6 +406,7 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - Social proof (reviews, ratings, sold count)
 
 ### 3. Mobile Experience
+
 - Touch target sizes (minimum 44x44px)
 - Thumb-zone optimization
 - Image loading and gallery UX
@@ -393,6 +414,7 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - Navigation depth (max 3 taps to any product)
 
 ### 4. Information Architecture
+
 - Category taxonomy (fishing-specific: rods, reels, lures, electronics, etc.)
 - Search and filter effectiveness
 - Product detail completeness
@@ -400,6 +422,7 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - Browse vs search balance
 
 ### 5. Accessibility
+
 - Semantic HTML structure
 - ARIA labels on interactive elements
 - Color contrast ratios (WCAG AA minimum)
@@ -408,6 +431,7 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - Focus management in modals/dialogs
 
 ### 6. SEO (Marketplace-Specific)
+
 - Product schema markup (JSON-LD)
 - Dynamic meta tags per listing
 - URL structure for product pages
@@ -430,7 +454,9 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 ## Score: {score}/100
 
 ## Critical Findings (fix before launch)
+
 ### F-{n}: {title}
+
 - **Category:** {category}
 - **Impact:** {high|medium|low}
 - **Effort:** {high|medium|low}
@@ -440,11 +466,14 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - **Files affected:** {paths}
 
 ## Improvement Opportunities (post-launch)
+
 ...
 
 ## Strengths (keep doing)
+
 ...
 ```
+````
 
 ## Rules
 
@@ -453,14 +482,15 @@ You are the Marketplace Auditor — you review existing Nessi features against C
 - Include specific file paths for affected code
 - Score reflects marketplace readiness, not code quality
 - This is NOT a code review — focus on UX, trust, and conversion
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/agents/marketplace-audit/AGENT.md
 git commit -m "feat(agents): add marketplace-audit agent for C2C UX quality checks"
-```
+````
 
 ---
 
@@ -473,6 +503,7 @@ git commit -m "feat(agents): add marketplace-audit agent for C2C UX quality chec
 ### Task 4: Create the Feature Scaffold Skill
 
 **Files:**
+
 - Create: `.claude/skills/feature-scaffold/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
@@ -487,7 +518,7 @@ arguments:
     description: "Feature domain name in kebab-case (e.g., 'messaging', 'orders', 'seller-profiles')"
     required: true
   - name: description
-    description: "Brief description of the feature domain"
+    description: 'Brief description of the feature domain'
     required: false
 ---
 
@@ -509,15 +540,16 @@ Description: `{{ description }}`
 3. Scan existing features (`src/features/auth/`, `src/features/products/`) to understand current patterns
 
 ### Step 2: Create Directory Structure
-
 ```
+
 src/features/{{ domain }}/
-├── CLAUDE.md              # Feature documentation for AI-assisted development
-├── components/            # React components for this domain
-├── hooks/                 # Tanstack Query hooks
-├── services/              # API client functions
-├── types/                 # TypeScript interfaces
-└── validations/           # Yup form schemas (if forms are needed)
+├── CLAUDE.md # Feature documentation for AI-assisted development
+├── components/ # React components for this domain
+├── hooks/ # Tanstack Query hooks
+├── services/ # API client functions
+├── types/ # TypeScript interfaces
+└── validations/ # Yup form schemas (if forms are needed)
+
 ```
 
 Only create directories that the feature will actually need. If there are no forms, skip `validations/`. If there's no API, skip `services/`. Ask the user or infer from the description.
@@ -542,22 +574,25 @@ If the feature needs API interaction, create `services/{domain}.ts` with stub fu
 ### Step 6: Report
 
 ```
+
 📦 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Feature Scaffold — {{ domain }}
-   Created: {file_count} files in src/features/{{ domain }}/
+Feature Scaffold — {{ domain }}
+Created: {file_count} files in src/features/{{ domain }}/
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Files created:
-  ✅ CLAUDE.md
-  ✅ types/index.ts
-  ✅ services/{domain}.ts
-  ✅ hooks/ (empty, ready for Tanstack Query hooks)
-  ✅ components/ (empty, ready for React components)
+✅ CLAUDE.md
+✅ types/index.ts
+✅ services/{domain}.ts
+✅ hooks/ (empty, ready for Tanstack Query hooks)
+✅ components/ (empty, ready for React components)
 
 Next steps:
-  1. Review and edit the generated CLAUDE.md
-  2. Update types after database schema is defined
-  3. /design-spec "{domain}" to generate UX specs for this feature
+
+1. Review and edit the generated CLAUDE.md
+2. Update types after database schema is defined
+3. /design-spec "{domain}" to generate UX specs for this feature
+
 ```
 
 ## Rules
@@ -582,11 +617,12 @@ git commit -m "feat(skills): add feature-scaffold skill for domain directory set
 ### Task 5: Create the Test Author Agent
 
 **Files:**
+
 - Create: `.claude/agents/test-author/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: test-author
 description: Generates Vitest tests for components, hooks, and services following Nessi's testing patterns
@@ -621,6 +657,7 @@ You write Vitest tests for Nessi features following established testing patterns
 ### Test File Location
 
 Tests go adjacent to source files with `.test.` suffix:
+
 - `src/features/products/hooks/use-products.ts` → `src/features/products/hooks/use-products.test.ts`
 - `src/components/controls/button/button.tsx` → `src/components/controls/button/button.test.tsx`
 
@@ -648,6 +685,7 @@ describe('ComponentName', () => {
   });
 });
 ```
+````
 
 ### Hook Tests
 
@@ -712,25 +750,27 @@ describe('serviceFn', () => {
 - Mock at the boundary (Supabase client, fetch), not internal functions
 - Each test should be independent — no shared mutable state between tests
 - Run `pnpm test:run` after writing tests to verify they pass
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/agents/test-author/AGENT.md
 git commit -m "feat(agents): add test-author agent for Vitest test generation"
-```
+````
 
 ---
 
 ### Task 6: Create the Supabase Migration Skill
 
 **Files:**
+
 - Create: `.claude/skills/db-migrate/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
 
-```markdown
+````markdown
 ---
 name: db-migrate
 description: Generate Supabase SQL migrations with RLS policies, then regenerate TypeScript types
@@ -813,6 +853,7 @@ create trigger set_{table_name}_updated_at
   before update on public.{table_name}
   for each row execute function public.handle_updated_at();
 ```
+````
 
 ### Step 3: Apply and Regenerate Types
 
@@ -833,6 +874,7 @@ Apply this migration? (y/n)
 ```
 
 After confirmation:
+
 1. Apply via Supabase MCP or `supabase db push`
 2. Regenerate types: `pnpm db:types`
 3. Verify types updated in `src/types/database.ts`
@@ -847,8 +889,9 @@ After confirmation:
 - Policy names follow pattern: `{table}_{operation}_policy`
 - Always create indexes on foreign key columns and frequently queried columns
 - Never drop tables or columns without explicit user confirmation
-- Migration files use snake_case naming: `{timestamp}_{description}.sql`
-```
+- Migration files use snake*case naming: `{timestamp}*{description}.sql`
+
+````
 
 - [ ] **Step 2: Create migrations directory**
 
@@ -859,7 +902,7 @@ Run: `mkdir -p supabase/migrations`
 ```bash
 git add .claude/skills/db-migrate/SKILL.md
 git commit -m "feat(skills): add db-migrate skill for Supabase migration generation"
-```
+````
 
 ---
 
@@ -872,11 +915,12 @@ git commit -m "feat(skills): add db-migrate skill for Supabase migration generat
 ### Task 7: Create the Preflight Skill
 
 **Files:**
+
 - Create: `.claude/skills/preflight/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
 
-```markdown
+````markdown
 ---
 name: preflight
 description: Comprehensive quality gate — runs build, lint, typecheck, format, tests, and produces a structured pass/fail report
@@ -900,31 +944,38 @@ Scope: `{{ scope }}` (defaults to "all")
 Run each check and capture exit code + output:
 
 ### 1. TypeScript Type Check
+
 ```bash
 pnpm typecheck
 ```
+````
 
 ### 2. ESLint
+
 ```bash
 pnpm lint
 ```
 
 ### 3. Stylelint
+
 ```bash
 pnpm lint:styles
 ```
 
 ### 4. Prettier Format Check
+
 ```bash
 pnpm format:check
 ```
 
 ### 5. Vitest Tests
+
 ```bash
 pnpm test:run
 ```
 
 ### 6. Next.js Build
+
 ```bash
 pnpm build
 ```
@@ -962,15 +1013,18 @@ When called by the review-orchestrator agent, return findings in the standard fo
 ## Preflight Findings
 
 ### [B] {Blocking finding title}
+
 - **Check:** {which check failed}
 - **Error:** {error message}
 - **File:** {file path if applicable}
 - **Fix:** {suggested fix}
 
 ### [W] {Warning finding title}
+
 ...
 
 ### [I] {Info finding}
+
 ...
 ```
 
@@ -982,20 +1036,22 @@ When called by the review-orchestrator agent, return findings in the standard fo
 - If build fails, don't skip reporting other check results
 - Always report total pass/fail count
 - For the Conductor: categorize as [B] Blocking, [W] Warning, [I] Info
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/skills/preflight/SKILL.md
 git commit -m "feat(skills): add preflight skill for comprehensive quality gate"
-```
+````
 
 ---
 
 ### Task 8: Create the Marketplace Audit Skill
 
 **Files:**
+
 - Create: `.claude/skills/marketplace-audit/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
@@ -1024,6 +1080,7 @@ Focus area: `{{ focus }}` (defaults to "all")
 ### Step 1: Scan
 
 Read the entire frontend codebase:
+
 - All pages in `src/app/(frontend)/`
 - All components in `src/components/` and `src/features/*/components/`
 - All styles in `src/styles/`
@@ -1037,20 +1094,23 @@ Launch the **marketplace-audit** agent with the focus area and codebase context.
 ### Step 3: Report
 
 Display the audit results:
-
 ```
+
 🔍 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Marketplace Audit — {focus}
-   Score: {score}/100
-   Findings: {critical} critical, {improvement} improvements, {strength} strengths
+Marketplace Audit — {focus}
+Score: {score}/100
+Findings: {critical} critical, {improvement} improvements, {strength} strengths
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ```
 
 ### Step 4: Offer Ticket Generation
 
 ```
+
 Generate tickets for the critical findings?
-  → /ticket-gen "marketplace audit fixes — {focus area}"
+→ /ticket-gen "marketplace audit fixes — {focus area}"
+
 ```
 
 ## Rules
@@ -1081,6 +1141,7 @@ git commit -m "feat(skills): add marketplace-audit skill for C2C UX quality chec
 ### Task 9: Update plan-architect to consume design specs
 
 **Files:**
+
 - Modify: `.claude/agents/plan-architect/AGENT.md`
 
 - [ ] **Step 1: Read the current agent definition**
@@ -1095,6 +1156,7 @@ Add to the plan-architect's Input section:
 ## Input
 
 You will receive:
+
 - The full GitHub issue content (title, description, acceptance criteria, comments, labels)
 - The project's tech stack: Next.js 16 (App Router), React 19, Supabase Auth + PostgreSQL + Storage, Tanstack Query, Zustand, SCSS with CSS Modules
 - Path alias: `@/*` → `./src/*`
@@ -1102,6 +1164,7 @@ You will receive:
 ## Design Spec Integration
 
 Before planning, check if the ticket body references a design spec:
+
 1. Look for links to `docs/design-specs/*.md` in the issue body
 2. If found, read the design spec and use its component breakdown, interaction flows, and acceptance criteria to inform the plan
 3. Design specs contain competitor research, component specifications, and UX decisions — follow them closely
@@ -1124,6 +1187,7 @@ git commit -m "fix(agents): update plan-architect with design spec awareness and
 ### Task 10: Update conductor-start to use preflight
 
 **Files:**
+
 - Modify: `.claude/skills/conductor-start/SKILL.md`
 
 - [ ] **Step 1: Read the current skill definition**
@@ -1160,6 +1224,7 @@ git commit -m "fix(skills): wire preflight into conductor review step, fix tech 
 ### Task 11: Update ticket-gen to accept design spec references
 
 **Files:**
+
 - Modify: `.claude/skills/ticket-gen/SKILL.md`
 
 - [ ] **Step 1: Read current skill**
@@ -1174,6 +1239,7 @@ Add to the Process section, after Step 1:
 ### Step 1.5: Check for Design Spec
 
 If the feature description references a design spec file (e.g., "see docs/design-specs/search-filters.md"):
+
 1. Read the design spec
 2. Use its component breakdown as the basis for ticket decomposition
 3. Include the design spec path in each ticket body so the plan-architect can reference it
@@ -1181,12 +1247,15 @@ If the feature description references a design spec file (e.g., "see docs/design
 
 If no design spec exists, suggest creating one:
 ```
-💡 No design spec found for this feature.
-   Run /design-spec "{feature}" first to generate a research-backed spec.
-   This produces better tickets with UX details the conductor can follow.
 
-   Continue without a design spec? (y/n)
+💡 No design spec found for this feature.
+Run /design-spec "{feature}" first to generate a research-backed spec.
+This produces better tickets with UX details the conductor can follow.
+
+Continue without a design spec? (y/n)
+
 ```
+
 ```
 
 - [ ] **Step 3: Commit**
@@ -1207,6 +1276,7 @@ git commit -m "feat(skills): integrate design spec references into ticket-gen fl
 ### Task 12: Create the Quick Audit Skill
 
 **Files:**
+
 - Create: `.claude/skills/audit/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
@@ -1229,20 +1299,22 @@ Runs both the preflight quality gate and the marketplace UX audit in a single co
 1. Run `/preflight all` and capture results
 2. Run `/marketplace-audit all` and capture results
 3. Combine into a single dashboard:
-
 ```
+
 📊 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Nessi Audit Dashboard
+Nessi Audit Dashboard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-   Code Quality:        {score}/6 checks passing
-   Marketplace UX:      {score}/100
+Code Quality: {score}/6 checks passing
+Marketplace UX: {score}/100
 
-   Action Items:        {count} ({critical} critical)
+Action Items: {count} ({critical} critical)
 
-   Details: see above reports
+Details: see above reports
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ```
+
 ```
 
 - [ ] **Step 2: Commit**
@@ -1257,6 +1329,7 @@ git commit -m "feat(skills): add combined audit skill for quick quality + UX che
 ### Task 13: Create the Feature Pipeline Skill
 
 **Files:**
+
 - Create: `.claude/skills/feature-pipeline/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
@@ -1281,26 +1354,30 @@ The full autonomous pipeline: research the UX → generate design spec → creat
 ## Process
 
 ### Step 1: Design
+
 Invoke `/design-spec "{{ feature }}"` — this launches the ux-researcher agent, studies competitor marketplaces, and produces a design specification saved to `docs/design-specs/`.
 
 ### Step 2: Tickets
+
 After the design spec is complete, invoke `/ticket-gen "{{ feature }} — see docs/design-specs/{spec-file}.md"` — this breaks the spec into conductor-ready GitHub issues.
 
 ### Step 3: Execute (Optional)
-After tickets are created, offer to start the conductor:
 
+After tickets are created, offer to start the conductor:
 ```
+
 🚀 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Feature Pipeline — {{ feature }}
-   Design spec: ✅ saved
-   Tickets: ✅ {count} created
+Feature Pipeline — {{ feature }}
+Design spec: ✅ saved
+Tickets: ✅ {count} created
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Start the conductor on the first ticket?
-  → /conductor start #{first_ticket_number}
+→ /conductor start #{first_ticket_number}
 
 Or run them all sequentially?
-  → I'll queue tickets #X, #Y, #Z for conductor execution in dependency order.
+→ I'll queue tickets #X, #Y, #Z for conductor execution in dependency order.
+
 ```
 
 ## Rules
@@ -1324,31 +1401,31 @@ git commit -m "feat(skills): add feature-pipeline skill for end-to-end feature d
 
 ### New Agents (3)
 
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| **ux-researcher** | Opus | Studies C2C marketplace competitors, produces design briefs |
-| **marketplace-audit** | Sonnet | Audits features against marketplace UX best practices |
-| **test-author** | Sonnet | Generates Vitest tests following project patterns |
+| Agent                 | Model  | Purpose                                                     |
+| --------------------- | ------ | ----------------------------------------------------------- |
+| **ux-researcher**     | Opus   | Studies C2C marketplace competitors, produces design briefs |
+| **marketplace-audit** | Sonnet | Audits features against marketplace UX best practices       |
+| **test-author**       | Sonnet | Generates Vitest tests following project patterns           |
 
 ### New Skills (6)
 
-| Skill | Purpose |
-|-------|---------|
-| **design-spec** | Research-driven design specification generator (replaces Figma) |
-| **feature-scaffold** | Scaffolds new feature domains with full directory structure |
-| **db-migrate** | Generates Supabase SQL migrations with RLS policies |
-| **preflight** | Comprehensive quality gate (build, lint, typecheck, format, tests) |
-| **marketplace-audit** | C2C UX audit with scored findings |
-| **audit** | Combined quality + marketplace audit in one command |
-| **feature-pipeline** | End-to-end: design → tickets → conductor |
+| Skill                 | Purpose                                                            |
+| --------------------- | ------------------------------------------------------------------ |
+| **design-spec**       | Research-driven design specification generator (replaces Figma)    |
+| **feature-scaffold**  | Scaffolds new feature domains with full directory structure        |
+| **db-migrate**        | Generates Supabase SQL migrations with RLS policies                |
+| **preflight**         | Comprehensive quality gate (build, lint, typecheck, format, tests) |
+| **marketplace-audit** | C2C UX audit with scored findings                                  |
+| **audit**             | Combined quality + marketplace audit in one command                |
+| **feature-pipeline**  | End-to-end: design → tickets → conductor                           |
 
 ### Enhanced Existing Components (3)
 
-| Component | Enhancement |
-|-----------|-------------|
-| **plan-architect** | Reads design specs from ticket bodies, correct tech stack |
-| **conductor-start** | Uses /preflight for review step, correct tech stack |
-| **ticket-gen** | Accepts design spec references, suggests creating specs |
+| Component           | Enhancement                                               |
+| ------------------- | --------------------------------------------------------- |
+| **plan-architect**  | Reads design specs from ticket bodies, correct tech stack |
+| **conductor-start** | Uses /preflight for review step, correct tech stack       |
+| **ticket-gen**      | Accepts design spec references, suggests creating specs   |
 
 ### Workflow Diagram
 
@@ -1392,6 +1469,7 @@ git commit -m "feat(skills): add feature-pipeline skill for end-to-end feature d
 ### Task 14: Create the Supabase Expert Agent
 
 **Files:**
+
 - Create: `.claude/agents/supabase-expert/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
@@ -1422,6 +1500,7 @@ You are Nessi's Supabase specialist. You provide expert guidance on Supabase Aut
 ## Expertise Areas
 
 ### Auth Patterns
+
 - Session management with `@supabase/ssr`
 - Route protection via proxy.ts
 - Admin operations that bypass RLS (registration, admin panels)
@@ -1429,6 +1508,7 @@ You are Nessi's Supabase specialist. You provide expert guidance on Supabase Aut
 - Email verification and password reset flows
 
 ### Schema Design
+
 - Table design for C2C marketplace (products, orders, messages, reviews, profiles)
 - Foreign key relationships and cascading deletes
 - Indexes for query performance (what to index, composite indexes)
@@ -1436,6 +1516,7 @@ You are Nessi's Supabase specialist. You provide expert guidance on Supabase Aut
 - UUIDs as primary keys: `gen_random_uuid()`
 
 ### Row Level Security
+
 - Policy patterns: owner-only, public-read/owner-write, buyer+seller access
 - Using `auth.uid()` for user identification
 - Policy composition (multiple policies OR together for same operation)
@@ -1443,6 +1524,7 @@ You are Nessi's Supabase specialist. You provide expert guidance on Supabase Aut
 - Performance: policies that use indexed columns
 
 ### Storage
+
 - Bucket policies and RLS
 - Image upload patterns (signed URLs vs direct upload)
 - File size limits and MIME type validation
@@ -1450,6 +1532,7 @@ You are Nessi's Supabase specialist. You provide expert guidance on Supabase Aut
 - Cleanup patterns for orphaned files
 
 ### Realtime
+
 - Subscribing to table changes (INSERT, UPDATE, DELETE)
 - Channel patterns for messaging features
 - Presence for online status
@@ -1458,6 +1541,7 @@ You are Nessi's Supabase specialist. You provide expert guidance on Supabase Aut
 ## When Called By Conductor
 
 When invoked by the plan-architect or task-executor:
+
 1. Always check `src/types/database.ts` for current schema first
 2. Provide exact SQL for any schema changes
 3. Include RLS policies for every new table
@@ -1486,6 +1570,7 @@ git commit -m "feat(agents): add supabase-expert agent for database and auth gui
 ### Task 15: Create the Next.js Expert Agent
 
 **Files:**
+
 - Create: `.claude/agents/nextjs-expert/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
@@ -1519,6 +1604,7 @@ You are Nessi's Next.js specialist. You provide expert guidance on Next.js 16 Ap
 ## Expertise Areas
 
 ### Routing
+
 - File-system routing with App Router
 - Route groups: `(frontend)` for UI pages
 - Dynamic segments: `[id]`, `[...slug]`, `[[...slug]]`
@@ -1526,18 +1612,21 @@ You are Nessi's Next.js specialist. You provide expert guidance on Next.js 16 Ap
 - Route handlers (API endpoints) in `src/app/api/`
 
 ### Server Components vs Client Components
+
 - Default to Server Components — only add `'use client'` when needed
 - Push `'use client'` boundaries down the tree
 - When to use each: interactivity → client, data fetching → server
 - Composition patterns: server parent with client children
 
 ### Server Actions
+
 - `'use server'` for data mutations
 - Form handling with Server Actions (progressive enhancement)
 - Revalidation after mutations (`revalidatePath`, `revalidateTag`)
 - Error handling in Server Actions
 
 ### Caching & Rendering
+
 - SSR, SSG, ISR strategies for marketplace pages
 - `'use cache'` for component-level caching (Next.js 16)
 - Dynamic rendering for personalized content
@@ -1546,6 +1635,7 @@ You are Nessi's Next.js specialist. You provide expert guidance on Next.js 16 Ap
 - Product detail pages: SSR with dynamic metadata
 
 ### proxy.ts (Next.js 16 Middleware Replacement)
+
 - Runs on Node.js runtime (not Edge)
 - Session refresh pattern with Supabase
 - Route protection logic
@@ -1553,6 +1643,7 @@ You are Nessi's Next.js specialist. You provide expert guidance on Next.js 16 Ap
 - Header/cookie manipulation
 
 ### Performance
+
 - Image optimization with `next/image` (sizes, priority, loading)
 - Font optimization with `next/font`
 - Bundle analysis and code splitting
@@ -1560,6 +1651,7 @@ You are Nessi's Next.js specialist. You provide expert guidance on Next.js 16 Ap
 - Core Web Vitals optimization
 
 ### Error Handling
+
 - `error.tsx` boundaries (per-route or shared)
 - `not-found.tsx` for 404 pages
 - `loading.tsx` for navigation transitions
@@ -1568,6 +1660,7 @@ You are Nessi's Next.js specialist. You provide expert guidance on Next.js 16 Ap
 ## When Called By Conductor
 
 When invoked by the plan-architect or task-executor:
+
 1. Always reference existing routing patterns in `src/app/`
 2. Check proxy.ts for route protection requirements
 3. Recommend appropriate rendering strategy for each page type
@@ -1596,6 +1689,7 @@ git commit -m "feat(agents): add nextjs-expert agent for App Router guidance"
 ### Task 16: Create the Vercel Expert Agent
 
 **Files:**
+
 - Create: `.claude/agents/vercel-expert/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
@@ -1626,6 +1720,7 @@ You are Nessi's Vercel platform specialist. You provide expert guidance on deplo
 ## Expertise Areas
 
 ### Deployment
+
 - Preview deployments for PR review
 - Production deployment strategies
 - Rollback procedures
@@ -1633,12 +1728,14 @@ You are Nessi's Vercel platform specialist. You provide expert guidance on deplo
 - `vercel deploy --prebuilt` for CI
 
 ### Environment Variables
+
 - Environment-specific vars (development, preview, production)
 - `vercel env pull` for local dev
 - Secret management best practices
 - Branch-scoped variables
 
 ### Functions
+
 - Serverless function configuration (runtime, memory, timeout)
 - Edge Functions vs Serverless Functions
 - Fluid Compute for long-running operations
@@ -1646,17 +1743,20 @@ You are Nessi's Vercel platform specialist. You provide expert guidance on deplo
 - Cron jobs for scheduled tasks
 
 ### Caching
+
 - CDN cache behavior and Cache-Control headers
 - ISR on Vercel (automatic integration)
 - Runtime Cache for cross-request data
 - Cache invalidation strategies
 
 ### Domains & DNS
+
 - Custom domain configuration
 - DNS record management
 - SSL certificate handling
 
 ### CI/CD Integration
+
 - GitHub Actions + Vercel workflow
 - `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` for CI
 - Preview URL comments on PRs
@@ -1683,6 +1783,7 @@ git commit -m "feat(agents): add vercel-expert agent for platform and deployment
 ### Task 17: Create the SCSS/Styling Expert Agent
 
 **Files:**
+
 - Create: `.claude/agents/scss-expert/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
@@ -1715,24 +1816,28 @@ You are Nessi's styling specialist. You provide expert guidance on SCSS Modules,
 ## Expertise Areas
 
 ### Component Styling
+
 - CSS Modules scoping patterns
 - Composing styles with `composes:`
 - Dynamic class names with `clsx` or template literals
 - Responsive component patterns
 
 ### Design Tokens
+
 - Color system (CSS custom properties)
 - Spacing scale
 - Typography scale
 - Border radius, shadows, z-index layers
 
 ### Responsive Design
+
 - Mobile-first breakpoint strategy
 - Breakpoint mixin usage
 - Grid and flexbox layout patterns
 - Touch-friendly sizing for marketplace (fishing gear buyers on phones)
 
 ### Marketplace-Specific Styling
+
 - Product card layouts (grid, list, masonry)
 - Image gallery styling (Swiper integration)
 - Price display formatting
@@ -1743,6 +1848,7 @@ You are Nessi's styling specialist. You provide expert guidance on SCSS Modules,
 ## When Called By Conductor
 
 When invoked by the task-executor:
+
 1. Always read existing variables from `src/styles/variables/` first
 2. Use existing mixins — don't create new ones unless justified
 3. Follow flat class naming convention
@@ -1771,11 +1877,12 @@ git commit -m "feat(agents): add scss-expert agent for styling and responsive de
 ### Task 18: Create the Tanstack Query Expert Agent
 
 **Files:**
+
 - Create: `.claude/agents/tanstack-query-expert/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: tanstack-query-expert
 description: Tanstack Query expertise — data fetching hooks, mutations, caching, optimistic updates, and infinite scroll patterns for the marketplace
@@ -1801,6 +1908,7 @@ You are Nessi's data fetching specialist. You provide expert guidance on Tanstac
 ## Patterns
 
 ### Query Hook Pattern
+
 ```typescript
 // src/features/{domain}/hooks/use-{resource}.ts
 import { useQuery } from '@tanstack/react-query';
@@ -1821,8 +1929,10 @@ export function useAllResources() {
   });
 }
 ```
+````
 
 ### Mutation Pattern
+
 ```typescript
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -1838,6 +1948,7 @@ export function useCreateResource() {
 ```
 
 ### Marketplace-Specific Patterns
+
 - **Product listings:** Infinite scroll with `useInfiniteQuery`
 - **Search/filter:** Query keys that include filter state
 - **Optimistic updates:** For favorites, cart operations
@@ -1852,14 +1963,15 @@ export function useCreateResource() {
 - Hooks live in `src/features/{domain}/hooks/` — not in components
 - Follow existing hook naming: `use{All|User|Single}{Resource}`
 - Invalidate related queries after mutations
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/agents/tanstack-query-expert/AGENT.md
 git commit -m "feat(agents): add tanstack-query-expert agent for data fetching patterns"
-```
+````
 
 ---
 
@@ -1872,6 +1984,7 @@ git commit -m "feat(agents): add tanstack-query-expert agent for data fetching p
 ### Task 19: Fix task-executor tech stack and MCP namespaces
 
 **Files:**
+
 - Modify: `.claude/agents/task-executor/AGENT.md`
 
 - [ ] **Step 1: Read current task-executor**
@@ -1881,6 +1994,7 @@ Run: Read `.claude/agents/task-executor/AGENT.md`
 - [ ] **Step 2: Fix stale tech stack references**
 
 Replace `Drizzle ORM` with `Supabase` in the implementation guidance:
+
 ```
 - Old: "database (Drizzle ORM)"
 - New: "database (Supabase via @supabase/supabase-js)"
@@ -1889,6 +2003,7 @@ Replace `Drizzle ORM` with `Supabase` in the implementation guidance:
 - [ ] **Step 3: Fix MCP tool namespaces**
 
 Replace the `allowedTools` line:
+
 ```
 - Old: allowedTools: mcp__context7__*, mcp__supabase__*, mcp__vercel__*
 - New: allowedTools: mcp__plugin_context7_context7__*, mcp__plugin_supabase_supabase__*, mcp__plugin_vercel_vercel__*
@@ -1906,6 +2021,7 @@ git commit -m "fix(agents): correct task-executor tech stack refs and MCP namesp
 ### Task 20: Fix all existing agent MCP namespaces
 
 **Files:**
+
 - Modify: All agents in `.claude/agents/*/AGENT.md` that use short-form MCP names
 
 - [ ] **Step 1: Audit all agents for incorrect MCP namespaces**
@@ -1929,6 +2045,7 @@ git commit -m "fix(agents): normalize MCP tool namespaces to plugin format"
 ### Task 21: Update plan-architect for expert context pre-loading
 
 **Files:**
+
 - Modify: `.claude/agents/plan-architect/AGENT.md`
 
 Instead of the fragile `EXPERT_NEEDED` runtime routing pattern, the plan-architect pre-tags each task with the expert domain it touches. The conductor pre-fetches expert context before launching task-executor.
@@ -1950,7 +2067,9 @@ Add to the Task Format section:
 Valid expert domains: `supabase`, `nextjs`, `vercel`, `scss`, `state-management`
 
 Example:
+
 ### Task 2.1: Create order history API route
+
 {description}
 **Files:** `src/app/api/orders/route.ts`
 **AC:** GET returns paginated orders for the authenticated user
@@ -1969,6 +2088,7 @@ git commit -m "feat(agents): add expert domain tagging to plan-architect task fo
 ### Task 22: Update conductor-start for pre-loaded expert context
 
 **Files:**
+
 - Modify: `.claude/skills/conductor-start/SKILL.md`
 
 - [ ] **Step 1: Add expert pre-loading to implementation loop**
@@ -1979,6 +2099,7 @@ Replace the EXPERT_NEEDED reactive dispatch with proactive pre-loading. Add to S
 #### Expert Context Pre-Loading (within implementation loop)
 
 If the current task has `Expert Domains` specified in the plan:
+
 1. For each expert domain, launch the corresponding expert agent with the task context
 2. Collect expert guidance (recommended patterns, gotchas, code examples)
 3. Include the expert guidance in the task-executor's prompt as "Expert Context"
@@ -2014,11 +2135,12 @@ git commit -m "feat(skills): add proactive expert context pre-loading to conduct
 ### Task 23: Create the UI Test Agent
 
 **Files:**
+
 - Create: `.claude/agents/ui-tester/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: ui-tester
 description: Runs Playwright browser tests against the dev server — visual verification, interaction testing, and regression checks
@@ -2036,17 +2158,20 @@ You run browser-based tests against Nessi's dev server using Playwright MCP. You
 ## Nessi's Frontend
 
 - **Dev server:** `pnpm dev` (Next.js on localhost:3000)
-- **Pages:** Home (/), Product detail (/item/[id]), Dashboard (/dashboard/*), Auth pages
+- **Pages:** Home (/), Product detail (/item/[id]), Dashboard (/dashboard/\*), Auth pages
 - **Components:** Product cards, image galleries, forms, navigation
 - **Auth:** Cookie-based sessions via Supabase — protected routes redirect to /
 
 ## Process
 
 ### 1. Start Dev Server (if not running)
+
 Check if localhost:3000 is responding. If not, start `pnpm dev` in background.
 
 ### 2. Navigate and Verify
+
 For each page/flow being tested:
+
 1. Navigate to the URL using `browser_navigate`
 2. Take a snapshot with `browser_snapshot` to see the page structure
 3. Verify key elements are present (using accessibility tree from snapshot)
@@ -2055,20 +2180,24 @@ For each page/flow being tested:
 6. Take screenshots at key states with `browser_take_screenshot`
 
 ### 3. Test Flows
+
 Run through complete user flows:
 
 #### Product Browsing Flow
+
 1. Home page loads with product grid
 2. Product cards display title, price, image
 3. Clicking a product navigates to /item/[id]
 4. Product detail shows gallery, description, price, seller info
 
 #### Auth Flow
+
 1. Login form renders with email/password fields
 2. Registration form has all required fields
-3. Protected routes (/dashboard/*) redirect unauthenticated users
+3. Protected routes (/dashboard/\*) redirect unauthenticated users
 
 #### Dashboard Flow (authenticated)
+
 1. Dashboard loads with user's products
 2. "Add Product" form has all fields
 3. Product management (edit, delete) works
@@ -2079,24 +2208,29 @@ Run through complete user flows:
 ## UI Test Report
 
 ### Pages Verified
-| Page | Status | Console Errors | Notes |
-|------|--------|---------------|-------|
-| / | ✅ Pass | 0 | Product grid renders |
-| /item/[id] | ✅ Pass | 0 | Gallery, pricing OK |
-| /dashboard | ⚠️ Warning | 1 | React hydration warning |
+
+| Page       | Status     | Console Errors | Notes                   |
+| ---------- | ---------- | -------------- | ----------------------- |
+| /          | ✅ Pass    | 0              | Product grid renders    |
+| /item/[id] | ✅ Pass    | 0              | Gallery, pricing OK     |
+| /dashboard | ⚠️ Warning | 1              | React hydration warning |
 
 ### Flows Tested
-| Flow | Status | Steps | Notes |
-|------|--------|-------|-------|
-| Product browse | ✅ Pass | 4/4 | - |
-| Auth redirect | ✅ Pass | 2/2 | - |
+
+| Flow           | Status  | Steps | Notes |
+| -------------- | ------- | ----- | ----- |
+| Product browse | ✅ Pass | 4/4   | -     |
+| Auth redirect  | ✅ Pass | 2/2   | -     |
 
 ### Screenshots
+
 {List of screenshot paths for review}
 
 ### Issues Found
+
 {Any problems with severity and recommended fix}
 ```
+````
 
 ## Rules
 
@@ -2106,25 +2240,27 @@ Run through complete user flows:
 - Verify responsive behavior at mobile (375px) and desktop (1280px) widths
 - Don't modify code — only observe and report
 - If the dev server can't start, report the build error and stop
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/agents/ui-tester/AGENT.md
 git commit -m "feat(agents): add ui-tester agent for Playwright browser verification"
-```
+````
 
 ---
 
 ### Task 24: Create the Browser Debug Agent
 
 **Files:**
+
 - Create: `.claude/agents/browser-debug/AGENT.md`
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: browser-debug
 description: Debugs UI issues using Chrome DevTools MCP — inspects network requests, console errors, performance, and DOM state
@@ -2142,6 +2278,7 @@ You debug frontend issues by inspecting the running application using browser au
 ## When to Use
 
 The conductor or developer invokes you when:
+
 - A UI test fails and the cause isn't obvious from the test report
 - A page loads but shows incorrect data (network/API issue)
 - Console errors appear during testing
@@ -2151,11 +2288,13 @@ The conductor or developer invokes you when:
 ## Process
 
 ### 1. Reproduce the Issue
+
 1. Navigate to the problem page using `browser_navigate`
 2. Take a snapshot to see current state
 3. Check console messages for errors/warnings
 
 ### 2. Inspect Network
+
 1. Check `browser_network_requests` for API calls
 2. Verify request URLs, methods, and status codes
 3. Look for failed requests (4xx, 5xx)
@@ -2163,17 +2302,20 @@ The conductor or developer invokes you when:
 5. Look for CORS issues or auth failures
 
 ### 3. Inspect DOM
+
 1. Take a snapshot to see the accessibility tree
 2. Verify expected elements exist
 3. Check for hidden elements or incorrect attributes
 4. Evaluate expressions with `browser_evaluate` to inspect state
 
 ### 4. Debug Interactions
+
 1. Click/fill/type to reproduce the issue step by step
 2. Check console after each action for new errors
 3. Take snapshots between actions to see state changes
 
 ### 5. Performance Check (if relevant)
+
 1. Check network request timing
 2. Look for large payloads or slow responses
 3. Check for excessive re-renders (React-specific console warnings)
@@ -2184,19 +2326,24 @@ The conductor or developer invokes you when:
 ## Browser Debug Report
 
 ### Issue
+
 {Description of what was being investigated}
 
 ### Root Cause
+
 {What was found — with evidence from network, console, DOM inspection}
 
 ### Evidence
+
 - Console: {relevant console messages}
 - Network: {relevant request/response details}
 - DOM: {relevant element state}
 
 ### Recommended Fix
+
 {Specific code change to fix the issue, with file paths}
 ```
+````
 
 ## Rules
 
@@ -2206,25 +2353,27 @@ The conductor or developer invokes you when:
 - Include specific error messages and stack traces
 - If the issue is in API responses, trace back to the API route code
 - Don't modify code — diagnose and report only
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/agents/browser-debug/AGENT.md
 git commit -m "feat(agents): add browser-debug agent for Chrome DevTools debugging"
-```
+````
 
 ---
 
 ### Task 25: Create the UI Test Skill
 
 **Files:**
+
 - Create: `.claude/skills/ui-test/SKILL.md`
 
 - [ ] **Step 1: Write the skill definition**
 
-```markdown
+````markdown
 ---
 name: ui-test
 description: Run Playwright UI tests against the dev server — verifies pages render, interactions work, and there are no console errors
@@ -2248,19 +2397,24 @@ Scope: `{{ scope }}` (defaults to "all")
 ### Step 1: Ensure Dev Server Running
 
 Check if localhost:3000 is responding:
+
 ```bash
 curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 || echo "not running"
 ```
+````
 
 If not running, start it:
+
 ```bash
 pnpm dev &
 ```
+
 Wait for it to be ready (poll localhost:3000).
 
 ### Step 2: Launch UI Tester
 
 Launch the **ui-tester** agent with:
+
 - The scope (which pages/flows to test)
 - Current routes and components context
 
@@ -2278,6 +2432,7 @@ Display results:
 ```
 
 If issues found, offer to debug:
+
 ```
 Issues detected. Run browser debugger?
   → This will launch the browser-debug agent to inspect network, console, and DOM state.
@@ -2286,6 +2441,7 @@ Issues detected. Run browser debugger?
 ## Integration with Conductor
 
 When called from the conductor's review phase:
+
 1. Runs after /preflight passes (no point UI testing if build is broken)
 2. Findings categorized as [B], [W], [I] for the review-orchestrator
 3. Screenshots saved to the track directory for PR context
@@ -2296,20 +2452,22 @@ When called from the conductor's review phase:
 - Always check console for errors — even if pages look correct
 - Test at both mobile (375px) and desktop (1280px) widths
 - Report screenshot paths for human review
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/skills/ui-test/SKILL.md
 git commit -m "feat(skills): add ui-test skill for Playwright browser verification"
-```
+````
 
 ---
 
 ### Task 26: Wire UI testing into conductor review phase
 
 **Files:**
+
 - Modify: `.claude/skills/conductor-start/SKILL.md`
 
 - [ ] **Step 1: Add UI test step to review phase**
@@ -2346,12 +2504,13 @@ git commit -m "feat(skills): add UI testing to conductor review phase"
 ### Task 27: Create state-management-expert (replaces tanstack-query-expert)
 
 **Files:**
+
 - Create: `.claude/agents/state-management-expert/AGENT.md`
 - (tanstack-query-expert from Task 18 becomes this instead)
 
 - [ ] **Step 1: Write the agent definition**
 
-```markdown
+````markdown
 ---
 name: state-management-expert
 description: Tanstack Query + Zustand expertise — data fetching, caching, mutations, client state stores, and the createSelectors pattern
@@ -2369,6 +2528,7 @@ You are Nessi's state management specialist covering both server state (Tanstack
 ## Nessi's State Architecture
 
 ### Server State: Tanstack Query
+
 - **Provider:** `QueryClientProvider` in `src/libs/providers.tsx`
 - **Config:** `src/libs/query-client.ts` — 60s default `staleTime`
 - **Hook location:** `src/features/{domain}/hooks/`
@@ -2376,12 +2536,14 @@ You are Nessi's state management specialist covering both server state (Tanstack
 - **Services:** API client functions in `src/features/{domain}/services/`
 
 ### Client State: Zustand
+
 - **Store location:** `src/features/{domain}/stores/`
 - **Selectors utility:** `src/libs/create-selectors.ts` — auto-generates typed selectors
 - **Usage pattern:** `useStore.use.propertyName()` via createSelectors
 - **Use cases:** Cart, filters, multi-step forms, UI state shared across components
 
 ### Auth State: Supabase Context
+
 - **Provider:** `AuthProvider` in `src/features/auth/context.tsx`
 - **Hook:** `useAuth()` — wraps Supabase session state
 - **Not Zustand, not Tanstack Query** — dedicated context for auth
@@ -2389,6 +2551,7 @@ You are Nessi's state management specialist covering both server state (Tanstack
 ## Tanstack Query Patterns
 
 ### Query Key Factories
+
 ```typescript
 export const productKeys = {
   all: ['products'] as const,
@@ -2398,8 +2561,10 @@ export const productKeys = {
   detail: (id: string) => [...productKeys.details(), id] as const,
 };
 ```
+````
 
 ### Mutation with Cache Invalidation
+
 ```typescript
 export function useCreateProduct() {
   const queryClient = useQueryClient();
@@ -2413,6 +2578,7 @@ export function useCreateProduct() {
 ```
 
 ### Marketplace-Specific Patterns
+
 - **Product listings:** `useInfiniteQuery` for infinite scroll
 - **Search/filter:** Query keys include filter state for automatic refetch
 - **Optimistic updates:** For favorites, cart add/remove
@@ -2422,6 +2588,7 @@ export function useCreateProduct() {
 ## Zustand Patterns
 
 ### Store with createSelectors
+
 ```typescript
 // src/features/{domain}/stores/{name}-store.ts
 import { create } from 'zustand';
@@ -2446,13 +2613,14 @@ export const useCartStore = createSelectors(useCartStoreBase);
 ```
 
 ### When to Use Zustand vs Tanstack Query
-| Data Type | Tool | Why |
-|-----------|------|-----|
-| Server data (products, orders, users) | Tanstack Query | Caching, revalidation, deduplication |
-| UI state (filters, sort, view mode) | Zustand | No server sync needed, instant updates |
-| Form state (multi-step flows) | Zustand | Persists across navigation, no server |
-| Shopping cart | Zustand (+ localStorage persist) | Offline-capable, instant updates |
-| Auth session | AuthProvider (Supabase) | Dedicated system, event-driven |
+
+| Data Type                             | Tool                             | Why                                    |
+| ------------------------------------- | -------------------------------- | -------------------------------------- |
+| Server data (products, orders, users) | Tanstack Query                   | Caching, revalidation, deduplication   |
+| UI state (filters, sort, view mode)   | Zustand                          | No server sync needed, instant updates |
+| Form state (multi-step flows)         | Zustand                          | Persists across navigation, no server  |
+| Shopping cart                         | Zustand (+ localStorage persist) | Offline-capable, instant updates       |
+| Auth session                          | AuthProvider (Supabase)          | Dedicated system, event-driven         |
 
 ## Rules
 
@@ -2464,14 +2632,15 @@ export const useCartStore = createSelectors(useCartStoreBase);
 - Always use `createSelectors` wrapper for Zustand stores
 - Invalidate related queries after mutations
 - Don't put server state in Zustand — that's Tanstack Query's job
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add .claude/agents/state-management-expert/AGENT.md
 git commit -m "feat(agents): add state-management-expert for Tanstack Query + Zustand"
-```
+````
 
 ---
 
@@ -2484,6 +2653,7 @@ git commit -m "feat(agents): add state-management-expert for Tanstack Query + Zu
 ### Task 28: Update preflight to include UI test step
 
 **Files:**
+
 - Modify: `.claude/skills/preflight/SKILL.md` (from Task 7)
 
 - [ ] **Step 1: Add UI test as final check**
@@ -2492,7 +2662,9 @@ Add after the Build check:
 
 ```markdown
 ### 7. UI Tests (optional, requires dev server)
+
 If the dev server is running on localhost:3000 or can be started:
+
 - Launch **ui-tester** agent for smoke testing
 - Report page render status and console errors
 - This check is optional — preflight still passes without it, but reports "skipped"
@@ -2501,6 +2673,7 @@ If the dev server is running on localhost:3000 or can be started:
 - [ ] **Step 2: Update the output format**
 
 Add to the report:
+
 ```
   ✅ UI Tests       {pass|fail|skipped}  {duration}  {page_count} pages
 ```
@@ -2518,18 +2691,18 @@ git commit -m "feat(skills): add optional UI testing to preflight quality gate"
 
 Every MCP is mapped to the agents that use it:
 
-| MCP | Namespace | Agents That Use It |
-|-----|-----------|-------------------|
-| **Context7** (docs lookup) | `mcp__plugin_context7_context7__*` | plan-architect, task-executor, supabase-expert, nextjs-expert, vercel-expert, state-management-expert, ux-researcher |
-| **Playwright** (browser automation) | `mcp__plugin_playwright_playwright__*` | ux-researcher, marketplace-audit, ui-tester, browser-debug |
-| **Supabase** (database management) | `mcp__plugin_supabase_supabase__*` | task-executor, supabase-expert |
-| **Vercel** (deployment/platform) | `mcp__plugin_vercel_vercel__*` | task-executor, vercel-expert |
+| MCP                                 | Namespace                              | Agents That Use It                                                                                                   |
+| ----------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Context7** (docs lookup)          | `mcp__plugin_context7_context7__*`     | plan-architect, task-executor, supabase-expert, nextjs-expert, vercel-expert, state-management-expert, ux-researcher |
+| **Playwright** (browser automation) | `mcp__plugin_playwright_playwright__*` | ux-researcher, marketplace-audit, ui-tester, browser-debug                                                           |
+| **Supabase** (database management)  | `mcp__plugin_supabase_supabase__*`     | task-executor, supabase-expert                                                                                       |
+| **Vercel** (deployment/platform)    | `mcp__plugin_vercel_vercel__*`         | task-executor, vercel-expert                                                                                         |
 
 ### MCPs NOT Integrated (and why)
 
-| MCP/Plugin | Why Not |
-|------------|---------|
-| **Stripe** | Skills only (no MCP tools in deferred list). Stripe features not in current roadmap — add stripe-expert when payments are implemented |
+| MCP/Plugin          | Why Not                                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Stripe**          | Skills only (no MCP tools in deferred list). Stripe features not in current roadmap — add stripe-expert when payments are implemented                                                                        |
 | **Chrome DevTools** | Skills only. Browser debugging is handled via Playwright MCP which provides equivalent capabilities (console, network, DOM inspection). Chrome DevTools skills remain available for standalone developer use |
 
 ### MCP Namespace Fix Required
@@ -2542,44 +2715,44 @@ All existing agents use short-form MCP names (`mcp__context7__*`). The correct f
 
 ### All Agents (19 total: 8 existing + 11 new)
 
-| Agent | Model | Layer | Purpose |
-|-------|-------|-------|---------|
-| **plan-architect** | Opus | Conductor | Generates phased implementation plans (enhanced: design specs, expert tagging) |
-| **task-executor** | Sonnet | Conductor | Implements individual tasks (enhanced: correct tech stack, MCP fix) |
-| **phase-verifier** | Sonnet | Conductor | Runs verification at phase boundaries |
-| **review-orchestrator** | Sonnet | Conductor | Quality checks and finding categorization |
-| **finding-resolver** | Sonnet | Conductor | Creates fix tasks from findings |
-| **debug-investigator** | Opus | Conductor | Deep debugging on 3rd failure |
-| **pr-creator** | Sonnet | Conductor | Git operations and PR creation |
-| **ticket-generator** | Sonnet | Conductor | Breaks features into GitHub issues |
-| **ux-researcher** | Sonnet | Design Intelligence | Studies C2C marketplace competitors |
-| **marketplace-audit** | Sonnet | Design Intelligence | Audits features against marketplace UX |
-| **test-author** | Sonnet | Development Acceleration | Generates Vitest unit/component tests |
-| **ui-tester** | Sonnet | UI Testing | Playwright browser verification and smoke tests |
-| **browser-debug** | Sonnet | UI Testing | Chrome DevTools-style debugging via Playwright |
-| **supabase-expert** | Sonnet | Technology Expert | Database, Auth, RLS, Storage guidance |
-| **nextjs-expert** | Sonnet | Technology Expert | App Router, rendering, performance guidance |
-| **vercel-expert** | Sonnet | Technology Expert | Deployment, functions, CI/CD guidance |
-| **scss-expert** | Sonnet | Technology Expert | Styling, responsive design, design tokens |
-| **state-management-expert** | Sonnet | Technology Expert | Tanstack Query + Zustand patterns |
+| Agent                       | Model  | Layer                    | Purpose                                                                        |
+| --------------------------- | ------ | ------------------------ | ------------------------------------------------------------------------------ |
+| **plan-architect**          | Opus   | Conductor                | Generates phased implementation plans (enhanced: design specs, expert tagging) |
+| **task-executor**           | Sonnet | Conductor                | Implements individual tasks (enhanced: correct tech stack, MCP fix)            |
+| **phase-verifier**          | Sonnet | Conductor                | Runs verification at phase boundaries                                          |
+| **review-orchestrator**     | Sonnet | Conductor                | Quality checks and finding categorization                                      |
+| **finding-resolver**        | Sonnet | Conductor                | Creates fix tasks from findings                                                |
+| **debug-investigator**      | Opus   | Conductor                | Deep debugging on 3rd failure                                                  |
+| **pr-creator**              | Sonnet | Conductor                | Git operations and PR creation                                                 |
+| **ticket-generator**        | Sonnet | Conductor                | Breaks features into GitHub issues                                             |
+| **ux-researcher**           | Sonnet | Design Intelligence      | Studies C2C marketplace competitors                                            |
+| **marketplace-audit**       | Sonnet | Design Intelligence      | Audits features against marketplace UX                                         |
+| **test-author**             | Sonnet | Development Acceleration | Generates Vitest unit/component tests                                          |
+| **ui-tester**               | Sonnet | UI Testing               | Playwright browser verification and smoke tests                                |
+| **browser-debug**           | Sonnet | UI Testing               | Chrome DevTools-style debugging via Playwright                                 |
+| **supabase-expert**         | Sonnet | Technology Expert        | Database, Auth, RLS, Storage guidance                                          |
+| **nextjs-expert**           | Sonnet | Technology Expert        | App Router, rendering, performance guidance                                    |
+| **vercel-expert**           | Sonnet | Technology Expert        | Deployment, functions, CI/CD guidance                                          |
+| **scss-expert**             | Sonnet | Technology Expert        | Styling, responsive design, design tokens                                      |
+| **state-management-expert** | Sonnet | Technology Expert        | Tanstack Query + Zustand patterns                                              |
 
 ### All Skills (14 total: 5 existing + 9 new)
 
-| Skill | Layer | Purpose |
-|-------|-------|---------|
-| **conductor-start** | Conductor | Main entry: ticket → PR (enhanced: preflight, UI test, expert pre-loading) |
-| **conductor-status** | Conductor | Status dashboard |
-| **conductor-resume** | Conductor | Resume interrupted work |
-| **conductor-cleanup** | Conductor | Prune depot entries |
-| **ticket-gen** | Conductor | Feature → GitHub issues (enhanced: design spec integration) |
-| **design-spec** | Design Intelligence | Competitor research → design specification |
-| **feature-scaffold** | Development Acceleration | Scaffold new feature domain directory |
-| **db-migrate** | Development Acceleration | Supabase SQL migration generation |
-| **preflight** | Quality & Operations | Comprehensive quality gate (build, lint, type, format, tests, UI) |
-| **marketplace-audit** | Quality & Operations | C2C UX audit with scored findings |
-| **audit** | Quality & Operations | Combined quality + marketplace dashboard |
-| **ui-test** | UI Testing | Playwright browser verification |
-| **feature-pipeline** | Orchestration | End-to-end: design → tickets → build |
+| Skill                 | Layer                    | Purpose                                                                    |
+| --------------------- | ------------------------ | -------------------------------------------------------------------------- |
+| **conductor-start**   | Conductor                | Main entry: ticket → PR (enhanced: preflight, UI test, expert pre-loading) |
+| **conductor-status**  | Conductor                | Status dashboard                                                           |
+| **conductor-resume**  | Conductor                | Resume interrupted work                                                    |
+| **conductor-cleanup** | Conductor                | Prune depot entries                                                        |
+| **ticket-gen**        | Conductor                | Feature → GitHub issues (enhanced: design spec integration)                |
+| **design-spec**       | Design Intelligence      | Competitor research → design specification                                 |
+| **feature-scaffold**  | Development Acceleration | Scaffold new feature domain directory                                      |
+| **db-migrate**        | Development Acceleration | Supabase SQL migration generation                                          |
+| **preflight**         | Quality & Operations     | Comprehensive quality gate (build, lint, type, format, tests, UI)          |
+| **marketplace-audit** | Quality & Operations     | C2C UX audit with scored findings                                          |
+| **audit**             | Quality & Operations     | Combined quality + marketplace dashboard                                   |
+| **ui-test**           | UI Testing               | Playwright browser verification                                            |
+| **feature-pipeline**  | Orchestration            | End-to-end: design → tickets → build                                       |
 
 ### The Full Pipeline
 
