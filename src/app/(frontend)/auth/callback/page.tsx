@@ -1,9 +1,14 @@
 'use client';
 
 import React, { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import styles from './callback.module.scss';
-import ResetPasswordForm from '@/features/auth/components/reset-password-form';
+
+const ResetPasswordForm = dynamic(
+  () => import('@/features/auth/components/reset-password-form'),
+  { ssr: false },
+);
 
 function CallbackContent() {
   const searchParams = useSearchParams();
