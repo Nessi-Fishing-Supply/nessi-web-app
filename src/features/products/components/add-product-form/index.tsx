@@ -16,7 +16,7 @@ interface AddProductFormProps {
 
 const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => {
   const methods = useForm();
-  const { token } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const [newProduct, setNewProduct] = useState<{
     title: string;
@@ -61,7 +61,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductCreated }) => 
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!token) return;
+    if (!isAuthenticated) return;
 
     try {
       // Upload images during form submission

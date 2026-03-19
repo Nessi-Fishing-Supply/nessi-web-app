@@ -8,11 +8,6 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  // Legacy interface (kept for backward compat until consumers are updated)
-  setAuthenticated: (value: boolean) => void;
-  token: string | null;
-  setToken: (value: string | null) => void;
-  setUser: (user: any) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,17 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [supabase]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        setAuthenticated: () => {},
-        token: null,
-        setToken: () => {},
-        setUser: () => {},
-      }}
-    >
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
