@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRouter } from 'next/navigation';
 import { resetPasswordSchema } from '@/features/auth/validations/auth';
 import { Input, Button } from '@/components/controls';
 import { resetPassword } from '@/features/auth/services/auth';
@@ -24,7 +23,6 @@ const ResetPasswordForm: React.FC<AuthFormProps<ResetPasswordFormData>> = ({
   onSuccess,
   onError,
 }) => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 

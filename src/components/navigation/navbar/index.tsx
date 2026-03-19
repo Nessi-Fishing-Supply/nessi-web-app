@@ -16,7 +16,6 @@ import {
 // Components
 import NotificationBar from '@/components/navigation/notification-bar';
 import Modal from '@/components/layout/modal';
-import Toast from '@/components/indicators/toast';
 import LoginForm from '@/features/auth/components/login-form';
 import RegisterForm from '@/features/auth/components/registration-form';
 import ResendVerificationForm from '@/features/auth/components/resend-verification-form';
@@ -25,9 +24,10 @@ import { Button, AppLink, Dropdown, DropdownItem, DropdownTitle } from '@/compon
 // Assets
 import LogoFull from '@/assets/logos/logo_full.svg';
 
-// Auth
+// Auth & Toast
 import { useAuth } from '@/features/auth/context';
 import { logout } from '@/features/auth/services/auth';
+import { useToast } from '@/components/indicators/toast/context';
 
 export default function Navbar() {
   const mounted = useSyncExternalStore(
@@ -40,19 +40,11 @@ export default function Navbar() {
   const [isResendModalOpen, setResendModalOpen] = useState(false);
   const [loginBanner, setLoginBanner] = useState<{ type: 'verified' } | null>(null);
 
-  // Toast state for auth success notifications
-  const [toast, setToast] = useState<{
-    visible: boolean;
-    email: string;
-    message: string;
-    description: string;
-    subtitle: string;
-  }>({ visible: false, email: '', message: '', description: '', subtitle: '' });
-
   const { user, isAuthenticated } = useAuth();
+  const { showToast } = useToast();
   const searchParams = useSearchParams();
 
-  // Detect query params and open appropriate modals
+  // Detect query params and open appropriate modals/toasts
   useEffect(() => {
     const loginQuery = searchParams?.get('login');
     const verified = searchParams?.get('verified');
@@ -76,12 +68,10 @@ export default function Navbar() {
 
     if (passwordReset === 'true') {
       requestAnimationFrame(() =>
-        setToast({
-          visible: true,
-          email: '',
+        showToast({
+          type: 'success',
           message: 'Password updated!',
           description: 'Your password has been reset and you are now logged in.',
-          subtitle: '',
         }),
       );
     }
@@ -95,7 +85,7 @@ export default function Navbar() {
       url.searchParams.delete('password_reset');
       window.history.replaceState({}, '', url.pathname + url.search);
     }
-  }, [searchParams]);
+  }, [searchParams, showToast]);
 
   const handleLogout = async () => {
     try {
@@ -132,9 +122,8 @@ export default function Navbar() {
 
   const handleRegisterSuccess = (response: { message: string; email?: string }) => {
     setRegisterModalOpen(false);
-    setToast({
-      visible: true,
-      email: response.email || '',
+    showToast({
+      type: 'success',
       message: 'Account created!',
       description: `Check your inbox at ${response.email} for a verification link.`,
       subtitle: 'Come back and sign in once verified.',
@@ -143,9 +132,8 @@ export default function Navbar() {
 
   const handleResendSuccess = (email: string) => {
     setResendModalOpen(false);
-    setToast({
-      visible: true,
-      email,
+    showToast({
+      type: 'success',
       message: 'Verification email sent!',
       description: `If an account exists for ${email}, you'll receive a verification link shortly.`,
       subtitle: 'Check your inbox and sign in once verified.',
@@ -271,18 +259,6 @@ export default function Navbar() {
       <Modal isOpen={isResendModalOpen} onClose={toggleResendModal}>
         <ResendVerificationForm onBackToLogin={handleResendToLogin} onSuccess={handleResendSuccess} />
       </Modal>
-
-      {/* Registration Success Toast */}
-      <Toast
-        visible={toast.visible}
-        type="success"
-        message={toast.message}
-        description={toast.description}
-        subtitle={toast.subtitle}
-        onDismiss={() =>
-          setToast({ visible: false, email: '', message: '', description: '', subtitle: '' })
-        }
-      />
     </nav>
   );
 }
