@@ -27,7 +27,10 @@ export async function POST(req: Request) {
 
     if (error) {
       if (error.message.includes('User already registered')) {
-        return NextResponse.json({ error: 'DUPLICATE_EMAIL' }, { status: 409, headers: AUTH_HEADERS });
+        return NextResponse.json(
+          { error: 'DUPLICATE_EMAIL' },
+          { status: 409, headers: AUTH_HEADERS },
+        );
       }
       return NextResponse.json({ error: error.message }, { status: 400, headers: AUTH_HEADERS });
     }
