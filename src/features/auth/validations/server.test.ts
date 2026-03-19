@@ -16,9 +16,7 @@ describe('validateRegisterInput', () => {
   });
 
   it('rejects missing firstName', () => {
-    expect(validateRegisterInput({ ...validInput, firstName: '' })).toBe(
-      'First name is required',
-    );
+    expect(validateRegisterInput({ ...validInput, firstName: '' })).toBe('First name is required');
   });
 
   it('rejects missing lastName', () => {
@@ -60,9 +58,7 @@ describe('validateRegisterInput', () => {
   });
 
   it('rejects when terms not accepted', () => {
-    expect(validateRegisterInput({ ...validInput, terms: false })).toBe(
-      'Terms must be accepted',
-    );
+    expect(validateRegisterInput({ ...validInput, terms: false })).toBe('Terms must be accepted');
   });
 
   it('handles null/undefined fields gracefully', () => {

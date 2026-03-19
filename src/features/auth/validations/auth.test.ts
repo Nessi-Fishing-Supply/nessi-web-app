@@ -4,9 +4,7 @@ import { loginSchema, registerSchema, resetPasswordSchema } from './auth';
 
 describe('loginSchema', () => {
   it('validates correct input', async () => {
-    await expect(
-      loginSchema.validate({ email: 'a@b.com', password: 'x' }),
-    ).resolves.toBeDefined();
+    await expect(loginSchema.validate({ email: 'a@b.com', password: 'x' })).resolves.toBeDefined();
   });
 
   it('rejects invalid email', async () => {
@@ -38,21 +36,21 @@ describe('registerSchema', () => {
   });
 
   it('rejects password without uppercase', async () => {
-    await expect(
-      registerSchema.validate({ ...valid, password: 'alllower1' }),
-    ).rejects.toThrow('uppercase');
+    await expect(registerSchema.validate({ ...valid, password: 'alllower1' })).rejects.toThrow(
+      'uppercase',
+    );
   });
 
   it('rejects password without lowercase', async () => {
-    await expect(
-      registerSchema.validate({ ...valid, password: 'ALLUPPER1' }),
-    ).rejects.toThrow('lowercase');
+    await expect(registerSchema.validate({ ...valid, password: 'ALLUPPER1' })).rejects.toThrow(
+      'lowercase',
+    );
   });
 
   it('rejects password without number', async () => {
-    await expect(
-      registerSchema.validate({ ...valid, password: 'NoNumbersHere' }),
-    ).rejects.toThrow('number');
+    await expect(registerSchema.validate({ ...valid, password: 'NoNumbersHere' })).rejects.toThrow(
+      'number',
+    );
   });
 
   it('rejects unaccepted terms', async () => {

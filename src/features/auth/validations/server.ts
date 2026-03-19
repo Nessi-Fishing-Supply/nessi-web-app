@@ -17,7 +17,11 @@ export function validateRegisterInput(input: RegisterInput): string | null {
   if (!input.password || input.password.length < PASSWORD_MIN_LENGTH) {
     return 'Password must be at least 8 characters';
   }
-  if (!/[A-Z]/.test(input.password) || !/[a-z]/.test(input.password) || !/\d/.test(input.password)) {
+  if (
+    !/[A-Z]/.test(input.password) ||
+    !/[a-z]/.test(input.password) ||
+    !/\d/.test(input.password)
+  ) {
     return 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
   }
   if (!input.terms) return 'Terms must be accepted';
