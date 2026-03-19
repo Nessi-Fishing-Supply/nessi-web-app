@@ -1,0 +1,210 @@
+// @vitest-environment node
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { withTimeout, AUTH_TIMEOUT_MS, register, login, logout, getUserProfile } from '../auth';
+
+const TIMEOUT_MESSAGE = 'Something went wrong. Check your connection and try again.';
+
+vi.mock('@/libs/supabase/client', () => ({
+  createClient: vi.fn(),
+}));
+
+import { createClient } from '@/libs/supabase/client';
+
+describe('withTimeout', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('resolves normally when promise settles before timeout', async () => {
+    const fast = Promise.resolve('ok');
+    await expect(withTimeout(fast, 1000)).resolves.toBe('ok');
+  });
+
+  it('rejects with timeout message when promise is slower than the deadline', async () => {
+    const slow = new Promise<string>((resolve) => setTimeout(() => resolve('late'), 5000));
+    const result = withTimeout(slow, 1000);
+    vi.advanceTimersByTime(1001);
+    await expect(result).rejects.toThrow(TIMEOUT_MESSAGE);
+  });
+
+  it('does not reject when promise resolves just before the deadline', async () => {
+    const close = new Promise<string>((resolve) => setTimeout(() => resolve('just in time'), 999));
+    const result = withTimeout(close, 1000);
+    vi.advanceTimersByTime(999);
+    await expect(result).resolves.toBe('just in time');
+  });
+});
+
+describe('register', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  const validData = {
+    firstName: 'Jane',
+    lastName: 'Doe',
+    email: 'jane@example.com',
+    password: 'Str0ngPass',
+    terms: true,
+  };
+
+  it('passes AbortController signal to fetch', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ user: { id: '1' } }), { status: 200 }),
+    );
+
+    await register(validData);
+
+    expect(fetchSpy).toHaveBeenCalledOnce();
+    const callArgs = fetchSpy.mock.calls[0][1];
+    expect(callArgs?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it('throws timeout message when fetch is aborted after AUTH_TIMEOUT_MS', async () => {
+    vi.spyOn(global, 'fetch').mockImplementationOnce(
+      (_url, options) =>
+        new Promise<Response>((_resolve, reject) => {
+          const sig = options?.signal as AbortSignal | undefined;
+          if (sig) {
+            sig.addEventListener('abort', () => {
+              const err = new Error('The operation was aborted.');
+              err.name = 'AbortError';
+              reject(err);
+            });
+          }
+        }),
+    );
+
+    const result = register(validData);
+    vi.advanceTimersByTime(AUTH_TIMEOUT_MS + 1);
+    await expect(result).rejects.toThrow(TIMEOUT_MESSAGE);
+  });
+
+  it('throws the server error message when the response is not ok', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ error: 'Email already in use' }), { status: 400 }),
+    );
+
+    await expect(register(validData)).rejects.toThrow('Email already in use');
+  });
+});
+
+describe('login', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('times out and throws timeout message when Supabase is slow', async () => {
+    const neverResolves = new Promise<never>(() => {});
+    const mockSupabase = {
+      auth: {
+        signInWithPassword: vi.fn().mockReturnValue(neverResolves),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = login({ email: 'a@b.com', password: 'pass' });
+    vi.advanceTimersByTime(AUTH_TIMEOUT_MS + 1);
+    await expect(result).rejects.toThrow(TIMEOUT_MESSAGE);
+  });
+
+  it('returns user and session on successful login', async () => {
+    const mockUser = { id: 'u1', email: 'a@b.com' };
+    const mockSession = { access_token: 'tok' };
+    const mockSupabase = {
+      auth: {
+        signInWithPassword: vi.fn().mockResolvedValue({
+          data: { user: mockUser, session: mockSession },
+          error: null,
+        }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = await login({ email: 'a@b.com', password: 'pass' });
+    expect(result).toEqual({ user: mockUser, session: mockSession });
+  });
+
+  it('throws the Supabase error message when login fails', async () => {
+    const mockSupabase = {
+      auth: {
+        signInWithPassword: vi.fn().mockResolvedValue({
+          data: { user: null, session: null },
+          error: { message: 'Invalid credentials' },
+        }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await expect(login({ email: 'a@b.com', password: 'wrong' })).rejects.toThrow(
+      'Invalid credentials',
+    );
+  });
+});
+
+describe('logout', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('calls supabase.auth.signOut without a timeout wrapper', async () => {
+    const signOutMock = vi.fn().mockResolvedValue({ error: null });
+    const mockSupabase = { auth: { signOut: signOutMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    // logout should resolve even with real timers (no withTimeout involved)
+    await expect(logout()).resolves.toBeUndefined();
+    expect(signOutMock).toHaveBeenCalledOnce();
+  });
+
+  it('throws when signOut returns an error', async () => {
+    const mockSupabase = {
+      auth: { signOut: vi.fn().mockResolvedValue({ error: { message: 'Sign out failed' } }) },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await expect(logout()).rejects.toThrow('Sign out failed');
+  });
+});
+
+describe('getUserProfile', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('calls supabase.auth.getUser without a timeout wrapper', async () => {
+    const mockUser = { id: 'u1', email: 'a@b.com' };
+    const getUserMock = vi.fn().mockResolvedValue({ data: { user: mockUser }, error: null });
+    const mockSupabase = { auth: { getUser: getUserMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = await getUserProfile();
+    expect(result).toEqual(mockUser);
+    expect(getUserMock).toHaveBeenCalledOnce();
+  });
+
+  it('throws when getUser returns an error', async () => {
+    const mockSupabase = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: { message: 'Not authenticated' } }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await expect(getUserProfile()).rejects.toThrow('Not authenticated');
+  });
+});

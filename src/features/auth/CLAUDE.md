@@ -33,6 +33,15 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 - **`getUser()` over `getSession()`** -- proxy.ts uses `getUser()` which verifies the JWT server-side (Supabase best practice)
 - **Admin client isolation** -- `autoRefreshToken: false`, `persistSession: false`, used only for registration
 
+## Timeout Handling
+
+All auth service functions except `logout` and `getUserProfile` apply an 8-second timeout to protect against hung Supabase client calls.
+
+- **`withTimeout` helper** -- wraps a promise with `Promise.race` against a `setTimeout`-backed rejection. Used for all Supabase client calls in the service layer.
+- **`register` fetch call** -- uses `AbortController` with an 8-second timeout passed as `signal` to the `fetch()` call to `/api/auth/register`, since `Promise.race` cannot cancel an in-flight fetch.
+- **Error message on timeout** -- `"Something went wrong. Check your connection and try again."` is returned as the service error and displayed in the form.
+- **Form field preservation** -- React Hook Form retains field values on timeout errors, so users do not lose their input and can retry without re-entering data.
+
 ## Key Patterns
 
 - Cookie-based sessions -- no localStorage tokens
