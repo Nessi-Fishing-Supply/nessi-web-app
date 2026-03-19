@@ -17,9 +17,11 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 
 1. `proxy.ts` refreshes Supabase sessions on every request via `getUser()` (server-side)
 2. `proxy.ts` redirects unauthenticated users away from `/dashboard/*` routes
-3. `AuthProvider` listens to `onAuthStateChange` for client-side state
-4. Auth forms call services which use the Supabase browser client
-5. Registration goes through `/api/auth/register` (uses admin client to bypass RLS)
+3. `proxy.ts` redirects authenticated users away from guarded auth pages (currently `/auth/forgot-password`) to `/`
+4. `/auth/callback` is explicitly not guarded — it handles email verification, recovery tokens, and PKCE exchange and must remain accessible to authenticated and unauthenticated users alike
+5. `AuthProvider` listens to `onAuthStateChange` for client-side state
+6. Auth forms call services which use the Supabase browser client
+7. Registration goes through `/api/auth/register` (uses admin client to bypass RLS)
 
 ## Security
 
@@ -48,7 +50,7 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 - Server-side: API routes use server client from `src/libs/supabase/server.ts`
 - Client-side: Components use browser client from `src/libs/supabase/client.ts`
 - Admin operations: Registration uses admin client from `src/libs/supabase/admin.ts`
-- Route protection: `proxy.ts` guards `/dashboard/*` -- unauthenticated users redirected to `/`
+- Route protection: `proxy.ts` guards routes in both directions -- unauthenticated users redirected from `/dashboard/*` to `/`, authenticated users redirected from guarded auth pages (e.g. `/auth/forgot-password`) to `/`; `/auth/callback` is excluded from this guard
 - Redirect URLs use `NEXT_PUBLIC_APP_URL` env var (not `window.location.origin`)
 
 ## Components
