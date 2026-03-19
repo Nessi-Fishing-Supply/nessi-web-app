@@ -186,10 +186,6 @@ When creating new skills for this project:
 - Use `metadata.filePattern` for dynamic triggers
 - MCP namespace: `mcp__plugin_context7_context7__*` (fully qualified, not short-form)
 
-## Future Considerations
+## Launch Checklist
 
-These items are not yet implemented but should be addressed before or during launch:
-
-- **Email transactional layer** — Resend + React Email for order confirmations, shipping notifications, seller alerts. Supabase handles auth emails for now.
-- **Rate limiting** — Application-level rate limiting on API routes (product creation, image uploads). Vercel WAF handles DDoS.
-- **Error monitoring** — Sentry (free tier: 5K errors/month) for error aggregation, deduplication, alerting. Install with `npx @sentry/wizard@latest -i nextjs`. Purely additive, no architectural impact.
+Pre-production items are tracked in `docs/launch-checklist.md`. Add items there whenever something is "good enough for now, fix before launch."
