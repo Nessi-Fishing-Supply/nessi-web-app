@@ -45,7 +45,9 @@ export default function Navbar() {
     visible: boolean;
     email: string;
     message: string;
-  }>({ visible: false, email: '', message: '' });
+    description: string;
+    subtitle: string;
+  }>({ visible: false, email: '', message: '', description: '', subtitle: '' });
 
   const { user, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
@@ -116,12 +118,24 @@ export default function Navbar() {
 
   const handleRegisterSuccess = (response: { message: string; email?: string }) => {
     setRegisterModalOpen(false);
-    setToast({ visible: true, email: response.email || '', message: 'Account created!' });
+    setToast({
+      visible: true,
+      email: response.email || '',
+      message: 'Account created!',
+      description: `Check your inbox at ${response.email} for a verification link.`,
+      subtitle: 'Come back and sign in once verified.',
+    });
   };
 
   const handleResendSuccess = (email: string) => {
     setResendModalOpen(false);
-    setToast({ visible: true, email, message: 'Verification email sent!' });
+    setToast({
+      visible: true,
+      email,
+      message: 'Verification email sent!',
+      description: `If an account exists for ${email}, you'll receive a verification link shortly.`,
+      subtitle: 'Check your inbox and sign in once verified.',
+    });
   };
 
   const handleResendToLogin = () => {
@@ -249,9 +263,11 @@ export default function Navbar() {
         visible={toast.visible}
         type="success"
         message={toast.message}
-        description={`Check your inbox at ${toast.email} for a verification link.`}
-        subtitle="Come back and sign in once verified."
-        onDismiss={() => setToast({ visible: false, email: '', message: '' })}
+        description={toast.description}
+        subtitle={toast.subtitle}
+        onDismiss={() =>
+          setToast({ visible: false, email: '', message: '', description: '', subtitle: '' })
+        }
       />
     </nav>
   );
