@@ -51,11 +51,30 @@ const RegisterForm: React.FC<AuthFormProps<RegisterFormData, AuthFormResponse>> 
         {error && <div className="errorMessage">{error}</div>}
 
         <Grid columns={2}>
-          <Input name="firstName" label="First Name" type="text" isRequired autoComplete="given-name" />
-          <Input name="lastName" label="Last Name" type="text" isRequired autoComplete="family-name" />
+          <Input
+            name="firstName"
+            label="First Name"
+            type="text"
+            isRequired
+            autoComplete="given-name"
+          />
+          <Input
+            name="lastName"
+            label="Last Name"
+            type="text"
+            isRequired
+            autoComplete="family-name"
+          />
         </Grid>
         <Input name="email" label="Email" type="email" isRequired autoComplete="email" />
-        <Input name="password" label="Password" type="password" showPasswordStrength isRequired autoComplete="new-password" />
+        <Input
+          name="password"
+          label="Password"
+          type="password"
+          showPasswordStrength
+          isRequired
+          autoComplete="new-password"
+        />
         <Checkbox name="terms" label="I accept the terms and conditions" isRequired />
         <Button type="submit" fullWidth loading={isLoading}>
           Sign Up

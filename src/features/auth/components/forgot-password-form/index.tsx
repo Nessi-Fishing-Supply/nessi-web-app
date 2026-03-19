@@ -52,7 +52,14 @@ const ForgotPasswordForm: React.FC<AuthFormProps<ForgotPasswordFormData, AuthFor
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="authForm">
-        <Input name="email" label="Email" type="email" placeholder="Enter your email" isRequired autoComplete="email" />
+        <Input
+          name="email"
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          isRequired
+          autoComplete="email"
+        />
         <Button type="submit" fullWidth loading={isLoading}>
           Send Reset Link
         </Button>

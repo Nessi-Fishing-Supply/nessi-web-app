@@ -66,7 +66,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="authForm">
         {banner?.type === 'verified' && (
-          <div className={`${styles.banner} ${styles.bannerSuccess}`} role="status" aria-live="polite">
+          <div
+            className={`${styles.banner} ${styles.bannerSuccess}`}
+            role="status"
+            aria-live="polite"
+          >
             <div className={`${styles.bannerIcon} ${styles.bannerIconSuccess}`}>
               <HiCheck aria-hidden="true" />
             </div>
@@ -83,7 +87,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
         )}
 
         {isUnverifiedError && (
-          <div className={`${styles.banner} ${styles.bannerError}`} role="alert" aria-live="assertive">
+          <div
+            className={`${styles.banner} ${styles.bannerError}`}
+            role="alert"
+            aria-live="assertive"
+          >
             <div className={`${styles.bannerIcon} ${styles.bannerIconError}`}>
               <HiExclamation aria-hidden="true" />
             </div>
@@ -101,7 +109,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
         )}
 
         <Input name="email" label="Email" type="email" isRequired autoComplete="email" />
-        <Input name="password" label="Password" type="password" isRequired autoComplete="current-password" />
+        <Input
+          name="password"
+          label="Password"
+          type="password"
+          isRequired
+          autoComplete="current-password"
+        />
         <Button type="submit" fullWidth marginBottom loading={isLoading}>
           Submit
         </Button>

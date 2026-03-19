@@ -181,7 +181,11 @@ const Input: React.FC<InputProps> = ({
                   }
                   aria-controls={name}
                 >
-                  {isPasswordVisible ? <HiEyeOff aria-hidden="true" /> : <HiEye aria-hidden="true" />}
+                  {isPasswordVisible ? (
+                    <HiEyeOff aria-hidden="true" />
+                  ) : (
+                    <HiEye aria-hidden="true" />
+                  )}
                 </button>
               )}
             </div>

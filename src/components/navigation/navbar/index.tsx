@@ -250,14 +250,25 @@ export default function Navbar() {
       </Modal>
 
       {/* Register Modal */}
-      <Modal isOpen={isRegisterModalOpen} onClose={toggleRegisterModal} ariaLabelledBy="register-title">
+      <Modal
+        isOpen={isRegisterModalOpen}
+        onClose={toggleRegisterModal}
+        ariaLabelledBy="register-title"
+      >
         <h6 id="register-title">Create Your Account</h6>
         <RegisterForm onSuccess={handleRegisterSuccess} />
       </Modal>
 
       {/* Resend Verification Modal */}
-      <Modal isOpen={isResendModalOpen} onClose={toggleResendModal} ariaLabel="Resend verification email">
-        <ResendVerificationForm onBackToLogin={handleResendToLogin} onSuccess={handleResendSuccess} />
+      <Modal
+        isOpen={isResendModalOpen}
+        onClose={toggleResendModal}
+        ariaLabel="Resend verification email"
+      >
+        <ResendVerificationForm
+          onBackToLogin={handleResendToLogin}
+          onSuccess={handleResendSuccess}
+        />
       </Modal>
     </nav>
   );
