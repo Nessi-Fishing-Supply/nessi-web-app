@@ -3,11 +3,7 @@ import type { Profile, ProfileUpdateInput } from '@/features/profiles/types/prof
 
 export async function getProfile(userId: string): Promise<Profile | null> {
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single();
+  const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
   if (error) {
     if (error.code === 'PGRST116') return null;
@@ -34,10 +30,7 @@ export async function getProfileBySlug(slug: string): Promise<Profile | null> {
   return data;
 }
 
-export async function updateProfile(
-  userId: string,
-  data: ProfileUpdateInput,
-): Promise<Profile> {
+export async function updateProfile(userId: string, data: ProfileUpdateInput): Promise<Profile> {
   const supabase = createClient();
   const { data: updated, error } = await supabase
     .from('profiles')
@@ -70,11 +63,7 @@ export async function checkDisplayNameAvailable(name: string): Promise<boolean> 
 
 export async function checkSlugAvailable(slug: string): Promise<boolean> {
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('slug', slug)
-    .limit(1);
+  const { data, error } = await supabase.from('profiles').select('id').eq('slug', slug).limit(1);
 
   if (error) {
     throw new Error(`Failed to check slug availability: ${error.message}`);

@@ -12,23 +12,23 @@ Profile management for Nessi's C2C marketplace users. Handles profile data fetch
 
 ## Service Functions
 
-| Function | Purpose |
-|----------|---------|
-| `getProfile(userId)` | Fetch profile by user ID, returns `Profile \| null` |
-| `getProfileBySlug(slug)` | Fetch profile by URL slug (excludes soft-deleted), returns `Profile \| null` |
-| `updateProfile(userId, data)` | Update allowed profile fields, returns updated `Profile` |
-| `checkDisplayNameAvailable(name)` | Case-insensitive uniqueness check, returns `boolean` |
-| `checkSlugAvailable(slug)` | Slug uniqueness check, returns `boolean` |
-| `generateSlug(displayName)` | Convert display name to URL-safe slug (pure function, no DB call) |
+| Function                          | Purpose                                                                      |
+| --------------------------------- | ---------------------------------------------------------------------------- |
+| `getProfile(userId)`              | Fetch profile by user ID, returns `Profile \| null`                          |
+| `getProfileBySlug(slug)`          | Fetch profile by URL slug (excludes soft-deleted), returns `Profile \| null` |
+| `updateProfile(userId, data)`     | Update allowed profile fields, returns updated `Profile`                     |
+| `checkDisplayNameAvailable(name)` | Case-insensitive uniqueness check, returns `boolean`                         |
+| `checkSlugAvailable(slug)`        | Slug uniqueness check, returns `boolean`                                     |
+| `generateSlug(displayName)`       | Convert display name to URL-safe slug (pure function, no DB call)            |
 
 ## Hooks
 
-| Hook | Query Key | Purpose |
-|------|-----------|---------|
-| `useProfile(userId, enabled?)` | `['profiles', userId]` | Fetch profile by user ID |
-| `useProfileBySlug(slug, enabled?)` | `['profiles', 'slug', slug]` | Fetch profile by slug |
-| `useUpdateProfile()` | mutation, invalidates `['profiles']` | Update profile fields |
-| `useDisplayNameCheck(name)` | `['profiles', 'display-name-check', name]` | Availability check (enabled when name >= 2 chars, 30s stale time) |
+| Hook                               | Query Key                                  | Purpose                                                           |
+| ---------------------------------- | ------------------------------------------ | ----------------------------------------------------------------- |
+| `useProfile(userId, enabled?)`     | `['profiles', userId]`                     | Fetch profile by user ID                                          |
+| `useProfileBySlug(slug, enabled?)` | `['profiles', 'slug', slug]`               | Fetch profile by slug                                             |
+| `useUpdateProfile()`               | mutation, invalidates `['profiles']`       | Update profile fields                                             |
+| `useDisplayNameCheck(name)`        | `['profiles', 'display-name-check', name]` | Availability check (enabled when name >= 2 chars, 30s stale time) |
 
 ## Key Patterns
 
