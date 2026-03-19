@@ -2,17 +2,17 @@
 
 ## Overview
 
-Authentication feature using Supabase Auth with cookie-based sessions via `@supabase/ssr`.
+Authentication feature using Supabase Auth with cookie-based sessions via `@supabase/ssr`. Covers login, registration, email verification, password reset, and post-login onboarding gate.
 
 ## Architecture
 
-- **context.tsx** -- `AuthProvider` and `useAuth()` hook wrapping Supabase session state (client-side)
-- **services/auth.ts** -- Client-side auth API functions (login, register, logout, password reset)
-- **services/onboarding.ts** -- Post-login onboarding completeness check (stub — returns `{ isComplete: true }` until profiles table exists)
-- **types/auth.ts** -- Auth data interfaces (RegisterData, LoginData, ResetPasswordData, AuthResponse)
-- **types/forms.ts** -- Auth form prop interfaces and form data types (AuthFormProps, LoginFormData, etc.)
-- **validations/auth.ts** -- Yup schemas for login, registration, and password reset forms (client-side)
-- **validations/server.ts** -- Pure-function validation for register API route (server-side, no Yup)
+- **context.tsx** -- `AuthProvider` and `useAuth()` hook wrapping Supabase session state (client-side). Exposes `{ user, isAuthenticated, isLoading }`.
+- **services/auth.ts** -- Client-side auth API functions with 8-second timeout protection: `login`, `register`, `logout`, `getUserProfile`, `forgotPassword`, `resetPassword`, `resendVerification`. Also exports `withTimeout` helper and `AUTH_TIMEOUT_MS` constant.
+- **services/onboarding.ts** -- Post-login onboarding completeness check (stub — returns `{ isComplete: true }` until profiles table exists). Called by LoginForm after successful login.
+- **types/auth.ts** -- Auth data interfaces: `RegisterData`, `LoginData`, `ResetPasswordData`, `AuthResponse`
+- **types/forms.ts** -- Form prop interfaces and form data types: `AuthFormProps<TData, TResponse>`, `LoginFormData`, `RegisterFormData`, `ForgotPasswordFormData`, `AuthFormResponse`
+- **validations/auth.ts** -- Yup schemas for client-side form validation: `loginSchema`, `registerSchema`, `resetPasswordSchema`
+- **validations/server.ts** -- Pure-function validation for register API route (server-side, no Yup dependency): `validateRegisterInput()`
 
 ## Session Flow
 
@@ -26,6 +26,17 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 8. After successful login, `LoginForm` calls `checkOnboardingComplete()` — if incomplete, redirects to `/onboarding`; if complete, calls `onSuccess` (closes modal, user stays on current page)
 9. Onboarding check currently always returns `{ isComplete: true }` (stub) — will query profiles table when it exists
 
+## API Routes
+
+- **`/api/auth/register`** (POST) -- Server-side registration. Validates via `validateRegisterInput()`, creates user with admin client (bypasses RLS), returns `409 DUPLICATE_EMAIL` for existing accounts, sets `Cache-Control: private, no-store`.
+- **`/api/auth/callback`** (GET) -- Handles email verification (token_hash), PKCE code exchange, and recovery flow. Sanitizes redirect paths to prevent open redirects. Routes recovery tokens to `/auth/callback?status=recovery`, signup verification to `/?verified=true`.
+
+## Auth Pages
+
+- **`/auth/forgot-password`** -- Renders `ForgotPasswordForm`. Protected by proxy.ts (authenticated users redirected to `/`).
+- **`/auth/callback`** -- Handles post-email-link routing. If `status=recovery`, renders `ResetPasswordForm` (dynamic import, ssr: false). Otherwise shows processing message. NOT protected by proxy.ts.
+- **No dedicated login/register pages** -- Login and registration are modal-based, rendered in the navbar.
+
 ## Security
 
 - **Cookie-based sessions** -- httpOnly cookies via `@supabase/ssr`, no localStorage
@@ -33,7 +44,7 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 - **Server-side validation** -- `/api/auth/register` validates email format, password complexity, and required fields independent of client-side Yup schemas
 - **Password policy** -- minimum 8 characters, requires uppercase, lowercase, and number (enforced both client-side and server-side)
 - **Cache-Control headers** -- `private, no-store` on all auth API responses to prevent CDN caching
-- **Open redirect prevention** -- callback route sanitizes the `next` redirect parameter (rejects protocol-relative URLs)
+- **Open redirect prevention** -- callback route's `sanitizeRedirectPath()` rejects protocol-relative URLs and requires `/` prefix
 - **Error logging** -- Auth callback logs errors with type context before redirecting
 - **`getUser()` over `getSession()`** -- proxy.ts uses `getUser()` which verifies the JWT server-side (Supabase best practice)
 - **Admin client isolation** -- `autoRefreshToken: false`, `persistSession: false`, used only for registration
@@ -47,6 +58,12 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 - **Error message on timeout** -- `"Something went wrong. Check your connection and try again."` is returned as the service error and displayed in the form.
 - **Form field preservation** -- React Hook Form retains field values on timeout errors, so users do not lose their input and can retry without re-entering data.
 
+## Error Handling
+
+- **Duplicate email** -- `/api/auth/register` returns `409 DUPLICATE_EMAIL`. `RegisterForm` renders a friendly "An account with that email already exists" message with an inline "Sign in" button (calls `onSwitchToLogin`).
+- **Unverified email** -- `LoginForm` detects `email_not_confirmed` error and shows a warning banner with a "Resend" link (calls `onResendVerification`).
+- **Generic errors** -- Rendered as-is in form error areas with `role="alert"` and `aria-live="assertive"`.
+
 ## Key Patterns
 
 - Cookie-based sessions -- no localStorage tokens
@@ -55,10 +72,22 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 - Admin operations: Registration uses admin client from `src/libs/supabase/admin.ts`
 - Route protection: `proxy.ts` guards routes in both directions -- unauthenticated users redirected from `/dashboard/*` to `/`, authenticated users redirected from guarded auth pages (e.g. `/auth/forgot-password`) to `/`; `/auth/callback` is excluded from this guard
 - Redirect URLs use `NEXT_PUBLIC_APP_URL` env var (not `window.location.origin`)
+- Validation split: Yup schemas for client-side forms, pure functions for server-side API routes (no shared dependency)
 
 ## Components
 
-- **login-form** -- Email/password login with post-login onboarding gate
-- **registration-form** -- New user signup with email verification
-- **forgot-password-form** -- Password reset email request
-- **reset-password-form** -- New password entry after reset link (uses shared `resetPasswordSchema`)
+- **login-form** -- Email/password login with post-login onboarding gate. Props: `onSuccess`, `onError`, `onClose`, `onResendVerification`, `banner`. On success, calls `checkOnboardingComplete()` then either redirects to `/onboarding` or calls `onSuccess` to close modal.
+- **registration-form** -- New user signup with email verification. Props: `onSuccess`, `onError`, `onSwitchToLogin`. Shows friendly duplicate email error with Sign in link.
+- **forgot-password-form** -- Password reset email request. Props: `onSuccess`, `onError`. Shows success/error messages inline.
+- **reset-password-form** -- New password entry after reset link (uses shared `resetPasswordSchema`). Props: `onSuccess`, `onError`. Redirects to `/dashboard?password_reset=true` on success.
+- **resend-verification-form** -- Handles expired verification links. Props: `onBackToLogin`, `onSuccess`. Shows warning icon and "Verification link expired" header with resend action.
+
+## Test Coverage
+
+- **services/__tests__/auth.test.ts** -- 21 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`
+- **services/__tests__/onboarding.test.ts** -- 2 tests: returns `{ isComplete: true }`, is async
+- **validations/auth.test.ts** -- 17 tests: `loginSchema`, `registerSchema`, `resetPasswordSchema` (valid/invalid inputs, password complexity)
+- **validations/server.test.ts** -- 11 tests: `validateRegisterInput` (valid input, missing fields, invalid email, weak passwords, unaccepted terms, null/undefined handling)
+- **components/login-form/__tests__/index.test.tsx** -- 4 tests: calls `checkOnboardingComplete` after login, calls `onSuccess` when complete, redirects to `/onboarding` when incomplete
+- **components/registration-form/__tests__/index.test.tsx** -- 6 tests: friendly duplicate email message, Sign in button, `onSwitchToLogin` callback, non-duplicate error passthrough
+- **api/auth/register/__tests__/route.test.ts** -- 2 tests: 409 DUPLICATE_EMAIL, 400 for other errors
