@@ -10,17 +10,13 @@ import { Input, Button, Checkbox } from '@/components/controls';
 import { register as registerUser } from '@/features/auth/services/auth';
 import Grid from '@/components/layout/grid';
 import { AuthFormProps, RegisterFormData, AuthFormResponse } from '@/features/auth/types/forms';
+import styles from './registration-form.module.scss';
 
-/**
- * Registration form component
- * Handles new user registration with email verification
- * Collects user details and validates terms acceptance
- * Provides success/error feedback and loading states
- */
-const RegisterForm: React.FC<AuthFormProps<RegisterFormData, AuthFormResponse>> = ({
-  onSuccess,
-  onError,
-}) => {
+interface RegisterFormProps extends AuthFormProps<RegisterFormData, AuthFormResponse> {
+  onSwitchToLogin?: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onError, onSwitchToLogin }) => {
   const { isLoading, error, setLoading, setError } = useFormState();
 
   const methods = useForm<RegisterData>({
@@ -35,7 +31,11 @@ const RegisterForm: React.FC<AuthFormProps<RegisterFormData, AuthFormResponse>> 
       if (onSuccess) onSuccess({ ...response, email: data.email });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setError(error.message);
+        if (error.message === 'DUPLICATE_EMAIL') {
+          setError('DUPLICATE_EMAIL');
+        } else {
+          setError(error.message);
+        }
       } else {
         setError('Registration failed. Please try again.');
       }
@@ -48,7 +48,21 @@ const RegisterForm: React.FC<AuthFormProps<RegisterFormData, AuthFormResponse>> 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="authForm">
-        {error && <div className="errorMessage">{error}</div>}
+        {error === 'DUPLICATE_EMAIL' ? (
+          <div role="alert" className="errorMessage">
+            An account with that email already exists.{' '}
+            <button type="button" className={styles.signInLink} onClick={onSwitchToLogin}>
+              Sign in
+            </button>{' '}
+            instead?
+          </div>
+        ) : (
+          error && (
+            <div role="alert" className="errorMessage">
+              {error}
+            </div>
+          )
+        )}
 
         <Grid columns={2}>
           <Input

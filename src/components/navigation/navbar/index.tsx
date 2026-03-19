@@ -146,6 +146,12 @@ export default function Navbar() {
     setLoginBanner(null);
   };
 
+  const handleRegisterToLogin = () => {
+    setRegisterModalOpen(false);
+    setLoginModalOpen(true);
+    setLoginBanner(null);
+  };
+
   const handleUnverifiedResend = () => {
     setLoginModalOpen(false);
     setResendModalOpen(true);
@@ -256,7 +262,7 @@ export default function Navbar() {
         ariaLabelledBy="register-title"
       >
         <h6 id="register-title">Create Your Account</h6>
-        <RegisterForm onSuccess={handleRegisterSuccess} />
+        <RegisterForm onSuccess={handleRegisterSuccess} onSwitchToLogin={handleRegisterToLogin} />
       </Modal>
 
       {/* Resend Verification Modal */}
