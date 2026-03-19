@@ -233,9 +233,9 @@ export default function Navbar() {
       </div>
 
       {/* Login Modal */}
-      <Modal isOpen={isLoginModalOpen} onClose={toggleLoginModal}>
+      <Modal isOpen={isLoginModalOpen} onClose={toggleLoginModal} ariaLabelledBy="login-title">
         <div className={styles.modalHeader}>
-          <h6>Log In</h6>
+          <h6 id="login-title">Log In</h6>
           <Button style="dark" round outline onClick={toggleRegisterModal}>
             Register
           </Button>
@@ -250,13 +250,13 @@ export default function Navbar() {
       </Modal>
 
       {/* Register Modal */}
-      <Modal isOpen={isRegisterModalOpen} onClose={toggleRegisterModal}>
-        <h6>Create Your Account</h6>
+      <Modal isOpen={isRegisterModalOpen} onClose={toggleRegisterModal} ariaLabelledBy="register-title">
+        <h6 id="register-title">Create Your Account</h6>
         <RegisterForm onSuccess={handleRegisterSuccess} />
       </Modal>
 
       {/* Resend Verification Modal */}
-      <Modal isOpen={isResendModalOpen} onClose={toggleResendModal}>
+      <Modal isOpen={isResendModalOpen} onClose={toggleResendModal} ariaLabel="Resend verification email">
         <ResendVerificationForm onBackToLogin={handleResendToLogin} onSuccess={handleResendSuccess} />
       </Modal>
     </nav>
