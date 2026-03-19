@@ -250,7 +250,6 @@ export default function Navbar() {
           onSuccess={handleLoginSuccess}
           onClose={toggleLoginModal}
           onResendVerification={handleUnverifiedResend}
-          redirectUrl="/dashboard"
           banner={loginBanner}
         />
       </Modal>
