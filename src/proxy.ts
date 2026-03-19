@@ -29,6 +29,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
+  const GUARDED_AUTH_PATHS = ['/auth/forgot-password'];
+
+  if (user && GUARDED_AUTH_PATHS.includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
   return response;
 }
 
