@@ -134,6 +134,17 @@ All file and folder names use **kebab-case**, enforced by `eslint-plugin-check-f
 - **TypeScript** — `strict: true`. Run `pnpm typecheck` for standalone type checking.
 - **CI** — GitHub Actions runs lint, lint:styles, typecheck, format:check, test:run, and build on every PR and push to main.
 
+## Accessibility (WCAG 2.1 AA)
+
+Accessibility is a requirement, not a nice-to-have. Run `/a11y-audit` before committing UI features.
+
+- **All form inputs** must have: `aria-required` on required fields, `aria-describedby` linking to error messages, `aria-invalid` on error state, correct `autocomplete` attribute
+- **All buttons** must have: `aria-busy` when in loading state, `aria-label` when icon-only
+- **All modals** must have: `aria-labelledby` or `aria-label`, focus trap (Tab cycles within modal), focus restoration on close
+- **All notifications** must have: `role="status"` or `role="alert"` with `aria-live`, decorative icons use `aria-hidden="true"`
+- **All interactive elements** must have: visible focus indicator (`:focus-visible`), minimum 44x44px tap target on mobile
+- **Screen reader text** — use the `.sr-only` global class for visually hidden but accessible text
+
 ## AI Development Fleet
 
 Nessi uses a fleet of Claude Code skills and agents for autonomous feature development. Skills live in `.claude/skills/`, agents in `.claude/agents/`. The Conductor pipeline (`.claude/conductor/CLAUDE.md`) orchestrates ticket-to-PR automation.

@@ -30,4 +30,4 @@ pnpm-debug.log*
 next-env.d.ts
 
 # plugins
-.superpowers/
+/.superpowers/

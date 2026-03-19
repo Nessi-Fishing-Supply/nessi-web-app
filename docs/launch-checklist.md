@@ -19,8 +19,8 @@ Items to address before Nessi goes to production. Organized by priority.
 
 ## High Priority — Auth Polish
 
-- [ ] **WCAG 2.1 AA audit** — Run accessibility audit on all auth forms. Check `htmlFor`/`id` associations, `aria-live` for error messages, focus management on modal open/close, screen reader announcements.
-- [ ] **`autocomplete` attributes** — Verify all auth form inputs have correct autocomplete hints (`email`, `current-password`, `new-password`).
+- [x] **WCAG 2.1 AA audit** — ~~Run accessibility audit on all auth forms.~~ Done 2026-03-19. Toast, Modal, Input, Button, Checkbox, all auth forms updated.
+- [x] **`autocomplete` attributes** — ~~Verify all auth form inputs have correct autocomplete hints.~~ Done 2026-03-19.
 - [ ] **`?redirect=` post-login routing** — After login, redirect to the page the user was trying to access (e.g., `/dashboard/products`) instead of always going to `/dashboard`.
 - [ ] **Loading/timeout behavior** — Add 8-second timeout on auth API calls with inline error "Something went wrong. Check your connection and try again." Preserve form data.
 
