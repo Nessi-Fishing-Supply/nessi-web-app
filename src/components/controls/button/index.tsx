@@ -72,6 +72,7 @@ export default function Button({
         ${marginBottom ? styles.marginBottom : ''}
       `}
       disabled={isDisabled}
+      aria-busy={loading}
       aria-label={ariaLabel || undefined}
     >
       {buttonContent}

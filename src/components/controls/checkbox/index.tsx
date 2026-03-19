@@ -25,6 +25,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               id={name}
               {...field}
               ref={ref}
+              required={isRequired}
+              aria-required={isRequired}
+              aria-invalid={error ? 'true' : 'false'}
+              aria-describedby={error ? `${name}-error` : undefined}
               className={styles.checkboxInput}
             />
 
@@ -37,7 +41,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               {isRequired && <span className={styles.requiredIndicator}>*</span>}
             </label>
 
-            {error && <small className={styles.errorText}>{error.message}</small>}
+            {error && (
+              <small id={`${name}-error`} className={styles.errorText} role="alert">
+                {error.message}
+              </small>
+            )}
           </div>
         )}
       />
