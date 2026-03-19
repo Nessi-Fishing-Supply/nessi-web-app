@@ -40,4 +40,19 @@
   --color-error: #c00;
   --color-warning: #f80;
   --color-success: #007e33;
+
+  // System - Success shades (soft card/banner/toast pattern)
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-success-icon: #22c55e;
+  --color-success-text: #166534;
+  --color-success-text-light: #15803d;
+  --color-success-text-muted: #6b9e7a;
+
+  // System - Error shades (soft card/banner/toast pattern)
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fecaca;
+  --color-error-icon: #ef4444;
+  --color-error-text: #991b1b;
+  --color-error-text-light: #b91c1c;
 }
