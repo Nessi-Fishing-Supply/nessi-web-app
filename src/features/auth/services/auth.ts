@@ -68,3 +68,14 @@ export const resetPassword = async (data: { newPassword: string; confirmNewPassw
   if (error) throw new Error(error.message);
   return { message: 'Password updated successfully' };
 };
+
+export const resendVerification = async (data: { email: string }) => {
+  const supabase = createClient();
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: data.email,
+  });
+
+  if (error) throw new Error(error.message);
+  return { message: 'Verification email sent!' };
+};
