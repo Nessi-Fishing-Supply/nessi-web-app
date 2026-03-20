@@ -77,11 +77,13 @@ export type Database = {
           bio: string | null
           created_at: string
           deleted_at: string | null
-          display_name: string
+          shop_name: string
+          first_name: string | null
           home_state: string | null
           id: string
           is_seller: boolean
           is_stripe_connected: boolean
+          last_name: string | null
           last_seen_at: string | null
           notification_preferences: Json
           onboarding_completed_at: string | null
@@ -102,11 +104,13 @@ export type Database = {
           bio?: string | null
           created_at?: string
           deleted_at?: string | null
-          display_name: string
+          shop_name: string
+          first_name?: string | null
           home_state?: string | null
           id: string
           is_seller?: boolean
           is_stripe_connected?: boolean
+          last_name?: string | null
           last_seen_at?: string | null
           notification_preferences?: Json
           onboarding_completed_at?: string | null
@@ -127,11 +131,13 @@ export type Database = {
           bio?: string | null
           created_at?: string
           deleted_at?: string | null
-          display_name?: string
+          shop_name?: string
+          first_name?: string | null
           home_state?: string | null
           id?: string
           is_seller?: boolean
           is_stripe_connected?: boolean
+          last_name?: string | null
           last_seen_at?: string | null
           notification_preferences?: Json
           onboarding_completed_at?: string | null

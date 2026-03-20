@@ -79,9 +79,28 @@ The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hol
 - Actions: `nextStep()`, `prevStep()`, `setStep1Data(data)`, `setStep2Data(data)`, `setStep3Data(data)`, `setAvatarUrl(url)`, `reset()`
 - `reset()` is called after `completeOnboarding` succeeds to clear state
 
-## Shared Components
+## Account Components
 
-`PillSelector` is a shared reusable component at `src/components/controls/pill-selector/`. It is used by `step-fishing-identity` for species and technique multi-select. Because it is generic (works with any `{ value, label }[]` option list), it lives in `src/components/controls/` rather than inside the profiles feature.
+The account page (`/dashboard/account`) displays and edits profile data via collapsible card sections. Components live under `components/account/`.
+
+| Component           | Purpose                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| `personal-info/`    | Display name inline-edit with uniqueness check, avatar upload, bio textarea (280 char)     |
+| `fishing-identity/` | Species/technique pill selectors, home state dropdown, years fishing inline-edit           |
+| `notifications/`    | 4 toggle switches for `notification_preferences.email` JSONB — saves immediately on toggle |
+| `linked-accounts/`  | Stripe Connect placeholder (disabled "Connect" button) — ready for future integration      |
+
+### ProfileCompleteness (`components/profile-completeness/`)
+
+Progress bar computing completeness from 5 fields (20% each): `avatar_url`, `bio`, `primary_species`, `primary_technique`, `home_state`. Hidden at 100%.
+
+### Shared Components Used by Account
+
+These generic components live in `src/components/` because they're reusable beyond the profiles feature:
+
+- **`InlineEdit`** (`src/components/controls/inline-edit/`) — Click-to-edit text/textarea with save/cancel, keyboard support (Enter/Escape), character counter. Used by personal-info (display name, bio) and fishing-identity (years fishing).
+- **`CollapsibleCard`** (`src/components/layout/collapsible-card/`) — Expandable card with chevron toggle, `aria-expanded`, smooth CSS grid height transition. Wraps all account sections.
+- **`PillSelector`** (`src/components/controls/pill-selector/`) — Multi-select pill toggle for `{ value, label }[]` option lists. Used by fishing-identity and onboarding step-fishing-identity.
 
 ## Key Patterns
 
