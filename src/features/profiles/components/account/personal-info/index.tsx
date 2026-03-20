@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import AvatarUpload from '@/features/profiles/components/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
-import { useDisplayNameCheck, useUpdateProfile } from '@/features/profiles/hooks/use-profile';
+import { useShopNameCheck, useUpdateProfile } from '@/features/profiles/hooks/use-profile';
 import { generateSlug } from '@/features/profiles/services/profile';
 import type { Profile } from '@/features/profiles/types/profile';
 import { useToast } from '@/components/indicators/toast/context';
@@ -30,9 +30,9 @@ export default function PersonalInfo({ profile, userId }: PersonalInfoProps) {
     return () => clearTimeout(timer);
   }, [draftName]);
 
-  const isCurrentName = debouncedName.toLowerCase() === (profile.display_name ?? '').toLowerCase();
+  const isCurrentName = debouncedName.toLowerCase() === (profile.shop_name ?? '').toLowerCase();
 
-  const { data: isAvailable, isLoading: isChecking } = useDisplayNameCheck(
+  const { data: isAvailable, isLoading: isChecking } = useShopNameCheck(
     isCurrentName || debouncedName.length < 2 ? '' : debouncedName,
   );
 
@@ -85,7 +85,7 @@ export default function PersonalInfo({ profile, userId }: PersonalInfoProps) {
     await updateProfile.mutateAsync({
       userId,
       data: {
-        display_name: newName,
+        shop_name: newName,
         slug: generateSlug(newName),
       },
     });
@@ -131,7 +131,7 @@ export default function PersonalInfo({ profile, userId }: PersonalInfoProps) {
       <div className={styles.content}>
         <div className={styles.avatarSection}>
           <AvatarUpload
-            displayName={profile.display_name ?? ''}
+            displayName={profile.shop_name ?? ''}
             avatarUrl={profile.avatar_url ?? null}
             onUpload={handleAvatarUpload}
             disabled={updateProfile.isPending}
@@ -169,7 +169,7 @@ export default function PersonalInfo({ profile, userId }: PersonalInfoProps) {
             <span className={styles.fieldLabel}>Shop name</span>
             <div className={styles.fieldValue}>
               <InlineEdit
-                value={profile.display_name ?? ''}
+                value={profile.shop_name ?? ''}
                 onSave={handleDisplayNameSave}
                 onChange={handleDisplayNameChange}
                 placeholder="Add a shop name"

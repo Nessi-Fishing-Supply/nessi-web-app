@@ -52,7 +52,7 @@ export default function StepBio() {
       await updateProfile.mutateAsync({
         userId: user.id,
         data: {
-          display_name: step1Data.displayName,
+          shop_name: step1Data.displayName,
           slug: generateSlug(step1Data.displayName),
           avatar_url: avatarUrl,
           primary_species: step2Data.primarySpecies,

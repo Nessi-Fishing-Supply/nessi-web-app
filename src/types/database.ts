@@ -77,7 +77,7 @@ export type Database = {
           bio: string | null
           created_at: string
           deleted_at: string | null
-          display_name: string
+          shop_name: string
           first_name: string | null
           home_state: string | null
           id: string
@@ -104,7 +104,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           deleted_at?: string | null
-          display_name: string
+          shop_name: string
           first_name?: string | null
           home_state?: string | null
           id: string
@@ -131,7 +131,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           deleted_at?: string | null
-          display_name?: string
+          shop_name?: string
           first_name?: string | null
           home_state?: string | null
           id?: string

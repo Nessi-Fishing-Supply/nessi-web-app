@@ -3,7 +3,7 @@ import {
   getProfile,
   getProfileBySlug,
   updateProfile,
-  checkDisplayNameAvailable,
+  checkShopNameAvailable,
   completeOnboarding,
 } from '@/features/profiles/services/profile';
 import type { ProfileUpdateInput } from '@/features/profiles/types/profile';
@@ -47,10 +47,10 @@ export function useCompleteOnboarding() {
   });
 }
 
-export function useDisplayNameCheck(name: string) {
+export function useShopNameCheck(name: string) {
   return useQuery({
-    queryKey: ['profiles', 'display-name-check', name],
-    queryFn: () => checkDisplayNameAvailable(name),
+    queryKey: ['profiles', 'shop-name-check', name],
+    queryFn: () => checkShopNameAvailable(name),
     enabled: name.length >= 2,
     staleTime: 30000,
   });

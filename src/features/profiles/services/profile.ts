@@ -46,16 +46,16 @@ export async function updateProfile(userId: string, data: ProfileUpdateInput): P
   return updated;
 }
 
-export async function checkDisplayNameAvailable(name: string): Promise<boolean> {
+export async function checkShopNameAvailable(name: string): Promise<boolean> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from('profiles')
     .select('id')
-    .ilike('display_name', name)
+    .ilike('shop_name', name)
     .limit(1);
 
   if (error) {
-    throw new Error(`Failed to check display name availability: ${error.message}`);
+    throw new Error(`Failed to check shop name availability: ${error.message}`);
   }
 
   return data.length === 0;

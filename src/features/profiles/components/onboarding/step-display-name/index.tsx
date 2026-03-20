@@ -5,7 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import { step1Schema } from '@/features/profiles/validations/onboarding';
-import { useDisplayNameCheck } from '@/features/profiles/hooks/use-profile';
+import { useShopNameCheck } from '@/features/profiles/hooks/use-profile';
 import { generateSlug } from '@/features/profiles/services/profile';
 import AvatarUpload from '@/features/profiles/components/avatar-upload';
 import useOnboardingStore from '@/features/profiles/stores/onboarding-store';
@@ -37,7 +37,7 @@ export default function StepDisplayName() {
   const watchedName = watch('displayName') ?? '';
   const slug = generateSlug(watchedName);
 
-  const { data: isAvailable, isLoading: isCheckingAvailability } = useDisplayNameCheck(watchedName);
+  const { data: isAvailable, isLoading: isCheckingAvailability } = useShopNameCheck(watchedName);
 
   const nameIsLongEnough = watchedName.length >= 3;
   const availabilityKnown = watchedName.length >= 2 && !isCheckingAvailability;
