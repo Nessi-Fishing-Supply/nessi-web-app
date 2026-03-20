@@ -25,7 +25,8 @@ You will receive:
 ### 1. Prepare
 
 - Run `git status` to confirm all changes are committed
-- If there are uncommitted changes, stage and commit them with an appropriate message
+- Always stage conductor state: `git add .claude/conductor/` — track state, plan, learnings, and review logs must be included in the branch
+- If there are other uncommitted changes, stage and commit them with an appropriate message
 - Run `git log main..HEAD --oneline` to review the commit history for the PR
 
 ### 2. Push

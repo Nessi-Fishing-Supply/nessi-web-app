@@ -113,6 +113,7 @@ Display the plan summary:
       - Launch **phase-verifier** agent to run `pnpm build`
       - If verification fails: attempt fix, re-verify once, escalate to blocked if still failing
       - If passes: update health in `state.json`, persist
+      - Stage conductor state alongside source changes: `git add .claude/conductor/` (tracks state, plan, learnings)
       - Commit phase: `{type}({scope}): #{issue} {phase description}` with task summaries in body
       - Append any learnings to `learnings.md`
       - Display checkpoint:

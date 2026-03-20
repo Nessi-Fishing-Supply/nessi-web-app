@@ -394,7 +394,11 @@ Type is inferred from issue labels or content. Defaults to `feat`.
 
 ### Commit Strategy (Per-Phase)
 
-Each completed phase produces one commit:
+Each completed phase produces one commit. **Always stage `.claude/conductor/` alongside source changes** — track state, plan, learnings, and review logs are part of the feature branch and must be pushed to GitHub.
+
+```bash
+git add .claude/conductor/ <source files...>
+```
 
 ```
 {type}({scope}): #{issue} {phase description}

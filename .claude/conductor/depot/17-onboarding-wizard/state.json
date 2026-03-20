@@ -3,7 +3,7 @@
   "issue": 17,
   "title": "Onboarding wizard — 3-step profile setup for new users",
   "branch": "feat/17/onboarding-wizard",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 4,
     "total": 4,
@@ -15,5 +15,7 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-20T12:00:00Z", "lastActivity": "2026-03-20T12:55:00Z" }
+  "timestamps": { "started": "2026-03-20T12:00:00Z", "lastActivity": "2026-03-20T13:00:00Z" },
+  "completedAt": "2026-03-20T13:00:00Z",
+  "pruneAfter": "2026-05-19T13:00:00Z"
 }
