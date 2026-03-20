@@ -17,7 +17,7 @@ Product API routes live in `src/app/api/products/`:
 - `route.ts` — GET all products, POST create product
 - `[id]/route.ts` — GET/PUT/DELETE single product
 - `user/route.ts` — GET current user's products
-- `upload/route.ts` — POST image upload to Supabase Storage
+- `upload/route.ts` — POST image upload: validates MIME type + 5MB limit, resizes via Sharp (max 1200x1200, `fit: inside`), converts to WebP 85%, stores to Supabase Storage
 
 ## Components
 
@@ -28,7 +28,9 @@ Product API routes live in `src/app/api/products/`:
 
 ## Key Patterns
 
-- Images uploaded to Supabase Storage (`product-images` bucket), URLs stored in `product_images` table
+- **Image pipeline:** Upload validates → Sharp resizes to max 1200x1200 → WebP 85% → stored as `.webp` in `product-images` bucket → rendered via `next/image` with `fill` + `sizes`
+- Product card uses `next/image` with `fill` layout inside Swiper slides — parent `.slide` div has `position: relative; width: 100%; height: 100%`
+- Product detail uses `next/image` with `width`/`height` + `sizes` + `priority` on first image (LCP)
+- **Never use raw `<img>` for product images** — always `next/image` for automatic WebP/AVIF srcset via Vercel
 - Product types derived from Supabase database schema via `@/types/database`
-- Product card uses Swiper for image carousel with navigation/pagination
 - Data fetching uses Tanstack Query hooks, not `useEffect` + `useState`

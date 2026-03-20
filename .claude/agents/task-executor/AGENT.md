@@ -60,6 +60,23 @@ Common patterns:
 **Context7 MCP** (`mcp__plugin_context7_context7__*`):
 - Query up-to-date library documentation when unsure about an API
 
+#### Image Handling (mandatory for any task involving images)
+
+**Uploads (API routes):**
+- Validate MIME type: only `image/jpeg`, `image/png`, `image/webp`, `image/gif`
+- Enforce 5MB file size limit
+- Process with `sharp`: resize with `fit: 'inside'` + `withoutEnlargement: true`, convert to WebP (80-85% quality)
+- Store as `.webp` in Supabase Storage with `contentType: 'image/webp'`
+- Follow the pattern in `src/app/api/profiles/avatar/route.ts` (avatars) or `src/app/api/products/upload/route.ts` (products)
+
+**Rendering (components):**
+- **Always use `next/image`** from `'next/image'` — NEVER use raw `<img>` tags for remote/user-uploaded images
+- **Always provide `sizes` prop** — e.g., `sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 300px"`
+- Use `fill` layout when image fills its container (parent needs `position: relative`); use `width`/`height` for fixed-size inline images
+- Add `priority` on the first above-the-fold image (LCP candidate)
+- Use `style={{ objectFit: 'cover' }}` with `fill` — never the deprecated `objectFit` prop
+- Always provide descriptive `alt` text
+
 ### 4. Verify
 - Run `pnpm build` to ensure the build passes
 - If it fails, read the error output and fix the issue

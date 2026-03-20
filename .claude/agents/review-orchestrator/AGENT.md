@@ -84,6 +84,20 @@ Checks: build({status}), lint({status}), tests({status})
 Findings: {blocking}B / {warning}W / {info}I
 ```
 
+### 6. Image Handling Audit
+
+If any files in the changeset involve images (upload routes, components rendering images), run these checks:
+
+```bash
+# Find raw <img> tags for remote images (should be next/image)
+grep -rn '<img ' src/ --include='*.tsx' | grep -v 'node_modules'
+```
+
+Flag as:
+- **[B] Blocking** — Raw `<img>` for Supabase Storage URLs (must use `next/image`)
+- **[W] Warning** — `next/image` missing `sizes` prop, missing `priority` on likely LCP image, using deprecated `objectFit` prop instead of `style={{ objectFit }}`
+- **[W] Warning** — Upload route missing MIME validation, size limit, or Sharp processing
+
 ## Output
 
 Return:

@@ -47,10 +47,37 @@ Two Supabase Storage buckets (both public):
 
 | Bucket | Path Pattern | API Route | Purpose |
 |--------|-------------|-----------|---------|
-| `product-images` | `{user_id}/{timestamp}.{ext}` | `src/app/api/products/upload/route.ts` | Product listing photos |
+| `product-images` | `{user_id}/{timestamp}.webp` | `src/app/api/products/upload/route.ts` | Product listing photos (max 1200x1200 WebP) |
 | `avatars` | `{user_id}.webp` | `src/app/api/profiles/avatar/route.ts` | User avatar (200x200 WebP via Sharp) |
 
 RLS policies enforce per-user access on both buckets. 5MB limit, JPEG/PNG/WebP/GIF only.
+
+### Image Handling Standards
+
+All images in Nessi follow a strict pipeline: **validate → optimize → store as WebP → render with `next/image`**.
+
+**Upload (API routes):**
+- Validate MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`)
+- Enforce 5MB file size limit
+- Resize via `sharp` with `fit: 'inside'` + `withoutEnlargement: true` (preserves aspect ratio, never upscales)
+- Convert to WebP at 80-85% quality before storing to Supabase Storage
+- Store with `contentType: 'image/webp'`
+
+**Rendering (components):**
+- **Always use `next/image`** — never raw `<img>` tags for user-uploaded or remote images
+- **Always provide `sizes`** — tells the browser which srcset variant to download. Examples:
+  - Product cards: `sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 300px"`
+  - Product detail: `sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 600px"`
+  - Fixed-size avatars: `sizes="120px"` or use `width`/`height` props
+- **Use `fill` layout** when the image should fill its container (carousel slides, avatar circles). Parent must have `position: relative`.
+- **Use `width`/`height`** for fixed-size inline images (navbar avatar at 32x32)
+- **Add `priority`** on the first above-the-fold image (LCP candidate) — e.g., `priority={index === 0}`
+- **Always provide `alt` text** — descriptive for content images, empty `alt=""` for decorative
+- **`object-fit: cover`** via `style={{ objectFit: 'cover' }}` when using `fill`, or via CSS Modules
+
+**Why this matters:** Nessi is an image-heavy marketplace. `next/image` auto-serves WebP/AVIF at the right resolution per device via Vercel's Image Optimization API. Raw `<img>` bypasses all of this — every user downloads the full original regardless of screen size.
+
+**Config:** `next.config.mjs` has `remotePatterns` for `*.supabase.co` — all Supabase Storage URLs are optimized automatically by Vercel.
 
 ### Account Deletion & Cascade Cleanup
 
