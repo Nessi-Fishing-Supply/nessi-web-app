@@ -32,5 +32,5 @@ Items to address before Nessi goes to production. Organized by priority.
 
 - [ ] **Social SSO (Google, Apple, Facebook)** — OAuth login via Supabase social providers. Requires Apple Developer account, Google Cloud Console, and Facebook App setup. Post-auth routing: first login → onboarding, returning → previous page.
 - [ ] **Email change flow** — Allow users to update their email address from account settings with re-verification.
-- [ ] **Account deletion** — Self-service account deletion with confirmation flow.
+- [ ] **Account deletion** — Self-service account deletion with confirmation flow. Backend cascade is already in place: `auth.users` DELETE → profiles CASCADE → `handle_profile_deletion()` trigger cleans up `avatars` and `product-images` storage. As new user-owned tables are added (listings, orders, messages, reviews), ensure each has `ON DELETE CASCADE` FK and storage cleanup in the trigger.
 - [ ] **Session management** — Show active sessions, allow users to revoke sessions on other devices.

@@ -43,7 +43,33 @@ Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Ro
 
 ### File Storage
 
-Image uploads use Supabase Storage (`product-images` bucket) via `src/app/api/products/upload/route.ts`. Images are stored under `{user_id}/{timestamp}.{ext}` paths with RLS policies enforcing per-user access. 5MB limit, JPEG/PNG/WebP/GIF only.
+Two Supabase Storage buckets (both public):
+
+| Bucket | Path Pattern | API Route | Purpose |
+|--------|-------------|-----------|---------|
+| `product-images` | `{user_id}/{timestamp}.{ext}` | `src/app/api/products/upload/route.ts` | Product listing photos |
+| `avatars` | `{user_id}.webp` | `src/app/api/profiles/avatar/route.ts` | User avatar (200x200 WebP via Sharp) |
+
+RLS policies enforce per-user access on both buckets. 5MB limit, JPEG/PNG/WebP/GIF only.
+
+### Account Deletion & Cascade Cleanup
+
+Deleting a user from `auth.users` triggers a full cleanup chain:
+
+```
+auth.users DELETE
+  → profiles row CASCADE (FK: profiles_id_fkey ON DELETE CASCADE)
+    → BEFORE DELETE trigger: handle_profile_deletion()
+      → Deletes avatar from `avatars` bucket
+      → Deletes all product images from `product-images` bucket
+    → Profile row removed
+```
+
+**When adding new user-owned resources** (listings, orders, messages, reviews, etc.):
+1. Add a FK to `profiles.id` (or `auth.users.id`) with `ON DELETE CASCADE`
+2. If the resource has storage objects, add cleanup logic to `handle_profile_deletion()` in Supabase
+3. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's CLAUDE.md
+4. Test the full deletion chain before shipping
 
 ### Key Directories
 
