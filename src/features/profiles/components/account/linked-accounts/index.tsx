@@ -1,9 +1,9 @@
 import { SiStripe } from 'react-icons/si';
 import Button from '@/components/controls/button';
-import CollapsibleCard from '@/features/profiles/components/collapsible-card';
-import styles from './linked-accounts-section.module.scss';
+import CollapsibleCard from '@/components/layout/collapsible-card';
+import styles from './linked-accounts.module.scss';
 
-export default function LinkedAccountsSection() {
+export default function LinkedAccounts() {
   return (
     <CollapsibleCard title="Linked Accounts">
       <div className={styles.row}>

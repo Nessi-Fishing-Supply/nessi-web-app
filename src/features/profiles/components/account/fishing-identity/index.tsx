@@ -2,8 +2,8 @@
 
 import PillSelector from '@/components/controls/pill-selector';
 import { useToast } from '@/components/indicators/toast/context';
-import CollapsibleCard from '@/features/profiles/components/collapsible-card';
-import InlineEdit from '@/features/profiles/components/inline-edit';
+import CollapsibleCard from '@/components/layout/collapsible-card';
+import InlineEdit from '@/components/controls/inline-edit';
 import { useUpdateProfile } from '@/features/profiles/hooks/use-profile';
 import type { Profile } from '@/features/profiles/types/profile';
 import {
@@ -12,14 +12,14 @@ import {
   US_STATES,
 } from '@/features/profiles/types/onboarding';
 
-import styles from './fishing-identity-section.module.scss';
+import styles from './fishing-identity.module.scss';
 
-interface FishingIdentitySectionProps {
+interface FishingIdentityProps {
   profile: Profile;
   userId: string;
 }
 
-export default function FishingIdentitySection({ profile, userId }: FishingIdentitySectionProps) {
+export default function FishingIdentity({ profile, userId }: FishingIdentityProps) {
   const updateProfile = useUpdateProfile();
   const { showToast } = useToast();
 

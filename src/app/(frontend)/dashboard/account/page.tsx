@@ -1,15 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/features/auth/context';
+import { useProfile } from '@/features/profiles/hooks/use-profile';
 import { logout } from '@/features/auth/services/auth';
 import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
+import ProfileCompleteness from '@/features/profiles/components/profile-completeness';
+import PersonalInfo from '@/features/profiles/components/account/personal-info';
+import FishingIdentity from '@/features/profiles/components/account/fishing-identity';
+import Notifications from '@/features/profiles/components/account/notifications';
+import LinkedAccounts from '@/features/profiles/components/account/linked-accounts';
+import type { Profile } from '@/features/profiles/types/profile';
 import styles from './account.module.scss';
 
-const Account: React.FC = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+export default function Account() {
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const userId = user?.id ?? '';
+  const { data: profile, isLoading: profileLoading, isError, refetch } = useProfile(userId, !!userId);
   const { showToast } = useToast();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,45 +54,54 @@ const Account: React.FC = () => {
     }
   };
 
-  const firstName = user?.user_metadata?.firstName ?? '';
-  const lastName = user?.user_metadata?.lastName ?? '';
-  const email = user?.email ?? '';
-  const emailVerified = user?.email_confirmed_at ? 'Yes' : 'No';
-  const userId = user?.id ?? '';
+  if (authLoading || profileLoading) {
+    return (
+      <div className={styles.page}>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className={styles.page}>
+        <p>Failed to load your profile. Please refresh the page and try again.</p>
+        <Button style="secondary" onClick={() => refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Account</h1>
-      {isLoading ? (
-        <p>Loading user profile...</p>
-      ) : isAuthenticated && user ? (
-        <div>
-          <h2>User Profile</h2>
-          <p>User ID: {userId}</p>
-          <p>First Name: {firstName}</p>
-          <p>Last Name: {lastName}</p>
-          <p>Email: {email}</p>
-          <p>Email Verified: {emailVerified}</p>
-          <button onClick={handleLogout}>Logout</button>
+    <div className={styles.page}>
+      <h1 className={styles.title}>Account</h1>
 
-          <div className={styles.dangerZone}>
-            <h3>Danger Zone</h3>
-            <p>
-              Permanently delete your account and all associated data including your profile,
-              listings, and images. This action cannot be undone.
-            </p>
-            <Button
-              style="primary"
-              onClick={() => setDeleteModalOpen(true)}
-              ariaLabel="Delete account"
-            >
-              Delete Account
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <p>Please log in to see your profile.</p>
-      )}
+      {profile && <ProfileCompleteness profile={profile as Profile} />}
+
+      <div className={styles.sections}>
+        {profile && <PersonalInfo profile={profile as Profile} userId={userId} />}
+        {profile && <FishingIdentity profile={profile as Profile} userId={userId} />}
+        {profile && <Notifications profile={profile as Profile} userId={userId} />}
+        <LinkedAccounts />
+      </div>
+
+      <div className={styles.logoutSection}>
+        <Button style="secondary" onClick={handleLogout}>
+          Log out
+        </Button>
+      </div>
+
+      <div className={styles.dangerZone}>
+        <h3>Danger Zone</h3>
+        <p>
+          Permanently delete your account and all associated data including your profile, listings,
+          and images. This action cannot be undone.
+        </p>
+        <Button style="primary" onClick={() => setDeleteModalOpen(true)} ariaLabel="Delete account">
+          Delete Account
+        </Button>
+      </div>
 
       <Modal
         isOpen={isDeleteModalOpen}
@@ -117,6 +135,4 @@ const Account: React.FC = () => {
       </Modal>
     </div>
   );
-};
-
-export default Account;
+}

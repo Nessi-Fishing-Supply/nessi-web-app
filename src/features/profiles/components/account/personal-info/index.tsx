@@ -3,20 +3,20 @@
 import { useEffect, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import AvatarUpload from '@/features/profiles/components/avatar-upload';
-import CollapsibleCard from '@/features/profiles/components/collapsible-card';
-import InlineEdit from '@/features/profiles/components/inline-edit';
+import CollapsibleCard from '@/components/layout/collapsible-card';
+import InlineEdit from '@/components/controls/inline-edit';
 import { useDisplayNameCheck, useUpdateProfile } from '@/features/profiles/hooks/use-profile';
 import { generateSlug } from '@/features/profiles/services/profile';
 import type { Profile } from '@/features/profiles/types/profile';
 import { useToast } from '@/components/indicators/toast/context';
-import styles from './personal-info-section.module.scss';
+import styles from './personal-info.module.scss';
 
-interface PersonalInfoSectionProps {
+interface PersonalInfoProps {
   profile: Profile;
   userId: string;
 }
 
-export default function PersonalInfoSection({ profile, userId }: PersonalInfoSectionProps) {
+export default function PersonalInfo({ profile, userId }: PersonalInfoProps) {
   const { showToast } = useToast();
   const updateProfile = useUpdateProfile();
 

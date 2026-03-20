@@ -1,12 +1,12 @@
 'use client';
 
 import { useToast } from '@/components/indicators/toast/context';
-import CollapsibleCard from '@/features/profiles/components/collapsible-card';
+import CollapsibleCard from '@/components/layout/collapsible-card';
 import { useUpdateProfile } from '@/features/profiles/hooks/use-profile';
 import type { Json } from '@/types/database';
 import type { Profile } from '@/features/profiles/types/profile';
 
-import styles from './notifications-section.module.scss';
+import styles from './notifications.module.scss';
 
 interface NotificationPreferences {
   email: {
@@ -17,7 +17,7 @@ interface NotificationPreferences {
   };
 }
 
-interface NotificationsSectionProps {
+interface NotificationsProps {
   profile: Profile;
   userId: string;
 }
@@ -76,7 +76,7 @@ const TOGGLES: {
   },
 ];
 
-export default function NotificationsSection({ profile, userId }: NotificationsSectionProps) {
+export default function Notifications({ profile, userId }: NotificationsProps) {
   const { showToast } = useToast();
   const updateProfile = useUpdateProfile();
 
