@@ -79,3 +79,7 @@ export function generateSlug(displayName: string): string {
     .replace(/^-+|-+$/g, '')
     .replace(/-{2,}/g, '-');
 }
+
+export async function completeOnboarding(userId: string): Promise<Profile> {
+  return updateProfile(userId, { onboarding_completed_at: new Date().toISOString() });
+}

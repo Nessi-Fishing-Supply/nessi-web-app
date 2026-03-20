@@ -4,6 +4,7 @@ import {
   getProfileBySlug,
   updateProfile,
   checkDisplayNameAvailable,
+  completeOnboarding,
 } from '@/features/profiles/services/profile';
 import type { ProfileUpdateInput } from '@/features/profiles/types/profile';
 
@@ -29,6 +30,17 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: ({ userId, data }: { userId: string; data: ProfileUpdateInput }) =>
       updateProfile(userId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profiles'] });
+    },
+  });
+}
+
+export function useCompleteOnboarding() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => completeOnboarding(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
     },
