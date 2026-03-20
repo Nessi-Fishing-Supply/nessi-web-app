@@ -7,7 +7,6 @@ import Link from 'next/link';
 import {
   HiBell,
   HiOutlineShoppingBag,
-  HiUser,
   HiOutlineHome,
   HiOutlineUserCircle,
   HiSearch,
@@ -28,6 +27,7 @@ import LogoFull from '@/assets/logos/logo_full.svg';
 import { useAuth } from '@/features/auth/context';
 import { logout } from '@/features/auth/services/auth';
 import { useToast } from '@/components/indicators/toast/context';
+import { useProfile } from '@/features/profiles/hooks/use-profile';
 
 export default function Navbar() {
   const mounted = useSyncExternalStore(
@@ -42,6 +42,7 @@ export default function Navbar() {
 
   const { user, isAuthenticated } = useAuth();
   const { showToast } = useToast();
+  const { data: profile } = useProfile(user?.id ?? '', !!user);
   const searchParams = useSearchParams();
 
   // Detect query params and open appropriate modals/toasts
@@ -183,7 +184,23 @@ export default function Navbar() {
         {mounted && isAuthenticated && <HiBell className={styles.icon} aria-hidden="true" />}
 
         {mounted && isAuthenticated && user ? (
-          <Dropdown icon={<HiUser aria-hidden="true" />} ariaLabel="Account menu">
+          <Dropdown
+            icon={
+              profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt={`${firstName} ${lastName}`}
+                  className={styles.navAvatar}
+                />
+              ) : (
+                <span className={styles.navAvatarInitials} aria-hidden="true">
+                  {(firstName?.[0] ?? '').toUpperCase()}
+                  {(lastName?.[0] ?? '').toUpperCase()}
+                </span>
+              )
+            }
+            ariaLabel="Account menu"
+          >
             <DropdownItem isClickable={false}>
               <p>
                 {firstName} {lastName}
