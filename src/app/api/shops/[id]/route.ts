@@ -9,10 +9,7 @@ function parseStoragePath(bucketName: string, publicUrl: string): string | null 
   return publicUrl.slice(index + marker.length) || null;
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: shopId } = await params;
 
   const supabase = await createClient();
@@ -55,10 +52,7 @@ export async function DELETE(
     }
 
     // Shop product images
-    const { data: shopProducts } = await admin
-      .from('products')
-      .select('id')
-      .eq('shop_id', shopId);
+    const { data: shopProducts } = await admin.from('products').select('id').eq('shop_id', shopId);
 
     if (shopProducts && shopProducts.length > 0) {
       const productIds = shopProducts.map((p) => p.id);
