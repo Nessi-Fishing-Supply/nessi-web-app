@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { HiUser, HiOfficeBuilding } from 'react-icons/hi';
 
 import Modal from '@/components/layout/modal';
@@ -53,17 +53,11 @@ export default function SellerOnboardingModal({
   const { showToast } = useToast();
   const updateMember = useUpdateMember();
 
-  // Reset state when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setStep(1);
-      setTermsAccepted(false);
-      setSelected(null);
-    }
-  }, [isOpen]);
-
   const handleClose = () => {
     onClose();
+    setStep(1);
+    setTermsAccepted(false);
+    setSelected(null);
   };
 
   const handleNext = () => {
@@ -192,11 +186,7 @@ export default function SellerOnboardingModal({
             How do you want to sell?
           </h2>
 
-          <div
-            className={styles.cards}
-            role="radiogroup"
-            aria-label="How do you want to sell?"
-          >
+          <div className={styles.cards} role="radiogroup" aria-label="How do you want to sell?">
             {SELLER_OPTIONS.map((option, index) => {
               const isSelected = selected === option.value;
               return (
