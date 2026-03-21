@@ -93,9 +93,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
               </Pill>
             ))}
           </div>
-          {member.home_state && (
-            <p className={styles.location}>Based in {member.home_state}</p>
-          )}
+          {member.home_state && <p className={styles.location}>Based in {member.home_state}</p>}
         </section>
       )}
 
