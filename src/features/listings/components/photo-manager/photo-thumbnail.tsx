@@ -13,6 +13,7 @@ interface PhotoThumbnailProps {
     thumbnail_url: string | null;
   };
   index: number;
+  total: number;
   isUploading: boolean;
   uploadProgress: number;
   hasError: boolean;
@@ -28,6 +29,7 @@ interface PhotoThumbnailProps {
 const PhotoThumbnail: React.FC<PhotoThumbnailProps> = ({
   photo,
   index,
+  total,
   isUploading,
   uploadProgress,
   hasError,
@@ -40,12 +42,15 @@ const PhotoThumbnail: React.FC<PhotoThumbnailProps> = ({
   style,
 }) => {
   const imageSrc = photo.thumbnail_url ?? photo.image_url;
+  const tileAriaLabel = `Photo ${index + 1} of ${total}.${isCover ? ' Cover photo.' : ''} Press space to pick up.`;
 
   return (
     <div
       ref={setNodeRef}
       style={style}
       className={`${styles.thumbnail}${hasError ? ` ${styles.thumbnailError}` : ''}`}
+      aria-roledescription="sortable"
+      aria-label={tileAriaLabel}
       {...(dragAttributes as React.HTMLAttributes<HTMLDivElement>)}
       {...(dragListeners as React.HTMLAttributes<HTMLDivElement>)}
     >
@@ -60,13 +65,20 @@ const PhotoThumbnail: React.FC<PhotoThumbnailProps> = ({
       </div>
 
       {isCover && (
-        <div className={styles.coverBadge}>
+        <div className={styles.coverBadge} aria-hidden="true">
           <Pill color="success">Cover</Pill>
         </div>
       )}
 
       {isUploading && (
-        <div className={styles.progressBar} aria-hidden="true">
+        <div
+          className={styles.progressBar}
+          role="progressbar"
+          aria-valuenow={uploadProgress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Upload progress"
+        >
           <div className={styles.progressFill} style={{ width: `${uploadProgress}%` }} />
         </div>
       )}

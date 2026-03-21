@@ -15,11 +15,10 @@ export const uploadListingPhoto = async (file: File, listingId: string): Promise
 
 export const deleteListingPhoto = async (
   imageUrl: string,
-  thumbnailUrl: string
+  thumbnailUrl: string,
 ): Promise<{ success: boolean }> => {
   const { activeContext } = useContextStore.getState();
-  const contextHeader =
-    activeContext.type === 'member' ? 'member' : `shop:${activeContext.shopId}`;
+  const contextHeader = activeContext.type === 'member' ? 'member' : `shop:${activeContext.shopId}`;
 
   const res = await fetch(DELETE_URL, {
     method: 'DELETE',

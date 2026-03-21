@@ -17,47 +17,47 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 
 ### listings table
 
-| Column               | Type                        | Notes                                             |
-| -------------------- | --------------------------- | ------------------------------------------------- |
-| id                   | uuid                        | Primary key                                       |
-| seller_id            | uuid                        | FK → auth.users.id (ON DELETE CASCADE)            |
-| member_id            | uuid \| null                | FK → members.id (null if sold via shop context)   |
-| shop_id              | uuid \| null                | FK → shops.id (null if sold via member context)   |
-| title                | text                        | Required                                          |
-| description          | text \| null                |                                                   |
-| price_cents          | integer                     | Price in cents (e.g., 1999 = $19.99)              |
-| category             | listing_category enum       | Required                                          |
-| condition            | listing_condition enum      | Required                                          |
-| status               | listing_status enum         | draft \| active \| sold \| archived               |
-| brand                | text \| null                |                                                   |
-| model                | text \| null                |                                                   |
-| quantity             | integer                     | Default 1                                         |
-| weight_oz            | integer \| null             |                                                   |
-| shipping_paid_by     | shipping_paid_by enum \| null |                                                 |
-| shipping_price_cents | integer \| null             |                                                   |
-| cover_photo_url      | text \| null                | Denormalized from listing_photos for fast queries |
-| location_city        | text \| null                |                                                   |
-| location_state       | text \| null                |                                                   |
-| is_visible           | boolean                     | Default true                                      |
-| view_count           | integer                     | Incremented on detail page view                   |
-| favorite_count       | integer                     | Denormalized from favorites table                 |
-| inquiry_count        | integer                     | Denormalized from inquiries table                 |
-| search_vector        | tsvector                    | Full-text search, maintained by trigger           |
-| published_at         | timestamptz \| null         | Set when status → active                          |
-| created_at           | timestamptz                 |                                                   |
-| updated_at           | timestamptz                 |                                                   |
-| deleted_at           | timestamptz \| null         | Soft delete                                       |
+| Column               | Type                          | Notes                                             |
+| -------------------- | ----------------------------- | ------------------------------------------------- |
+| id                   | uuid                          | Primary key                                       |
+| seller_id            | uuid                          | FK → auth.users.id (ON DELETE CASCADE)            |
+| member_id            | uuid \| null                  | FK → members.id (null if sold via shop context)   |
+| shop_id              | uuid \| null                  | FK → shops.id (null if sold via member context)   |
+| title                | text                          | Required                                          |
+| description          | text \| null                  |                                                   |
+| price_cents          | integer                       | Price in cents (e.g., 1999 = $19.99)              |
+| category             | listing_category enum         | Required                                          |
+| condition            | listing_condition enum        | Required                                          |
+| status               | listing_status enum           | draft \| active \| sold \| archived               |
+| brand                | text \| null                  |                                                   |
+| model                | text \| null                  |                                                   |
+| quantity             | integer                       | Default 1                                         |
+| weight_oz            | integer \| null               |                                                   |
+| shipping_paid_by     | shipping_paid_by enum \| null |                                                   |
+| shipping_price_cents | integer \| null               |                                                   |
+| cover_photo_url      | text \| null                  | Denormalized from listing_photos for fast queries |
+| location_city        | text \| null                  |                                                   |
+| location_state       | text \| null                  |                                                   |
+| is_visible           | boolean                       | Default true                                      |
+| view_count           | integer                       | Incremented on detail page view                   |
+| favorite_count       | integer                       | Denormalized from favorites table                 |
+| inquiry_count        | integer                       | Denormalized from inquiries table                 |
+| search_vector        | tsvector                      | Full-text search, maintained by trigger           |
+| published_at         | timestamptz \| null           | Set when status → active                          |
+| created_at           | timestamptz                   |                                                   |
+| updated_at           | timestamptz                   |                                                   |
+| deleted_at           | timestamptz \| null           | Soft delete                                       |
 
 ### listing_photos table
 
-| Column        | Type            | Notes                                              |
-| ------------- | --------------- | -------------------------------------------------- |
-| id            | uuid            | Primary key                                        |
-| listing_id    | uuid            | FK → listings.id (ON DELETE CASCADE)               |
-| image_url     | text            | Full-resolution WebP URL in Supabase Storage       |
-| thumbnail_url | text \| null    | Resized thumbnail WebP URL (generated on upload)   |
-| position      | integer         | Display order (0-based); used for photo reordering |
-| created_at    | timestamptz     |                                                    |
+| Column        | Type         | Notes                                              |
+| ------------- | ------------ | -------------------------------------------------- |
+| id            | uuid         | Primary key                                        |
+| listing_id    | uuid         | FK → listings.id (ON DELETE CASCADE)               |
+| image_url     | text         | Full-resolution WebP URL in Supabase Storage       |
+| thumbnail_url | text \| null | Resized thumbnail WebP URL (generated on upload)   |
+| position      | integer      | Display order (0-based); used for photo reordering |
+| created_at    | timestamptz  |                                                    |
 
 ## API Routes
 
@@ -91,33 +91,33 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Hooks
 
-| Hook                            | Query Key                                | Purpose                                         |
-| ------------------------------- | ---------------------------------------- | ----------------------------------------------- |
-| `useListing(id)`                | `['listings', id]`                       | Fetch listing by ID with photos                 |
-| `useListingsByMember(memberId)` | `['listings', 'member', memberId]`       | Fetch active listings for a member              |
-| `useListingsByShop(shopId)`     | `['listings', 'shop', shopId]`           | Fetch active listings for a shop                |
-| `useListingPhotos(listingId)`   | `['listings', listingId, 'photos']`      | Fetch ordered photos for a listing              |
-| `useCreateListing()`            | mutation, invalidates `['listings']`     | Create a new listing (draft)                    |
-| `useUpdateListing()`            | mutation, invalidates `['listings']`     | Update listing fields                           |
-| `useDeleteListing()`            | mutation, invalidates `['listings']`     | Soft-delete a listing                           |
-| `useUploadListingPhoto()`       | mutation, invalidates listing photos key | Upload photo via `POST /api/listings/upload`    |
+| Hook                            | Query Key                                | Purpose                                               |
+| ------------------------------- | ---------------------------------------- | ----------------------------------------------------- |
+| `useListing(id)`                | `['listings', id]`                       | Fetch listing by ID with photos                       |
+| `useListingsByMember(memberId)` | `['listings', 'member', memberId]`       | Fetch active listings for a member                    |
+| `useListingsByShop(shopId)`     | `['listings', 'shop', shopId]`           | Fetch active listings for a shop                      |
+| `useListingPhotos(listingId)`   | `['listings', listingId, 'photos']`      | Fetch ordered photos for a listing                    |
+| `useCreateListing()`            | mutation, invalidates `['listings']`     | Create a new listing (draft)                          |
+| `useUpdateListing()`            | mutation, invalidates `['listings']`     | Update listing fields                                 |
+| `useDeleteListing()`            | mutation, invalidates `['listings']`     | Soft-delete a listing                                 |
+| `useUploadListingPhoto()`       | mutation, invalidates listing photos key | Upload photo via `POST /api/listings/upload`          |
 | `useDeleteListingPhoto()`       | mutation, invalidates listing photos key | Delete photo via `DELETE /api/listings/upload/delete` |
-| `useReorderListingPhotos()`     | mutation, invalidates listing photos key | Update position values after drag-to-reorder    |
+| `useReorderListingPhotos()`     | mutation, invalidates listing photos key | Update position values after drag-to-reorder          |
 
 ## Components
 
-| Component      | Location                       | Purpose                                                                                           |
-| -------------- | ------------------------------ | ------------------------------------------------------------------------------------------------- |
-| `PhotoManager` | `components/photo-manager/`    | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.              |
+| Component      | Location                    | Purpose                                                                              |
+| -------------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| `PhotoManager` | `components/photo-manager/` | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards. |
 
 ## Pages (planned)
 
-| Route                             | Description                                                              |
-| --------------------------------- | ------------------------------------------------------------------------ |
-| `/dashboard/listings/create`      | Multi-step create wizard (ticket #5): photos → details → pricing → review |
-| `/dashboard/listings/[id]/edit`   | Edit wizard for existing listings (ticket #7)                            |
-| `/dashboard/listings`             | Listing management dashboard (seller's active/draft/archived listings)   |
-| `/listing/[id]`                   | Public listing detail page — server-rendered with SEO metadata           |
+| Route                           | Description                                                               |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| `/dashboard/listings/create`    | Multi-step create wizard (ticket #5): photos → details → pricing → review |
+| `/dashboard/listings/[id]/edit` | Edit wizard for existing listings (ticket #7)                             |
+| `/dashboard/listings`           | Listing management dashboard (seller's active/draft/archived listings)    |
+| `/listing/[id]`                 | Public listing detail page — server-rendered with SEO metadata            |
 
 ## Key Patterns
 

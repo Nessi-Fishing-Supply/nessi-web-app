@@ -13,6 +13,7 @@ import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { HiPhoto, HiCamera, HiPlus } from 'react-icons/hi2';
 import Modal from '@/components/layout/modal';
+import { useToast } from '@/components/indicators/toast/context';
 import PhotoThumbnail from './photo-thumbnail';
 import { uploadListingPhoto } from '../../services/listing-photo';
 import type { ListingPhoto } from '../../types/listing-photo';
@@ -56,16 +57,20 @@ function SortableItem({
     opacity: isDragging ? 0.5 : 1,
   };
   return (
-    <>
+    <div role="listitem">
       {children({
         setNodeRef,
         style,
         dragAttributes: attributes as unknown as Record<string, unknown>,
         dragListeners: listeners as Record<string, unknown>,
       })}
-    </>
+    </div>
   );
 }
+
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20MB
+const MAX_CONCURRENT_UPLOADS = 3;
 
 export default function PhotoManager({
   listingId,
@@ -74,6 +79,7 @@ export default function PhotoManager({
   maxPhotos = 12,
   minPhotos = 2,
 }: PhotoManagerProps) {
+  const { showToast } = useToast();
   const [uploadingFiles, setUploadingFiles] = useState<Map<string, UploadEntry>>(new Map());
   const [isDragOver, setIsDragOver] = useState(false);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -90,65 +96,100 @@ export default function PhotoManager({
 
   const processFiles = useCallback(
     async (files: File[]) => {
+      // Validate each file before anything else
+      const validFiles: File[] = [];
+      for (const file of files) {
+        if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+          showToast({
+            message: 'Invalid file',
+            description: 'Only JPEG, PNG, WebP, and HEIC images are accepted',
+            type: 'error',
+          });
+          continue;
+        }
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          showToast({
+            message: 'File too large',
+            description: 'Images must be under 20MB',
+            type: 'error',
+          });
+          continue;
+        }
+        validFiles.push(file);
+      }
+
       const available = maxPhotos - photos.length;
       if (available <= 0) return;
-      const filesToProcess = files.slice(0, available);
 
-      for (let i = 0; i < filesToProcess.length; i++) {
-        const file = filesToProcess[i];
-        const tempId = crypto.randomUUID();
-        const objectUrl = URL.createObjectURL(file);
-
-        const tempPhoto: ListingPhoto = {
-          id: tempId,
-          listing_id: listingId,
-          image_url: objectUrl,
-          thumbnail_url: null,
-          position: photos.length + i,
-          created_at: new Date().toISOString(),
-        };
-
-        onPhotosChange([...photos, tempPhoto]);
-
-        setUploadingFiles((prev) => {
-          const next = new Map(prev);
-          next.set(tempId, { progress: 0, error: false, retryCount: 0, file });
-          return next;
+      if (validFiles.length > available) {
+        showToast({
+          message: 'Photo limit',
+          description: `Maximum ${maxPhotos} photos allowed`,
+          type: 'error',
         });
+      }
 
-        const attemptUpload = async (retryCount: number) => {
-          try {
-            const result = await uploadListingPhoto(file, listingId);
-            URL.revokeObjectURL(objectUrl);
-            onPhotosChange(
-              photos.map((p) =>
-                p.id === tempId
-                  ? {
-                      ...p,
-                      image_url: result.url,
-                      thumbnail_url: result.thumbnailUrl,
-                    }
-                  : p,
-              ),
-            );
+      const filesToProcess = validFiles.slice(0, available);
+      if (filesToProcess.length === 0) return;
+
+      // Process in batches of MAX_CONCURRENT_UPLOADS
+      for (let batch = 0; batch < filesToProcess.length; batch += MAX_CONCURRENT_UPLOADS) {
+        const batchFiles = filesToProcess.slice(batch, batch + MAX_CONCURRENT_UPLOADS);
+
+        await Promise.all(
+          batchFiles.map(async (file, batchIndex) => {
+            const photoIndex = photos.length + batch + batchIndex;
+            const tempId = crypto.randomUUID();
+            const objectUrl = URL.createObjectURL(file);
+
+            const tempPhoto: ListingPhoto = {
+              id: tempId,
+              listing_id: listingId,
+              image_url: objectUrl,
+              thumbnail_url: null,
+              position: photoIndex,
+              created_at: new Date().toISOString(),
+            };
+
+            onPhotosChange([...photos, tempPhoto]);
+
             setUploadingFiles((prev) => {
               const next = new Map(prev);
-              next.delete(tempId);
+              next.set(tempId, { progress: 0, error: false, retryCount: 0, file });
               return next;
             });
-          } catch {
-            setUploadingFiles((prev) => {
-              const next = new Map(prev);
-              next.set(tempId, { progress: 0, error: true, retryCount, file });
-              return next;
-            });
-          }
-        };
 
-        await attemptUpload(0);
+            try {
+              const result = await uploadListingPhoto(file, listingId);
+              URL.revokeObjectURL(objectUrl);
+              onPhotosChange(
+                photos.map((p) =>
+                  p.id === tempId
+                    ? {
+                        ...p,
+                        image_url: result.url,
+                        thumbnail_url: result.thumbnailUrl,
+                      }
+                    : p,
+                ),
+              );
+              setUploadingFiles((prev) => {
+                const next = new Map(prev);
+                next.delete(tempId);
+                return next;
+              });
+            } catch {
+              setUploadingFiles((prev) => {
+                const next = new Map(prev);
+                next.set(tempId, { progress: 0, error: true, retryCount: 0, file });
+                return next;
+              });
+            }
+          }),
+        );
       }
     },
-    [listingId, maxPhotos, onPhotosChange, photos],
+    [listingId, maxPhotos, onPhotosChange, photos, showToast],
   );
 
   const handleRetry = useCallback(
@@ -188,9 +229,16 @@ export default function PhotoManager({
             next.set(tempId, { ...entry, error: true, retryCount: newRetryCount });
             return next;
           });
+          if (newRetryCount >= 3) {
+            showToast({
+              message: 'Upload failed',
+              description: 'Could not upload photo after multiple attempts',
+              type: 'error',
+            });
+          }
         });
     },
-    [uploadingFiles, listingId, onPhotosChange, photos],
+    [uploadingFiles, listingId, onPhotosChange, photos, showToast],
   );
 
   const handleFileChange = useCallback(
@@ -216,7 +264,7 @@ export default function PhotoManager({
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragOver(false);
-      const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
+      const files = Array.from(e.dataTransfer.files);
       if (files.length > 0) processFiles(files);
     },
     [processFiles],
@@ -250,12 +298,24 @@ export default function PhotoManager({
 
   const handleDeleteConfirm = useCallback(() => {
     if (!showDeleteConfirm) return;
+
+    // Warn if deleting a photo that was mid-upload — it may have partially
+    // reached storage and can't be cleaned up client-side.
+    const uploadEntry = uploadingFiles.get(showDeleteConfirm);
+    if (uploadEntry) {
+      showToast({
+        message: 'Delete warning',
+        description: 'Photo removed locally but may still exist in storage',
+        type: 'error',
+      });
+    }
+
     const updated = photos
       .filter((p) => p.id !== showDeleteConfirm)
       .map((p, idx) => ({ ...p, position: idx }));
     onPhotosChange(updated);
     setShowDeleteConfirm(null);
-  }, [showDeleteConfirm, photos, onPhotosChange]);
+  }, [showDeleteConfirm, photos, onPhotosChange, uploadingFiles, showToast]);
 
   const canAddMore = photos.length < maxPhotos;
 
@@ -307,6 +367,7 @@ export default function PhotoManager({
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={photos.map((p) => p.id)} strategy={rectSortingStrategy}>
             <div
+              role="list"
               className={styles.grid}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -324,6 +385,7 @@ export default function PhotoManager({
                       <PhotoThumbnail
                         photo={photo}
                         index={index}
+                        total={photos.length}
                         isUploading={isUploading}
                         uploadProgress={uploadEntry?.progress ?? 0}
                         hasError={hasError && !canRetry ? false : hasError}
