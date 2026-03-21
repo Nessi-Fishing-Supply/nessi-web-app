@@ -63,13 +63,13 @@ export async function checkDisplayNameAvailable(name: string): Promise<boolean> 
 
 export async function checkSlugAvailable(slug: string): Promise<boolean> {
   const supabase = createClient();
-  const { data, error } = await supabase.from('members').select('id').eq('slug', slug).limit(1);
+  const { data, error } = await supabase.rpc('check_slug_available', { p_slug: slug });
 
   if (error) {
     throw new Error(`Failed to check slug availability: ${error.message}`);
   }
 
-  return data.length === 0;
+  return data;
 }
 
 export function generateSlug(displayName: string): string {

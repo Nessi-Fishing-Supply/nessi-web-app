@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 70,
+  "title": "feat(members): update member services and account page for display_name and is_seller",
+  "branch": "feat/70/update-member-services-account-page",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1"],
+      "current": "1.2",
+      "remaining": ["2.1", "2.2", "2.3", "2.4", "3.1"]
+    }
+  },
+  "health": { "build": "unknown", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-20T12:00:00Z", "lastActivity": "2026-03-20T12:08:00Z" }
+}
