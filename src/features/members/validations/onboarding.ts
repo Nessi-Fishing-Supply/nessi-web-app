@@ -1,13 +1,5 @@
 import * as Yup from 'yup';
 
-export const step1Schema = Yup.object().shape({
-  displayName: Yup.string()
-    .trim()
-    .min(3, 'Display name must be at least 3 characters')
-    .max(40, 'Display name must be at most 40 characters')
-    .required('Display name is required'),
-});
-
 export const intentSchema = Yup.object().shape({
   intent: Yup.string()
     .oneOf(['buyer', 'seller'], 'Please select how you plan to use Nessi')

@@ -47,21 +47,6 @@ export async function updateMember(userId: string, data: MemberUpdateInput): Pro
   return updated;
 }
 
-export async function checkDisplayNameAvailable(name: string): Promise<boolean> {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from('members')
-    .select('id')
-    .ilike('display_name', name)
-    .limit(1);
-
-  if (error) {
-    throw new Error(`Failed to check display name availability: ${error.message}`);
-  }
-
-  return data.length === 0;
-}
-
 export async function checkSlugAvailable(slug: string): Promise<boolean> {
   const supabase = createClient();
   const { data, error } = await supabase.rpc('check_slug_available', { p_slug: slug });

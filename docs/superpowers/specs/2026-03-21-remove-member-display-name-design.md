@@ -97,27 +97,30 @@ Intent, Fishing Identity, Seller Type, Bio — no changes.
 ### 4. Service/Hook Cleanup
 
 #### Remove from `services/member.ts`:
+
 - `checkDisplayNameAvailable()` function
 
 #### Remove from `hooks/use-member.ts`:
+
 - `useDisplayNameCheck()` hook
 
 #### Update `services/member.ts`:
+
 - `generateSlug()` stays — still used at registration time
 - No longer called from onboarding step 1
 
 ### 5. UI Updates (Computed Name)
 
-| Location | Before | After |
-|---|---|---|
-| Dashboard greeting | `member.display_name` | `member.first_name` |
-| Navbar identity (member context) | `user_metadata.firstName + lastName` | No change needed (already correct) |
-| Public profile heading | `member.display_name` | `member.first_name + ' ' + member.last_name` |
-| Public profile OG/metadata | `member.display_name` | `member.first_name + ' ' + member.last_name` |
-| Public profile initials fallback | `display_name.charAt(0)` | `first_name.charAt(0) + last_name.charAt(0)` |
-| Account page identity block | `member.display_name` | `member.first_name + ' ' + member.last_name` |
-| Avatar initials (onboarding) | From `displayName` prop | From `first_name + last_name` (auth user metadata) |
-| "Logged in as" hint (shop context) | `member.display_name` | `member.first_name + ' ' + member.last_name` |
+| Location                           | Before                               | After                                              |
+| ---------------------------------- | ------------------------------------ | -------------------------------------------------- |
+| Dashboard greeting                 | `member.display_name`                | `member.first_name`                                |
+| Navbar identity (member context)   | `user_metadata.firstName + lastName` | No change needed (already correct)                 |
+| Public profile heading             | `member.display_name`                | `member.first_name + ' ' + member.last_name`       |
+| Public profile OG/metadata         | `member.display_name`                | `member.first_name + ' ' + member.last_name`       |
+| Public profile initials fallback   | `display_name.charAt(0)`             | `first_name.charAt(0) + last_name.charAt(0)`       |
+| Account page identity block        | `member.display_name`                | `member.first_name + ' ' + member.last_name`       |
+| Avatar initials (onboarding)       | From `displayName` prop              | From `first_name + last_name` (auth user metadata) |
+| "Logged in as" hint (shop context) | `member.display_name`                | `member.first_name + ' ' + member.last_name`       |
 
 ### 6. Registration Flow Update
 
@@ -208,6 +211,7 @@ export function getMemberInitials(firstName: string, lastName: string): string {
 ## Files Affected
 
 ### Modified
+
 - `supabase/migrations/` — new migration (drop column, alter nullability, update trigger)
 - `src/types/database.ts` — regenerated (no `display_name`)
 - `src/features/members/stores/onboarding-store.ts` — remove `step1Data`, `setStep1Data`
@@ -225,7 +229,9 @@ export function getMemberInitials(firstName: string, lastName: string): string {
 - `src/features/members/CLAUDE.md` — update documentation
 
 ### Created
+
 - `src/features/members/utils/format-name.ts` — name formatting utilities
 
 ### Potentially removed
+
 - `src/features/members/components/onboarding/step-display-name/step-display-name.module.scss` — may be replaced or simplified

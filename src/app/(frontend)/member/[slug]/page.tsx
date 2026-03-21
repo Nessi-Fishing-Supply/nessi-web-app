@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getMemberBySlugServer } from '@/features/members/services/member-server';
+import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';
 import { getProductsByMemberServer } from '@/features/products/services/product-server';
 import ProductCard from '@/features/products/components/product-card';
 import Pill from '@/components/indicators/pill';
@@ -19,15 +20,16 @@ export async function generateMetadata({
     return { title: 'Member Not Found' };
   }
 
+  const memberName = formatMemberName(member.first_name, member.last_name);
   const description = member.bio
     ? member.bio
-    : `${member.display_name} is a member of Nessi, the fishing gear marketplace.`;
+    : `${memberName} is a member of Nessi, the fishing gear marketplace.`;
 
   return {
-    title: member.display_name,
+    title: memberName,
     description,
     openGraph: {
-      title: member.display_name,
+      title: memberName,
       description,
       ...(member.avatar_url && { images: [{ url: member.avatar_url }] }),
     },
@@ -49,7 +51,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     year: 'numeric',
   }).format(new Date(member.created_at));
 
-  const initials = member.display_name.charAt(0).toUpperCase();
+  const initials = getMemberInitials(member.first_name, member.last_name);
 
   const hasPreferences =
     (member.primary_species && member.primary_species.length > 0) ||
@@ -62,7 +64,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           {member.avatar_url ? (
             <Image
               src={member.avatar_url}
-              alt={`${member.display_name}'s avatar`}
+              alt={`${formatMemberName(member.first_name, member.last_name)}'s avatar`}
               fill
               sizes="120px"
               style={{ objectFit: 'cover' }}
@@ -73,7 +75,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             </div>
           )}
         </div>
-        <h1 className={styles.displayName}>{member.display_name}</h1>
+        <h1 className={styles.displayName}>
+          {formatMemberName(member.first_name, member.last_name)}
+        </h1>
         <p className={styles.handle}>@{member.slug}</p>
         <p className={styles.memberSince}>Member since {memberSince}</p>
       </div>

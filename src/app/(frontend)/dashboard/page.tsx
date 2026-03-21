@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AppLink from '@/components/controls/app-link';
 import { useAuth } from '@/features/auth/context';
 import { useMember } from '@/features/members/hooks/use-member';
+import { formatMemberName } from '@/features/members/utils/format-name';
 import StartSellingCta from '@/features/members/components/start-selling-cta';
 import SellerOnboardingModal from '@/features/members/components/seller-onboarding-modal';
 import CreateShopCta from '@/features/shops/components/create-shop-cta';
@@ -37,7 +38,13 @@ export default function Dashboard() {
   };
 
   const isShopContext = mounted && activeContext.type === 'shop' && !!shop;
-  const welcomeName = isShopContext ? shop.shop_name : memberLoading ? null : member?.display_name;
+  const welcomeName = isShopContext
+    ? shop.shop_name
+    : memberLoading
+      ? null
+      : member
+        ? formatMemberName(member.first_name ?? '', member.last_name ?? '')
+        : null;
 
   return (
     <div className={styles.page}>
@@ -47,7 +54,8 @@ export default function Dashboard() {
         </h1>
         {isShopContext && member && (
           <p className={styles.contextHint}>
-            Logged in as <strong>{member.display_name}</strong>
+            Logged in as{' '}
+            <strong>{formatMemberName(member.first_name ?? '', member.last_name ?? '')}</strong>
           </p>
         )}
       </div>

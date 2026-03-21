@@ -2,7 +2,7 @@
 
 ## Overview
 
-Member profile management for Nessi's C2C marketplace users. Handles member data fetching, updates, slug generation, display name availability checks, onboarding status, and a branching onboarding wizard (3 steps for buyers, 5 steps for sellers) that runs on first login.
+Member profile management for Nessi's C2C marketplace users. Handles member data fetching, updates, slug generation, onboarding status, and a branching onboarding wizard (3 steps for buyers, 5 steps for sellers) that runs on first login. Members are identified by `first_name + last_name`.
 
 ## Architecture
 
@@ -16,15 +16,14 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 
 ## Service Functions
 
-| Function                          | Purpose                                                                                       |
-| --------------------------------- | --------------------------------------------------------------------------------------------- |
-| `getMember(userId)`               | Fetch member by user ID, returns `Member \| null`                                             |
-| `getMemberBySlug(slug)`           | Fetch member by URL slug (excludes soft-deleted), returns `Member \| null`                    |
-| `updateMember(userId, data)`      | Update allowed member fields, returns updated `Member`                                        |
-| `checkDisplayNameAvailable(name)` | Case-insensitive uniqueness check on `display_name`, returns `boolean`                        |
-| `checkSlugAvailable(slug)`        | Slug uniqueness check via `check_slug_available` RPC against `slugs` table, returns `boolean` |
-| `generateSlug(displayName)`       | Convert display name to URL-safe slug (pure function, no DB call)                             |
-| `completeOnboarding(userId)`      | Sets `onboarding_completed_at` to now via `updateMember`, returns `Member`                    |
+| Function                     | Purpose                                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------------------- |
+| `getMember(userId)`          | Fetch member by user ID, returns `Member \| null`                                             |
+| `getMemberBySlug(slug)`      | Fetch member by URL slug (excludes soft-deleted), returns `Member \| null`                    |
+| `updateMember(userId, data)` | Update allowed member fields, returns updated `Member`                                        |
+| `checkSlugAvailable(slug)`   | Slug uniqueness check via `check_slug_available` RPC against `slugs` table, returns `boolean` |
+| `generateSlug(name)`         | Convert name to URL-safe slug (pure function, no DB call)                                     |
+| `completeOnboarding(userId)` | Sets `onboarding_completed_at` to now via `updateMember`, returns `Member`                    |
 
 ### Server-side Service Functions (`services/member-server.ts`)
 
@@ -34,14 +33,20 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 
 ## Hooks
 
-| Hook                              | Query Key                                 | Purpose                                                                                    |
-| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `useMember(userId, enabled?)`     | `['members', userId]`                     | Fetch member by user ID                                                                    |
-| `useMemberBySlug(slug, enabled?)` | `['members', 'slug', slug]`               | Fetch member by slug                                                                       |
-| `useUpdateMember()`               | mutation, invalidates `['members']`       | Update member fields                                                                       |
-| `useCompleteOnboarding()`         | mutation, invalidates `['members']`       | Mark onboarding complete by setting `onboarding_completed_at`                              |
-| `useDisplayNameCheck(name)`       | `['members', 'display-name-check', name]` | Availability check (enabled when name >= 2 chars, 30s stale time)                          |
-| `useSlugCheck(slug, enabled?)`    | `['slugs', 'check', slug]`                | Slug availability check via slugs table RPC (enabled when slug >= 2 chars, 30s stale time) |
+| Hook                              | Query Key                           | Purpose                                                                                    |
+| --------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| `useMember(userId, enabled?)`     | `['members', userId]`               | Fetch member by user ID                                                                    |
+| `useMemberBySlug(slug, enabled?)` | `['members', 'slug', slug]`         | Fetch member by slug                                                                       |
+| `useUpdateMember()`               | mutation, invalidates `['members']` | Update member fields                                                                       |
+| `useCompleteOnboarding()`         | mutation, invalidates `['members']` | Mark onboarding complete by setting `onboarding_completed_at`                              |
+| `useSlugCheck(slug, enabled?)`    | `['slugs', 'check', slug]`          | Slug availability check via slugs table RPC (enabled when slug >= 2 chars, 30s stale time) |
+
+## Utilities
+
+| Function                                 | File                   | Purpose                                    |
+| ---------------------------------------- | ---------------------- | ------------------------------------------ |
+| `formatMemberName(firstName, lastName)`  | `utils/format-name.ts` | Returns `"firstName lastName"` for display |
+| `getMemberInitials(firstName, lastName)` | `utils/format-name.ts` | Returns uppercase initials (e.g. "KH")     |
 
 ## Onboarding Components
 
@@ -55,7 +60,7 @@ Internal step numbering is 1-5; the buyer path skips step 4 (seller type). The p
 | Component                | Purpose                                                                                                                    |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | `onboarding-wizard/`     | Main container — reads auth state, guards against unauthenticated access, routes between steps with branching logic        |
-| `step-display-name/`     | Step 1 — display name text input with real-time availability check + `AvatarUpload` integration                            |
+| `step-display-name/`     | Step 1 — avatar upload only (no name input, name comes from registration)                                                  |
 | `step-intent/`           | Step 2 — "How do you plan to use Nessi?" with buyer/seller selection cards (`role="radiogroup"`)                           |
 | `step-fishing-identity/` | Step 3 — species and technique `PillSelector` multi-selects + home state dropdown (all optional)                           |
 | `step-seller-type/`      | Step 4 (seller path only) — "How do you want to sell?" with free/shop selection cards. Shop has "set up after" note        |
@@ -64,7 +69,7 @@ Internal step numbering is 1-5; the buyer path skips step 4 (seller type). The p
 
 ### AvatarUpload (`components/avatar-upload/`)
 
-Reusable avatar component used in Step 1. Shows initials fallback (deterministic hue from display name hash) when no image is set. On file pick it POSTs to `/api/members/avatar` and calls `onUpload(url)` with the returned public URL.
+Reusable avatar component used in Step 1. Accepts a `name` prop (not `displayName`). Shows camera icon placeholder when no image is set. On file pick it POSTs to `/api/members/avatar` and calls `onUpload(url)` with the returned public URL.
 
 ## Avatar Upload API
 
@@ -106,10 +111,10 @@ The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hol
 
 - Created with `create<OnboardingState>()` and wrapped with `createSelectors` from `@/libs/create-selectors`
 - Access individual slices via auto-generated selectors: `useOnboardingStore.use.currentStep()`, `useOnboardingStore.use.intentData()`, etc.
-- **State fields:** `step1Data`, `intentData` (intent: buyer/seller/null), `fishingData`, `sellerTypeData` (sellerType: free/shop/null), `bioData`, `avatarUrl`, `totalSteps`, `currentStep`
+- **State fields:** `intentData` (intent: buyer/seller/null), `fishingData`, `sellerTypeData` (sellerType: free/shop/null), `bioData`, `avatarUrl`, `totalSteps`, `currentStep`
 - **Branching logic:** `nextStep()` skips step 4 when `intent === 'buyer'`. `prevStep()` reverses the skip. `totalSteps` is computed from intent (4 for buyer, 5 for seller).
 - **Seller type clearing:** Setting intent to `'buyer'` automatically clears `sellerTypeData`
-- Actions: `nextStep()`, `prevStep()`, `goToStep(n)`, `setStep1Data()`, `setIntentData()`, `setFishingData()`, `setSellerTypeData()`, `setBioData()`, `setAvatarUrl()`, `reset()`
+- Actions: `nextStep()`, `prevStep()`, `goToStep(n)`, `setIntentData()`, `setFishingData()`, `setSellerTypeData()`, `setBioData()`, `setAvatarUrl()`, `reset()`
 - `reset()` is called after `completeOnboarding` succeeds to clear state
 
 ## Key Patterns
@@ -120,3 +125,4 @@ The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hol
 - **Onboarding integration** — The `checkOnboardingComplete()` function in `src/features/auth/services/onboarding.ts` queries this feature's members table for `onboarding_completed_at`.
 - **Slug generation** — Member URLs use slugs (e.g., `/user/john-doe-4829`). The auto-create trigger generates slugs on signup; `generateSlug` is available for client-side preview.
 - **Avatar storage** — Avatars are stored in the `avatars` bucket (not `product-images`), one file per user (`{userId}.webp`), upserted on each upload.
+- **No display_name** — Members are identified by `first_name + last_name`. The `display_name` column was removed. Custom display names are a shop-only feature.

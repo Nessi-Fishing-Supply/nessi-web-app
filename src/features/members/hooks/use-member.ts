@@ -3,7 +3,6 @@ import {
   getMember,
   getMemberBySlug,
   updateMember,
-  checkDisplayNameAvailable,
   checkSlugAvailable,
   completeOnboarding,
 } from '@/features/members/services/member';
@@ -59,15 +58,6 @@ export function useCompleteOnboarding() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
     },
-  });
-}
-
-export function useDisplayNameCheck(name: string) {
-  return useQuery({
-    queryKey: ['members', 'display-name-check', name],
-    queryFn: () => checkDisplayNameAvailable(name),
-    enabled: name.length >= 2,
-    staleTime: 30000,
   });
 }
 

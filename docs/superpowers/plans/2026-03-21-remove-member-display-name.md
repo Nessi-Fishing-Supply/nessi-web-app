@@ -15,34 +15,37 @@
 ## File Structure
 
 ### Created
+
 - `src/features/members/utils/format-name.ts` — `formatMemberName()` and `getMemberInitials()` helpers
 
 ### Modified (by task)
-| File | Task | Change |
-|---|---|---|
-| `supabase/migrations/2026XXXX_remove_display_name.sql` | 1 | New migration file |
-| `src/types/database.ts` | 1 | Regenerated (no `display_name`) |
-| `src/features/shared/utils/slug.ts` | 2 | Rename param `displayName` → `name` |
-| `src/features/members/services/member.ts` | 2 | Remove `checkDisplayNameAvailable()` |
-| `src/features/members/hooks/use-member.ts` | 2 | Remove `useDisplayNameCheck()` |
-| `src/features/members/types/onboarding.ts` | 3 | Remove `OnboardingStep1Data` |
-| `src/features/members/validations/onboarding.ts` | 3 | Remove `step1Schema` |
-| `src/features/members/stores/onboarding-store.ts` | 3 | Remove `step1Data`, `setStep1Data` |
-| `src/features/members/components/avatar-upload/index.tsx` | 4 | Rename `displayName` → `name` prop |
-| `src/features/members/components/onboarding/step-display-name/index.tsx` | 4 | Rewrite as avatar-only step |
-| `src/features/members/components/onboarding/step-display-name/step-display-name.module.scss` | 4 | Simplify styles |
-| `src/features/members/components/onboarding/step-bio/index.tsx` | 5 | Remove `display_name`/`slug` from save |
-| `src/features/members/components/account/personal-info/index.tsx` | 6 | Remove display name field |
-| `src/app/(frontend)/dashboard/page.tsx` | 7 | Use `first_name` for greeting |
-| `src/app/(frontend)/member/[slug]/page.tsx` | 7 | Use `first_name + last_name` |
-| `src/features/members/CLAUDE.md` | 8 | Update documentation |
-| `src/features/shops/components/shop-settings/shop-details-section/index.tsx` | 4 | Update AvatarUpload caller |
+
+| File                                                                                         | Task | Change                                 |
+| -------------------------------------------------------------------------------------------- | ---- | -------------------------------------- |
+| `supabase/migrations/2026XXXX_remove_display_name.sql`                                       | 1    | New migration file                     |
+| `src/types/database.ts`                                                                      | 1    | Regenerated (no `display_name`)        |
+| `src/features/shared/utils/slug.ts`                                                          | 2    | Rename param `displayName` → `name`    |
+| `src/features/members/services/member.ts`                                                    | 2    | Remove `checkDisplayNameAvailable()`   |
+| `src/features/members/hooks/use-member.ts`                                                   | 2    | Remove `useDisplayNameCheck()`         |
+| `src/features/members/types/onboarding.ts`                                                   | 3    | Remove `OnboardingStep1Data`           |
+| `src/features/members/validations/onboarding.ts`                                             | 3    | Remove `step1Schema`                   |
+| `src/features/members/stores/onboarding-store.ts`                                            | 3    | Remove `step1Data`, `setStep1Data`     |
+| `src/features/members/components/avatar-upload/index.tsx`                                    | 4    | Rename `displayName` → `name` prop     |
+| `src/features/members/components/onboarding/step-display-name/index.tsx`                     | 4    | Rewrite as avatar-only step            |
+| `src/features/members/components/onboarding/step-display-name/step-display-name.module.scss` | 4    | Simplify styles                        |
+| `src/features/members/components/onboarding/step-bio/index.tsx`                              | 5    | Remove `display_name`/`slug` from save |
+| `src/features/members/components/account/personal-info/index.tsx`                            | 6    | Remove display name field              |
+| `src/app/(frontend)/dashboard/page.tsx`                                                      | 7    | Use `first_name` for greeting          |
+| `src/app/(frontend)/member/[slug]/page.tsx`                                                  | 7    | Use `first_name + last_name`           |
+| `src/features/members/CLAUDE.md`                                                             | 8    | Update documentation                   |
+| `src/features/shops/components/shop-settings/shop-details-section/index.tsx`                 | 4    | Update AvatarUpload caller             |
 
 ---
 
 ## Task 1: Database Migration
 
 **Files:**
+
 - Create: `supabase/migrations/20260321000001_remove_display_name_from_members.sql`
 - Modify: `src/types/database.ts` (regenerated)
 
@@ -134,6 +137,7 @@ ALTER TABLE public.members DROP COLUMN display_name;
 Run: `pnpm db:types`
 
 This regenerates `src/types/database.ts`. Verify:
+
 - `display_name` no longer appears in the `members` type
 - `first_name` and `last_name` are now `string` (not `string | null`)
 
@@ -159,6 +163,7 @@ Members are now identified by first/last name only."
 ## Task 2: Create Name Utilities and Clean Up Services
 
 **Files:**
+
 - Create: `src/features/members/utils/format-name.ts`
 - Modify: `src/features/shared/utils/slug.ts`
 - Modify: `src/features/members/services/member.ts`
@@ -199,6 +204,7 @@ In `src/features/members/services/member.ts`, delete the entire `checkDisplayNam
 - [ ] **Step 4: Remove `useDisplayNameCheck` from hooks**
 
 In `src/features/members/hooks/use-member.ts`:
+
 - Remove `checkDisplayNameAvailable` from the import block (lines 2-9)
 - Delete the entire `useDisplayNameCheck` function (lines 65-71)
 
@@ -224,6 +230,7 @@ Rename generateSlug parameter from displayName to name."
 ## Task 3: Update Onboarding Store, Types, and Validations
 
 **Files:**
+
 - Modify: `src/features/members/types/onboarding.ts`
 - Modify: `src/features/members/validations/onboarding.ts`
 - Modify: `src/features/members/stores/onboarding-store.ts`
@@ -231,6 +238,7 @@ Rename generateSlug parameter from displayName to name."
 - [ ] **Step 1: Remove `OnboardingStep1Data` from types**
 
 In `src/features/members/types/onboarding.ts`:
+
 - Delete `OnboardingStep1Data` type (lines 5-7)
 - Update `OnboardingFormData` to remove `OnboardingStep1Data &` from the intersection:
 
@@ -248,6 +256,7 @@ In `src/features/members/validations/onboarding.ts`, delete the `step1Schema` ex
 - [ ] **Step 3: Remove `step1Data` from onboarding store**
 
 In `src/features/members/stores/onboarding-store.ts`:
+
 - Remove the `OnboardingStep1Data` import
 - Remove `step1Data: OnboardingStep1Data` from the `OnboardingState` interface
 - Remove `setStep1Data: (data: OnboardingStep1Data) => void` from the interface
@@ -277,6 +286,7 @@ Remove OnboardingStep1Data, step1Schema, step1Data from store."
 ## Task 4: Rewrite Onboarding Step 1 and Update AvatarUpload
 
 **Files:**
+
 - Modify: `src/features/members/components/avatar-upload/index.tsx`
 - Modify: `src/features/members/components/onboarding/step-display-name/index.tsx`
 - Modify: `src/features/members/components/onboarding/step-display-name/step-display-name.module.scss`
@@ -285,6 +295,7 @@ Remove OnboardingStep1Data, step1Schema, step1Data from store."
 - [ ] **Step 1: Rename AvatarUpload prop `displayName` → `name`**
 
 In `src/features/members/components/avatar-upload/index.tsx`:
+
 - In the interface, rename `displayName: string` to `name: string`
 - In the destructured props, rename `displayName` to `name`
 - On line 98, change `alt={displayName}` to `alt={name}`
@@ -292,6 +303,7 @@ In `src/features/members/components/avatar-upload/index.tsx`:
 - [ ] **Step 2: Update AvatarUpload callers — shop-details-section**
 
 In `src/features/shops/components/shop-settings/shop-details-section/index.tsx`:
+
 - Change the `displayName` prop to `name` on the `AvatarUpload` usage
 
 - [ ] **Step 3: Rewrite step-display-name as avatar-only step**
@@ -323,9 +335,7 @@ export default function StepAvatar() {
       <div className={styles.formBody}>
         <div className={styles.stepHeader}>
           <h2 className={styles.stepTitle}>Add a profile photo</h2>
-          <p className={styles.stepSubtitle}>
-            Choose a photo that other anglers will see.
-          </p>
+          <p className={styles.stepSubtitle}>Choose a photo that other anglers will see.</p>
         </div>
 
         <div className={styles.avatarSection}>
@@ -442,11 +452,13 @@ Rename AvatarUpload displayName prop to name for clarity."
 ## Task 5: Update Onboarding Step Bio Save Payload
 
 **Files:**
+
 - Modify: `src/features/members/components/onboarding/step-bio/index.tsx`
 
 - [ ] **Step 1: Remove display_name and slug from handleFinish**
 
 In `src/features/members/components/onboarding/step-bio/index.tsx`:
+
 - Remove the `step1Data` store selector (line 23)
 - Remove the `generateSlug` import (line 10)
 - In `handleFinish`, remove `display_name: step1Data.displayName` and `slug: generateSlug(step1Data.displayName)` from the `updateMember.mutateAsync` data object (lines 59-60)
@@ -485,11 +497,13 @@ not during onboarding."
 ## Task 6: Update Account Page Personal Info
 
 **Files:**
+
 - Modify: `src/features/members/components/account/personal-info/index.tsx`
 
 - [ ] **Step 1: Remove display name editing from PersonalInfo**
 
 In `src/features/members/components/account/personal-info/index.tsx`:
+
 - Remove imports: `HiCheckCircle`, `HiXCircle` (from `react-icons/hi`), `useDisplayNameCheck` (from hooks), `generateSlug` (from services)
 - Remove all display name state: `draftName`, `setDraftName`, `debouncedName`, `setDebouncedName`
 - Remove the `useEffect` debounce timer (lines 26-31)
@@ -523,12 +537,14 @@ Display name field, availability checking, and slug updates removed."
 ## Task 7: Update Dashboard and Public Profile Pages
 
 **Files:**
+
 - Modify: `src/app/(frontend)/dashboard/page.tsx`
 - Modify: `src/app/(frontend)/member/[slug]/page.tsx`
 
 - [ ] **Step 1: Update dashboard greeting**
 
 In `src/app/(frontend)/dashboard/page.tsx`:
+
 - Line 40: Change `member?.display_name` to `member?.first_name`
 - Line 50: Change `member.display_name` to `formatMemberName(member.first_name, member.last_name)`
 - Add import: `import { formatMemberName } from '@/features/members/utils/format-name';`
@@ -536,13 +552,14 @@ In `src/app/(frontend)/dashboard/page.tsx`:
 - [ ] **Step 2: Update public member profile**
 
 In `src/app/(frontend)/member/[slug]/page.tsx`:
+
 - Add import: `import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';`
 - In `generateMetadata`:
   - Line 24: Change `member.display_name` to `formatMemberName(member.first_name, member.last_name)` (description fallback)
   - Line 27-30: Change both `member.display_name` refs to the formatted name
 - In the component:
   - Line 52: Change `member.display_name.charAt(0).toUpperCase()` to `getMemberInitials(member.first_name, member.last_name)`
-  - Line 64: Change `alt={member.display_name}` to `alt={formatMemberName(member.first_name, member.last_name)}`  (add `'s avatar` suffix too)
+  - Line 64: Change `alt={member.display_name}` to `alt={formatMemberName(member.first_name, member.last_name)}` (add `'s avatar` suffix too)
   - Line 76: Change `member.display_name` heading to `formatMemberName(member.first_name, member.last_name)`
 
 - [ ] **Step 3: Run full typecheck — expect zero errors**
@@ -572,11 +589,13 @@ Public profile uses formatMemberName() for heading, metadata, and OG tags."
 ## Task 8: Update Documentation and Final Verification
 
 **Files:**
+
 - Modify: `src/features/members/CLAUDE.md`
 
 - [ ] **Step 1: Update members CLAUDE.md**
 
 Key changes to `src/features/members/CLAUDE.md`:
+
 - Remove `checkDisplayNameAvailable` from service functions table
 - Remove `useDisplayNameCheck` from hooks table
 - Add `formatMemberName` and `getMemberInitials` to a new "Utilities" section
@@ -588,6 +607,7 @@ Key changes to `src/features/members/CLAUDE.md`:
 - [ ] **Step 2: Run full quality checks**
 
 Run sequentially:
+
 ```bash
 pnpm typecheck && pnpm lint && pnpm lint:styles && pnpm format:check
 ```
@@ -620,14 +640,14 @@ update onboarding step descriptions."
 
 ## Summary
 
-| Task | Description | Estimated Steps |
-|---|---|---|
-| 1 | Database migration (drop column, rewrite trigger) | 4 |
-| 2 | Name utilities + service/hook cleanup | 6 |
-| 3 | Onboarding store, types, validations | 5 |
-| 4 | Rewrite step 1 + AvatarUpload prop rename | 6 |
-| 5 | Step bio save payload | 3 |
-| 6 | Account page personal info | 3 |
-| 7 | Dashboard + public profile pages | 5 |
-| 8 | Documentation + final verification | 5 |
-| **Total** | | **37 steps** |
+| Task      | Description                                       | Estimated Steps |
+| --------- | ------------------------------------------------- | --------------- |
+| 1         | Database migration (drop column, rewrite trigger) | 4               |
+| 2         | Name utilities + service/hook cleanup             | 6               |
+| 3         | Onboarding store, types, validations              | 5               |
+| 4         | Rewrite step 1 + AvatarUpload prop rename         | 6               |
+| 5         | Step bio save payload                             | 3               |
+| 6         | Account page personal info                        | 3               |
+| 7         | Dashboard + public profile pages                  | 5               |
+| 8         | Documentation + final verification                | 5               |
+| **Total** |                                                   | **37 steps**    |

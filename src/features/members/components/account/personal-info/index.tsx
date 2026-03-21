@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { HiCheckCircle, HiXCircle, HiUser } from 'react-icons/hi';
+import { HiUser } from 'react-icons/hi';
 import AvatarUpload from '@/features/members/components/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
-import { useDisplayNameCheck, useUpdateMember } from '@/features/members/hooks/use-member';
-import { generateSlug } from '@/features/members/services/member';
+import { useUpdateMember } from '@/features/members/hooks/use-member';
 import type { Member } from '@/features/members/types/member';
 import { useToast } from '@/components/indicators/toast/context';
 import { createClient } from '@/libs/supabase/client';
+import { formatMemberName } from '@/features/members/utils/format-name';
 import styles from './personal-info.module.scss';
 
 interface PersonalInfoProps {
@@ -20,40 +19,17 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
   const { showToast } = useToast();
   const updateMember = useUpdateMember();
 
-  const [draftName, setDraftName] = useState('');
-  const [debouncedName, setDebouncedName] = useState('');
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedName(draftName);
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [draftName]);
-
-  const isCurrentName = debouncedName.toLowerCase() === (member.display_name ?? '').toLowerCase();
-
-  const { data: isAvailable, isLoading: isChecking } = useDisplayNameCheck(
-    isCurrentName || debouncedName.length < 2 ? '' : debouncedName,
-  );
-
-  const availabilityKnown = debouncedName.length >= 2 && !isChecking && !isCurrentName;
-  const nameAvailable = isCurrentName || (availabilityKnown && isAvailable === true);
-  const nameTaken = !isCurrentName && availabilityKnown && isAvailable === false;
-
-  const showAvailabilityIcon = draftName.length >= 2 && debouncedName.length >= 2;
-
-  const handleDisplayNameChange = (val: string) => {
-    setDraftName(val);
-  };
+  const fullName = formatMemberName(member.first_name ?? '', member.last_name ?? '');
 
   const handleFirstNameSave = async (newFirstName: string) => {
+    if (!newFirstName.trim()) return;
     await updateMember.mutateAsync({
       userId,
-      data: { first_name: newFirstName || null },
+      data: { first_name: newFirstName.trim() },
     });
     const supabase = createClient();
     await supabase.auth.updateUser({
-      data: { firstName: newFirstName || null },
+      data: { firstName: newFirstName.trim() },
     });
     showToast({
       message: 'Saved',
@@ -64,36 +40,18 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
   };
 
   const handleLastNameSave = async (newLastName: string) => {
+    if (!newLastName.trim()) return;
     await updateMember.mutateAsync({
       userId,
-      data: { last_name: newLastName || null },
+      data: { last_name: newLastName.trim() },
     });
     const supabase = createClient();
     await supabase.auth.updateUser({
-      data: { lastName: newLastName || null },
+      data: { lastName: newLastName.trim() },
     });
     showToast({
       message: 'Saved',
       description: 'Your last name has been updated.',
-      type: 'success',
-      duration: 2000,
-    });
-  };
-
-  const handleDisplayNameSave = async (newName: string) => {
-    if (nameTaken) return;
-    await updateMember.mutateAsync({
-      userId,
-      data: {
-        display_name: newName,
-        slug: generateSlug(newName),
-      },
-    });
-    setDraftName('');
-    setDebouncedName('');
-    showToast({
-      message: 'Saved',
-      description: 'Your display name has been updated.',
       type: 'success',
       duration: 2000,
     });
@@ -131,14 +89,14 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
         <div className={styles.profileHeroPattern} aria-hidden="true" />
         <div className={styles.avatarSection}>
           <AvatarUpload
-            displayName={member.display_name ?? ''}
+            name={fullName}
             avatarUrl={member.avatar_url ?? null}
             onUpload={handleAvatarUpload}
             disabled={updateMember.isPending}
           />
         </div>
         <div className={styles.identityBlock}>
-          <span className={styles.displayName}>{member.display_name || 'Set your name'}</span>
+          <span className={styles.displayName}>{fullName.trim() || 'Set your name'}</span>
           {member.slug && <span className={styles.handle}>@{member.slug}</span>}
         </div>
       </div>
@@ -178,40 +136,9 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
         </div>
 
         <div className={styles.fieldRow}>
-          <span className={styles.fieldLabel}>Display name</span>
-          <div className={styles.fieldValue}>
-            <InlineEdit
-              value={member.display_name ?? ''}
-              onSave={handleDisplayNameSave}
-              onChange={handleDisplayNameChange}
-              placeholder="Add a display name"
-              validating={isChecking || nameTaken}
-              ariaLabel="display name"
-            />
-            {showAvailabilityIcon && nameAvailable && !isChecking && (
-              <span className={styles.availabilityIcon}>
-                <HiCheckCircle className={styles.iconSuccess} aria-hidden="true" />
-                <span className="sr-only">Display name is available</span>
-              </span>
-            )}
-            {showAvailabilityIcon && nameTaken && (
-              <span className={styles.availabilityIcon}>
-                <HiXCircle className={styles.iconError} aria-hidden="true" />
-                <span className="sr-only">Display name is taken</span>
-              </span>
-            )}
-            {nameTaken && (
-              <p className={styles.errorText} role="alert">
-                That display name is already taken
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>Handle</span>
           <span className={styles.fieldStatic}>
-            {member.slug ? `@${member.slug}` : 'Generated from display name'}
+            {member.slug ? `@${member.slug}` : 'Generated from your name'}
           </span>
         </div>
 
