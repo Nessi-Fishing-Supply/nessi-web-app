@@ -3,26 +3,27 @@
 import { useToast } from '@/components/indicators/toast/context';
 import CollapsibleCard from '@/components/layout/collapsible-card';
 import Toggle from '@/components/controls/toggle';
-import { useUpdateMember } from '@/features/members/hooks/use-member';
+import { useSellerPreconditions, useToggleSeller } from '@/features/members/hooks/use-seller';
 import type { Member } from '@/features/members/types/member';
 
 import styles from './seller-settings.module.scss';
 
 interface SellerSettingsProps {
   member: Member;
-  userId: string;
 }
 
-export default function SellerSettings({ member, userId }: SellerSettingsProps) {
+export default function SellerSettings({ member }: SellerSettingsProps) {
   const { showToast } = useToast();
-  const updateMember = useUpdateMember();
+  const { data: preconditions } = useSellerPreconditions(member.is_seller ?? false);
+  const toggleSeller = useToggleSeller();
+
+  const isSeller = member.is_seller ?? false;
+  const canToggleOff = preconditions?.canDisable ?? true;
+  const isToggleDisabled = toggleSeller.isPending || (isSeller && !canToggleOff);
 
   const handleToggle = async (value: boolean) => {
     try {
-      await updateMember.mutateAsync({
-        userId,
-        data: { is_seller: value },
-      });
+      await toggleSeller.mutateAsync(value);
 
       showToast({
         message: 'Saved',
@@ -39,6 +40,24 @@ export default function SellerSettings({ member, userId }: SellerSettingsProps) 
     }
   };
 
+  const getToggleAriaLabel = () => {
+    if (isSeller && !canToggleOff) {
+      const parts = [];
+      if (preconditions?.activeListingsCount) {
+        parts.push(
+          `${preconditions.activeListingsCount} active listing${preconditions.activeListingsCount === 1 ? '' : 's'} must be closed first`,
+        );
+      }
+      if (preconditions?.activeOrdersCount) {
+        parts.push(
+          `${preconditions.activeOrdersCount} active order${preconditions.activeOrdersCount === 1 ? '' : 's'} must be completed first`,
+        );
+      }
+      return `Enable selling - disabled: ${parts.join(', ')}`;
+    }
+    return undefined;
+  };
+
   return (
     <CollapsibleCard title="Seller Settings">
       <div className={styles.item}>
@@ -50,22 +69,38 @@ export default function SellerSettings({ member, userId }: SellerSettingsProps) 
         </div>
         <Toggle
           id="seller-toggle"
-          checked={member.is_seller ?? false}
+          checked={isSeller}
           onChange={handleToggle}
-          disabled={updateMember.isPending}
+          disabled={isToggleDisabled}
+          ariaLabel={getToggleAriaLabel()}
         />
       </div>
 
-      {member.is_seller && (
+      {isSeller && canToggleOff && (
         <p className={styles.warning}>
           Turning off seller mode will hide your listings from public view. You can turn it back on
           anytime.
         </p>
       )}
 
-      <p className={styles.guardText} aria-disabled="true">
-        Active orders and published listings will need to be resolved before disabling seller mode.
-      </p>
+      {isSeller && !canToggleOff && (
+        <div className={styles.preconditionMessage} role="status" aria-live="polite">
+          {preconditions?.activeListingsCount ? (
+            <p>
+              You have {preconditions.activeListingsCount} active{' '}
+              {preconditions.activeListingsCount === 1 ? 'listing' : 'listings'} that must be closed
+              before disabling seller mode.
+            </p>
+          ) : null}
+          {preconditions?.activeOrdersCount ? (
+            <p>
+              You have {preconditions.activeOrdersCount} active{' '}
+              {preconditions.activeOrdersCount === 1 ? 'order' : 'orders'} that must be completed
+              first.
+            </p>
+          ) : null}
+        </div>
+      )}
     </CollapsibleCard>
   );
 }

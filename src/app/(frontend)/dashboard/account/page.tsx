@@ -160,7 +160,7 @@ export default function Account() {
               {member && <Notifications member={member as Member} userId={userId} />}
             </div>
             <div className={styles.sectionItem}>
-              {member && <SellerSettings member={member as Member} userId={userId} />}
+              {member && <SellerSettings member={member as Member} />}
             </div>
             <div className={styles.sectionItem}>
               <LinkedAccounts />
