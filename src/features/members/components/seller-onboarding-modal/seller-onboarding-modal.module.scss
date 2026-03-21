@@ -1,0 +1,151 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.heading {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-dark);
+  margin: 0;
+  letter-spacing: -0.02em;
+  padding-right: var(--space-lg);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.bodyText {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.termsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-xs) 0;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.termsLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-dark);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.backRow {
+  margin-bottom: var(--space-2xs);
+}
+
+.back {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    color: var(--color-primary--dark);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    gap: var(--space-md);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-lg) var(--space-base);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  text-align: center;
+  min-height: 44px;
+  flex: 1;
+
+  &:hover {
+    border-color: var(--color-gray-400);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.cardSelected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+  background: var(--color-primary--lightest, var(--color-gray-50));
+}
+
+.cardIcon {
+  font-size: var(--font-size-3xl);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.cardDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
+
+.footer {
+  padding-top: var(--space-xs);
+}

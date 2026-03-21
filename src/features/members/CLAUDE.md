@@ -85,6 +85,14 @@ The account page (`/dashboard/account`) displays and edits member data via colla
 
 Progress bar computing completeness from 5 fields (20% each): `avatar_url`, `bio`, `primary_species`, `primary_technique`, `home_state`. Hidden at 100%.
 
+### StartSellingCta (`components/start-selling-cta/`)
+
+Full-width CTA card shown on the dashboard when `is_seller === false`. Displays a currency icon, headline ("Start selling your gear"), value proposition text, and a "Start selling" button. Accepts `onStartSelling: () => void` callback prop to trigger the seller onboarding modal.
+
+### SellerOnboardingModal (`components/seller-onboarding-modal/`)
+
+2-step modal for post-onboarding seller opt-in. Step 1: terms/info with checkbox acceptance. Step 2: seller type choice (free profile vs shop) using a keyboard-navigable radiogroup card pattern. Choosing "free" calls `useUpdateMember` to set `is_seller: true` with a success toast. Choosing "shop" signals the parent to redirect to `/dashboard/shop/create`. Props: `isOpen`, `onClose`, `userId`, `onComplete(path: 'free' | 'shop')`.
+
 ## State Management
 
 The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hold step data across renders without lifting state to a parent.
