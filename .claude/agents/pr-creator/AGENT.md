@@ -24,9 +24,16 @@ You will receive:
 
 ### 1. Prepare
 
-- Run `git status` to confirm all changes are committed
-- Always stage conductor state: `git add .claude/conductor/` — track state, plan, learnings, and review logs must be included in the branch
-- If there are other uncommitted changes, stage and commit them with an appropriate message
+- Run `git status` to check for uncommitted changes
+- **CRITICAL**: If `.claude/conductor/` has ANY uncommitted changes (modified, deleted, or untracked files), stage and commit them immediately:
+  ```bash
+  git add .claude/conductor/
+  git commit -m "chore: #{issue} include conductor state changes
+
+  Co-Authored-By: Conductor <noreply@conductor.dev>"
+  ```
+  This is non-negotiable — conductor state MUST be part of the branch before pushing.
+- If there are other uncommitted source changes, stage and commit them with an appropriate message
 - Run `git log main..HEAD --oneline` to review the commit history for the PR
 
 ### 2. Push
