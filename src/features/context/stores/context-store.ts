@@ -3,12 +3,14 @@ import { persist } from 'zustand/middleware';
 
 import createSelectors from '@/libs/create-selectors';
 
-export type ActiveContext = { type: 'member' } | { type: 'shop'; shopId: string };
+export type ActiveContext =
+  | { type: 'member' }
+  | { type: 'shop'; shopId: string; shopName?: string };
 
 interface ContextState {
   activeContext: ActiveContext;
   switchToMember: () => void;
-  switchToShop: (shopId: string) => void;
+  switchToShop: (shopId: string, shopName?: string) => void;
   reset: () => void;
 }
 
@@ -17,7 +19,8 @@ const useContextStoreBase = create<ContextState>()(
     (set) => ({
       activeContext: { type: 'member' } as ActiveContext,
       switchToMember: () => set({ activeContext: { type: 'member' } }),
-      switchToShop: (shopId: string) => set({ activeContext: { type: 'shop', shopId } }),
+      switchToShop: (shopId: string, shopName?: string) =>
+        set({ activeContext: { type: 'shop', shopId, shopName } }),
       reset: () => set({ activeContext: { type: 'member' } }),
     }),
     {

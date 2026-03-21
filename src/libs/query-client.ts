@@ -1,9 +1,18 @@
 'use client';
 
-import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { isServer, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { handleContextRevocation } from '@/features/context/utils/handle-context-revocation';
+import { FetchError } from '@/libs/fetch-error';
 
 function makeQueryClient() {
   return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        if (error instanceof FetchError && error.status === 403) {
+          handleContextRevocation();
+        }
+      },
+    }),
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,

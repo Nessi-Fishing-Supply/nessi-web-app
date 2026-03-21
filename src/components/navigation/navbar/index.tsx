@@ -293,7 +293,7 @@ export default function Navbar() {
                       type="button"
                       className={styles.switchItem}
                       onClick={() => {
-                        switchToShop(shop.id);
+                        switchToShop(shop.id, shop.shop_name ?? undefined);
                         router.push('/dashboard');
                       }}
                     >
