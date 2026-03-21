@@ -230,9 +230,15 @@ Available to any member, regardless of `is_seller` status:
 
 ### 3.4 `is_seller` Toggle
 
-Available in member settings AND during onboarding. Can be toggled on/off at any time:
+Available in member settings AND during onboarding:
 - **On:** Member can list products, seller features visible in dashboard, listings visible on public profile
 - **Off:** Member-owned listings set `is_visible = false` (not deleted), seller features hidden from dashboard, can toggle back on
+
+**Toggle-off preconditions:** The toggle is disabled (greyed out with info notice) if the member has:
+- Active/in-progress orders as a seller
+- Active (non-archived) listings
+
+Message: "You must finish active transactions and close active listings to turn off seller features."
 
 Independent of shop ownership. A member can have `is_seller = false` and still own/manage a shop.
 
@@ -421,6 +427,7 @@ A member cannot delete their account if they own a shop. The database enforces t
 1. Member requests account deletion
 2. System checks: does this member own any shops?
    - **Yes** → Block deletion. Show message: "You own [shop name]. Please delete or transfer your shop before deleting your account."
+   - Options: delete the shop first, or transfer ownership (see below)
    - **No** → Proceed with deletion
 3. On deletion:
    - `auth.users` row deleted
@@ -429,6 +436,19 @@ A member cannot delete their account if they own a shop. The database enforces t
    - `shop_members` entries cascade delete (member removed from any shops they were admin/contributor on)
    - `slugs` entry for member's slug cleaned up via trigger
    - Avatar and product images cleaned up via `handle_member_deletion()` trigger (same pattern as current `handle_profile_deletion()`)
+
+### Shop Ownership Transfer
+
+The owner of a shop can transfer ownership to another shop member (admin or contributor):
+
+1. Owner selects "Transfer ownership" in shop settings
+2. Selects the new owner from existing shop members
+3. **Double confirmation required:** "Are you sure you want to transfer ownership of [shop name] to [member name]? This cannot be undone without the new owner's consent."
+4. On transfer (atomic):
+   - `shops.owner_id` updated to the new member's ID
+   - Old owner's `shop_members.role` demoted from `owner` to `admin`
+   - New owner's `shop_members.role` promoted to `owner`
+5. Former owner can now optionally leave the shop (remove their `shop_members` entry)
 
 ### Shop Deletion
 
@@ -442,6 +462,27 @@ Only the shop owner can delete a shop. The deletion flow:
    - `slugs` entry released (slug becomes available again)
    - Stripe subscription cancelled
 4. Hard delete after retention period (or immediate if no transaction history)
+
+### Slug Changes
+
+Members and shops can change their slug (handle) via settings:
+
+1. New slug checked for global uniqueness via `slugs` table
+2. Warning modal: "Changing your handle will break any existing links to your profile/shop. Are you sure?"
+3. On change (atomic via `reserve_slug()`):
+   - Old slug released from `slugs` table (becomes available for others)
+   - New slug reserved in `slugs` table
+   - Entity's `slug` column updated
+4. No redirect from old slug (future consideration — `slug_history` table for 301 redirects)
+
+### Shop Context Revocation
+
+If a member is removed from a shop while actively viewing that shop's context:
+
+1. Member's next API call in shop context returns 403 (no longer authorized)
+2. Client detects the 403, automatically switches back to member context
+3. Toast notification: "You no longer have access to [shop name]"
+4. Dashboard re-renders in member context
 
 ---
 
