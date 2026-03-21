@@ -36,13 +36,13 @@ export async function proxy(request: NextRequest) {
       pathname.startsWith('/_next/');
 
     if (!skipOnboardingCheck) {
-      const { data: profile } = await supabase
-        .from('profiles')
+      const { data: member } = await supabase
+        .from('members')
         .select('onboarding_completed_at')
         .eq('id', user.id)
         .single();
 
-      const onboardingComplete = !!profile?.onboarding_completed_at;
+      const onboardingComplete = !!member?.onboarding_completed_at;
 
       // Completed users visiting /onboarding → redirect to home
       if (onboardingComplete && pathname === '/onboarding') {
