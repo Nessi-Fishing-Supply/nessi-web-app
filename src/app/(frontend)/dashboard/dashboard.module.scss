@@ -1,9 +1,31 @@
 @use '@/styles/mixins/breakpoints' as *;
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Dashboard Layout — responsive sidebar + main
+   Mobile: no sidebar, full-width content
+   Tablet (md): slim icon-only sidebar (64px)
+   Desktop (lg+): full sidebar with labels (240px)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
 .dashboardLayout {
   display: flex;
-  gap: var(--space-lg);
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-cream);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+  }
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+
+  @include breakpoint(md) {
+    height: 100vh;
+  }
 }
 
 .page {

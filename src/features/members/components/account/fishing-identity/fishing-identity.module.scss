@@ -1,17 +1,35 @@
 @use '@/styles/mixins/breakpoints' as *;
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Fishing Identity — Premium card with
+   pill selectors and warm accents
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-base);
+  padding-top: var(--space-xs);
 }
 
 .pillGrid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-base);
 
   @include breakpoint(md) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+}
+
+.detailsRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+
+  @include breakpoint(sm) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
@@ -21,38 +39,44 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
 
 .sectionLabel {
   font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-gray-800);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
   margin: 0;
+  padding-bottom: var(--space-2xs);
 }
 
 .select {
   width: 100%;
   min-height: 44px;
-  padding: var(--space-xs) var(--space-sm);
-  border: 1px solid var(--color-gray-300);
+  padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-md);
   background: var(--color-white);
-  color: var(--color-gray-800);
+  color: var(--color-dark);
+  font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
   cursor: pointer;
-  appearance: auto;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234d4d4d' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-sm) center;
+  transition: var(--transition-smooth);
 
   &:hover {
-    border-color: var(--color-gray-500);
+    border-color: var(--color-primary--light);
+    box-shadow: var(--shadow-xs);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-
-  @include breakpoint(md) {
-    max-width: 320px;
+    outline: none;
+    border-color: var(--color-primary);
   }
 }

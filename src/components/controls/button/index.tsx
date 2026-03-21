@@ -6,7 +6,7 @@ type ButtonProps = {
   children: React.ReactNode;
   onClick?: () => void;
   type?: 'button' | 'submit';
-  style?: 'primary' | 'secondary' | 'dark' | 'light';
+  style?: 'primary' | 'secondary' | 'dark' | 'light' | 'danger';
   fullWidth?: boolean;
   round?: boolean;
   outline?: boolean;

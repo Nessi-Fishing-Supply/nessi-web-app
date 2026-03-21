@@ -1,6 +1,27 @@
 ////////////////////////
-/// Breakpoint Variables
+/// Animation Variables
 ////////////////////////
 :root {
   --transition-basic: all ease 0.25s;
+  --transition-smooth: all cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+  --transition-bounce: all cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s;
+  --transition-color: color ease 0.2s, background-color ease 0.2s, border-color ease 0.2s;
+}
+
+////////////////////////
+/// Keyframe Animations
+////////////////////////
+
+/* Progress bar fill — width grows from 0 */
+@keyframes progress-fill {
+  from {
+    width: 0%;
+  }
+}
+
+/* Spinner rotation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

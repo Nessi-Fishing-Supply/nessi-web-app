@@ -13,6 +13,7 @@ interface InlineEditProps {
   placeholder?: string;
   validating?: boolean;
   ariaLabel?: string;
+  compact?: boolean;
 }
 
 export default function InlineEdit({
@@ -24,6 +25,7 @@ export default function InlineEdit({
   placeholder,
   validating = false,
   ariaLabel,
+  compact = false,
 }: InlineEditProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -97,6 +99,28 @@ export default function InlineEdit({
   const isOverLimit = maxLength !== undefined && charCount > maxLength;
   const showCounter = multiline && maxLength !== undefined;
   const isDisabled = saving || validating;
+
+  if (compact) {
+    return (
+      <div className={styles.compactContainer}>
+        <input
+          type="text"
+          className={styles.compactInput}
+          value={draft}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            onChange?.(e.target.value);
+          }}
+          onKeyDown={handleKeyDown}
+          onBlur={handleSave}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          aria-label={ariaLabel ?? 'Edit value'}
+          disabled={saving}
+        />
+      </div>
+    );
+  }
 
   if (!isEditing) {
     return (

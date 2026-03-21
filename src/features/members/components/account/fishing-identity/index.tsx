@@ -86,33 +86,36 @@ export default function FishingIdentity({ member, userId }: FishingIdentityProps
           </div>
         </div>
 
-        <div className={styles.section}>
-          <label htmlFor="homeState" className={styles.sectionLabel}>
-            Home state
-          </label>
-          <select
-            id="homeState"
-            className={styles.select}
-            value={member.home_state ?? ''}
-            onChange={handleStateChange}
-          >
-            <option value="">Select state</option>
-            {US_STATES.map((state) => (
-              <option key={state.value} value={state.value}>
-                {state.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className={styles.detailsRow}>
+          <div className={styles.section}>
+            <label htmlFor="homeState" className={styles.sectionLabel}>
+              Home state
+            </label>
+            <select
+              id="homeState"
+              className={styles.select}
+              value={member.home_state ?? ''}
+              onChange={handleStateChange}
+            >
+              <option value="">Select state</option>
+              {US_STATES.map((state) => (
+                <option key={state.value} value={state.value}>
+                  {state.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className={styles.section}>
-          <p className={styles.sectionLabel}>Years fishing</p>
-          <InlineEdit
-            value={member.years_fishing != null ? String(member.years_fishing) : ''}
-            onSave={handleYearsSave}
-            placeholder="Add years fishing"
-            ariaLabel="years fishing"
-          />
+          <div className={styles.section}>
+            <p className={styles.sectionLabel}>Years fishing</p>
+            <InlineEdit
+              value={member.years_fishing != null ? String(member.years_fishing) : ''}
+              onSave={handleYearsSave}
+              placeholder="Add years fishing"
+              ariaLabel="years fishing"
+              compact
+            />
+          </div>
         </div>
       </div>
     </CollapsibleCard>

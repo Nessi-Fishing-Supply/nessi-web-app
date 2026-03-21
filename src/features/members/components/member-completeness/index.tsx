@@ -20,9 +20,14 @@ export default function MemberCompleteness({ member }: MemberCompletenessProps) 
 
   if (percentage === 100) return null;
 
+  const milestones = [20, 40, 60, 80, 100];
+
   return (
     <div className={styles.container}>
-      <span className={styles.label}>{percentage}% complete</span>
+      <div className={styles.labelRow}>
+        <span className={styles.label}>Profile completeness</span>
+        <span className={styles.percentage}>{percentage}%</span>
+      </div>
       <div
         className={styles.track}
         role="progressbar"
@@ -32,6 +37,14 @@ export default function MemberCompleteness({ member }: MemberCompletenessProps) 
         aria-label="Member completeness"
       >
         <div className={styles.fill} style={{ width: `${percentage}%` }} />
+      </div>
+      <div className={styles.milestones} aria-hidden="true">
+        {milestones.map((m) => (
+          <span
+            key={m}
+            className={`${styles.milestone} ${percentage >= m ? styles.milestoneReached : ''}`}
+          />
+        ))}
       </div>
     </div>
   );
