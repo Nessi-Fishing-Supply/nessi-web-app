@@ -15,25 +15,25 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 
 ## Service Functions
 
-| Function                          | Purpose                                                                    |
-| --------------------------------- | -------------------------------------------------------------------------- |
-| `getMember(userId)`               | Fetch member by user ID, returns `Member \| null`                          |
-| `getMemberBySlug(slug)`           | Fetch member by URL slug (excludes soft-deleted), returns `Member \| null` |
-| `updateMember(userId, data)`      | Update allowed member fields, returns updated `Member`                     |
-| `checkDisplayNameAvailable(name)` | Case-insensitive uniqueness check on `display_name`, returns `boolean`     |
+| Function                          | Purpose                                                                                       |
+| --------------------------------- | --------------------------------------------------------------------------------------------- |
+| `getMember(userId)`               | Fetch member by user ID, returns `Member \| null`                                             |
+| `getMemberBySlug(slug)`           | Fetch member by URL slug (excludes soft-deleted), returns `Member \| null`                    |
+| `updateMember(userId, data)`      | Update allowed member fields, returns updated `Member`                                        |
+| `checkDisplayNameAvailable(name)` | Case-insensitive uniqueness check on `display_name`, returns `boolean`                        |
 | `checkSlugAvailable(slug)`        | Slug uniqueness check via `check_slug_available` RPC against `slugs` table, returns `boolean` |
-| `generateSlug(displayName)`       | Convert display name to URL-safe slug (pure function, no DB call)          |
-| `completeOnboarding(userId)`      | Sets `onboarding_completed_at` to now via `updateMember`, returns `Member` |
+| `generateSlug(displayName)`       | Convert display name to URL-safe slug (pure function, no DB call)                             |
+| `completeOnboarding(userId)`      | Sets `onboarding_completed_at` to now via `updateMember`, returns `Member`                    |
 
 ## Hooks
 
-| Hook                              | Query Key                                 | Purpose                                                           |
-| --------------------------------- | ----------------------------------------- | ----------------------------------------------------------------- |
-| `useMember(userId, enabled?)`     | `['members', userId]`                     | Fetch member by user ID                                           |
-| `useMemberBySlug(slug, enabled?)` | `['members', 'slug', slug]`               | Fetch member by slug                                              |
-| `useUpdateMember()`               | mutation, invalidates `['members']`       | Update member fields                                              |
-| `useCompleteOnboarding()`         | mutation, invalidates `['members']`       | Mark onboarding complete by setting `onboarding_completed_at`     |
-| `useDisplayNameCheck(name)`       | `['members', 'display-name-check', name]` | Availability check (enabled when name >= 2 chars, 30s stale time) |
+| Hook                              | Query Key                                 | Purpose                                                                                    |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `useMember(userId, enabled?)`     | `['members', userId]`                     | Fetch member by user ID                                                                    |
+| `useMemberBySlug(slug, enabled?)` | `['members', 'slug', slug]`               | Fetch member by slug                                                                       |
+| `useUpdateMember()`               | mutation, invalidates `['members']`       | Update member fields                                                                       |
+| `useCompleteOnboarding()`         | mutation, invalidates `['members']`       | Mark onboarding complete by setting `onboarding_completed_at`                              |
+| `useDisplayNameCheck(name)`       | `['members', 'display-name-check', name]` | Availability check (enabled when name >= 2 chars, 30s stale time)                          |
 | `useSlugCheck(slug, enabled?)`    | `['slugs', 'check', slug]`                | Slug availability check via slugs table RPC (enabled when slug >= 2 chars, 30s stale time) |
 
 ## Onboarding Components
@@ -66,13 +66,13 @@ Reusable avatar component used in Step 1. Shows initials fallback (deterministic
 
 The account page (`/dashboard/account`) displays and edits member data via collapsible card sections. Components live under `components/account/`.
 
-| Component           | Purpose                                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| `personal-info/`    | Display name inline-edit with uniqueness check, avatar upload, bio textarea (280 char)     |
-| `fishing-identity/` | Species/technique pill selectors, home state dropdown, years fishing inline-edit           |
-| `notifications/`    | 4 toggle switches for `notification_preferences.email` JSONB — saves immediately on toggle |
+| Component           | Purpose                                                                                                                |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `personal-info/`    | Display name inline-edit with uniqueness check, avatar upload, bio textarea (280 char)                                 |
+| `fishing-identity/` | Species/technique pill selectors, home state dropdown, years fishing inline-edit                                       |
+| `notifications/`    | 4 toggle switches for `notification_preferences.email` JSONB — saves immediately on toggle                             |
 | `seller-settings/`  | `is_seller` toggle switch with inline warning on disable, placeholder precondition guards, saves via `useUpdateMember` |
-| `linked-accounts/`  | Stripe Connect placeholder (disabled "Connect" button) — ready for future integration      |
+| `linked-accounts/`  | Stripe Connect placeholder (disabled "Connect" button) — ready for future integration                                  |
 
 ### MemberCompleteness (`components/member-completeness/`)
 

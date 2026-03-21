@@ -43,7 +43,9 @@ export default function SellerSettings({ member, userId }: SellerSettingsProps) 
       <div className={styles.item}>
         <label htmlFor="seller-toggle" className={styles.label}>
           <span className={styles.labelText}>Enable selling on your profile</span>
-          <span className={styles.description}>Allow buyers to discover your listings and shop</span>
+          <span className={styles.description}>
+            Allow buyers to discover your listings and shop
+          </span>
         </label>
         <div className={styles.toggleWrapper}>
           <input
