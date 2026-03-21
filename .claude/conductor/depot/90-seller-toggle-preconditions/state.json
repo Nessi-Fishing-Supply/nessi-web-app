@@ -3,7 +3,7 @@
   "issue": 90,
   "title": "is_seller toggle preconditions — check active listings before toggle-off",
   "branch": "feat/90/seller-toggle-preconditions",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,7 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-21T12:00:00Z", "lastActivity": "2026-03-21T12:35:00Z" }
+  "timestamps": { "started": "2026-03-21T12:00:00Z", "lastActivity": "2026-03-21T12:40:00Z" },
+  "completedAt": "2026-03-21T12:40:00Z",
+  "pruneAfter": "2026-05-20T12:40:00Z"
 }
