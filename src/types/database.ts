@@ -154,12 +154,160 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_members: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          role: string
+          shop_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          role: string
+          shop_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          role?: string
+          shop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_members_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shop_members_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shops: {
+        Row: {
+          avatar_url: string | null
+          average_rating: number | null
+          brand_colors: Json | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          hero_banner_url: string | null
+          id: string
+          is_stripe_connected: boolean
+          is_verified: boolean
+          owner_id: string
+          review_count: number
+          shop_name: string
+          slug: string
+          stripe_account_id: string | null
+          stripe_onboarding_status: string
+          stripe_subscription_id: string | null
+          subscription_status: string
+          subscription_tier: string
+          total_transactions: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          average_rating?: number | null
+          brand_colors?: Json | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          hero_banner_url?: string | null
+          id?: string
+          is_stripe_connected?: boolean
+          is_verified?: boolean
+          owner_id: string
+          review_count?: number
+          shop_name: string
+          slug: string
+          stripe_account_id?: string | null
+          stripe_onboarding_status?: string
+          stripe_subscription_id?: string | null
+          subscription_status?: string
+          subscription_tier?: string
+          total_transactions?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          average_rating?: number | null
+          brand_colors?: Json | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          hero_banner_url?: string | null
+          id?: string
+          is_stripe_connected?: boolean
+          is_verified?: boolean
+          owner_id?: string
+          review_count?: number
+          shop_name?: string
+          slug?: string
+          stripe_account_id?: string | null
+          stripe_onboarding_status?: string
+          stripe_subscription_id?: string | null
+          subscription_status?: string
+          subscription_tier?: string
+          total_transactions?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shops_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      slugs: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_slug_available: { Args: { p_slug: string }; Returns: boolean }
+      release_slug: {
+        Args: { p_entity_id: string; p_entity_type: string }
+        Returns: undefined
+      }
+      reserve_slug: {
+        Args: { p_entity_id: string; p_entity_type: string; p_slug: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
