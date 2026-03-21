@@ -106,6 +106,8 @@ auth.users DELETE
 - `src/features/auth/` — Auth domain: services, types, validations, context, form components (see its CLAUDE.md)
 - `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its CLAUDE.md)
 - `src/features/products/` — Products domain: services, types, hooks, components (see its CLAUDE.md)
+- `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
+- `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
 - `src/app/api/` — API routes (auth, products, upload)
 - `src/app/(frontend)/` — UI pages (App Router with route group)
