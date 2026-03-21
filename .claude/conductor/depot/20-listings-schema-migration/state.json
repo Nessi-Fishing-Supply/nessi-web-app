@@ -3,7 +3,7 @@
   "issue": 20,
   "title": "Listings schema migration — rename products to listings with full marketplace fields",
   "branch": "feat/20/listings-schema-migration",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,14 +15,16 @@
   },
   "health": {
     "build": "pass_with_expected_errors",
-    "lint": "unknown",
-    "tests": "unknown"
+    "lint": "pass",
+    "tests": "pass"
   },
   "failureCount": {
     "currentTask": 0
   },
   "timestamps": {
     "started": "2026-03-21T17:00:00Z",
-    "lastActivity": "2026-03-21T17:35:00Z"
+    "lastActivity": "2026-03-21T17:40:00Z",
+    "completedAt": "2026-03-21T17:40:00Z",
+    "pruneAfter": "2026-05-20T17:40:00Z"
   }
 }
