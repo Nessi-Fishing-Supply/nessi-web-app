@@ -8,6 +8,7 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 
 - **types/member.ts** — Database-derived types: `Member` (from members Row), `MemberUpdateInput` (Update minus 11 system-managed fields), `OnboardingStatus`
 - **types/onboarding.ts** — Onboarding form types (`OnboardingStep1Data`, `OnboardingIntentData`, `OnboardingFishingData`, `OnboardingSellerTypeData`, `OnboardingBioData`, `OnboardingFormData`), union types (`OnboardingIntent`, `OnboardingSellerType`), and option constants (`SPECIES_OPTIONS`, `TECHNIQUE_OPTIONS`, `US_STATES`)
+- **types/seller.ts** — Seller precondition types: `SellerPreconditions` (canDisable, activeListingsCount, activeOrdersCount)
 - **services/member.ts** — Direct Supabase queries via browser client (RLS handles authorization, no API routes needed)
 - **services/member-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public profile page)
 - **validations/onboarding.ts** — Yup schemas for each wizard step (`step1Schema`, `intentSchema`, `fishingSchema`, `sellerTypeSchema`, `bioSchema`)
@@ -24,6 +25,8 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 | `checkSlugAvailable(slug)`   | Slug uniqueness check via `check_slug_available` RPC against `slugs` table, returns `boolean` |
 | `generateSlug(name)`         | Convert name to URL-safe slug (pure function, no DB call)                                     |
 | `completeOnboarding(userId)` | Sets `onboarding_completed_at` to now via `updateMember`, returns `Member`                    |
+| `getSellerPreconditions()`   | Fetch seller precondition data via `/api/members/seller-preconditions`, returns `SellerPreconditions` |
+| `toggleSeller(isSeller)`     | Toggle seller status via `/api/members/toggle-seller`. When disabling, hides all member products (`is_visible = false`). Returns updated `Member` |
 
 ### Server-side Service Functions (`services/member-server.ts`)
 
@@ -40,6 +43,8 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 | `useUpdateMember()`               | mutation, invalidates `['members']` | Update member fields                                                                       |
 | `useCompleteOnboarding()`         | mutation, invalidates `['members']` | Mark onboarding complete by setting `onboarding_completed_at`                              |
 | `useSlugCheck(slug, enabled?)`    | `['slugs', 'check', slug]`          | Slug availability check via slugs table RPC (enabled when slug >= 2 chars, 30s stale time) |
+| `useSellerPreconditions(enabled?)` | `['members', 'seller-preconditions']` | Fetch seller precondition data (active listings/orders count). Only enabled when `enabled` is true |
+| `useToggleSeller()`               | mutation, invalidates `['members']` + `['members', 'seller-preconditions']` | Toggle seller status with product visibility side effect |
 
 ## Utilities
 
@@ -90,7 +95,7 @@ The account page (`/dashboard/account`) displays and edits member data via colla
 | `personal-info/`    | Display name inline-edit with uniqueness check, avatar upload, bio textarea (280 char)                                 |
 | `fishing-identity/` | Species/technique pill selectors, home state dropdown, years fishing inline-edit                                       |
 | `notifications/`    | 4 toggle switches for `notification_preferences.email` JSONB — saves immediately on toggle                             |
-| `seller-settings/`  | `is_seller` toggle switch with inline warning on disable, placeholder precondition guards, saves via `useUpdateMember` |
+| `seller-settings/`  | `is_seller` toggle with real precondition validation — disables toggle when active listings exist, shows dynamic count message, hides products on toggle-off via `useToggleSeller` |
 | `linked-accounts/`  | Stripe Connect placeholder (disabled "Connect" button) — ready for future integration                                  |
 
 ### MemberCompleteness (`components/member-completeness/`)
