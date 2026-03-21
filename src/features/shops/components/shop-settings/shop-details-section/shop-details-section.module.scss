@@ -1,0 +1,94 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-sm) var(--space-base);
+
+  @include breakpoint(md) {
+    padding: var(--space-base) var(--space-md);
+  }
+}
+
+.heading {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0 0 var(--space-sm);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-lg);
+  }
+}
+
+.avatarSection {
+  display: flex;
+  justify-content: center;
+
+  @include breakpoint(md) {
+    flex-shrink: 0;
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.fieldLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-500);
+}
+
+.fieldValue {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.availabilityIcon {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-lg);
+  pointer-events: none;
+}
+
+.iconSuccess {
+  color: var(--color-success);
+}
+
+.iconError {
+  color: var(--color-error);
+}
+
+.errorText {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin: 0;
+}
+
+.warningText {
+  font-size: var(--font-size-sm);
+  color: var(--color-warning);
+  margin: 0;
+}
