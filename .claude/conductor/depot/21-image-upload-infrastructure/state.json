@@ -3,7 +3,7 @@
   "issue": 21,
   "title": "Image upload infrastructure upgrade — Sharp processing, HEIC, reorderable grid",
   "branch": "feat/21/image-upload-infrastructure",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 4,
     "total": 4,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-21T18:00:00Z", "lastActivity": "2026-03-21T19:10:00Z" }
+  "timestamps": {
+    "started": "2026-03-21T18:00:00Z",
+    "lastActivity": "2026-03-21T19:20:00Z",
+    "completedAt": "2026-03-21T19:20:00Z",
+    "pruneAfter": "2026-05-20T19:20:00Z"
+  }
 }
