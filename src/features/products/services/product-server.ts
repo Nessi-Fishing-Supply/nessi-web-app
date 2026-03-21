@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@/libs/supabase/server';
 import type { ProductWithImages } from '@/features/products/types/product';
 

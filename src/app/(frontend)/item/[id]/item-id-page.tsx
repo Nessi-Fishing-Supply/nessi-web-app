@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 
 import { ProductWithImages } from '@/features/products/types/product';

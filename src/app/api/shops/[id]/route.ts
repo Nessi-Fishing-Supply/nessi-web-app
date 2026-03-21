@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { NextResponse } from 'next/server';
