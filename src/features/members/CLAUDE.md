@@ -39,20 +39,21 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 ## Onboarding Components
 
 The wizard lives under `components/onboarding/` and supports a branching flow:
+
 - **Buyer path (4 visual steps):** Display Name → Intent → Fishing Identity → Bio
 - **Seller path (5 visual steps):** Display Name → Intent → Fishing Identity → Seller Type → Bio
 
 Internal step numbering is 1-5; the buyer path skips step 4 (seller type). The progress indicator maps internal steps to visual positions.
 
-| Component                | Purpose                                                                                                                  |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| `onboarding-wizard/`     | Main container — reads auth state, guards against unauthenticated access, routes between steps with branching logic      |
-| `step-display-name/`     | Step 1 — display name text input with real-time availability check + `AvatarUpload` integration                          |
-| `step-intent/`           | Step 2 — "How do you plan to use Nessi?" with buyer/seller selection cards (`role="radiogroup"`)                         |
-| `step-fishing-identity/` | Step 3 — species and technique `PillSelector` multi-selects + home state dropdown (all optional)                         |
-| `step-seller-type/`      | Step 4 (seller path only) — "How do you want to sell?" with free/shop selection cards. Shop has "set up after" note      |
+| Component                | Purpose                                                                                                                    |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `onboarding-wizard/`     | Main container — reads auth state, guards against unauthenticated access, routes between steps with branching logic        |
+| `step-display-name/`     | Step 1 — display name text input with real-time availability check + `AvatarUpload` integration                            |
+| `step-intent/`           | Step 2 — "How do you plan to use Nessi?" with buyer/seller selection cards (`role="radiogroup"`)                           |
+| `step-fishing-identity/` | Step 3 — species and technique `PillSelector` multi-selects + home state dropdown (all optional)                           |
+| `step-seller-type/`      | Step 4 (seller path only) — "How do you want to sell?" with free/shop selection cards. Shop has "set up after" note        |
 | `step-bio/`              | Step 5 — bio textarea (280 char max), conditionally sets `is_seller = true` for seller+free path, calls completeOnboarding |
-| `progress-indicator/`    | Dynamic circle progress bar (4 or 5 circles based on intent), highlights current step                                   |
+| `progress-indicator/`    | Dynamic circle progress bar (4 or 5 circles based on intent), highlights current step                                      |
 
 ### AvatarUpload (`components/avatar-upload/`)
 

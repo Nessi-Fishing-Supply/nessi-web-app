@@ -83,22 +83,18 @@ export default function StepSellerType() {
 
       <div className={styles.stepHeader}>
         <h2 className={styles.stepTitle}>How do you want to sell?</h2>
-        <p className={styles.stepSubtitle}>
-          Choose how you&#39;d like to list your gear on Nessi.
-        </p>
+        <p className={styles.stepSubtitle}>Choose how you&#39;d like to list your gear on Nessi.</p>
       </div>
 
-      <div
-        className={styles.cards}
-        role="radiogroup"
-        aria-label="How do you want to sell?"
-      >
+      <div className={styles.cards} role="radiogroup" aria-label="How do you want to sell?">
         {SELLER_TYPE_OPTIONS.map((option, index) => {
           const isSelected = selected === option.value;
           return (
             <div
               key={option.value}
-              ref={(el) => { cardRefs.current[index] = el; }}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
               className={`${styles.card} ${isSelected ? styles.cardSelected : ''}`}
               role="radio"
               aria-checked={isSelected}
@@ -109,9 +105,7 @@ export default function StepSellerType() {
               <span className={styles.cardIcon}>{option.icon}</span>
               <span className={styles.cardTitle}>{option.title}</span>
               <span className={styles.cardDescription}>{option.description}</span>
-              {option.note && (
-                <span className={styles.cardNote}>{option.note}</span>
-              )}
+              {option.note && <span className={styles.cardNote}>{option.note}</span>}
             </div>
           );
         })}

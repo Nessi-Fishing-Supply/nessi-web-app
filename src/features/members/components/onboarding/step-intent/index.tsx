@@ -10,7 +10,12 @@ import type { OnboardingIntent } from '@/features/members/types/onboarding';
 
 import styles from './step-intent.module.scss';
 
-const INTENT_OPTIONS: { value: OnboardingIntent; icon: React.ReactNode; title: string; description: string }[] = [
+const INTENT_OPTIONS: {
+  value: OnboardingIntent;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}[] = [
   {
     value: 'buyer',
     icon: <HiShoppingBag aria-hidden="true" />,
@@ -81,17 +86,15 @@ export default function StepIntent() {
         </p>
       </div>
 
-      <div
-        className={styles.cards}
-        role="radiogroup"
-        aria-label="How do you plan to use Nessi?"
-      >
+      <div className={styles.cards} role="radiogroup" aria-label="How do you plan to use Nessi?">
         {INTENT_OPTIONS.map((option, index) => {
           const isSelected = selected === option.value;
           return (
             <div
               key={option.value}
-              ref={(el) => { cardRefs.current[index] = el; }}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
               className={`${styles.card} ${isSelected ? styles.cardSelected : ''}`}
               role="radio"
               aria-checked={isSelected}

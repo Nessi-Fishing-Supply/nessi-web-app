@@ -50,8 +50,7 @@ export default function StepBio() {
 
     const bioValue = skipBio ? '' : bio;
 
-    const isSeller =
-      intentData.intent === 'seller' && sellerTypeData.sellerType === 'free';
+    const isSeller = intentData.intent === 'seller' && sellerTypeData.sellerType === 'free';
 
     try {
       await updateMember.mutateAsync({
