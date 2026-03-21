@@ -3,7 +3,7 @@
   "issue": 66,
   "title": "refactor(members): rename profiles feature to members across codebase",
   "branch": "refactor/66/rename-profiles-to-members",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -13,7 +13,9 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-20T20:30:00Z", "lastActivity": "2026-03-20T21:00:00Z" }
+  "timestamps": { "started": "2026-03-20T20:30:00Z", "lastActivity": "2026-03-20T21:10:00Z" },
+  "completedAt": "2026-03-20T21:10:00Z",
+  "pruneAfter": "2026-05-19T21:10:00Z"
 }
