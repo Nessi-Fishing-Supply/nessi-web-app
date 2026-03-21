@@ -3,7 +3,7 @@
   "issue": 98,
   "title": "Wire shop deletion UI to new API route",
   "branch": "feat/98/wire-shop-deletion-ui-to-new-api-route",
-  "status": "implementing",
+  "status": "complete",
   "phase": {
     "current": 1,
     "total": 1,
@@ -23,6 +23,6 @@
   },
   "timestamps": {
     "started": "2026-03-21T13:56:45Z",
-    "lastActivity": "2026-03-21T14:02:00Z"
+    "lastActivity": "2026-03-21T14:04:00Z"
   }
 }
