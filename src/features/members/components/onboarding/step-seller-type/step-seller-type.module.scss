@@ -1,0 +1,149 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: var(--space-base);
+
+  @include breakpoint(md) {
+    padding: var(--space-lg) var(--space-2xl);
+  }
+}
+
+.header {
+  margin-bottom: var(--space-sm);
+}
+
+.back {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    color: var(--color-primary--dark);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.stepHeader {
+  text-align: center;
+  padding: 0 var(--space-base);
+}
+
+.stepTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-dark);
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+.stepSubtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  margin: var(--space-2xs) 0 0;
+  line-height: 1.5;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+  margin-top: var(--space-lg);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    gap: var(--space-md);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-lg) var(--space-base);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  text-align: center;
+  min-height: 44px;
+  flex: 1;
+
+  &:hover {
+    border-color: var(--color-gray-400);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.cardSelected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+  background: var(--color-primary--lightest, var(--color-gray-50));
+}
+
+.cardIcon {
+  font-size: var(--font-size-3xl);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.cardDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
+
+.cardNote {
+  font-size: var(--font-size-xs);
+  color: var(--color-secondary);
+  font-weight: 600;
+  margin-top: var(--space-2xs);
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  padding: var(--space-base) 0 0;
+  background: linear-gradient(to top, var(--color-white) 80%, transparent);
+
+  @include breakpoint(md) {
+    position: static;
+    padding-top: var(--space-lg);
+    background: var(--color-white);
+  }
+}

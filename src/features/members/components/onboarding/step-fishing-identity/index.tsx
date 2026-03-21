@@ -10,18 +10,18 @@ import { SPECIES_OPTIONS, TECHNIQUE_OPTIONS, US_STATES } from '@/features/member
 import styles from './step-fishing-identity.module.scss';
 
 export default function StepFishingIdentity() {
-  const step2Data = useOnboardingStore.use.step2Data();
-  const setStep2Data = useOnboardingStore.use.setStep2Data();
+  const fishingData = useOnboardingStore.use.fishingData();
+  const setFishingData = useOnboardingStore.use.setFishingData();
   const nextStep = useOnboardingStore.use.nextStep();
   const prevStep = useOnboardingStore.use.prevStep();
 
-  const [primarySpecies, setPrimarySpecies] = useState<string[]>(step2Data.primarySpecies);
-  const [primaryTechnique, setPrimaryTechnique] = useState<string[]>(step2Data.primaryTechnique);
-  const [homeState, setHomeState] = useState<string>(step2Data.homeState);
+  const [primarySpecies, setPrimarySpecies] = useState<string[]>(fishingData.primarySpecies);
+  const [primaryTechnique, setPrimaryTechnique] = useState<string[]>(fishingData.primaryTechnique);
+  const [homeState, setHomeState] = useState<string>(fishingData.homeState);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep2Data({ primarySpecies, primaryTechnique, homeState });
+    setFishingData({ primarySpecies, primaryTechnique, homeState });
     nextStep();
   };
 

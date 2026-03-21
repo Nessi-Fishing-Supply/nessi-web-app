@@ -9,8 +9,8 @@
 }
 
 .step {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -19,6 +19,11 @@
   font-weight: 700;
   flex-shrink: 0;
   transition: all 0.3s ease;
+
+  @include breakpoint(sm) {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .completed {
@@ -43,9 +48,13 @@
 .line {
   flex: 1;
   height: 3px;
-  max-width: 64px;
+  max-width: 40px;
   border-radius: 2px;
   transition: background-color 0.3s ease;
+
+  @include breakpoint(sm) {
+    max-width: 56px;
+  }
 
   @include breakpoint(md) {
     max-width: 80px;

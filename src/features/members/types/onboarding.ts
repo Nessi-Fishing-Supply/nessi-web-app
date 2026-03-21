@@ -1,18 +1,34 @@
+export type OnboardingIntent = 'buyer' | 'seller';
+
+export type OnboardingSellerType = 'free' | 'shop';
+
 export type OnboardingStep1Data = {
   displayName: string;
 };
 
-export type OnboardingStep2Data = {
+export type OnboardingIntentData = {
+  intent: OnboardingIntent | null;
+};
+
+export type OnboardingFishingData = {
   primarySpecies: string[];
   primaryTechnique: string[];
   homeState: string;
 };
 
-export type OnboardingStep3Data = {
+export type OnboardingSellerTypeData = {
+  sellerType: OnboardingSellerType | null;
+};
+
+export type OnboardingBioData = {
   bio: string;
 };
 
-export type OnboardingFormData = OnboardingStep1Data & OnboardingStep2Data & OnboardingStep3Data;
+export type OnboardingFormData = OnboardingStep1Data &
+  OnboardingIntentData &
+  OnboardingFishingData &
+  OnboardingSellerTypeData &
+  OnboardingBioData;
 
 export const SPECIES_OPTIONS = [
   { value: 'bass', label: 'Bass' },

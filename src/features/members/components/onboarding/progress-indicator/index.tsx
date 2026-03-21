@@ -7,7 +7,7 @@ interface ProgressIndicatorProps {
   totalSteps?: number;
 }
 
-const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, totalSteps = 3 }) => {
+const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, totalSteps = 4 }) => {
   const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
 
   return (

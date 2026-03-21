@@ -2,14 +2,14 @@
 
 ## Overview
 
-Member profile management for Nessi's C2C marketplace users. Handles member data fetching, updates, slug generation, display name availability checks, onboarding status, and a 3-step onboarding wizard that runs on first login.
+Member profile management for Nessi's C2C marketplace users. Handles member data fetching, updates, slug generation, display name availability checks, onboarding status, and a branching onboarding wizard (3 steps for buyers, 5 steps for sellers) that runs on first login.
 
 ## Architecture
 
 - **types/member.ts** — Database-derived types: `Member` (from members Row), `MemberUpdateInput` (Update minus 11 system-managed fields), `OnboardingStatus`
-- **types/onboarding.ts** — Onboarding form types (`OnboardingStep1Data`, `OnboardingStep2Data`, `OnboardingStep3Data`, `OnboardingFormData`) and option constants (`SPECIES_OPTIONS`, `TECHNIQUE_OPTIONS`, `US_STATES`)
+- **types/onboarding.ts** — Onboarding form types (`OnboardingStep1Data`, `OnboardingIntentData`, `OnboardingFishingData`, `OnboardingSellerTypeData`, `OnboardingBioData`, `OnboardingFormData`), union types (`OnboardingIntent`, `OnboardingSellerType`), and option constants (`SPECIES_OPTIONS`, `TECHNIQUE_OPTIONS`, `US_STATES`)
 - **services/member.ts** — Direct Supabase queries via browser client (RLS handles authorization, no API routes needed)
-- **validations/onboarding.ts** — Yup schemas for each wizard step (`step1Schema`, `step2Schema`, `step3Schema`)
+- **validations/onboarding.ts** — Yup schemas for each wizard step (`step1Schema`, `intentSchema`, `fishingSchema`, `sellerTypeSchema`, `bioSchema`)
 - **stores/onboarding-store.ts** — Zustand store managing wizard step state and collected form data
 - **hooks/use-member.ts** — Tanstack Query hooks for data fetching and mutations
 
@@ -38,15 +38,22 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 
 ## Onboarding Components
 
-The wizard lives under `components/onboarding/` and is composed of step-specific forms, a container, and a progress indicator.
+The wizard lives under `components/onboarding/` and supports a branching flow:
 
-| Component                | Purpose                                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------ |
-| `onboarding-wizard/`     | Main container — reads auth state, guards against unauthenticated access, routes between steps   |
-| `step-display-name/`     | Step 1 — display name text input with real-time availability check + `AvatarUpload` integration  |
-| `step-fishing-identity/` | Step 2 — species and technique `PillSelector` multi-selects + home state dropdown (all optional) |
-| `step-bio/`              | Step 3 — bio textarea (280 char max), calls `useCompleteOnboarding` on submit                    |
-| `progress-indicator/`    | 3-circle step progress bar, highlights current step, used inside the wizard container            |
+- **Buyer path (4 visual steps):** Display Name → Intent → Fishing Identity → Bio
+- **Seller path (5 visual steps):** Display Name → Intent → Fishing Identity → Seller Type → Bio
+
+Internal step numbering is 1-5; the buyer path skips step 4 (seller type). The progress indicator maps internal steps to visual positions.
+
+| Component                | Purpose                                                                                                                    |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `onboarding-wizard/`     | Main container — reads auth state, guards against unauthenticated access, routes between steps with branching logic        |
+| `step-display-name/`     | Step 1 — display name text input with real-time availability check + `AvatarUpload` integration                            |
+| `step-intent/`           | Step 2 — "How do you plan to use Nessi?" with buyer/seller selection cards (`role="radiogroup"`)                           |
+| `step-fishing-identity/` | Step 3 — species and technique `PillSelector` multi-selects + home state dropdown (all optional)                           |
+| `step-seller-type/`      | Step 4 (seller path only) — "How do you want to sell?" with free/shop selection cards. Shop has "set up after" note        |
+| `step-bio/`              | Step 5 — bio textarea (280 char max), conditionally sets `is_seller = true` for seller+free path, calls completeOnboarding |
+| `progress-indicator/`    | Dynamic circle progress bar (4 or 5 circles based on intent), highlights current step                                      |
 
 ### AvatarUpload (`components/avatar-upload/`)
 
@@ -83,8 +90,11 @@ Progress bar computing completeness from 5 fields (20% each): `avatar_url`, `bio
 The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hold step data across renders without lifting state to a parent.
 
 - Created with `create<OnboardingState>()` and wrapped with `createSelectors` from `@/libs/create-selectors`
-- Access individual slices via auto-generated selectors: `useOnboardingStore.use.currentStep()`, `useOnboardingStore.use.step1Data()`, etc.
-- Actions: `nextStep()`, `prevStep()`, `setStep1Data(data)`, `setStep2Data(data)`, `setStep3Data(data)`, `setAvatarUrl(url)`, `reset()`
+- Access individual slices via auto-generated selectors: `useOnboardingStore.use.currentStep()`, `useOnboardingStore.use.intentData()`, etc.
+- **State fields:** `step1Data`, `intentData` (intent: buyer/seller/null), `fishingData`, `sellerTypeData` (sellerType: free/shop/null), `bioData`, `avatarUrl`, `totalSteps`, `currentStep`
+- **Branching logic:** `nextStep()` skips step 4 when `intent === 'buyer'`. `prevStep()` reverses the skip. `totalSteps` is computed from intent (4 for buyer, 5 for seller).
+- **Seller type clearing:** Setting intent to `'buyer'` automatically clears `sellerTypeData`
+- Actions: `nextStep()`, `prevStep()`, `goToStep(n)`, `setStep1Data()`, `setIntentData()`, `setFishingData()`, `setSellerTypeData()`, `setBioData()`, `setAvatarUrl()`, `reset()`
 - `reset()` is called after `completeOnboarding` succeeds to clear state
 
 ## Key Patterns

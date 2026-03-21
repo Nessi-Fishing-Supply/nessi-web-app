@@ -21,14 +21,16 @@ export default function StepBio() {
   const { showToast } = useToast();
 
   const step1Data = useOnboardingStore.use.step1Data();
-  const step2Data = useOnboardingStore.use.step2Data();
-  const step3Data = useOnboardingStore.use.step3Data();
+  const intentData = useOnboardingStore.use.intentData();
+  const fishingData = useOnboardingStore.use.fishingData();
+  const sellerTypeData = useOnboardingStore.use.sellerTypeData();
+  const bioData = useOnboardingStore.use.bioData();
   const avatarUrl = useOnboardingStore.use.avatarUrl();
-  const setStep3Data = useOnboardingStore.use.setStep3Data();
+  const setBioData = useOnboardingStore.use.setBioData();
   const prevStep = useOnboardingStore.use.prevStep();
   const reset = useOnboardingStore.use.reset();
 
-  const [bio, setBio] = useState(step3Data.bio);
+  const [bio, setBio] = useState(bioData.bio);
 
   const updateMember = useUpdateMember();
   const completeOnboarding = useCompleteOnboarding();
@@ -40,13 +42,15 @@ export default function StepBio() {
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setBio(value);
-    setStep3Data({ bio: value });
+    setBioData({ bio: value });
   };
 
   const handleFinish = async (skipBio = false) => {
     if (!user?.id) return;
 
     const bioValue = skipBio ? '' : bio;
+
+    const isSeller = intentData.intent === 'seller' && sellerTypeData.sellerType === 'free';
 
     try {
       await updateMember.mutateAsync({
@@ -55,10 +59,11 @@ export default function StepBio() {
           display_name: step1Data.displayName,
           slug: generateSlug(step1Data.displayName),
           avatar_url: avatarUrl,
-          primary_species: step2Data.primarySpecies,
-          primary_technique: step2Data.primaryTechnique,
-          home_state: step2Data.homeState || null,
+          primary_species: fishingData.primarySpecies,
+          primary_technique: fishingData.primaryTechnique,
+          home_state: fishingData.homeState || null,
           bio: bioValue || null,
+          ...(isSeller ? { is_seller: true } : {}),
         },
       });
 
