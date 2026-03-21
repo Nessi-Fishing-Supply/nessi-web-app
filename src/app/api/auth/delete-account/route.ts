@@ -2,6 +2,13 @@ import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { NextResponse } from 'next/server';
 
+function parseStoragePath(bucketName: string, publicUrl: string): string | null {
+  const marker = `/storage/v1/object/public/${bucketName}/`;
+  const index = publicUrl.indexOf(marker);
+  if (index === -1) return null;
+  return publicUrl.slice(index + marker.length) || null;
+}
+
 /**
  * Clean up storage objects for a user before account deletion.
  * Must use the Storage API — direct SQL DELETE on storage.objects
@@ -16,6 +23,55 @@ async function cleanupUserStorage(admin: ReturnType<typeof createAdminClient>, u
   if (productImages && productImages.length > 0) {
     const paths = productImages.map((file) => `${userId}/${file.name}`);
     await admin.storage.from('product-images').remove(paths);
+  }
+
+  // Delete shop-owned storage objects (best-effort per shop)
+  try {
+    const { data: shops } = await admin
+      .from('shops')
+      .select('id, hero_banner_url')
+      .eq('owner_id', userId);
+
+    if (shops && shops.length > 0) {
+      for (const shop of shops) {
+        // Shop avatar
+        await admin.storage.from('avatars').remove([`shop-${shop.id}.webp`]);
+
+        // Hero banner
+        if (shop.hero_banner_url) {
+          const heroPath = parseStoragePath('avatars', shop.hero_banner_url);
+          if (heroPath) {
+            await admin.storage.from('avatars').remove([heroPath]);
+          }
+        }
+
+        // Shop product images
+        const { data: shopProducts } = await admin
+          .from('products')
+          .select('id')
+          .eq('shop_id', shop.id);
+
+        if (shopProducts && shopProducts.length > 0) {
+          const productIds = shopProducts.map((p) => p.id);
+          const { data: shopProductImages } = await admin
+            .from('product_images')
+            .select('image_url')
+            .in('product_id', productIds);
+
+          if (shopProductImages && shopProductImages.length > 0) {
+            const imagePaths = shopProductImages
+              .map((img) => parseStoragePath('product-images', img.image_url))
+              .filter((path): path is string => path !== null);
+
+            if (imagePaths.length > 0) {
+              await admin.storage.from('product-images').remove(imagePaths);
+            }
+          }
+        }
+      }
+    }
+  } catch (shopCleanupError) {
+    console.error('Shop storage cleanup error (non-blocking):', shopCleanupError);
   }
 }
 
