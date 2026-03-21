@@ -14,6 +14,210 @@ export type Database = {
   }
   public: {
     Tables: {
+      listing_drafts: {
+        Row: {
+          created_at: string
+          current_step: number
+          data: Json
+          expires_at: string
+          id: string
+          seller_id: string
+          shop_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_step?: number
+          data?: Json
+          expires_at?: string
+          id?: string
+          seller_id: string
+          shop_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_step?: number
+          data?: Json
+          expires_at?: string
+          id?: string
+          seller_id?: string
+          shop_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_drafts_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_drafts_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listing_photos: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          listing_id: string
+          position: number
+          thumbnail_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          listing_id: string
+          position?: number
+          thumbnail_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          listing_id?: string
+          position?: number
+          thumbnail_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_photos_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listings: {
+        Row: {
+          brand: string | null
+          category: Database["public"]["Enums"]["listing_category"]
+          condition: Database["public"]["Enums"]["listing_condition"]
+          cover_photo_url: string | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          favorite_count: number
+          id: string
+          inquiry_count: number
+          is_visible: boolean
+          location_city: string | null
+          location_state: string | null
+          member_id: string | null
+          model: string | null
+          price_cents: number
+          published_at: string | null
+          quantity: number
+          search_vector: unknown
+          seller_id: string
+          shipping_paid_by:
+            | Database["public"]["Enums"]["shipping_paid_by"]
+            | null
+          shipping_price_cents: number | null
+          shop_id: string | null
+          status: Database["public"]["Enums"]["listing_status"]
+          title: string
+          updated_at: string
+          view_count: number
+          weight_oz: number | null
+        }
+        Insert: {
+          brand?: string | null
+          category: Database["public"]["Enums"]["listing_category"]
+          condition: Database["public"]["Enums"]["listing_condition"]
+          cover_photo_url?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          favorite_count?: number
+          id?: string
+          inquiry_count?: number
+          is_visible?: boolean
+          location_city?: string | null
+          location_state?: string | null
+          member_id?: string | null
+          model?: string | null
+          price_cents: number
+          published_at?: string | null
+          quantity?: number
+          search_vector?: unknown
+          seller_id: string
+          shipping_paid_by?:
+            | Database["public"]["Enums"]["shipping_paid_by"]
+            | null
+          shipping_price_cents?: number | null
+          shop_id?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title: string
+          updated_at?: string
+          view_count?: number
+          weight_oz?: number | null
+        }
+        Update: {
+          brand?: string | null
+          category?: Database["public"]["Enums"]["listing_category"]
+          condition?: Database["public"]["Enums"]["listing_condition"]
+          cover_photo_url?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          favorite_count?: number
+          id?: string
+          inquiry_count?: number
+          is_visible?: boolean
+          location_city?: string | null
+          location_state?: string | null
+          member_id?: string | null
+          model?: string | null
+          price_cents?: number
+          published_at?: string | null
+          quantity?: number
+          search_vector?: unknown
+          seller_id?: string
+          shipping_paid_by?:
+            | Database["public"]["Enums"]["shipping_paid_by"]
+            | null
+          shipping_price_cents?: number | null
+          shop_id?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string
+          updated_at?: string
+          view_count?: number
+          weight_oz?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       members: {
         Row: {
           avatar_url: string | null
@@ -95,82 +299,29 @@ export type Database = {
         }
         Relationships: []
       }
-      product_images: {
+      search_suggestions: {
         Row: {
+          category: Database["public"]["Enums"]["listing_category"] | null
           created_at: string
           id: string
-          image_url: string
-          product_id: string
+          popularity: number
+          term: string
         }
         Insert: {
+          category?: Database["public"]["Enums"]["listing_category"] | null
           created_at?: string
           id?: string
-          image_url: string
-          product_id: string
+          popularity?: number
+          term: string
         }
         Update: {
+          category?: Database["public"]["Enums"]["listing_category"] | null
           created_at?: string
           id?: string
-          image_url?: string
-          product_id?: string
+          popularity?: number
+          term?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "product_images_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      products: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          is_visible: boolean
-          member_id: string | null
-          price: number
-          shop_id: string | null
-          title: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_visible?: boolean
-          member_id?: string | null
-          price: number
-          shop_id?: string | null
-          title: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_visible?: boolean
-          member_id?: string | null
-          price?: number
-          shop_id?: string | null
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "products_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "products_shop_id_fkey"
-            columns: ["shop_id"]
-            isOneToOne: false
-            referencedRelation: "shops"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       shop_members: {
         Row: {
@@ -326,9 +477,36 @@ export type Database = {
         Args: { p_entity_id: string; p_entity_type: string; p_slug: string }
         Returns: undefined
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      listing_category:
+        | "rods"
+        | "reels"
+        | "lures"
+        | "flies"
+        | "tackle"
+        | "line"
+        | "apparel"
+        | "electronics"
+        | "watercraft"
+        | "other"
+      listing_condition:
+        | "new_with_tags"
+        | "new_without_tags"
+        | "like_new"
+        | "good"
+        | "fair"
+        | "poor"
+      listing_status:
+        | "draft"
+        | "active"
+        | "reserved"
+        | "sold"
+        | "archived"
+        | "deleted"
+      shipping_paid_by: "seller" | "buyer" | "split"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -455,6 +633,36 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      listing_category: [
+        "rods",
+        "reels",
+        "lures",
+        "flies",
+        "tackle",
+        "line",
+        "apparel",
+        "electronics",
+        "watercraft",
+        "other",
+      ],
+      listing_condition: [
+        "new_with_tags",
+        "new_without_tags",
+        "like_new",
+        "good",
+        "fair",
+        "poor",
+      ],
+      listing_status: [
+        "draft",
+        "active",
+        "reserved",
+        "sold",
+        "archived",
+        "deleted",
+      ],
+      shipping_paid_by: ["seller", "buyer", "split"],
+    },
   },
 } as const
