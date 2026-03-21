@@ -1,8 +1,13 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
-import { HiOutlineShoppingBag } from 'react-icons/hi';
+import { useState, useSyncExternalStore } from 'react';
+import { useRouter } from 'next/navigation';
 import AppLink from '@/components/controls/app-link';
+import { useAuth } from '@/features/auth/context';
+import { useMember } from '@/features/members/hooks/use-member';
+import StartSellingCta from '@/features/members/components/start-selling-cta';
+import SellerOnboardingModal from '@/features/members/components/seller-onboarding-modal';
+import CreateShopCta from '@/features/shops/components/create-shop-cta';
 import useContextStore from '@/features/context/stores/context-store';
 import { useShop } from '@/features/shops/hooks/use-shops';
 import styles from './dashboard.module.scss';
@@ -14,32 +19,64 @@ export default function Dashboard() {
     () => false,
   );
 
+  const router = useRouter();
+  const { user } = useAuth();
+  const { data: member, isLoading: memberLoading } = useMember(user?.id ?? '', !!user);
+
+  const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
+
   const activeContext = useContextStore.use.activeContext();
   const shopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: shop } = useShop(shopId, activeContext.type === 'shop');
 
+  const handleModalComplete = (path: 'free' | 'shop') => {
+    setIsSellerModalOpen(false);
+    if (path === 'shop') {
+      router.push('/dashboard/shop/create');
+    }
+  };
+
+  const welcomeName = memberLoading ? null : member?.display_name;
+
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Dashboard</h1>
-      <p className={styles.subtitle}>Welcome to your dashboard!</p>
+      <h1 className={styles.title}>
+        {welcomeName ? `Welcome back, ${welcomeName}` : 'Welcome back'}
+      </h1>
 
       {mounted && activeContext.type === 'member' && (
-        <div className={styles.ctaCard}>
-          <HiOutlineShoppingBag className={styles.ctaIcon} aria-hidden="true" />
-          <h2 className={styles.ctaTitle}>Ready to sell?</h2>
-          <p className={styles.ctaDescription}>
-            Create a shop to start listing your fishing gear on Nessi.
-          </p>
-          <span className={styles.ctaLink}>
-            <AppLink href="/dashboard/shop/create">Create a Shop</AppLink>
-          </span>
-        </div>
+        <>
+          <div className={styles.ctaGrid}>
+            {!memberLoading && member?.is_seller === false && (
+              <StartSellingCta onStartSelling={() => setIsSellerModalOpen(true)} />
+            )}
+            <CreateShopCta />
+          </div>
+
+          {!memberLoading && member?.is_seller === true && (
+            <div className={styles.sellerSection}>
+              <h2 className={styles.sellerHeading}>Your listings</h2>
+              <AppLink href="/dashboard/products">Manage your product listings</AppLink>
+            </div>
+          )}
+
+          {user && (
+            <SellerOnboardingModal
+              isOpen={isSellerModalOpen}
+              onClose={() => setIsSellerModalOpen(false)}
+              userId={user.id}
+              onComplete={handleModalComplete}
+            />
+          )}
+        </>
       )}
 
       {mounted && activeContext.type === 'shop' && shop && (
-        <p className={styles.shopContext}>
-          Managing: <strong>{shop.shop_name}</strong>
-        </p>
+        <div className={styles.shopPlaceholder}>
+          <p>
+            <strong>{shop.shop_name}</strong> — Shop dashboard coming soon
+          </p>
+        </div>
       )}
     </div>
   );
