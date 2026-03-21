@@ -3,7 +3,9 @@
   "issue": 73,
   "title": "Build shop creation flow, settings page, and management UI",
   "branch": "feat/73/shop-creation-settings-management",
-  "status": "fixing",
+  "status": "pr_open",
+  "completedAt": "2026-03-20T21:00:00Z",
+  "pruneAfter": "2026-05-19T21:00:00Z",
   "phase": {
     "current": 5,
     "total": 5,
@@ -13,7 +15,7 @@
       "remaining": []
     }
   },
-  "health": { "build": "unknown", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
   "timestamps": { "started": "2026-03-20T20:00:00Z", "lastActivity": "2026-03-20T20:01:00Z" }
 }
