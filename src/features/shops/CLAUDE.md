@@ -73,6 +73,22 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Stores at `avatars/shop-{shopId}.webp` in the `avatars` bucket
 - Returns `{ avatarUrl: string }`
 
+## Shop Deletion API
+
+`DELETE /api/shops/[id]`
+
+- Requires authenticated session + shop owner verification (`owner_id === user.id`)
+- Returns 401 (no session), 403 (not owner), 404 (not found or already soft-deleted)
+- Performs best-effort storage cleanup before soft delete:
+  - Removes shop avatar at `avatars/shop-{shopId}.webp`
+  - Parses `hero_banner_url` (if non-null) and removes from `avatars` bucket
+  - Queries shop-owned products → `product_images`, removes files from `product-images` bucket
+- Storage cleanup failures are caught and logged but do not block the soft delete
+- Soft-deletes the shop row (`deleted_at = now()`) using the admin client
+- Uses `parseStoragePath` helper to extract storage paths from Supabase public URLs
+- Pattern mirrors `src/app/api/auth/delete-account/route.ts` (account deletion with storage cleanup)
+- Returns `{ success: true }` on 200
+
 ## Shared Components Reused
 
 - `InlineEdit` from `@/components/controls/inline-edit`
@@ -89,4 +105,4 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **Soft delete** — Shops are soft-deleted via the `deleted_at` column. Queries that list or fetch active shops filter `deleted_at IS NULL`.
 - **Slug uniqueness** — Shop slugs are checked for uniqueness against the shared `slugs` table (not just the shops table), since slugs are a cross-entity namespace shared with member slugs. The `generateSlug` utility in `src/features/shared/utils/slug.ts` handles auto-generating a slug from a display name.
 - **Avatar upload via API route** — Unlike standard shop CRUD (direct Supabase), avatar uploads go through `POST /api/shops/avatar` for server-side image processing with `sharp`.
-- **No API routes for standard CRUD** — Shops use direct Supabase queries with RLS for authorization. Only the avatar upload endpoint requires a server-side API route.
+- **Server-side deletion with storage cleanup** — Shop deletion uses `DELETE /api/shops/[id]` (server-side API route with admin client) to clean up storage objects before soft-deleting. This parallels the account deletion pattern in `src/app/api/auth/delete-account/route.ts`. The client-side `deleteShop()` service function remains for backward compatibility but does not clean up storage.
