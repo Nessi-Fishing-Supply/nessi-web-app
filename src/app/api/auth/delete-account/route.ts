@@ -88,11 +88,30 @@ export async function DELETE() {
 
     const admin = createAdminClient();
 
+    // Block deletion if the user owns active shops
+    const { data: activeShops } = await admin
+      .from('shops')
+      .select('id, shop_name')
+      .eq('owner_id', user.id)
+      .is('deleted_at', null);
+
+    if (activeShops && activeShops.length > 0) {
+      return NextResponse.json({ error: 'OWNS_SHOPS', shops: activeShops }, { status: 409 });
+    }
+
     // Clean up storage before deleting the user (best-effort)
     try {
       await cleanupUserStorage(admin, user.id);
     } catch (storageError) {
       console.error('Storage cleanup error (non-blocking):', storageError);
+    }
+
+    // Release the member's slug before deleting the user (best-effort, belt-and-suspenders
+    // alongside the handle_member_deletion() DB trigger)
+    try {
+      await admin.from('slugs').delete().eq('entity_type', 'member').eq('entity_id', user.id);
+    } catch (slugError) {
+      console.error('Slug cleanup error (non-blocking):', slugError);
     }
 
     const { error } = await admin.auth.admin.deleteUser(user.id);

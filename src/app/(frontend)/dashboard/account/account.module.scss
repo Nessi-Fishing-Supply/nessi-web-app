@@ -61,3 +61,36 @@
   gap: var(--space-sm);
   justify-content: flex-end;
 }
+
+.shopWarning {
+  > p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-sm);
+  }
+}
+
+.shopWarningHeading {
+  color: var(--color-warning-700);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-sm);
+}
+
+.shopList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.shopLink {
+  color: var(--color-primary-600);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

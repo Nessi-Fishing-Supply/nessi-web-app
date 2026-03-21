@@ -83,23 +83,33 @@ All images in Nessi follow a strict pipeline: **validate → optimize → store 
 
 ### Account Deletion & Cascade Cleanup
 
-Deleting a user from `auth.users` triggers a full cleanup chain:
+Account deletion is gated and handled at the application layer before the auth user is removed:
 
 ```
-auth.users DELETE
-  → members row CASCADE (FK: members_id_fkey ON DELETE CASCADE)
-    → BEFORE DELETE trigger: handle_member_deletion()
-      → Deletes avatar from `avatars` bucket
-      → Deletes all product images from `product-images` bucket
-    → Member row removed
+DELETE /api/auth/delete-account
+  → Shop ownership check (409 if member owns active shops — must transfer or delete shops first)
+  → Storage cleanup:
+    → Deletes avatar from `avatars` bucket
+    → Deletes product images from `product-images` bucket
+    → Deletes shop avatars and hero banners from `shop-assets` bucket
+    → Deletes shop product images from `product-images` bucket
+  → Slug cleanup: deletes member's slug from `slugs` table
+  → auth.admin.deleteUser()
+    → members row CASCADE (FK: members_id_fkey ON DELETE CASCADE)
+      → BEFORE DELETE trigger: handle_member_deletion()
+        → Releases member slug and owned shop slugs from `slugs` table
+        → Deletes avatar from storage
+        → Deletes product images from storage
+      → Member row removed
 ```
 
 **When adding new user-owned resources** (listings, orders, messages, reviews, etc.):
 
 1. Add a FK to `members.id` (or `auth.users.id`) with `ON DELETE CASCADE`
-2. If the resource has storage objects, add cleanup logic to `handle_member_deletion()` in Supabase
-3. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's CLAUDE.md
-4. Test the full deletion chain before shipping
+2. If the resource has storage objects, add cleanup logic to both `DELETE /api/auth/delete-account` (application layer) and `handle_member_deletion()` (database trigger) in Supabase
+3. If the resource is a blocking dependency for account deletion (like shop ownership), add an ownership gate in `DELETE /api/auth/delete-account` that returns 409 until the dependency is resolved
+4. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's CLAUDE.md
+5. Test the full deletion chain before shipping
 
 ### Key Directories
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/features/auth/context';
 import { useMember } from '@/features/members/hooks/use-member';
 import { logout } from '@/features/auth/services/auth';
@@ -23,6 +24,9 @@ export default function Account() {
   const { showToast } = useToast();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [ownedShops, setOwnedShops] = useState<Array<{ id: string; shop_name: string }> | null>(
+    null,
+  );
 
   const handleLogout = async () => {
     try {
@@ -37,6 +41,13 @@ export default function Account() {
     setIsDeleting(true);
     try {
       const response = await fetch('/api/auth/delete-account', { method: 'DELETE' });
+
+      if (response.status === 409) {
+        const data = await response.json();
+        setOwnedShops(data.shops);
+        setIsDeleting(false);
+        return;
+      }
 
       if (!response.ok) {
         throw new Error('Failed to delete account');
@@ -107,33 +118,69 @@ export default function Account() {
 
       <Modal
         isOpen={isDeleteModalOpen}
-        onClose={() => !isDeleting && setDeleteModalOpen(false)}
+        onClose={() => {
+          if (!isDeleting) {
+            setDeleteModalOpen(false);
+            setOwnedShops(null);
+          }
+        }}
         ariaLabel="Confirm account deletion"
       >
-        <div className={styles.deleteModal}>
-          <h2>Delete your account?</h2>
-          <p>
-            This will permanently delete your account, profile, listings, and all uploaded images.
-            This cannot be undone.
-          </p>
-          <div className={styles.deleteActions}>
-            <Button
-              style="secondary"
-              onClick={() => setDeleteModalOpen(false)}
-              disabled={isDeleting}
-            >
-              Cancel
-            </Button>
-            <Button
-              style="primary"
-              onClick={handleDeleteAccount}
-              loading={isDeleting}
-              ariaLabel="Confirm delete account"
-            >
-              Yes, delete my account
-            </Button>
+        {ownedShops !== null ? (
+          <div className={styles.shopWarning}>
+            <h2 className={styles.shopWarningHeading}>You own shops</h2>
+            <p>Transfer or delete your shops before deleting your account.</p>
+            <ul className={styles.shopList}>
+              {ownedShops.map((shop) => (
+                <li key={shop.id}>
+                  <Link
+                    href="/dashboard/shop/settings"
+                    className={styles.shopLink}
+                    aria-label={`Go to ${shop.shop_name} settings`}
+                  >
+                    {shop.shop_name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.deleteActions}>
+              <Button
+                style="secondary"
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setOwnedShops(null);
+                }}
+              >
+                Got it
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className={styles.deleteModal}>
+            <h2>Delete your account?</h2>
+            <p>
+              This will permanently delete your account, profile, listings, and all uploaded images.
+              This cannot be undone.
+            </p>
+            <div className={styles.deleteActions}>
+              <Button
+                style="secondary"
+                onClick={() => setDeleteModalOpen(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                style="primary"
+                onClick={handleDeleteAccount}
+                loading={isDeleting}
+                ariaLabel="Confirm delete account"
+              >
+                Yes, delete my account
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

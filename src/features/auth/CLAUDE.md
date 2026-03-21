@@ -30,6 +30,15 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 
 - **`/api/auth/register`** (POST) -- Server-side registration. Validates via `validateRegisterInput()`, creates user with admin client (bypasses RLS), returns `409 DUPLICATE_EMAIL` for existing accounts, sets `Cache-Control: private, no-store`.
 - **`/api/auth/callback`** (GET) -- Handles email verification (token_hash), PKCE code exchange, and recovery flow. Sanitizes redirect paths to prevent open redirects. Routes recovery tokens to `/auth/callback?status=recovery`, signup verification to `/?verified=true`.
+- **`/api/auth/delete-account`** (DELETE) -- Permanently deletes the authenticated member's account. Requires an authenticated session (server client). Before deletion: checks for active shops owned by the member and releases the member's slug from the `slugs` table. After cleanup, calls `deleteUser()` via admin client.
+
+  **Shop ownership guard:** If the member owns one or more shops, the route returns `409` before deleting:
+
+  ```json
+  { "error": "OWNS_SHOPS", "shops": [{ "id": "uuid", "shop_name": "My Shop" }] }
+  ```
+
+  The account page (`src/app/(frontend)/dashboard/account/page.tsx`) handles this 409 by showing an inline warning inside the deletion confirmation modal. Each shop name is rendered as a link to `/dashboard/shop/settings` so the member can delete their shops before retrying account deletion.
 
 ## Auth Pages
 
@@ -62,6 +71,7 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 
 - **Duplicate email** -- `/api/auth/register` returns `409 DUPLICATE_EMAIL`. `RegisterForm` renders a friendly "An account with that email already exists" message with an inline "Sign in" button (calls `onSwitchToLogin`).
 - **Unverified email** -- `LoginForm` detects `email_not_confirmed` error and shows a warning banner with a "Resend" link (calls `onResendVerification`).
+- **Owns shops** -- `/api/auth/delete-account` returns `409 OWNS_SHOPS` with a `shops` array when the member has active shops. The account page renders an inline warning in the deletion modal listing each shop as a link to its settings page.
 - **Generic errors** -- Rendered as-is in form error areas with `role="alert"` and `aria-live="assertive"`.
 
 ## Key Patterns
