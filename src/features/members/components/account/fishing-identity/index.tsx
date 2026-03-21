@@ -6,11 +6,7 @@ import CollapsibleCard from '@/components/layout/collapsible-card';
 import InlineEdit from '@/components/controls/inline-edit';
 import { useUpdateMember } from '@/features/members/hooks/use-member';
 import type { Member } from '@/features/members/types/member';
-import {
-  SPECIES_OPTIONS,
-  TECHNIQUE_OPTIONS,
-  US_STATES,
-} from '@/features/members/types/onboarding';
+import { SPECIES_OPTIONS, TECHNIQUE_OPTIONS, US_STATES } from '@/features/members/types/onboarding';
 
 import styles from './fishing-identity.module.scss';
 

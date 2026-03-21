@@ -5,11 +5,7 @@ import React, { useState } from 'react';
 import Button from '@/components/controls/button';
 import PillSelector from '@/components/controls/pill-selector';
 import useOnboardingStore from '@/features/members/stores/onboarding-store';
-import {
-  SPECIES_OPTIONS,
-  TECHNIQUE_OPTIONS,
-  US_STATES,
-} from '@/features/members/types/onboarding';
+import { SPECIES_OPTIONS, TECHNIQUE_OPTIONS, US_STATES } from '@/features/members/types/onboarding';
 
 import styles from './step-fishing-identity.module.scss';
 

@@ -18,12 +18,7 @@ import styles from './account.module.scss';
 export default function Account() {
   const { user, isLoading: authLoading } = useAuth();
   const userId = user?.id ?? '';
-  const {
-    data: member,
-    isLoading: memberLoading,
-    isError,
-    refetch,
-  } = useMember(userId, !!userId);
+  const { data: member, isLoading: memberLoading, isError, refetch } = useMember(userId, !!userId);
   const { showToast } = useToast();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
