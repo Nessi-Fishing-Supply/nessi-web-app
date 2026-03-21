@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/supabase/client';
 import type { Member, MemberUpdateInput } from '@/features/members/types/member';
+import { generateSlug as generateSlugShared } from '@/features/shared/utils/slug';
 
 export async function getMember(userId: string): Promise<Member | null> {
   const supabase = createClient();
@@ -72,13 +73,7 @@ export async function checkSlugAvailable(slug: string): Promise<boolean> {
   return data;
 }
 
-export function generateSlug(displayName: string): string {
-  return displayName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-{2,}/g, '-');
-}
+export const generateSlug = generateSlugShared;
 
 export async function completeOnboarding(userId: string): Promise<Member> {
   return updateMember(userId, { onboarding_completed_at: new Date().toISOString() });

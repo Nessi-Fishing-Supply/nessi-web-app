@@ -2,13 +2,14 @@
 
 ## Overview
 
-Shops are business entities in Nessi's C2C marketplace, separate from member identity. A member can own or be a member of shops. This feature provides the data layer: types, services, and hooks for shop management.
+Shops are business entities in Nessi's C2C marketplace, separate from member identity. A member can own or be a member of shops. This feature provides the data layer (types, services, hooks), validations, UI components, and pages for shop management.
 
 ## Architecture
 
 - **types/shop.ts** — Database-derived types: `Shop` (from shops Row), `ShopInsert` (Insert minus system fields), `ShopUpdate` (Update minus system fields), `ShopMember` (from shop_members Row), `ShopMemberInsert`, `ShopMemberRole` union
 - **services/shop.ts** — Direct Supabase queries via browser client (RLS handles authorization)
 - **hooks/use-shops.ts** — Tanstack Query hooks for data fetching and mutations
+- **validations/shop.ts** — Zod schemas: `createShopSchema` (name, slug, description) and `updateShopSchema` (partial, all fields optional)
 
 ## Service Functions
 
@@ -44,12 +45,48 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']` | Remove a member from a shop                              |
 | `useTransferOwnership()`     | mutation, invalidates `['shops']`                    | Transfer shop ownership to another member                |
 
+## Components
+
+| Component                  | Location                                               | Purpose                                                                                           |
+| -------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `ShopCreationForm`         | `components/shop-creation-form/`                       | Multi-field form with slug auto-generation, availability check, and context switching on submit   |
+| `ShopDetailsSection`       | `components/shop-settings/shop-details-section/`       | Inline-edit section for shop name, slug, description, and avatar (uses InlineEdit + AvatarUpload) |
+| `ShopSubscriptionSection`  | `components/shop-settings/shop-subscription-section/`  | Stripe subscription placeholder (Coming Soon)                                                     |
+| `OwnershipTransferSection` | `components/shop-settings/ownership-transfer-section/` | Two-step confirmation modal for transferring shop ownership                                       |
+| `ShopDeletionSection`      | `components/shop-settings/shop-deletion-section/`      | Danger zone with type-to-confirm deletion modal                                                   |
+
+## Pages
+
+| Route                      | Description                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| `/dashboard/shop/create`   | Shop creation page — renders `ShopCreationForm`                                   |
+| `/dashboard/shop/settings` | Shop settings page — shop context only; owner sees transfer and deletion sections |
+
+## Avatar Upload API
+
+`POST /api/shops/avatar`
+
+- Requires authenticated session + shop owner verification
+- Accepts `file` (image) + `shopId` in `multipart/form-data`
+- Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
+- Processes with `sharp`: resizes to 200x200, converts to WebP at 80% quality
+- Stores at `avatars/shop-{shopId}.webp` in the `avatars` bucket
+- Returns `{ avatarUrl: string }`
+
+## Shared Components Reused
+
+- `InlineEdit` from `@/components/controls/inline-edit`
+- `Modal` from `@/components/layout/modal`
+- `AvatarUpload` from `@/features/members/components/avatar-upload` — accepts configurable `uploadUrl` and `extraFormData` props
+- `Button` from `@/components/controls/button`
+- Toast context from `@/components/indicators/toast/context`
+
 ## Key Patterns
 
 - **Direct Supabase access** — Services use the browser client (`@/libs/supabase/client`) directly, not axios/API routes. RLS policies enforce that members can only manage their own shops.
 - **Database-derived types** — `Shop` type comes from `Database['public']['Tables']['shops']['Row']` and `ShopMember` from `Database['public']['Tables']['shop_members']['Row']`, ensuring type safety with the schema.
 - **System-managed fields** — `ShopInsert` and `ShopUpdate` omit fields managed by database triggers or system processes (id, created_at, updated_at, deleted_at).
 - **Soft delete** — Shops are soft-deleted via the `deleted_at` column. Queries that list or fetch active shops filter `deleted_at IS NULL`.
-- **Slug uniqueness** — Shop slugs are checked for uniqueness against the shared `slugs` table (not just the shops table), since slugs are a cross-entity namespace shared with member slugs.
-- **No UI components** — This domain contains only the data layer. No React components live here yet.
-- **No API routes** — Shops use direct Supabase queries with RLS for authorization. No server-side API routes are needed for standard CRUD.
+- **Slug uniqueness** — Shop slugs are checked for uniqueness against the shared `slugs` table (not just the shops table), since slugs are a cross-entity namespace shared with member slugs. The `generateSlug` utility in `src/features/shared/utils/slug.ts` handles auto-generating a slug from a display name.
+- **Avatar upload via API route** — Unlike standard shop CRUD (direct Supabase), avatar uploads go through `POST /api/shops/avatar` for server-side image processing with `sharp`.
+- **No API routes for standard CRUD** — Shops use direct Supabase queries with RLS for authorization. Only the avatar upload endpoint requires a server-side API route.

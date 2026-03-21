@@ -13,3 +13,26 @@
 .sideNav li {
   margin-bottom: var(--space-sm);
 }
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: inherit;
+  color: inherit;
+  border-radius: var(--radius-sm);
+
+  &:hover {
+    background: var(--color-gray-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+}
