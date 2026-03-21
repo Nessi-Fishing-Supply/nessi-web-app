@@ -1,0 +1,21 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  max-width: 720px;
+  padding: var(--space-md) var(--space-sm);
+
+  @include breakpoint(md) {
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-2xs);
+}
+
+.subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  margin-bottom: var(--space-md);
+}

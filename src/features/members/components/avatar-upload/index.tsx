@@ -12,6 +12,8 @@ interface AvatarUploadProps {
   avatarUrl: string | null;
   onUpload: (url: string) => void;
   disabled?: boolean;
+  uploadUrl?: string;
+  extraFormData?: Record<string, string>;
 }
 
 export default function AvatarUpload({
@@ -19,6 +21,8 @@ export default function AvatarUpload({
   avatarUrl,
   onUpload,
   disabled,
+  uploadUrl,
+  extraFormData,
 }: AvatarUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [cropSource, setCropSource] = useState<string | null>(null);
@@ -48,7 +52,13 @@ export default function AvatarUpload({
       const formData = new FormData();
       formData.append('file', croppedBlob, 'avatar.webp');
 
-      const response = await fetch('/api/members/avatar', {
+      if (extraFormData) {
+        Object.entries(extraFormData).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+      }
+
+      const response = await fetch(uploadUrl ?? '/api/members/avatar', {
         method: 'POST',
         body: formData,
       });
