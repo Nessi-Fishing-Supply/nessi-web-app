@@ -412,7 +412,91 @@ Only exists for shops. Premium features progressively enhance the page:
 
 ---
 
-## 8. What This Spec Does NOT Cover
+## 8. Account Deletion Rules
+
+### Member Account Deletion
+
+A member cannot delete their account if they own a shop. The database enforces this via `ON DELETE RESTRICT` on `shops.owner_id`. The deletion flow:
+
+1. Member requests account deletion
+2. System checks: does this member own any shops?
+   - **Yes** → Block deletion. Show message: "You own [shop name]. Please delete or transfer your shop before deleting your account."
+   - **No** → Proceed with deletion
+3. On deletion:
+   - `auth.users` row deleted
+   - `members` row cascades (FK ON DELETE CASCADE)
+   - Member-owned products cascade delete
+   - `shop_members` entries cascade delete (member removed from any shops they were admin/contributor on)
+   - `slugs` entry for member's slug cleaned up via trigger
+   - Avatar and product images cleaned up via `handle_member_deletion()` trigger (same pattern as current `handle_profile_deletion()`)
+
+### Shop Deletion
+
+Only the shop owner can delete a shop. The deletion flow:
+
+1. Owner requests shop deletion from shop settings
+2. Confirmation modal with warning about permanent data loss
+3. On deletion (soft delete → `deleted_at` set):
+   - Shop-owned products soft deleted
+   - `shop_members` entries remain (for audit trail)
+   - `slugs` entry released (slug becomes available again)
+   - Stripe subscription cancelled
+4. Hard delete after retention period (or immediate if no transaction history)
+
+---
+
+## 9. Future Considerations
+
+Ideas captured during design that will be implemented later. The schema should be flexible enough to support these without major rework.
+
+### Badges & Achievements
+
+A `badges` table linking to members and/or shops:
+
+| Badge | Criteria | Applies To |
+|-------|----------|------------|
+| Quick Responder | < 1hr average response time | members, shops |
+| Fast Shipper | consistently ships within 24hrs | members (seller), shops |
+| Power Seller | 50+ items sold | members (seller), shops |
+| Veteran Member | member since 1+ year | members |
+| Verified Business | completed business verification | shops |
+| Top Rated | 4.8+ average rating with 10+ reviews | members, shops |
+
+Schema sketch (not implemented now):
+```
+badges (id, key TEXT UNIQUE, label, description, icon_url, criteria JSONB)
+member_badges (member_id FK, badge_id FK, earned_at)
+shop_badges (shop_id FK, badge_id FK, earned_at)
+```
+
+Badges could be computed by a cron job or triggered by events (e.g., "50th sale → award Power Seller").
+
+### Similar Fishing Styles
+
+On member profile pages, show "Members with similar fishing styles" based on overlap in `primary_species` and `primary_technique` arrays. This is a read-time computation (array intersection) — no schema changes needed, just a query:
+
+```sql
+SELECT * FROM members
+WHERE id != :current_member_id
+  AND primary_species && :member_species  -- array overlap operator
+  AND primary_technique && :member_technique
+ORDER BY array_length(primary_species & :member_species, 1) DESC
+LIMIT 6;
+```
+
+Could also power product recommendations: "Anglers like you bought..." using the same preference matching.
+
+### Other Future Ideas
+
+- **Favorite shops / follow members** — `follows` table with polymorphic target
+- **Shop collections / categories** — organized product groupings within a shop
+- **Member wishlists** — saved products across shops
+- **Activity feed** — "Kyle listed a new rod" style updates
+- **Referral program** — member invites, tracked via referral codes
+
+---
+
+## 10. What This Spec Does NOT Cover
 
 These are future concerns, not part of the initial implementation:
 
@@ -429,3 +513,6 @@ These are future concerns, not part of the initial implementation:
 - Exact listing/image limits (configurable, tuned later)
 - Cross-context notification system (Section 5.3)
 - Multi-shop per member (architecturally supported, gated at application layer)
+- Badges & achievements system (see Section 9)
+- Similar fishing styles feature (see Section 9)
+- Favorites / follows / wishlists
