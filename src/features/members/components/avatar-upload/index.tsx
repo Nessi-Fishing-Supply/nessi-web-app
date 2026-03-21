@@ -8,7 +8,7 @@ import Modal from '@/components/layout/modal';
 import styles from './avatar-upload.module.scss';
 
 interface AvatarUploadProps {
-  displayName: string;
+  name: string;
   avatarUrl: string | null;
   onUpload: (url: string) => void;
   disabled?: boolean;
@@ -17,7 +17,7 @@ interface AvatarUploadProps {
 }
 
 export default function AvatarUpload({
-  displayName,
+  name,
   avatarUrl,
   onUpload,
   disabled,
@@ -95,7 +95,7 @@ export default function AvatarUpload({
         {avatarUrl ? (
           <Image
             src={avatarUrl}
-            alt={displayName}
+            alt={name}
             fill
             sizes="120px"
             style={{ objectFit: 'cover' }}

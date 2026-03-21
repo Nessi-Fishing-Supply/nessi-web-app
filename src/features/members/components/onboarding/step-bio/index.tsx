@@ -7,7 +7,6 @@ import Button from '@/components/controls/button';
 import { useToast } from '@/components/indicators/toast/context';
 import { useAuth } from '@/features/auth/context';
 import { useUpdateMember, useCompleteOnboarding } from '@/features/members/hooks/use-member';
-import { generateSlug } from '@/features/members/services/member';
 import useOnboardingStore from '@/features/members/stores/onboarding-store';
 
 import styles from './step-bio.module.scss';
@@ -20,7 +19,6 @@ export default function StepBio() {
   const { user } = useAuth();
   const { showToast } = useToast();
 
-  const step1Data = useOnboardingStore.use.step1Data();
   const intentData = useOnboardingStore.use.intentData();
   const fishingData = useOnboardingStore.use.fishingData();
   const sellerTypeData = useOnboardingStore.use.sellerTypeData();
@@ -56,7 +54,6 @@ export default function StepBio() {
       await updateMember.mutateAsync({
         userId: user.id,
         data: {
-          slug: generateSlug(step1Data.displayName),
           avatar_url: avatarUrl,
           primary_species: fishingData.primarySpecies,
           primary_technique: fishingData.primaryTechnique,

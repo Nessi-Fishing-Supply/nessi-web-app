@@ -89,7 +89,7 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
         <div className={styles.profileHeroPattern} aria-hidden="true" />
         <div className={styles.avatarSection}>
           <AvatarUpload
-            displayName={fullName}
+            name={fullName}
             avatarUrl={member.avatar_url ?? null}
             onUpload={handleAvatarUpload}
             disabled={updateMember.isPending}

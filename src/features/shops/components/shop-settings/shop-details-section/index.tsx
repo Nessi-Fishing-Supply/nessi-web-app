@@ -92,7 +92,7 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
       <div className={styles.content}>
         <div className={styles.avatarSection}>
           <AvatarUpload
-            displayName={shop.shop_name ?? ''}
+            name={shop.shop_name ?? ''}
             avatarUrl={shop.avatar_url ?? null}
             onUpload={handleAvatarUpload}
             uploadUrl="/api/shops/avatar"
