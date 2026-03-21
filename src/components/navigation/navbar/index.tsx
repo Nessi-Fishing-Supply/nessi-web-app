@@ -11,6 +11,7 @@ import {
   HiOutlineHome,
   HiOutlineUserCircle,
   HiSearch,
+  HiSwitchHorizontal,
 } from 'react-icons/hi';
 
 // Components
@@ -19,7 +20,14 @@ import Modal from '@/components/layout/modal';
 import LoginForm from '@/features/auth/components/login-form';
 import RegisterForm from '@/features/auth/components/registration-form';
 import ResendVerificationForm from '@/features/auth/components/resend-verification-form';
-import { Button, AppLink, Dropdown, DropdownItem, DropdownTitle } from '@/components/controls';
+import {
+  Button,
+  AppLink,
+  Dropdown,
+  DropdownItem,
+  DropdownTitle,
+  DropdownDivider,
+} from '@/components/controls';
 
 // Assets
 import LogoFull from '@/assets/logos/logo_full.svg';
@@ -29,6 +37,8 @@ import { useAuth } from '@/features/auth/context';
 import { logout } from '@/features/auth/services/auth';
 import { useToast } from '@/components/indicators/toast/context';
 import { useMember } from '@/features/members/hooks/use-member';
+import useContextStore from '@/features/context/stores/context-store';
+import { useShop, useShopsByMember } from '@/features/shops/hooks/use-shops';
 
 export default function Navbar() {
   const mounted = useSyncExternalStore(
@@ -44,6 +54,12 @@ export default function Navbar() {
   const { user, isAuthenticated } = useAuth();
   const { showToast } = useToast();
   const { data: member } = useMember(user?.id ?? '', !!user);
+  const activeContext = useContextStore.use.activeContext();
+  const switchToMember = useContextStore.use.switchToMember();
+  const switchToShop = useContextStore.use.switchToShop();
+  const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
+  const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
+  const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');
   const searchParams = useSearchParams();
 
   // Detect query params and open appropriate modals/toasts
@@ -162,6 +178,18 @@ export default function Navbar() {
   const firstName = user?.user_metadata?.firstName ?? '';
   const lastName = user?.user_metadata?.lastName ?? '';
 
+  // Determine displayed identity based on active context
+  const isShopContext = mounted && activeContext.type === 'shop' && !!activeShop;
+  const displayName = isShopContext ? activeShop.shop_name : `${firstName} ${lastName}`;
+  const displayAvatarUrl = isShopContext ? activeShop.avatar_url : member?.avatar_url;
+  const displayInitials = isShopContext
+    ? (activeShop.shop_name?.[0] ?? '').toUpperCase()
+    : `${(firstName?.[0] ?? '').toUpperCase()}${(lastName?.[0] ?? '').toUpperCase()}`;
+
+  // Filter shops available for switching (exclude current shop context)
+  const switchableShops = shops?.filter((shop) => shop.id !== activeShopId) ?? [];
+  const hasShops = (shops?.length ?? 0) > 0;
+
   return (
     <nav>
       <NotificationBar />
@@ -187,10 +215,10 @@ export default function Navbar() {
         {mounted && isAuthenticated && user ? (
           <Dropdown
             icon={
-              member?.avatar_url ? (
+              displayAvatarUrl ? (
                 <Image
-                  src={member.avatar_url}
-                  alt={`${firstName} ${lastName}`}
+                  src={displayAvatarUrl}
+                  alt={displayName}
                   width={32}
                   height={32}
                   priority
@@ -198,17 +226,14 @@ export default function Navbar() {
                 />
               ) : (
                 <span className={styles.navAvatarInitials} aria-hidden="true">
-                  {(firstName?.[0] ?? '').toUpperCase()}
-                  {(lastName?.[0] ?? '').toUpperCase()}
+                  {displayInitials}
                 </span>
               )
             }
             ariaLabel="Account menu"
           >
             <DropdownItem isClickable={false}>
-              <p>
-                {firstName} {lastName}
-              </p>
+              <p>{displayName}</p>
             </DropdownItem>
             <DropdownTitle>
               <p>My Account</p>
@@ -233,6 +258,57 @@ export default function Navbar() {
                 Log Out
               </Button>
             </DropdownItem>
+            {mounted && hasShops && (
+              <>
+                <DropdownDivider />
+                <DropdownTitle>
+                  <p>Switch context</p>
+                </DropdownTitle>
+                {isShopContext && (
+                  <DropdownItem>
+                    <button
+                      type="button"
+                      className={styles.switchItem}
+                      onClick={() => switchToMember()}
+                    >
+                      <span className={styles.switchAvatar} aria-hidden="true">
+                        {(firstName?.[0] ?? '').toUpperCase()}
+                        {(lastName?.[0] ?? '').toUpperCase()}
+                      </span>
+                      <span>
+                        {firstName} {lastName}
+                      </span>
+                      <HiSwitchHorizontal className={styles.switchIcon} aria-hidden="true" />
+                    </button>
+                  </DropdownItem>
+                )}
+                {switchableShops.map((shop) => (
+                  <DropdownItem key={shop.id}>
+                    <button
+                      type="button"
+                      className={styles.switchItem}
+                      onClick={() => switchToShop(shop.id)}
+                    >
+                      {shop.avatar_url ? (
+                        <Image
+                          src={shop.avatar_url}
+                          alt=""
+                          width={24}
+                          height={24}
+                          className={styles.switchAvatarImage}
+                        />
+                      ) : (
+                        <span className={styles.switchAvatar} aria-hidden="true">
+                          {(shop.shop_name?.[0] ?? '').toUpperCase()}
+                        </span>
+                      )}
+                      <span>{shop.shop_name}</span>
+                      <HiSwitchHorizontal className={styles.switchIcon} aria-hidden="true" />
+                    </button>
+                  </DropdownItem>
+                ))}
+              </>
+            )}
           </Dropdown>
         ) : (
           mounted && (

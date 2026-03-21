@@ -122,6 +122,55 @@
   }
 }
 
+// Context Switch Styles
+.switchItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-xs) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-dark);
+  text-align: left;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.switchAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.switchAvatarImage {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.switchIcon {
+  width: var(--space-base);
+  height: var(--space-base);
+  margin-left: auto;
+  color: var(--color-gray-400);
+}
+
 // Modal Styles
 .modalHeader {
   display: flex;
