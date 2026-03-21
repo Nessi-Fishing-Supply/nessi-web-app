@@ -8,6 +8,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 - **types/shop.ts** — Database-derived types: `Shop` (from shops Row), `ShopInsert` (Insert minus system fields), `ShopUpdate` (Update minus system fields), `ShopMember` (from shop_members Row), `ShopMemberInsert`, `ShopMemberRole` union
 - **services/shop.ts** — Direct Supabase queries via browser client (RLS handles authorization)
+- **services/shop-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public shop page)
 - **hooks/use-shops.ts** — Tanstack Query hooks for data fetching and mutations
 - **validations/shop.ts** — Zod schemas: `createShopSchema` (name, slug, description) and `updateShopSchema` (partial, all fields optional)
 
@@ -27,6 +28,12 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `removeShopMember(shopId, memberId)`    | Remove a member from a shop                                                                  |
 | `transferOwnership(shopId, newOwnerId)` | Transfer shop ownership to another member, updates owner_id                                  |
 | `checkShopSlugAvailable(slug)`          | Slug uniqueness check against shared slugs table, returns `boolean`                          |
+
+### Server-side Service Functions (`services/shop-server.ts`)
+
+| Function                              | Purpose                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| `getShopBySlugServer(slug)`           | Server-side fetch shop by slug (for server components), returns `Shop \| null`       |
 
 ## Hooks
 
@@ -61,6 +68,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | -------------------------- | --------------------------------------------------------------------------------- |
 | `/dashboard/shop/create`   | Shop creation page — renders `ShopCreationForm`                                   |
 | `/dashboard/shop/settings` | Shop settings page — shop context only; owner sees transfer and deletion sections |
+| `/shop/[slug]`             | Public shop page — server-rendered with SEO metadata, product grid, shop stats    |
 
 ## Avatar Upload API
 

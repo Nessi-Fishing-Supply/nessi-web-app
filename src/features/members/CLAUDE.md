@@ -9,6 +9,7 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 - **types/member.ts** — Database-derived types: `Member` (from members Row), `MemberUpdateInput` (Update minus 11 system-managed fields), `OnboardingStatus`
 - **types/onboarding.ts** — Onboarding form types (`OnboardingStep1Data`, `OnboardingIntentData`, `OnboardingFishingData`, `OnboardingSellerTypeData`, `OnboardingBioData`, `OnboardingFormData`), union types (`OnboardingIntent`, `OnboardingSellerType`), and option constants (`SPECIES_OPTIONS`, `TECHNIQUE_OPTIONS`, `US_STATES`)
 - **services/member.ts** — Direct Supabase queries via browser client (RLS handles authorization, no API routes needed)
+- **services/member-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public profile page)
 - **validations/onboarding.ts** — Yup schemas for each wizard step (`step1Schema`, `intentSchema`, `fishingSchema`, `sellerTypeSchema`, `bioSchema`)
 - **stores/onboarding-store.ts** — Zustand store managing wizard step state and collected form data
 - **hooks/use-member.ts** — Tanstack Query hooks for data fetching and mutations
@@ -24,6 +25,12 @@ Member profile management for Nessi's C2C marketplace users. Handles member data
 | `checkSlugAvailable(slug)`        | Slug uniqueness check via `check_slug_available` RPC against `slugs` table, returns `boolean` |
 | `generateSlug(displayName)`       | Convert display name to URL-safe slug (pure function, no DB call)                             |
 | `completeOnboarding(userId)`      | Sets `onboarding_completed_at` to now via `updateMember`, returns `Member`                    |
+
+### Server-side Service Functions (`services/member-server.ts`)
+
+| Function                              | Purpose                                                                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `getMemberBySlugServer(slug)`         | Server-side fetch member by slug (for server components), returns `Member \| null`        |
 
 ## Hooks
 
