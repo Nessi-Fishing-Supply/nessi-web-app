@@ -2,10 +2,6 @@ export type OnboardingIntent = 'buyer' | 'seller';
 
 export type OnboardingSellerType = 'free' | 'shop';
 
-export type OnboardingStep1Data = {
-  displayName: string;
-};
-
 export type OnboardingIntentData = {
   intent: OnboardingIntent | null;
 };
@@ -24,8 +20,7 @@ export type OnboardingBioData = {
   bio: string;
 };
 
-export type OnboardingFormData = OnboardingStep1Data &
-  OnboardingIntentData &
+export type OnboardingFormData = OnboardingIntentData &
   OnboardingFishingData &
   OnboardingSellerTypeData &
   OnboardingBioData;

@@ -2,7 +2,6 @@ import { create } from 'zustand';
 
 import createSelectors from '@/libs/create-selectors';
 import type {
-  OnboardingStep1Data,
   OnboardingIntentData,
   OnboardingFishingData,
   OnboardingSellerTypeData,
@@ -11,7 +10,6 @@ import type {
 
 interface OnboardingState {
   currentStep: number;
-  step1Data: OnboardingStep1Data;
   intentData: OnboardingIntentData;
   fishingData: OnboardingFishingData;
   sellerTypeData: OnboardingSellerTypeData;
@@ -21,7 +19,6 @@ interface OnboardingState {
   nextStep: () => void;
   prevStep: () => void;
   goToStep: (step: number) => void;
-  setStep1Data: (data: OnboardingStep1Data) => void;
   setIntentData: (data: OnboardingIntentData) => void;
   setFishingData: (data: OnboardingFishingData) => void;
   setSellerTypeData: (data: OnboardingSellerTypeData) => void;
@@ -32,7 +29,6 @@ interface OnboardingState {
 
 const initialState = {
   currentStep: 1,
-  step1Data: { displayName: '' },
   intentData: { intent: null } as OnboardingIntentData,
   fishingData: { primarySpecies: [] as string[], primaryTechnique: [] as string[], homeState: '' },
   sellerTypeData: { sellerType: null } as OnboardingSellerTypeData,
@@ -66,7 +62,6 @@ const useOnboardingStoreBase = create<OnboardingState>()((set) => ({
       return { currentStep: Math.max(prev, 1) };
     }),
   goToStep: (step) => set({ currentStep: Math.max(1, Math.min(step, 5)) }),
-  setStep1Data: (data) => set({ step1Data: data }),
   setIntentData: (data) =>
     set({
       intentData: data,
