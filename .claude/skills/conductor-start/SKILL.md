@@ -161,21 +161,30 @@ Rules for this step:
 ### Step 7: PR Creation
 
 1. Update `state.json` → `status: "complete"`, persist to disk
-2. Launch **pr-creator** agent to:
-   - Push the branch
+2. **Finalize conductor state BEFORE launching pr-creator:**
+   a. Update `state.json` → `status: "pr_open"`, add `completedAt` and `pruneAfter` (now + 60 days)
+   b. Move track directory from `tracks/` to `depot/`
+   c. Clear `active.json` → `{ "active": null, "lastAccessed": "<now>" }`
+   d. Stage and commit all conductor state changes:
+      ```bash
+      git add .claude/conductor/
+      git commit -m "chore: #${issue} finalize conductor — move track to depot
+
+      Co-Authored-By: Conductor <noreply@conductor.dev>"
+      ```
+   **This commit MUST happen before the push.** The depot move is part of the branch history.
+3. Launch **pr-creator** agent to:
+   - Push the branch (which now includes the depot move commit)
    - Create PR via `gh pr create` with title and body derived from plan + changes
    - Include a "Documentation" section in the PR body listing what was updated
    - Move GitHub issue to **Ready for Review** on kanban board
-3. Display completion:
+4. Display completion:
    ```
    🏁 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       Conductor — #{issue}
       End of the line. PR created: {url}
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
-4. Update `state.json` → `status: "pr_open"`, add `completedAt` and `pruneAfter`
-5. Move track from `tracks/` to `depot/`
-6. Clear `active.json`
 
 ## Failure Escalation
 
@@ -212,6 +221,8 @@ Rules for this step:
 ## Critical Rules
 
 - **EVERY state transition MUST be persisted to `state.json` on disk immediately.** This is the crash recovery mechanism.
+- **EVERY `git commit` MUST include `.claude/conductor/` alongside source changes.** Never commit source files without also staging conductor state. Use `git add .claude/conductor/ <source files>` in every commit command. This includes phase commits, review commits, fix commits, and the final depot-move commit.
+- **The depot move + active.json clear MUST be committed and pushed as part of the branch.** Do this BEFORE launching the pr-creator agent, not after. If the depot move isn't in the branch, it won't be in the PR merge and the track will be stranded in `tracks/` forever.
 - **Append-only**: `review-log.md` is never overwritten, only appended to.
 - **Agent isolation**: Only launch agents for their designated purpose. task-executor writes code. pr-creator does git operations. phase-verifier only reports.
 - Always read `state.json` fresh before making decisions — never rely on in-memory state from earlier in the conversation.

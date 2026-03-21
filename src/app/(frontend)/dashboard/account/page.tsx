@@ -2,28 +2,23 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/features/auth/context';
-import { useProfile } from '@/features/profiles/hooks/use-profile';
+import { useMember } from '@/features/members/hooks/use-member';
 import { logout } from '@/features/auth/services/auth';
 import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
-import ProfileCompleteness from '@/features/profiles/components/profile-completeness';
-import PersonalInfo from '@/features/profiles/components/account/personal-info';
-import FishingIdentity from '@/features/profiles/components/account/fishing-identity';
-import Notifications from '@/features/profiles/components/account/notifications';
-import LinkedAccounts from '@/features/profiles/components/account/linked-accounts';
-import type { Profile } from '@/features/profiles/types/profile';
+import MemberCompleteness from '@/features/members/components/member-completeness';
+import PersonalInfo from '@/features/members/components/account/personal-info';
+import FishingIdentity from '@/features/members/components/account/fishing-identity';
+import Notifications from '@/features/members/components/account/notifications';
+import LinkedAccounts from '@/features/members/components/account/linked-accounts';
+import type { Member } from '@/features/members/types/member';
 import styles from './account.module.scss';
 
 export default function Account() {
   const { user, isLoading: authLoading } = useAuth();
   const userId = user?.id ?? '';
-  const {
-    data: profile,
-    isLoading: profileLoading,
-    isError,
-    refetch,
-  } = useProfile(userId, !!userId);
+  const { data: member, isLoading: memberLoading, isError, refetch } = useMember(userId, !!userId);
   const { showToast } = useToast();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -59,7 +54,7 @@ export default function Account() {
     }
   };
 
-  if (authLoading || profileLoading) {
+  if (authLoading || memberLoading) {
     return (
       <div className={styles.page}>
         <p>Loading...</p>
@@ -82,12 +77,12 @@ export default function Account() {
     <div className={styles.page}>
       <h1 className={styles.title}>Account</h1>
 
-      {profile && <ProfileCompleteness profile={profile as Profile} />}
+      {member && <MemberCompleteness member={member as Member} />}
 
       <div className={styles.sections}>
-        {profile && <PersonalInfo profile={profile as Profile} userId={userId} />}
-        {profile && <FishingIdentity profile={profile as Profile} userId={userId} />}
-        {profile && <Notifications profile={profile as Profile} userId={userId} />}
+        {member && <PersonalInfo member={member as Member} userId={userId} />}
+        {member && <FishingIdentity member={member as Member} userId={userId} />}
+        {member && <Notifications member={member as Member} userId={userId} />}
         <LinkedAccounts />
       </div>
 

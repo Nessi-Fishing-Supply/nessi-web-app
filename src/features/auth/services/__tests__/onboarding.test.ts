@@ -27,7 +27,7 @@ describe('checkOnboardingComplete', () => {
 
     const result = await checkOnboardingComplete();
     expect(result).toEqual({ isComplete: true });
-    expect(mockFrom).toHaveBeenCalledWith('profiles');
+    expect(mockFrom).toHaveBeenCalledWith('members');
     expect(mockSelect).toHaveBeenCalledWith('onboarding_completed_at');
     expect(mockEq).toHaveBeenCalledWith('id', 'user-1');
   });

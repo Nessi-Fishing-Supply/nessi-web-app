@@ -420,7 +420,7 @@ Type is inferred from issue labels or content. Defaults to `feat`.
 
 ### Commit Strategy (Per-Phase)
 
-Each completed phase produces one commit. **Always stage `.claude/conductor/` alongside source changes** — track state, plan, learnings, and review logs are part of the feature branch and must be pushed to GitHub.
+Each completed phase produces one commit. **EVERY commit MUST include `.claude/conductor/` alongside source changes** — track state, plan, learnings, and review logs are part of the feature branch and must be pushed to GitHub. This is non-negotiable.
 
 ```bash
 git add .claude/conductor/ <source files...>
@@ -435,6 +435,20 @@ git add .claude/conductor/ <source files...>
 
 Co-Authored-By: Conductor <noreply@conductor.dev>
 ```
+
+### Depot Move Commit
+
+Before PR creation, the conductor MUST:
+1. Update `state.json` → `status: "pr_open"`, add `completedAt` and `pruneAfter`
+2. Move track from `tracks/` to `depot/`
+3. Clear `active.json`
+4. **Commit these changes** as a dedicated commit:
+   ```bash
+   git add .claude/conductor/
+   git commit -m "chore: #{issue} finalize conductor — move track to depot"
+   ```
+
+This commit must happen BEFORE the branch is pushed. If the depot move isn't in the branch, it won't be in the PR merge and the track will be stranded in `tracks/` permanently.
 
 ### PR Creation
 

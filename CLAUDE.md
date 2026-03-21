@@ -48,7 +48,7 @@ Two Supabase Storage buckets (both public):
 | Bucket           | Path Pattern                 | API Route                              | Purpose                                     |
 | ---------------- | ---------------------------- | -------------------------------------- | ------------------------------------------- |
 | `product-images` | `{user_id}/{timestamp}.webp` | `src/app/api/products/upload/route.ts` | Product listing photos (max 1200x1200 WebP) |
-| `avatars`        | `{user_id}.webp`             | `src/app/api/profiles/avatar/route.ts` | User avatar (200x200 WebP via Sharp)        |
+| `avatars`        | `{user_id}.webp`             | `src/app/api/members/avatar/route.ts`  | User avatar (200x200 WebP via Sharp)        |
 
 RLS policies enforce per-user access on both buckets. 5MB limit, JPEG/PNG/WebP/GIF only.
 
@@ -87,23 +87,24 @@ Deleting a user from `auth.users` triggers a full cleanup chain:
 
 ```
 auth.users DELETE
-  → profiles row CASCADE (FK: profiles_id_fkey ON DELETE CASCADE)
-    → BEFORE DELETE trigger: handle_profile_deletion()
+  → members row CASCADE (FK: members_id_fkey ON DELETE CASCADE)
+    → BEFORE DELETE trigger: handle_member_deletion()
       → Deletes avatar from `avatars` bucket
       → Deletes all product images from `product-images` bucket
-    → Profile row removed
+    → Member row removed
 ```
 
 **When adding new user-owned resources** (listings, orders, messages, reviews, etc.):
 
-1. Add a FK to `profiles.id` (or `auth.users.id`) with `ON DELETE CASCADE`
-2. If the resource has storage objects, add cleanup logic to `handle_profile_deletion()` in Supabase
+1. Add a FK to `members.id` (or `auth.users.id`) with `ON DELETE CASCADE`
+2. If the resource has storage objects, add cleanup logic to `handle_member_deletion()` in Supabase
 3. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's CLAUDE.md
 4. Test the full deletion chain before shipping
 
 ### Key Directories
 
 - `src/features/auth/` — Auth domain: services, types, validations, context, form components (see its CLAUDE.md)
+- `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its CLAUDE.md)
 - `src/features/products/` — Products domain: services, types, hooks, components (see its CLAUDE.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
 - `src/app/api/` — API routes (auth, products, upload)

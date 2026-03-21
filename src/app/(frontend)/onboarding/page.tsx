@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import OnboardingWizard from '@/features/profiles/components/onboarding/onboarding-wizard';
+import OnboardingWizard from '@/features/members/components/onboarding/onboarding-wizard';
 import styles from './onboarding.module.scss';
 
 export const metadata: Metadata = {

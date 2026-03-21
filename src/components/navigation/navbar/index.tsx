@@ -28,7 +28,7 @@ import LogoFull from '@/assets/logos/logo_full.svg';
 import { useAuth } from '@/features/auth/context';
 import { logout } from '@/features/auth/services/auth';
 import { useToast } from '@/components/indicators/toast/context';
-import { useProfile } from '@/features/profiles/hooks/use-profile';
+import { useMember } from '@/features/members/hooks/use-member';
 
 export default function Navbar() {
   const mounted = useSyncExternalStore(
@@ -43,7 +43,7 @@ export default function Navbar() {
 
   const { user, isAuthenticated } = useAuth();
   const { showToast } = useToast();
-  const { data: profile } = useProfile(user?.id ?? '', !!user);
+  const { data: member } = useMember(user?.id ?? '', !!user);
   const searchParams = useSearchParams();
 
   // Detect query params and open appropriate modals/toasts
@@ -187,9 +187,9 @@ export default function Navbar() {
         {mounted && isAuthenticated && user ? (
           <Dropdown
             icon={
-              profile?.avatar_url ? (
+              member?.avatar_url ? (
                 <Image
-                  src={profile.avatar_url}
+                  src={member.avatar_url}
                   alt={`${firstName} ${lastName}`}
                   width={32}
                   height={32}

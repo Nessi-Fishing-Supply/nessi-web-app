@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { HiX, HiArrowRight } from 'react-icons/hi';
 import { useAuth } from '@/features/auth/context';
-import { useProfile } from '@/features/profiles/hooks/use-profile';
+import { useMember } from '@/features/members/hooks/use-member';
 import styles from './onboarding-banner.module.scss';
 
 export default function OnboardingBanner() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const { data: profile, isLoading: profileLoading } = useProfile(user?.id ?? '', !!user);
+  const { data: member, isLoading: memberLoading } = useMember(user?.id ?? '', !!user);
   const [isDismissed, setIsDismissed] = useState(false);
   const pathname = usePathname();
 
@@ -18,10 +18,10 @@ export default function OnboardingBanner() {
   if (pathname === '/onboarding') return null;
 
   // Don't show while loading, if not authenticated, or if dismissed
-  if (authLoading || profileLoading || !isAuthenticated || isDismissed) return null;
+  if (authLoading || memberLoading || !isAuthenticated || isDismissed) return null;
 
   // Don't show if onboarding is already complete
-  if (profile?.onboarding_completed_at) return null;
+  if (member?.onboarding_completed_at) return null;
 
   return (
     <div className={styles.banner} role="status" aria-live="polite">
