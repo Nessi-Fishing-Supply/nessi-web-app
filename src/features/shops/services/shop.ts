@@ -84,11 +84,7 @@ export async function getShopsByMember(memberId: string): Promise<Shop[]> {
 
 export async function createShop(data: ShopInsert): Promise<Shop> {
   const supabase = createClient();
-  const { data: created, error } = await supabase
-    .from('shops')
-    .insert(data)
-    .select()
-    .single();
+  const { data: created, error } = await supabase.from('shops').insert(data).select().single();
 
   if (error) {
     throw new Error(`Failed to create shop: ${error.message}`);
@@ -131,10 +127,7 @@ export async function deleteShop(id: string): Promise<Shop> {
 
 export async function getShopMembers(shopId: string): Promise<ShopMember[]> {
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from('shop_members')
-    .select('*')
-    .eq('shop_id', shopId);
+  const { data, error } = await supabase.from('shop_members').select('*').eq('shop_id', shopId);
 
   if (error) {
     throw new Error(`Failed to fetch shop members: ${error.message}`);

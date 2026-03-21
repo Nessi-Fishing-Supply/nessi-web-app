@@ -22,8 +22,8 @@ const useContextStoreBase = create<ContextState>()(
     }),
     {
       name: 'nessi-context',
-    }
-  )
+    },
+  ),
 );
 
 const useContextStore = createSelectors(useContextStoreBase);

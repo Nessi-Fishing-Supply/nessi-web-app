@@ -23,11 +23,11 @@ Discriminated union representing the two possible active identities:
 
 **Actions:**
 
-| Action                       | Purpose                                          |
-| ---------------------------- | ------------------------------------------------ |
-| `switchToMember()`           | Set active context to the member identity        |
-| `switchToShop(shopId)`       | Set active context to a specific shop by ID      |
-| `reset()`                    | Clear to default member context (used on logout) |
+| Action                 | Purpose                                          |
+| ---------------------- | ------------------------------------------------ |
+| `switchToMember()`     | Set active context to the member identity        |
+| `switchToShop(shopId)` | Set active context to a specific shop by ID      |
+| `reset()`              | Clear to default member context (used on logout) |
 
 ## Persistence
 
@@ -38,7 +38,7 @@ Uses `zustand/middleware` `persist` with localStorage. Storage key: `'nessi-cont
 The store is wrapped with `createSelectors` from `@/libs/create-selectors`. Access individual slices via auto-generated selectors:
 
 ```ts
-useContextStore.use.activeContext()
+useContextStore.use.activeContext();
 ```
 
 ## Key Patterns
