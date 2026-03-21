@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/features/auth/context';
 import { useMember } from '@/features/members/hooks/use-member';
 import { logout } from '@/features/auth/services/auth';
+import { GiAnglerFish } from 'react-icons/gi';
 import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
@@ -22,6 +23,7 @@ export default function Account() {
   const userId = user?.id ?? '';
   const { data: member, isLoading: memberLoading, isError, refetch } = useMember(userId, !!userId);
   const { showToast } = useToast();
+  const [isDangerOpen, setDangerOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [ownedShops, setOwnedShops] = useState<Array<{ id: string; shop_name: string }> | null>(
@@ -87,33 +89,78 @@ export default function Account() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Account</h1>
-
-      {member && <MemberCompleteness member={member as Member} />}
-
-      <div className={styles.sections}>
-        {member && <PersonalInfo member={member as Member} userId={userId} />}
-        {member && <FishingIdentity member={member as Member} userId={userId} />}
-        {member && <Notifications member={member as Member} userId={userId} />}
-        {member && <SellerSettings member={member as Member} userId={userId} />}
-        <LinkedAccounts />
+      <div className={styles.hero}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroText}>
+            <h1 className={styles.heroTitle}>Your Account</h1>
+            <p className={styles.heroSubtitle}>Manage your profile, preferences, and identity</p>
+          </div>
+          <span className={styles.heroIcon} aria-hidden="true">
+            <GiAnglerFish />
+          </span>
+        </div>
       </div>
 
-      <div className={styles.logoutSection}>
-        <Button style="secondary" onClick={handleLogout}>
-          Log out
-        </Button>
-      </div>
+      <div className={styles.layout}>
+        <aside className={styles.sidebar}>
+          <div className={styles.profileCard}>
+            {member && <PersonalInfo member={member as Member} userId={userId} />}
+          </div>
 
-      <div className={styles.dangerZone}>
-        <h3>Danger Zone</h3>
-        <p>
-          Permanently delete your account and all associated data including your profile, listings,
-          and images. This action cannot be undone.
-        </p>
-        <Button style="primary" onClick={() => setDeleteModalOpen(true)} ariaLabel="Delete account">
-          Delete Account
-        </Button>
+          {member && (
+            <div className={styles.completenessCard}>
+              <MemberCompleteness member={member as Member} />
+            </div>
+          )}
+
+          <div className={styles.sidebarFooter}>
+            <div className={styles.footerActions}>
+              <Button style="secondary" onClick={handleLogout}>
+                Log out
+              </Button>
+              <button
+                className={styles.deleteLink}
+                onClick={() => setDangerOpen(!isDangerOpen)}
+                aria-expanded={isDangerOpen}
+              >
+                Delete Account
+              </button>
+            </div>
+
+            <div className={`${styles.dangerPanel} ${isDangerOpen ? styles.dangerPanelOpen : ''}`}>
+              <div className={styles.dangerPanelInner}>
+                <p className={styles.dangerText}>
+                  Permanently delete your account and all associated data including your profile,
+                  listings, and images. This action cannot be undone.
+                </p>
+                <Button
+                  style="danger"
+                  onClick={() => setDeleteModalOpen(true)}
+                  ariaLabel="Delete account"
+                >
+                  Delete Account
+                </Button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main className={styles.main}>
+          <div className={styles.sections}>
+            <div className={styles.sectionItem}>
+              {member && <FishingIdentity member={member as Member} userId={userId} />}
+            </div>
+            <div className={styles.sectionItem}>
+              {member && <Notifications member={member as Member} userId={userId} />}
+            </div>
+            <div className={styles.sectionItem}>
+              {member && <SellerSettings member={member as Member} userId={userId} />}
+            </div>
+            <div className={styles.sectionItem}>
+              <LinkedAccounts />
+            </div>
+          </div>
+        </main>
       </div>
 
       <Modal

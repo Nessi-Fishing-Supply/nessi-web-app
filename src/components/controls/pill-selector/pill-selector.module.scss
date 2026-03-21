@@ -26,16 +26,17 @@
   min-height: 44px;
   padding: var(--space-xs) var(--space-base);
   border-radius: var(--radius-2xl);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-gray-200);
   background: var(--color-white);
   color: var(--color-gray-700);
   font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-basic);
   white-space: nowrap;
 
   &:hover {
     border-color: var(--color-primary--light);
+    background: var(--color-light);
   }
 
   &:focus-visible {

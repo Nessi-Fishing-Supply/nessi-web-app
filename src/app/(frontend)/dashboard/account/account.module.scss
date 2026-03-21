@@ -1,51 +1,345 @@
 @use '@/styles/mixins/breakpoints' as *;
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Account Page — clean white with warm accents
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
 .page {
-  max-width: 720px;
-  padding: var(--space-md) var(--space-sm);
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-cream);
+}
+
+/* ── Clean hero with orange accent line ── */
+.hero {
+  position: relative;
+  width: 100%;
+  padding: var(--space-lg) var(--space-base);
+  background: var(--color-cream);
+  border-bottom: 3px solid var(--color-secondary);
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  @include breakpoint(lg) {
+    padding: var(--space-xl) var(--space-2xl);
   }
 }
 
-.title {
+.heroContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.heroTitle {
   font-size: var(--font-size-xl);
-  margin-bottom: var(--space-sm);
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+.heroSubtitle {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+.heroIcon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-off-white);
+  font-size: var(--font-size-3xl);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-4xl);
+  }
+
+  animation: swim 10s linear infinite;
+}
+
+@keyframes swim {
+  0% {
+    transform: translateX(-140px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  2% {
+    transform: translateX(-130px) translateY(0) rotate(-6deg);
+    opacity: 1;
+  }
+
+  /* Rotate up first, then Y follows */
+  4% {
+    transform: translateX(-118px) translateY(-3px) rotate(-8deg);
+  }
+
+  6.25% {
+    transform: translateX(-105px) translateY(-8px) rotate(-4deg);
+  }
+
+  /* Rotate down before Y peaks down */
+  9% {
+    transform: translateX(-88px) translateY(-2px) rotate(8deg);
+  }
+
+  12.5% {
+    transform: translateX(-70px) translateY(8px) rotate(4deg);
+  }
+
+  /* Rotate up before Y rises */
+  15.5% {
+    transform: translateX(-53px) translateY(2px) rotate(-8deg);
+  }
+
+  18.75% {
+    transform: translateX(-35px) translateY(-8px) rotate(-4deg);
+  }
+
+  22% {
+    transform: translateX(-18px) translateY(-2px) rotate(8deg);
+  }
+
+  25% {
+    transform: translateX(0) translateY(8px) rotate(4deg);
+  }
+
+  28% {
+    transform: translateX(18px) translateY(2px) rotate(-8deg);
+  }
+
+  31.25% {
+    transform: translateX(35px) translateY(-8px) rotate(-4deg);
+  }
+
+  34% {
+    transform: translateX(53px) translateY(-2px) rotate(8deg);
+  }
+
+  37.5% {
+    transform: translateX(70px) translateY(8px) rotate(4deg);
+  }
+
+  40.5% {
+    transform: translateX(88px) translateY(2px) rotate(-8deg);
+  }
+
+  43.75% {
+    transform: translateX(105px) translateY(-8px) rotate(-4deg);
+  }
+
+  47% {
+    transform: translateX(123px) translateY(-2px) rotate(8deg);
+  }
+
+  50% {
+    transform: translateX(140px) translateY(8px) rotate(4deg);
+  }
+
+  53% {
+    transform: translateX(158px) translateY(2px) rotate(-8deg);
+  }
+
+  56.25% {
+    transform: translateX(175px) translateY(-8px) rotate(-4deg);
+  }
+
+  59% {
+    transform: translateX(193px) translateY(-2px) rotate(8deg);
+  }
+
+  62.5% {
+    transform: translateX(210px) translateY(8px) rotate(4deg);
+  }
+
+  65.5% {
+    transform: translateX(228px) translateY(2px) rotate(-6deg);
+  }
+
+  68.75% {
+    transform: translateX(245px) translateY(-4px) rotate(-3deg);
+    opacity: 1;
+  }
+
+  72% {
+    transform: translateX(270px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  /* Invisible pause before reset */
+  85% {
+    transform: translateX(-140px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(-140px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* ── Two-column layout ── */
+.layout {
+  width: 100%;
+  padding: var(--space-base);
+
+  @include breakpoint(md) {
+    padding: var(--space-md);
+  }
+
+  @include breakpoint(lg) {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-lg);
+  }
+
+  @include breakpoint(xl) {
+    grid-template-columns: 420px 1fr;
+    gap: var(--space-lg);
+    padding: var(--space-lg) var(--space-2xl);
+  }
+}
+
+/* ── Left sidebar ── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+  margin-bottom: var(--space-md);
+
+  @include breakpoint(lg) {
+    position: sticky;
+    top: var(--space-md);
+    margin-bottom: 0;
+    align-self: start;
+  }
+}
+
+.profileCard {
+  background: var(--color-cream);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-gray-100);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+.completenessCard {
+  /* Glass treatment applied via member-completeness.module.scss */
+}
+
+/* ── Sidebar footer: logout + delete ── */
+.sidebarFooter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+
+  button:first-child {
+    width: 50%;
+  }
+}
+
+.deleteLink {
+  background: none;
+  border: none;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-error-700);
+  cursor: pointer;
+  transition: var(--transition-basic);
+  min-height: 44px;
+
+  &:hover {
+    color: var(--color-error-900);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-error-700);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* ── Expandable danger panel ── */
+.dangerPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.dangerPanelOpen {
+  grid-template-rows: 1fr;
+}
+
+.dangerPanelInner {
+  overflow: hidden;
+}
+
+.dangerPanelOpen .dangerPanelInner {
+  padding: var(--space-base);
+  background: var(--color-error-50);
+  border: 1px solid var(--color-error-200);
+  border-radius: var(--radius-md);
+}
+
+.dangerText {
+  color: var(--color-gray-700);
+  font-size: var(--font-size-sm);
+  margin: 0 0 var(--space-base);
+  line-height: 1.6;
+}
+
+/* ── Right main content ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+  max-width: 720px;
 }
 
 .sections {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-}
+  gap: var(--space-base);
 
-.logoutSection {
-  margin-top: var(--space-lg);
-}
-
-.dangerZone {
-  margin-top: var(--space-3xl);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-error-200);
-
-  > h3 {
-    color: var(--color-error-700);
-    font-size: var(--font-size-md);
-    margin-bottom: var(--space-xs);
-  }
-
-  > p {
-    color: var(--color-gray-600);
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--space-base);
-    max-width: 480px;
+  @include breakpoint(md) {
+    gap: var(--space-md);
   }
 }
 
+.sectionItem {
+  /* No entrance animation — clean and immediate */
+}
+
+/* ── Delete Modal ── */
 .deleteModal {
   > h2 {
     font-size: var(--font-size-lg);
+    font-weight: 800;
+    color: var(--color-tertiary);
     margin-bottom: var(--space-sm);
   }
 
@@ -53,13 +347,20 @@
     color: var(--color-gray-600);
     font-size: var(--font-size-sm);
     margin-bottom: var(--space-md);
+    line-height: 1.6;
   }
 }
 
 .deleteActions {
   display: flex;
-  gap: var(--space-sm);
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+  }
 }
 
 .shopWarning {

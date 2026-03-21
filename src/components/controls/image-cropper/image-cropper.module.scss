@@ -39,7 +39,7 @@
   height: 4px;
   appearance: none;
   background: var(--color-gray-200);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   outline: none;
 
   &::-webkit-slider-thumb {

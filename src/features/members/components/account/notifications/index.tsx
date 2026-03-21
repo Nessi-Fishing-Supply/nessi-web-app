@@ -2,6 +2,7 @@
 
 import { useToast } from '@/components/indicators/toast/context';
 import CollapsibleCard from '@/components/layout/collapsible-card';
+import Toggle from '@/components/controls/toggle';
 import { useUpdateMember } from '@/features/members/hooks/use-member';
 import type { Json } from '@/types/database';
 import type { Member } from '@/features/members/types/member';
@@ -121,22 +122,16 @@ export default function Notifications({ member, userId }: NotificationsProps) {
 
           return (
             <li key={key} className={styles.item}>
-              <label htmlFor={inputId} className={styles.label}>
+              <div className={styles.label}>
                 <span className={styles.labelText}>{label}</span>
                 <span className={styles.description}>{description}</span>
-              </label>
-              <div className={styles.toggleWrapper}>
-                <input
-                  id={inputId}
-                  type="checkbox"
-                  role="switch"
-                  className={styles.toggle}
-                  checked={checked}
-                  aria-checked={checked}
-                  disabled={updateMember.isPending}
-                  onChange={(e) => handleToggle(key, e.target.checked)}
-                />
               </div>
+              <Toggle
+                id={inputId}
+                checked={checked}
+                onChange={(val) => handleToggle(key, val)}
+                disabled={updateMember.isPending}
+              />
             </li>
           );
         })}

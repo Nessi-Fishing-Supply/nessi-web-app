@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
+import { HiCheckCircle, HiXCircle, HiUser } from 'react-icons/hi';
 import AvatarUpload from '@/features/members/components/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
 import { useDisplayNameCheck, useUpdateMember } from '@/features/members/hooks/use-member';
@@ -127,8 +127,8 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
 
   return (
     <section className={styles.card}>
-      <h2 className={styles.heading}>Personal Info</h2>
-      <div className={styles.content}>
+      <div className={styles.profileHero}>
+        <div className={styles.profileHeroPattern} aria-hidden="true" />
         <div className={styles.avatarSection}>
           <AvatarUpload
             displayName={member.display_name ?? ''}
@@ -137,84 +137,95 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
             disabled={updateMember.isPending}
           />
         </div>
+        <div className={styles.identityBlock}>
+          <span className={styles.displayName}>{member.display_name || 'Set your name'}</span>
+          {member.slug && <span className={styles.handle}>@{member.slug}</span>}
+        </div>
+      </div>
 
-        <div className={styles.fields}>
-          <div className={styles.nameRow}>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>First name</span>
-              <div className={styles.fieldValue}>
-                <InlineEdit
-                  value={member.first_name ?? ''}
-                  onSave={handleFirstNameSave}
-                  placeholder="Add first name"
-                  ariaLabel="first name"
-                />
-              </div>
-            </div>
+      <div className={styles.fields}>
+        <div className={styles.sectionDivider}>
+          <span className={styles.headingIcon} aria-hidden="true">
+            <HiUser />
+          </span>
+          <h2 className={styles.heading}>Personal Info</h2>
+        </div>
 
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>Last name</span>
-              <div className={styles.fieldValue}>
-                <InlineEdit
-                  value={member.last_name ?? ''}
-                  onSave={handleLastNameSave}
-                  placeholder="Add last name"
-                  ariaLabel="last name"
-                />
-              </div>
-            </div>
-          </div>
-
+        <div className={styles.nameRow}>
           <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>Display name</span>
+            <span className={styles.fieldLabel}>First name</span>
             <div className={styles.fieldValue}>
               <InlineEdit
-                value={member.display_name ?? ''}
-                onSave={handleDisplayNameSave}
-                onChange={handleDisplayNameChange}
-                placeholder="Add a display name"
-                validating={isChecking || nameTaken}
-                ariaLabel="display name"
+                value={member.first_name ?? ''}
+                onSave={handleFirstNameSave}
+                placeholder="Add first name"
+                ariaLabel="first name"
               />
-              {showAvailabilityIcon && nameAvailable && !isChecking && (
-                <span className={styles.availabilityIcon}>
-                  <HiCheckCircle className={styles.iconSuccess} aria-hidden="true" />
-                  <span className="sr-only">Display name is available</span>
-                </span>
-              )}
-              {showAvailabilityIcon && nameTaken && (
-                <span className={styles.availabilityIcon}>
-                  <HiXCircle className={styles.iconError} aria-hidden="true" />
-                  <span className="sr-only">Display name is taken</span>
-                </span>
-              )}
-              {nameTaken && (
-                <p className={styles.errorText} role="alert">
-                  That display name is already taken
-                </p>
-              )}
             </div>
           </div>
 
           <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>Handle</span>
-            <span className={styles.fieldStatic}>
-              {member.slug ? `@${member.slug}` : 'Generated from display name'}
-            </span>
-          </div>
-
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>Bio</span>
+            <span className={styles.fieldLabel}>Last name</span>
             <div className={styles.fieldValue}>
               <InlineEdit
-                value={member.bio ?? ''}
-                onSave={handleBioSave}
-                maxLength={280}
-                multiline
-                placeholder="Tell buyers and sellers about yourself"
-                ariaLabel="bio"
+                value={member.last_name ?? ''}
+                onSave={handleLastNameSave}
+                placeholder="Add last name"
+                ariaLabel="last name"
               />
             </div>
+          </div>
+        </div>
+
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>Display name</span>
+          <div className={styles.fieldValue}>
+            <InlineEdit
+              value={member.display_name ?? ''}
+              onSave={handleDisplayNameSave}
+              onChange={handleDisplayNameChange}
+              placeholder="Add a display name"
+              validating={isChecking || nameTaken}
+              ariaLabel="display name"
+            />
+            {showAvailabilityIcon && nameAvailable && !isChecking && (
+              <span className={styles.availabilityIcon}>
+                <HiCheckCircle className={styles.iconSuccess} aria-hidden="true" />
+                <span className="sr-only">Display name is available</span>
+              </span>
+            )}
+            {showAvailabilityIcon && nameTaken && (
+              <span className={styles.availabilityIcon}>
+                <HiXCircle className={styles.iconError} aria-hidden="true" />
+                <span className="sr-only">Display name is taken</span>
+              </span>
+            )}
+            {nameTaken && (
+              <p className={styles.errorText} role="alert">
+                That display name is already taken
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>Handle</span>
+          <span className={styles.fieldStatic}>
+            {member.slug ? `@${member.slug}` : 'Generated from display name'}
+          </span>
+        </div>
+
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>Bio</span>
+          <div className={styles.fieldValue}>
+            <InlineEdit
+              value={member.bio ?? ''}
+              onSave={handleBioSave}
+              maxLength={280}
+              multiline
+              placeholder="Tell buyers and sellers about yourself"
+              ariaLabel="bio"
+            />
           </div>
         </div>
       </div>

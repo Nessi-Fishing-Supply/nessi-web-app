@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import {
   getMember,
   getMemberBySlug,
@@ -14,6 +14,7 @@ export function useMember(userId: string, enabled = true) {
     queryKey: ['members', userId],
     queryFn: () => getMember(userId),
     enabled,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -31,8 +32,21 @@ export function useUpdateMember() {
   return useMutation({
     mutationFn: ({ userId, data }: { userId: string; data: MemberUpdateInput }) =>
       updateMember(userId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['members'] });
+    onMutate: async (vars) => {
+      await queryClient.cancelQueries({ queryKey: ['members', vars.userId] });
+      const previous = queryClient.getQueryData(['members', vars.userId]);
+      queryClient.setQueryData(['members', vars.userId], (old: unknown) =>
+        old && typeof old === 'object' ? { ...old, ...vars.data } : old,
+      );
+      return { previous };
+    },
+    onError: (_err, vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['members', vars.userId], context.previous);
+      }
+    },
+    onSettled: (_data, _err, vars) => {
+      queryClient.invalidateQueries({ queryKey: ['members', vars.userId] });
     },
   });
 }

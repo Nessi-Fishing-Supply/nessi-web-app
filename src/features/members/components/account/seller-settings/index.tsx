@@ -2,6 +2,7 @@
 
 import { useToast } from '@/components/indicators/toast/context';
 import CollapsibleCard from '@/components/layout/collapsible-card';
+import Toggle from '@/components/controls/toggle';
 import { useUpdateMember } from '@/features/members/hooks/use-member';
 import type { Member } from '@/features/members/types/member';
 
@@ -41,24 +42,18 @@ export default function SellerSettings({ member, userId }: SellerSettingsProps) 
   return (
     <CollapsibleCard title="Seller Settings">
       <div className={styles.item}>
-        <label htmlFor="seller-toggle" className={styles.label}>
+        <div className={styles.label}>
           <span className={styles.labelText}>Enable selling on your profile</span>
           <span className={styles.description}>
             Allow buyers to discover your listings and shop
           </span>
-        </label>
-        <div className={styles.toggleWrapper}>
-          <input
-            id="seller-toggle"
-            type="checkbox"
-            role="switch"
-            className={styles.toggle}
-            checked={member.is_seller ?? false}
-            aria-checked={member.is_seller ?? false}
-            disabled={updateMember.isPending}
-            onChange={(e) => handleToggle(e.target.checked)}
-          />
         </div>
+        <Toggle
+          id="seller-toggle"
+          checked={member.is_seller ?? false}
+          onChange={handleToggle}
+          disabled={updateMember.isPending}
+        />
       </div>
 
       {member.is_seller && (

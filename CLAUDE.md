@@ -239,6 +239,7 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 - **`/db-migrate "{change}"`** — Generate Supabase SQL migrations with RLS policies
 - **`/write-tests "{file}"`** — Generate Vitest tests following project patterns
 - **`/debug "{problem}"`** — 7-step investigation protocol (reproduce → isolate → fix → verify)
+- **`/ui-design "{spec or path}"`** — Design new components or audit existing ones against the design system
 
 ### Tech Expert Skills (auto-trigger on file edits)
 
@@ -248,12 +249,12 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 - **`/ask-scss`** — Styling, responsive, tokens (triggers on `*.module.scss`, `src/styles/**`)
 - **`/ask-state`** — Tanstack Query + Zustand (triggers on `*/hooks/*`, `*/stores/*`)
 
-### Agents (14 total — invoked by skills, not directly)
+### Agents (15 total — invoked by skills, not directly)
 
 | Layer     | Agents                                                                                                                                 |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Conductor | plan-architect, task-executor, phase-verifier, review-orchestrator, finding-resolver, debug-investigator, pr-creator, ticket-generator |
-| Design    | ux-researcher, marketplace-audit                                                                                                       |
+| Design    | ux-researcher, marketplace-audit, ui-designer                                                                                          |
 | Testing   | test-author, ui-tester, a11y-auditor                                                                                                   |
 | Debugging | browser-debug                                                                                                                          |
 

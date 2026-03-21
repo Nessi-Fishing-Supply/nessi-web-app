@@ -11,7 +11,7 @@
   background: none;
   box-shadow: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: var(--transition-basic);
 
   &:disabled {
     cursor: not-allowed;
@@ -27,8 +27,8 @@
   .loader {
     width: 16px;
     height: 16px;
-    border: 2px solid rgb(0 0 0 / 20%);
-    border-top: 2px solid black;
+    border: 2px solid rgb(255 255 255 / 40%);
+    border-top-color: var(--color-white);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -131,6 +131,24 @@
 
   &.outline {
     color: var(--color-light);
+  }
+}
+
+.danger {
+  @extend .base;
+
+  background-color: var(--color-error-700);
+  border-color: var(--color-error-700);
+  color: var(--color-white);
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: var(--color-error-900);
+    border-color: var(--color-error-900);
+  }
+
+  &.outline {
+    color: var(--color-error-700);
   }
 }
 
