@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 'use client';
 
 import React, { useEffect } from 'react';
 import styles from './product-card.module.scss';
 import { useRouter } from 'next/navigation';
 import Pill from '@/components/indicators/pill';
-import { FaTruck, FaTag } from 'react-icons/fa';
 import Favorite from '@/features/products/components/favorite';
 import ProductReviews from '@/features/products/components/product-reviews';
+import ConditionBadge from '@/features/listings/components/condition-badge';
+import { formatPrice } from '@/features/listings/utils/format';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -16,17 +15,33 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Image from 'next/image';
 import type { ProductWithImages } from '@/features/products/types/product';
+import type { ListingWithPhotos } from '@/features/listings/types/listing';
+
+type CardItem = ProductWithImages | ListingWithPhotos;
+
+function isListing(item: CardItem): item is ListingWithPhotos {
+  return 'price_cents' in item;
+}
 
 interface ProductCardProps {
-  product: ProductWithImages;
+  product: CardItem;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
-  const price =
-    typeof product.price === 'number'
+
+  const price = isListing(product)
+    ? formatPrice(product.price_cents)
+    : typeof product.price === 'number'
       ? `$${product.price.toFixed(2)}`
       : `$${parseFloat(product.price).toFixed(2)}`;
+
+  const images: { url: string | null; alt: string }[] = isListing(product)
+    ? product.listing_photos.map((p) => ({ url: p.thumbnail_url || p.image_url, alt: product.title }))
+    : product.product_images.map((p: { image_url: string | null }) => ({
+        url: p.image_url,
+        alt: product.title,
+      }));
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -65,9 +80,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       onMouseLeave={handleMouseLeave}
     >
       <div className={styles.carousel}>
-        <Pill className={styles.pill} color="secondary">
-          In Stock
-        </Pill>
+        {isListing(product) ? (
+          <span className={styles.conditionBadge}>
+            <ConditionBadge condition={product.condition} size="sm" />
+          </span>
+        ) : (
+          <Pill className={styles.pill} color="secondary">
+            In Stock
+          </Pill>
+        )}
         <Favorite className={styles.favorite} />
         <Swiper
           className="swiper__product-card"
@@ -75,13 +96,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           navigation
           pagination={{ clickable: true }}
         >
-          {product.product_images.map((image, index) =>
-            image.image_url ? (
+          {images.map((image, index) =>
+            image.url ? (
               <SwiperSlide key={index}>
                 <div className={styles.slide}>
                   <Image
-                    src={image.image_url}
-                    alt={`${product.title} image ${index + 1}`}
+                    src={image.url}
+                    alt={`${image.alt} image ${index + 1}`}
                     fill
                     sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 300px"
                     style={{ objectFit: 'cover' }}
@@ -98,16 +119,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <p className={styles.price}>{price}</p>
           <ProductReviews count={0} average={4.2} />
         </div>
-        <div className={styles.badgeWrapper}>
-          <div className={styles.badge}>
-            <FaTag className={styles.tagIcon} />
-            <p>20% Off Sale</p>
-          </div>
-          <div className={styles.badge}>
-            <FaTruck className={styles.truckIcon} />
-            <p>Free Shipping</p>
-          </div>
-        </div>
+        {isListing(product) && product.location_state && (
+          <p className={styles.location}>
+            {product.location_city ? `${product.location_city}, ` : ''}
+            {product.location_state}
+          </p>
+        )}
       </div>
     </a>
   );

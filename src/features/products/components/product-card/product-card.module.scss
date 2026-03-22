@@ -31,6 +31,13 @@
     z-index: 20;
   }
 
+  .conditionBadge {
+    position: absolute;
+    top: var(--space-xs);
+    left: var(--space-xs);
+    z-index: 20;
+  }
+
   .favorite {
     position: absolute;
     top: var(--space-xs);
@@ -73,26 +80,9 @@
     }
   }
 
-  .badgeWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2xs);
-
-    .badge {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-
-      > svg {
-        width: var(--space-sm);
-        height: var(--space-sm);
-      }
-
-      > p {
-        font-size: var(--font-size-xs);
-        color: var(--color-dark);
-        margin: 0;
-      }
-    }
+  .location {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin: 0;
   }
 }

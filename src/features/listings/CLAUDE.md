@@ -6,12 +6,15 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 
 ## Architecture
 
-- **types/listing.ts** — Database-derived types: `ListingCondition`, `ListingCategory` (enum aliases), `Listing` (from listings Row), `ListingInsert`, `ListingUpdate`, `ListingPhoto` (from listing_photos Row), `ListingPhotoInsert`, `ListingWithPhotos` (Listing + photos array)
+- **types/listing.ts** — Database-derived types: `Listing`, `ListingInsert`, `ListingUpdate`, `ListingStatus`, `ListingWithPhotos`, `ListingDraft`, `ListingCondition`, `ListingCategory`
+- **types/listing-photo.ts** — Photo types: `ListingPhoto`, `ListingPhotoInsert`, `ListingPhotoUpdate`, `UploadResult`
 - **constants/condition.ts** — `CONDITION_TIERS` (6-tier array with labels, descriptions, WCAG AA colors), `CATEGORY_PHOTO_GUIDANCE` (per-category photo tips), `ConditionTier` type
-- **services/listing.ts** — Client-side Supabase queries via browser client (RLS handles authorization)
-- **services/listing-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public listing detail page)
-- **hooks/use-listings.ts** — Tanstack Query hooks for data fetching and mutations
-- **validations/listing.ts** — Zod schemas: `createListingSchema`, `updateListingSchema`
+- **constants/category.ts** — `LISTING_CATEGORIES` (10 categories with labels and react-icons), `getCategoryLabel()`, `getCategoryIcon()`
+- **utils/format.ts** — `formatPrice(cents)` → "$29.99", `calculateFee(cents)` → marketplace fee in cents (flat $0.99 under $15, 6% above), `calculateNet(cents)` → price minus fee
+- **services/listing.ts** — Client-side service functions calling API routes via `@/libs/fetch` helpers (`getListings`, `getListingById`, `createListing`, `updateListing`, `deleteListing`, `updateListingStatus`, etc.)
+- **services/listing-photo.ts** — Photo upload/delete services calling API routes
+- **hooks/use-listings.ts** — Tanstack Query hooks for listing data fetching and mutations
+- **hooks/use-listing-photos.ts** — Tanstack Query hooks for photo upload and delete
 - **components/photo-manager/** — Multi-photo upload, reorder, and delete UI for listing creation and editing
 - **components/condition-badge/** — Color-coded pill displaying condition tier with hover/tap popover description
 - **components/condition-selector/** — Vertical radio list for selecting condition tier in create wizard, with category-specific photo guidance accordion
@@ -93,20 +96,49 @@ All listing API routes live in `src/app/api/listings/`:
 - Updates `cover_photo_url` on the parent listing if the deleted photo was position 0
 - Returns `{ success: true }`
 
+### Listings CRUD
+
+`GET /api/listings` — Public paginated listing search with filters (`category`, `condition`, `search`, `minPrice`, `maxPrice`, `sort`, `page`, `limit`). Always filters `deleted_at IS NULL` and `status = 'active'`. Returns `{ listings, total, page, limit }`.
+
+`POST /api/listings` — Authenticated. Creates a listing (defaults to `status: 'draft'`). Sets `seller_id` from user.
+
+`GET /api/listings/[id]` — Public. Single listing with photos joined. 404 if not found or soft-deleted.
+
+`PUT /api/listings/[id]` — Authenticated + ownership. Updates listing fields.
+
+`DELETE /api/listings/[id]` — Authenticated + ownership. Soft-delete (sets `deleted_at` and `status: 'deleted'`).
+
+`POST /api/listings/[id]/view` — Public. Increments `view_count` by 1.
+
+`PATCH /api/listings/[id]/status` — Authenticated + ownership. Status transitions: `draft→active` (sets `published_at`), `active→archived`, `active→sold`, `archived→active`, `draft→deleted`.
+
+`GET /api/listings/seller` — Authenticated. Returns all listings for the current user (all statuses except soft-deleted). Supports `status` query param filter.
+
+`GET /api/listings/drafts` — Authenticated. Returns user's draft listings.
+
+`POST /api/listings/drafts` — Authenticated. Creates an empty draft with default values.
+
+`DELETE /api/listings/drafts` — Authenticated + ownership. Hard-deletes a draft (only `status: 'draft'`).
+
 ## Hooks
 
-| Hook                            | Query Key                                | Purpose                                               |
-| ------------------------------- | ---------------------------------------- | ----------------------------------------------------- |
-| `useListing(id)`                | `['listings', id]`                       | Fetch listing by ID with photos                       |
-| `useListingsByMember(memberId)` | `['listings', 'member', memberId]`       | Fetch active listings for a member                    |
-| `useListingsByShop(shopId)`     | `['listings', 'shop', shopId]`           | Fetch active listings for a shop                      |
-| `useListingPhotos(listingId)`   | `['listings', listingId, 'photos']`      | Fetch ordered photos for a listing                    |
-| `useCreateListing()`            | mutation, invalidates `['listings']`     | Create a new listing (draft)                          |
-| `useUpdateListing()`            | mutation, invalidates `['listings']`     | Update listing fields                                 |
-| `useDeleteListing()`            | mutation, invalidates `['listings']`     | Soft-delete a listing                                 |
-| `useUploadListingPhoto()`       | mutation, invalidates listing photos key | Upload photo via `POST /api/listings/upload`          |
-| `useDeleteListingPhoto()`       | mutation, invalidates listing photos key | Delete photo via `DELETE /api/listings/upload/delete` |
-| `useReorderListingPhotos()`     | mutation, invalidates listing photos key | Update position values after drag-to-reorder          |
+| Hook                       | Query Key                        | Purpose                                               |
+| -------------------------- | -------------------------------- | ----------------------------------------------------- |
+| `useListings(filters)`     | `['listings', filters]`          | Paginated listing search with filters                 |
+| `useListing(id)`           | `['listings', id]`               | Fetch listing by ID with photos                       |
+| `useSellerListings(status?)` | `['listings', 'seller', status]` | Fetch authenticated user's listings                   |
+| `useDrafts()`              | `['listings', 'drafts']`         | Fetch user's draft listings                           |
+| `useListingPhotos(listingId)` | `['listings', listingId, 'photos']` | Fetch ordered photos for a listing                 |
+| `useCreateListing()`       | mutation, invalidates `['listings']` | Create a new listing                              |
+| `useCreateDraft()`         | mutation, invalidates `['listings']` | Create an empty draft                             |
+| `useUpdateListing()`       | mutation, invalidates `['listings']` | Update listing fields                             |
+| `useDeleteListing()`       | mutation, invalidates `['listings']` | Soft-delete a listing                             |
+| `useDeleteDraft()`         | mutation, invalidates `['listings']` | Hard-delete a draft                               |
+| `useUpdateListingStatus()` | mutation, invalidates `['listings']` | Change listing status                             |
+| `useIncrementViewCount()`  | mutation (fire-and-forget)       | Increment view count                                  |
+| `useUploadListingPhoto()`  | mutation, invalidates listing photos key | Upload photo via `POST /api/listings/upload`    |
+| `useDeleteListingPhoto()`  | mutation, invalidates listing photos key | Delete photo via `DELETE /api/listings/upload/delete` |
+| `useReorderListingPhotos()` | mutation, invalidates listing photos key | Update position values after drag-to-reorder    |
 
 ## Components
 
@@ -128,7 +160,8 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Key Patterns
 
-- **Direct Supabase access** — Most services use the browser client (`@/libs/supabase/client`) directly, with RLS policies enforcing authorization. Photo uploads and deletes go through API routes for server-side image processing and storage cleanup.
+- **API route architecture** — Client-side services call Next.js API routes via `@/libs/fetch` helpers (`get`, `post`, `put`, `del`, `patch`). API routes use the Supabase server client for auth and database access. Photo uploads and deletes go through separate API routes for server-side image processing.
+- **Fee structure** — Under $15: flat $0.99 fee. $15 and above: 6% of price. All prices and fees are in cents.
 - **Database-derived types** — `Listing` from `Database['public']['Tables']['listings']['Row']`, `ListingPhoto` from `Database['public']['Tables']['listing_photos']['Row']`.
 - **System-managed fields** — `ListingInsert` and `ListingUpdate` omit fields managed by the database (id, created_at, updated_at, deleted_at, view_count, favorite_count, inquiry_count, search_vector).
 - **Soft delete** — Listings are soft-deleted via the `deleted_at` column. Active queries filter `deleted_at IS NULL`.
