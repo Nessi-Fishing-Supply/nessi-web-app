@@ -6,12 +6,16 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 
 ## Architecture
 
-- **types/listing.ts** — Database-derived types: `Listing` (from listings Row), `ListingInsert`, `ListingUpdate`, `ListingPhoto` (from listing_photos Row), `ListingPhotoInsert`, `ListingWithPhotos` (Listing + photos array)
+- **types/listing.ts** — Database-derived types: `ListingCondition`, `ListingCategory` (enum aliases), `Listing` (from listings Row), `ListingInsert`, `ListingUpdate`, `ListingPhoto` (from listing_photos Row), `ListingPhotoInsert`, `ListingWithPhotos` (Listing + photos array)
+- **constants/condition.ts** — `CONDITION_TIERS` (6-tier array with labels, descriptions, WCAG AA colors), `CATEGORY_PHOTO_GUIDANCE` (per-category photo tips), `ConditionTier` type
 - **services/listing.ts** — Client-side Supabase queries via browser client (RLS handles authorization)
 - **services/listing-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public listing detail page)
 - **hooks/use-listings.ts** — Tanstack Query hooks for data fetching and mutations
 - **validations/listing.ts** — Zod schemas: `createListingSchema`, `updateListingSchema`
 - **components/photo-manager/** — Multi-photo upload, reorder, and delete UI for listing creation and editing
+- **components/condition-badge/** — Color-coded pill displaying condition tier with hover/tap popover description
+- **components/condition-selector/** — Vertical radio list for selecting condition tier in create wizard, with category-specific photo guidance accordion
+- **components/condition-filter/** — Multi-select checkbox group for filtering listings by condition, with optional count badges
 
 ## Database Schema
 
@@ -106,9 +110,12 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Components
 
-| Component      | Location                    | Purpose                                                                              |
-| -------------- | --------------------------- | ------------------------------------------------------------------------------------ |
-| `PhotoManager` | `components/photo-manager/` | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards. |
+| Component            | Location                       | Purpose                                                                              |
+| -------------------- | ------------------------------ | ------------------------------------------------------------------------------------ |
+| `PhotoManager`       | `components/photo-manager/`    | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards. |
+| `ConditionBadge`     | `components/condition-badge/`  | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).   |
+| `ConditionSelector`  | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance. |
+| `ConditionFilter`    | `components/condition-filter/` | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`. |
 
 ## Pages (planned)
 
