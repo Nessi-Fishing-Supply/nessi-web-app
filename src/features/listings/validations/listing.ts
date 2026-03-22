@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 export const photosSchema = Yup.object().shape({
-  photos: Yup.array().min(2, 'At least 2 photos are required').required(),
+  photoCount: Yup.number().min(2, 'At least 2 photos are required').required(),
 });
 
 export const categoryConditionSchema = Yup.object().shape({
@@ -34,15 +34,6 @@ export const shippingSchema = Yup.object().shape({
   weightOz: Yup.number()
     .positive('Weight must be a positive number')
     .required('Weight is required'),
-  packageDimensions: Yup.object().shape({
-    length: Yup.number()
-      .positive('Length must be a positive number')
-      .required('Length is required'),
-    width: Yup.number().positive('Width must be a positive number').required('Width is required'),
-    height: Yup.number()
-      .positive('Height must be a positive number')
-      .required('Height is required'),
-  }),
   shippingPaidBy: Yup.string()
     .oneOf(['buyer', 'seller'], 'Shipping must be paid by buyer or seller')
     .required('Shipping paid by is required'),

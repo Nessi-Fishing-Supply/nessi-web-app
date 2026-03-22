@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState, useId } from 'react';
+import { useState, useId } from 'react';
 import { HiOutlineQuestionMarkCircle } from 'react-icons/hi2';
 
 import Modal from '@/components/layout/modal';
 import PhotoManager from '@/features/listings/components/photo-manager';
-import { useCreateDraft } from '@/features/listings/hooks/use-listings';
-import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
-import type { ListingPhoto } from '@/features/listings/types/listing-photo';
+import type { WizardPhoto } from '@/features/listings/stores/wizard-photo-store';
 
 import styles from './photos-step.module.scss';
 
@@ -20,46 +18,21 @@ const PHOTO_GUIDANCE_TIPS = [
   'For rods and reels, photograph the grip, guides, and hardware up close.',
 ];
 
-export default function PhotosStep() {
-  const listingId = useCreateWizardStore.use.listingId();
-  const photos = useCreateWizardStore.use.photos();
-  const setField = useCreateWizardStore.use.setField();
+interface PhotosStepProps {
+  photos: WizardPhoto[];
+  onPhotosChange: (photos: WizardPhoto[]) => void;
+  onPhotosAdd: (files: File[]) => void;
+  onPhotoRemove: (id: string) => void;
+}
 
+export default function PhotosStep({
+  photos,
+  onPhotosChange,
+  onPhotosAdd,
+  onPhotoRemove,
+}: PhotosStepProps) {
   const [showGuidance, setShowGuidance] = useState(false);
-
-  const createDraft = useCreateDraft();
   const guidanceTitleId = useId();
-  const draftCreatingRef = useRef(false);
-
-  // Create draft on first user interaction (first photo upload attempt).
-  // This avoids orphan drafts from re-renders after publish/reset.
-  const [needsDraft, setNeedsDraft] = useState(!listingId);
-
-  useEffect(() => {
-    if (!needsDraft || draftCreatingRef.current) return;
-    const currentId = useCreateWizardStore.getState().listingId;
-    if (currentId) {
-      setNeedsDraft(false);
-      return;
-    }
-    draftCreatingRef.current = true;
-
-    createDraft
-      .mutateAsync()
-      .then((draft) => {
-        setField('listingId', draft.id);
-        setField('draftId', draft.id);
-        setNeedsDraft(false);
-      })
-      .catch(() => {
-        draftCreatingRef.current = false;
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [needsDraft]);
-
-  function handlePhotosChange(updated: ListingPhoto[]) {
-    setField('photos', updated);
-  }
 
   return (
     <div className={styles.photosStep}>
@@ -81,18 +54,13 @@ export default function PhotosStep() {
         </p>
       )}
 
-      {listingId ? (
-        <PhotoManager
-          listingId={listingId}
-          photos={photos}
-          onPhotosChange={handlePhotosChange}
-          minPhotos={2}
-        />
-      ) : (
-        <div className={styles.loadingPlaceholder}>
-          <p className={styles.loadingText}>Preparing upload...</p>
-        </div>
-      )}
+      <PhotoManager
+        photos={photos}
+        onPhotosChange={onPhotosChange}
+        onPhotosAdd={onPhotosAdd}
+        onPhotoRemove={onPhotoRemove}
+        minPhotos={2}
+      />
 
       <Modal
         isOpen={showGuidance}
