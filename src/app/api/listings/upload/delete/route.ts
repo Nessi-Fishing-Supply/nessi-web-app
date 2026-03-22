@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 function parseStoragePath(publicUrl: string): string | null {
   try {
     const url = new URL(publicUrl);
-    const marker = '/storage/v1/object/public/product-images/';
+    const marker = '/storage/v1/object/public/listing-images/';
     const idx = url.pathname.indexOf(marker);
     if (idx === -1) return null;
     return url.pathname.slice(idx + marker.length);
@@ -41,7 +41,7 @@ export async function DELETE(req: Request) {
     }
 
     if (paths.length > 0) {
-      const { error } = await supabase.storage.from('product-images').remove(paths);
+      const { error } = await supabase.storage.from('listing-images').remove(paths);
       if (error) {
         console.warn('Storage deletion warning:', error.message);
         // Don't fail — the photo may already be deleted

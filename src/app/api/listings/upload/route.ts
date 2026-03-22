@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     const thumbPath = `listings/${listingId}/thumbs/${uuid}.webp`;
 
     const { error: fullError } = await supabase.storage
-      .from('product-images')
+      .from('listing-images')
       .upload(fullPath, fullImage, { contentType: 'image/webp', upsert: false });
 
     if (fullError) {
@@ -70,21 +70,21 @@ export async function POST(req: Request) {
     }
 
     const { error: thumbError } = await supabase.storage
-      .from('product-images')
+      .from('listing-images')
       .upload(thumbPath, thumbnail, { contentType: 'image/webp', upsert: false });
 
     if (thumbError) {
-      await supabase.storage.from('product-images').remove([fullPath]);
+      await supabase.storage.from('listing-images').remove([fullPath]);
       return NextResponse.json({ error: thumbError.message }, { status: 500 });
     }
 
     const {
       data: { publicUrl: url },
-    } = supabase.storage.from('product-images').getPublicUrl(fullPath);
+    } = supabase.storage.from('listing-images').getPublicUrl(fullPath);
 
     const {
       data: { publicUrl: thumbnailUrl },
-    } = supabase.storage.from('product-images').getPublicUrl(thumbPath);
+    } = supabase.storage.from('listing-images').getPublicUrl(thumbPath);
 
     return NextResponse.json({ url, thumbnailUrl });
   } catch (error) {

@@ -64,13 +64,13 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
       if (listingPhotos && listingPhotos.length > 0) {
         const imagePaths = listingPhotos
           .flatMap((photo) => [
-            parseStoragePath('product-images', photo.image_url),
-            photo.thumbnail_url ? parseStoragePath('product-images', photo.thumbnail_url) : null,
+            parseStoragePath('listing-images', photo.image_url),
+            photo.thumbnail_url ? parseStoragePath('listing-images', photo.thumbnail_url) : null,
           ])
           .filter((path): path is string => path !== null);
 
         if (imagePaths.length > 0) {
-          await admin.storage.from('product-images').remove(imagePaths);
+          await admin.storage.from('listing-images').remove(imagePaths);
         }
       }
     }

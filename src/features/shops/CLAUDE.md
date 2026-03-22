@@ -92,7 +92,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Performs best-effort storage cleanup before soft delete:
   - Removes shop avatar at `avatars/shop-{shopId}.webp`
   - Parses `hero_banner_url` (if non-null) and removes from `avatars` bucket
-  - Queries shop-owned products → `product_images`, removes files from `product-images` bucket
+  - Queries shop-owned products → `product_images`, removes files from `listing-images` bucket
 - Storage cleanup failures are caught and logged but do not block the soft delete
 - Soft-deletes the shop row (`deleted_at = now()`) using the admin client
 - Uses `parseStoragePath` helper to extract storage paths from Supabase public URLs

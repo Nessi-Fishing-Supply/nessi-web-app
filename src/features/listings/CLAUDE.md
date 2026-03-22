@@ -80,7 +80,7 @@ All listing API routes live in `src/app/api/listings/`:
 - Processes with `sharp`:
   - Full image: resizes to max 1200x1200 (`fit: 'inside'`, `withoutEnlargement: true`), WebP 85%
   - Thumbnail: resizes to max 400x400 (`fit: 'inside'`, `withoutEnlargement: true`), WebP 80%
-- Stores both at `{user_id}/{listing_id}/{timestamp}.webp` and `{user_id}/{listing_id}/{timestamp}_thumb.webp` in the `listing-photos` bucket
+- Stores both at `{user_id}/{listing_id}/{timestamp}.webp` and `{user_id}/{listing_id}/{timestamp}_thumb.webp` in the `listing-images` bucket
 - Inserts a `listing_photos` row with `image_url`, `thumbnail_url`, and `position` (count of existing photos)
 - Returns `{ photo: ListingPhoto }`
 
@@ -168,7 +168,7 @@ All listing API routes live in `src/app/api/listings/`:
 - **Photo ordering** — `listing_photos.position` is 0-based. The photo at position 0 is the cover photo, whose URL is denormalized to `listings.cover_photo_url` for fast list queries.
 - **Draft-first flow** — Listings begin as `status: 'draft'` during the create wizard. The listing row is created before photos are uploaded so `listing_id` is available as the storage path segment. Status transitions to `'active'` on final publish.
 - **Context-aware seller identity** — `seller_id` is always `auth.users.id`. `member_id` or `shop_id` is set based on the active context from the Zustand context store (`@/features/context/`), determining which identity the listing is attributed to.
-- **Image pipeline** — Upload validates → Sharp resizes full + thumbnail → WebP → stored in `listing-photos` bucket → rendered via `next/image` with `fill` + `sizes`.
+- **Image pipeline** — Upload validates → Sharp resizes full + thumbnail → WebP → stored in `listing-images` bucket → rendered via `next/image` with `fill` + `sizes`.
 
 ## Related Features
 

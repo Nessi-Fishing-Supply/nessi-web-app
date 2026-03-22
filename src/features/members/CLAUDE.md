@@ -129,5 +129,5 @@ The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hol
 - **System-managed fields** — `MemberUpdateInput` omits 11 fields (id, timestamps, Stripe fields, reputation stats, activity stats) that are managed by database triggers or admin operations.
 - **Onboarding integration** — The `checkOnboardingComplete()` function in `src/features/auth/services/onboarding.ts` queries this feature's members table for `onboarding_completed_at`.
 - **Slug generation** — Member URLs use slugs (e.g., `/user/john-doe-4829`). The auto-create trigger generates slugs on signup; `generateSlug` is available for client-side preview.
-- **Avatar storage** — Avatars are stored in the `avatars` bucket (not `product-images`), one file per user (`{userId}.webp`), upserted on each upload.
+- **Avatar storage** — Avatars are stored in the `avatars` bucket (not `listing-images`), one file per user (`{userId}.webp`), upserted on each upload.
 - **No display_name** — Members are identified by `first_name + last_name`. The `display_name` column was removed. Custom display names are a shop-only feature.

@@ -45,10 +45,10 @@ Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Ro
 
 Two Supabase Storage buckets (both public):
 
-| Bucket           | Path Pattern                 | API Route                              | Purpose                                     |
-| ---------------- | ---------------------------- | -------------------------------------- | ------------------------------------------- |
-| `product-images` | `{user_id}/{timestamp}.webp` | `src/app/api/products/upload/route.ts` | Product listing photos (max 1200x1200 WebP) |
-| `avatars`        | `{user_id}.webp`             | `src/app/api/members/avatar/route.ts`  | User avatar (200x200 WebP via Sharp)        |
+| Bucket           | Path Pattern                                    | API Route                               | Purpose                                      |
+| ---------------- | ----------------------------------------------- | --------------------------------------- | -------------------------------------------- |
+| `listing-images` | `listings/{listing_id}/{uuid}.webp`             | `src/app/api/listings/upload/route.ts`  | Listing photos (max 1200x1200 WebP)          |
+| `avatars`        | `{user_id}.webp`                                | `src/app/api/members/avatar/route.ts`   | User avatar (200x200 WebP via Sharp)         |
 
 RLS policies enforce per-user access on both buckets. 5MB limit, JPEG/PNG/WebP/GIF only.
 
@@ -90,9 +90,9 @@ DELETE /api/auth/delete-account
   → Shop ownership check (409 if member owns active shops — must transfer or delete shops first)
   → Storage cleanup:
     → Deletes avatar from `avatars` bucket
-    → Deletes product images from `product-images` bucket
-    → Deletes shop avatars and hero banners from `shop-assets` bucket
-    → Deletes shop product images from `product-images` bucket
+    → Deletes listing photos from `listing-images` bucket
+    → Deletes shop avatars and hero banners from `avatars` bucket
+    → Deletes shop listing photos from `listing-images` bucket
   → Slug cleanup: deletes member's slug from `slugs` table
   → auth.admin.deleteUser()
     → members row CASCADE (FK: members_id_fkey ON DELETE CASCADE)

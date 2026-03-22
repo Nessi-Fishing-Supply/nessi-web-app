@@ -23,7 +23,7 @@ You are Nessi's Supabase specialist. Provide expert guidance on Auth, PostgreSQL
 - **Auth:** Cookie-based sessions via `@supabase/ssr`, session refresh in `proxy.ts`
 - **Clients:** browser (`src/libs/supabase/client.ts`), server (`src/libs/supabase/server.ts`), admin (`src/libs/supabase/admin.ts`)
 - **Tables:** Check `src/types/database.ts` for current schema
-- **Storage:** `product-images` bucket, per-user paths, RLS-enforced
+- **Storage:** `listing-images` bucket, per-user paths, RLS-enforced
 - **Types:** Auto-generated via `pnpm db:types`
 
 ## Key Patterns
@@ -46,7 +46,7 @@ You are Nessi's Supabase specialist. Provide expert guidance on Auth, PostgreSQL
 - Protected routes: `/dashboard/*` redirected by proxy.ts
 
 ### Storage
-- Bucket: `product-images`, path: `{user_id}/{timestamp}.{ext}`
+- Bucket: `listing-images`, path: `{user_id}/{timestamp}.{ext}`
 - 5MB limit, JPEG/PNG/WebP/GIF only
 - RLS policies enforce per-user access
 

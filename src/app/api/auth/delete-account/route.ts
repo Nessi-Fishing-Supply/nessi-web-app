@@ -18,8 +18,8 @@ async function cleanupUserStorage(admin: ReturnType<typeof createAdminClient>, u
   // Delete avatar
   await admin.storage.from('avatars').remove([`${userId}.webp`]);
 
-  // Delete all listing photos (stored under listings/ folder in product-images bucket)
-  const { data: listingPhotos } = await admin.storage.from('product-images').list(userId);
+  // Delete all listing photos (stored under listings/ folder in listing-images bucket)
+  const { data: listingPhotos } = await admin.storage.from('listing-images').list(userId);
   if (listingPhotos && listingPhotos.length > 0) {
     // Listing photos are nested: {user_id}/{listing_id}/{file}.webp
     // We need to list subdirectories and remove recursively
@@ -27,15 +27,15 @@ async function cleanupUserStorage(admin: ReturnType<typeof createAdminClient>, u
       if (item.id === null) {
         // It's a folder (listing_id) — list its contents
         const { data: photos } = await admin.storage
-          .from('product-images')
+          .from('listing-images')
           .list(`${userId}/${item.name}`);
         if (photos && photos.length > 0) {
           const paths = photos.map((f) => `${userId}/${item.name}/${f.name}`);
-          await admin.storage.from('product-images').remove(paths);
+          await admin.storage.from('listing-images').remove(paths);
         }
       } else {
         // It's a file directly under {user_id}/
-        await admin.storage.from('product-images').remove([`${userId}/${item.name}`]);
+        await admin.storage.from('listing-images').remove([`${userId}/${item.name}`]);
       }
     }
   }
@@ -76,15 +76,15 @@ async function cleanupUserStorage(admin: ReturnType<typeof createAdminClient>, u
           if (shopPhotos && shopPhotos.length > 0) {
             const imagePaths = shopPhotos
               .flatMap((photo) => [
-                parseStoragePath('product-images', photo.image_url),
+                parseStoragePath('listing-images', photo.image_url),
                 photo.thumbnail_url
-                  ? parseStoragePath('product-images', photo.thumbnail_url)
+                  ? parseStoragePath('listing-images', photo.thumbnail_url)
                   : null,
               ])
               .filter((path): path is string => path !== null);
 
             if (imagePaths.length > 0) {
-              await admin.storage.from('product-images').remove(imagePaths);
+              await admin.storage.from('listing-images').remove(imagePaths);
             }
           }
         }
