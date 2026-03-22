@@ -1,0 +1,217 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.heading {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-gray-800);
+  margin-bottom: var(--space-xs);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+// Price input
+
+.priceInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &.inputError {
+    border-color: var(--color-error);
+
+    &:focus-within {
+      outline-color: var(--color-error);
+    }
+  }
+}
+
+.currencyPrefix {
+  padding: var(--space-sm) var(--space-xs) var(--space-sm) var(--space-base);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-gray-500);
+  line-height: 1;
+  user-select: none;
+}
+
+.priceInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: var(--space-sm) var(--space-base) var(--space-sm) var(--space-2xs);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-gray-900);
+  background: transparent;
+  min-width: 0;
+  line-height: 1;
+
+  &::placeholder {
+    color: var(--color-gray-300);
+  }
+}
+
+.errorText {
+  margin-top: var(--space-2xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+// Fee calculator card
+
+.feeCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-base);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-100);
+}
+
+.feeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feeRowNet {
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.feeLabel {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-600);
+}
+
+.feeValue {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-gray-800);
+}
+
+.feeValueNet {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.feeComparison {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding-top: var(--space-xs);
+  margin-top: var(--space-2xs);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.feeComparisonLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: 100%;
+}
+
+.feeComparisonItem {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+}
+
+.feeComparisonDot {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-300);
+}
+
+// Shipping toggle
+
+.shippingToggle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+  }
+}
+
+.shippingOption {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+  padding: var(--space-base);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+  min-height: 44px;
+
+  &:hover {
+    border-color: var(--color-primary--light);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &.shippingOptionSelected {
+    border-color: var(--color-primary);
+    background-color: var(--color-light);
+  }
+}
+
+.shippingOptionTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+.shippingOptionDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
