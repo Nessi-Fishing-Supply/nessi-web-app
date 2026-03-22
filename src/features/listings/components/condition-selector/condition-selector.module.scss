@@ -80,7 +80,9 @@
   border: 2px solid var(--color-gray-300);
   background-color: var(--color-white);
   margin-top: 2px;
-  transition: border-color var(--transition-color), background-color var(--transition-color);
+  transition:
+    border-color var(--transition-color),
+    background-color var(--transition-color);
 }
 
 // Text content wrapper

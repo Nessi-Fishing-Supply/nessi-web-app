@@ -75,7 +75,9 @@ export default function ConditionSelector({ value, onChange, category }: Conditi
             />
           </button>
 
-          <div className={`${styles.accordionBody}${accordionOpen ? ` ${styles.accordionBodyOpen}` : ''}`}>
+          <div
+            className={`${styles.accordionBody}${accordionOpen ? ` ${styles.accordionBodyOpen}` : ''}`}
+          >
             <div className={styles.accordionInner}>
               <p className={styles.accordionContent}>{guidanceText}</p>
             </div>

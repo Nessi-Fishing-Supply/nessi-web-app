@@ -32,7 +32,8 @@ export const CONDITION_TIERS: ConditionTier[] = [
     value: 'like_new',
     label: 'Like New',
     shortLabel: 'Like New',
-    description: 'Used once or twice with no visible wear. Looks and performs like it just came out of the box.',
+    description:
+      'Used once or twice with no visible wear. Looks and performs like it just came out of the box.',
     color: '#456b7a',
     textColor: '#ffffff',
   },
@@ -48,7 +49,8 @@ export const CONDITION_TIERS: ConditionTier[] = [
     value: 'fair',
     label: 'Fair',
     shortLabel: 'Fair',
-    description: 'Noticeable wear and cosmetic imperfections. Works but may need minor maintenance.',
+    description:
+      'Noticeable wear and cosmetic imperfections. Works but may need minor maintenance.',
     color: '#b35900',
     textColor: '#ffffff',
   },
@@ -56,7 +58,8 @@ export const CONDITION_TIERS: ConditionTier[] = [
     value: 'poor',
     label: 'Poor / For Parts',
     shortLabel: 'Parts',
-    description: 'Heavy wear, damage, or missing parts. Best suited for parts, repair, or a project.',
+    description:
+      'Heavy wear, damage, or missing parts. Best suited for parts, repair, or a project.',
     color: '#c0392b',
     textColor: '#ffffff',
   },
