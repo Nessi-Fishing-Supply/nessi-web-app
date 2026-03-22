@@ -91,8 +91,15 @@ export const deleteDraft = async (id: string): Promise<{ success: boolean }> => 
   return res.json();
 };
 
-export const updateListingStatus = async (id: string, status: string): Promise<ListingWithPhotos> =>
-  patch<ListingWithPhotos>(`${BASE_URL}/${id}/status`, { status });
+export const updateListingStatus = async (
+  id: string,
+  status: string,
+  sold_price_cents?: number,
+): Promise<ListingWithPhotos> =>
+  patch<ListingWithPhotos>(`${BASE_URL}/${id}/status`, {
+    status,
+    ...(sold_price_cents !== undefined ? { sold_price_cents } : {}),
+  });
 
 export const incrementViewCount = async (id: string): Promise<{ success: boolean }> =>
   post<{ success: boolean }>(`${BASE_URL}/${id}/view`);

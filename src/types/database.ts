@@ -124,10 +124,12 @@ export type Database = {
             | null
           shipping_price_cents: number | null
           shop_id: string | null
+          sold_at: string | null
           status: Database["public"]["Enums"]["listing_status"]
           title: string
           updated_at: string
           view_count: number
+          watcher_count: number
           weight_oz: number | null
         }
         Insert: {
@@ -156,10 +158,12 @@ export type Database = {
             | null
           shipping_price_cents?: number | null
           shop_id?: string | null
+          sold_at?: string | null
           status?: Database["public"]["Enums"]["listing_status"]
           title: string
           updated_at?: string
           view_count?: number
+          watcher_count?: number
           weight_oz?: number | null
         }
         Update: {
@@ -188,10 +192,12 @@ export type Database = {
             | null
           shipping_price_cents?: number | null
           shop_id?: string | null
+          sold_at?: string | null
           status?: Database["public"]["Enums"]["listing_status"]
           title?: string
           updated_at?: string
           view_count?: number
+          watcher_count?: number
           weight_oz?: number | null
         }
         Relationships: [

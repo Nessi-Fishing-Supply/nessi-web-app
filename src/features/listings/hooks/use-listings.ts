@@ -14,6 +14,7 @@ import {
   incrementViewCount,
 } from '@/features/listings/services/listing';
 import type { ListingFilters } from '@/features/listings/services/listing';
+import type { ListingWithPhotos } from '@/features/listings/types/listing';
 
 export function useListings(filters: ListingFilters = {}) {
   return useQuery({
@@ -72,7 +73,25 @@ export function useUpdateListing() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
       updateListing(id, data),
-    onSuccess: () => {
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ['listings'] });
+      const previousSeller = queryClient.getQueriesData<ListingWithPhotos[]>({
+        queryKey: ['listings', 'seller'],
+      });
+      queryClient.setQueriesData<ListingWithPhotos[]>(
+        { queryKey: ['listings', 'seller'] },
+        (old) => old?.map((l) => (l.id === id ? { ...l, ...data } : l)),
+      );
+      return { previousSeller };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousSeller) {
+        for (const [key, data] of context.previousSeller) {
+          queryClient.setQueryData(key, data);
+        }
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['listings'] });
     },
   });
@@ -82,7 +101,25 @@ export function useDeleteListing() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteListing(id),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['listings'] });
+      const previousSeller = queryClient.getQueriesData<ListingWithPhotos[]>({
+        queryKey: ['listings', 'seller'],
+      });
+      queryClient.setQueriesData<ListingWithPhotos[]>(
+        { queryKey: ['listings', 'seller'] },
+        (old) => old?.filter((l) => l.id !== id),
+      );
+      return { previousSeller };
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previousSeller) {
+        for (const [key, data] of context.previousSeller) {
+          queryClient.setQueryData(key, data);
+        }
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['listings'] });
     },
   });
@@ -101,8 +138,46 @@ export function useDeleteDraft() {
 export function useUpdateListingStatus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) => updateListingStatus(id, status),
-    onSuccess: () => {
+    mutationFn: ({
+      id,
+      status,
+      sold_price_cents,
+    }: {
+      id: string;
+      status: string;
+      sold_price_cents?: number;
+    }) => updateListingStatus(id, status, sold_price_cents),
+    onMutate: async ({ id, status }) => {
+      await queryClient.cancelQueries({ queryKey: ['listings'] });
+      const previousSeller = queryClient.getQueriesData<ListingWithPhotos[]>({
+        queryKey: ['listings', 'seller'],
+      });
+      queryClient.setQueriesData<ListingWithPhotos[]>(
+        { queryKey: ['listings', 'seller'] },
+        (old) =>
+          old?.map((l) =>
+            l.id === id
+              ? {
+                  ...l,
+                  status: status as ListingWithPhotos['status'],
+                  ...(status === 'sold' ? { sold_at: new Date().toISOString() } : {}),
+                  ...(status === 'deleted'
+                    ? { deleted_at: new Date().toISOString() }
+                    : {}),
+                }
+              : l,
+          ),
+      );
+      return { previousSeller };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousSeller) {
+        for (const [key, data] of context.previousSeller) {
+          queryClient.setQueryData(key, data);
+        }
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['listings'] });
     },
   });
