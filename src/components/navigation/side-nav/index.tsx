@@ -39,7 +39,7 @@ const SideNav = () => {
               </AppLink>
             </li>
             <li>
-              <AppLink href="/dashboard/products" icon={<HiOutlineShoppingBag />}>
+              <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
                 Listings
               </AppLink>
             </li>
@@ -52,7 +52,7 @@ const SideNav = () => {
               </AppLink>
             </li>
             <li>
-              <AppLink href="/dashboard/products" icon={<HiOutlineShoppingBag />}>
+              <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
                 Listings
               </AppLink>
             </li>

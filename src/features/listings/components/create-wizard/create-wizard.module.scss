@@ -1,0 +1,201 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+// Full-screen wizard layout — mobile-first, stacks vertically
+.wizard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background-color: var(--color-cream);
+}
+
+// Header: back link | progress | save draft
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-base);
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-100);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  @include breakpoint(md) {
+    padding: var(--space-sm) var(--space-lg);
+  }
+}
+
+// Text-link style button — Back
+.backLink {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: var(--space-2xs) 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  text-align: left;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+// Invisible spacer so progress stays centered when Back is hidden
+.backPlaceholder {
+  flex-shrink: 0;
+  min-width: 44px;
+}
+
+// Text-link style button — Save draft and exit
+.saveDraftLink {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: var(--space-2xs) 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  text-align: right;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+// Step content area — fills available space, padded above fixed footer
+.stepContainer {
+  flex: 1;
+  padding: var(--space-md) var(--space-base);
+
+  // Reserve space for fixed footer (48px button + padding)
+  padding-bottom: calc(48px + var(--space-lg) + var(--space-md));
+  overflow-y: auto;
+
+  @include breakpoint(md) {
+    padding: var(--space-lg) var(--space-lg);
+    padding-bottom: calc(48px + var(--space-xl));
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+// The form wrapping each step — handles slide transitions
+.stepForm {
+  width: 100%;
+  will-change: transform, opacity;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+// Forward slide — new step enters from right
+.slideLeft {
+  animation: slide-in-from-right 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+// Backward slide — new step enters from left
+.slideRight {
+  animation: slide-in-from-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Sticky footer — fixed bottom on mobile
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-sm) var(--space-base);
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-gray-100);
+  z-index: 10;
+
+  // Button is 48px tall — enforced via Button's internal styles
+  // Full-width is passed as prop; this ensures the container fills width
+  > * {
+    width: 100%;
+  }
+
+  @include breakpoint(md) {
+    position: static;
+    padding: var(--space-sm) var(--space-lg);
+    max-width: 680px;
+    margin: 0 auto var(--space-md);
+    border-top: none;
+    border-radius: var(--radius-md);
+
+    > * {
+      width: auto;
+    }
+  }
+}
+
+// Review step footer — two stacked buttons
+.reviewActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+
+  @include breakpoint(md) {
+    flex-direction: row-reverse;
+    gap: var(--space-sm);
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideLeft,
+  .slideRight {
+    animation: none;
+  }
+}

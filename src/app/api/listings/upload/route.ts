@@ -33,6 +33,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No listing ID provided' }, { status: 400 });
     }
 
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('seller_id')
+      .eq('id', listingId)
+      .single();
+
+    if (!listing || listing.seller_id !== user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: 'Invalid file type. Accepted: JPEG, PNG, WebP, HEIC' },
@@ -58,15 +68,16 @@ export async function POST(req: Request) {
       .toBuffer();
 
     const uuid = crypto.randomUUID();
-    const fullPath = `listings/${listingId}/${uuid}.webp`;
-    const thumbPath = `listings/${listingId}/thumbs/${uuid}.webp`;
+    const fullPath = `${user.id}/${listingId}/${uuid}.webp`;
+    const thumbPath = `${user.id}/${listingId}/thumbs/${uuid}.webp`;
 
     const { error: fullError } = await supabase.storage
       .from('listing-images')
       .upload(fullPath, fullImage, { contentType: 'image/webp', upsert: false });
 
     if (fullError) {
-      return NextResponse.json({ error: fullError.message }, { status: 500 });
+      console.error('Storage upload error (full):', fullError.message);
+      return NextResponse.json({ error: `Storage: ${fullError.message}` }, { status: 500 });
     }
 
     const { error: thumbError } = await supabase.storage
@@ -74,8 +85,9 @@ export async function POST(req: Request) {
       .upload(thumbPath, thumbnail, { contentType: 'image/webp', upsert: false });
 
     if (thumbError) {
+      console.error('Storage upload error (thumb):', thumbError.message);
       await supabase.storage.from('listing-images').remove([fullPath]);
-      return NextResponse.json({ error: thumbError.message }, { status: 500 });
+      return NextResponse.json({ error: `Storage thumb: ${thumbError.message}` }, { status: 500 });
     }
 
     const {
@@ -86,9 +98,44 @@ export async function POST(req: Request) {
       data: { publicUrl: thumbnailUrl },
     } = supabase.storage.from('listing-images').getPublicUrl(thumbPath);
 
-    return NextResponse.json({ url, thumbnailUrl });
+    // Count existing photos to determine position
+    const { count } = await supabase
+      .from('listing_photos')
+      .select('*', { count: 'exact', head: true })
+      .eq('listing_id', listingId);
+
+    const position = count ?? 0;
+
+    // Insert listing_photos row
+    const { data: photo, error: photoError } = await supabase
+      .from('listing_photos')
+      .insert({
+        listing_id: listingId,
+        image_url: url,
+        thumbnail_url: thumbnailUrl,
+        position,
+      })
+      .select()
+      .single();
+
+    if (photoError) {
+      // Cleanup storage on DB insert failure
+      await supabase.storage.from('listing-images').remove([fullPath, thumbPath]);
+      return NextResponse.json({ error: photoError.message }, { status: 500 });
+    }
+
+    // Update cover_photo_url if this is the first photo
+    if (position === 0) {
+      await supabase.from('listings').update({ cover_photo_url: thumbnailUrl }).eq('id', listingId);
+    }
+
+    return NextResponse.json({ photo, url, thumbnailUrl });
   } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+    console.error('Upload error:', error instanceof Error ? error.message : error);
+    console.error('Upload stack:', error instanceof Error ? error.stack : 'no stack');
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Upload failed' },
+      { status: 500 },
+    );
   }
 }

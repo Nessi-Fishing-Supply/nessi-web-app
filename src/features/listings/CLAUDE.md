@@ -79,7 +79,7 @@ All listing API routes live in `src/app/api/listings/`:
 - Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
 - Processes with `sharp`:
   - Full image: resizes to max 1200x1200 (`fit: 'inside'`, `withoutEnlargement: true`), WebP 85%
-  - Thumbnail: resizes to max 400x400 (`fit: 'inside'`, `withoutEnlargement: true`), WebP 80%
+  - Thumbnail: resizes to 400x400 (`fit: 'cover'` for square crop), WebP 70%
 - Stores both at `{user_id}/{listing_id}/{timestamp}.webp` and `{user_id}/{listing_id}/{timestamp}_thumb.webp` in the `listing-images` bucket
 - Inserts a `listing_photos` row with `image_url`, `thumbnail_url`, and `position` (count of existing photos)
 - Returns `{ photo: ListingPhoto }`
@@ -142,21 +142,45 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Components
 
-| Component           | Location                         | Purpose                                                                                                 |
-| ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `PhotoManager`      | `components/photo-manager/`      | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                    |
-| `ConditionBadge`    | `components/condition-badge/`    | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                      |
-| `ConditionSelector` | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance. |
-| `ConditionFilter`   | `components/condition-filter/`   | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.               |
+| Component           | Location                         | Purpose                                                                                                      |
+| ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `PhotoManager`      | `components/photo-manager/`      | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                         |
+| `ConditionBadge`    | `components/condition-badge/`    | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                           |
+| `ConditionSelector` | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance.      |
+| `ConditionFilter`   | `components/condition-filter/`   | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.                    |
+| `CategorySelector`  | `components/category-selector/`  | Tile grid for selecting listing category. Props: `value`, `onChange`. `role="radiogroup"` with keyboard nav. |
+| `CreateWizard`      | `components/create-wizard/`      | 5-step listing creation wizard with auto-save, draft resume, and publish/save-draft actions. See below.      |
+| `WizardProgress`    | `components/create-wizard/`      | Horizontal step progress indicator. Props: `currentStep`, `totalSteps`, `shippingSkipped`.                   |
 
-## Pages (planned)
+## Create Wizard
 
-| Route                           | Description                                                               |
-| ------------------------------- | ------------------------------------------------------------------------- |
-| `/dashboard/listings/create`    | Multi-step create wizard (ticket #5): photos → details → pricing → review |
-| `/dashboard/listings/[id]/edit` | Edit wizard for existing listings (ticket #7)                             |
-| `/dashboard/listings`           | Listing management dashboard (seller's active/draft/archived listings)    |
-| `/listing/[id]`                 | Public listing detail page — server-rendered with SEO metadata            |
+The listing creation wizard at `/dashboard/listings/new` is a 5-step flow plus review screen:
+
+1. **Photos** — PhotoManager integration; creates a draft on first upload; min 2 photos
+2. **Category & Condition** — CategorySelector tile grid + ConditionSelector radio list
+3. **Details** — Title (10-80 chars), description (20-2000 chars); live char counters
+4. **Pricing** — Dollar-to-cents input with fee calculator (200ms debounce); shipping preference toggle
+5. **Shipping** — Weight (lbs+oz), dimensions (LxWxH), payer choice; skipped when "Local pickup only"
+6. **Review** — Listing preview card + details summary; "Publish" (→ active, redirect to `/listing/[id]`) or "Save Draft" (→ `/dashboard/listings`)
+
+### Wizard Architecture
+
+- **State:** Zustand store (`stores/create-wizard-store.ts`) with `persist` middleware (localStorage key: `nessi-create-wizard`) and `createSelectors` wrapper
+- **Validation:** Per-step Yup schemas (`validations/listing.ts`) with `STEP_SCHEMAS` array
+- **Draft save:** Explicit "Save draft and exit" button persists wizard state to the API via `useUpdateListing`; Zustand `persist` middleware retains state in localStorage across page refreshes
+- **Draft resume:** Server component loads draft by `?draftId=` query param, wizard hydrates store and advances to first incomplete step
+- **Step transitions:** CSS `transform: translateX()` slide animation with direction tracking
+- **Browser back:** `pushState`/`popstate` integration for wizard step navigation
+- **Accessibility:** `aria-live` step announcements, focus management on step change, ARIA radiogroup for category selector, fieldset/legend grouping
+
+## Pages
+
+| Route                           | Description                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `/dashboard/listings/new`       | Multi-step create wizard (ticket #24): photos → category → details → pricing → shipping → review |
+| `/dashboard/listings/[id]/edit` | Edit wizard for existing listings (ticket #7)                                                    |
+| `/dashboard/listings`           | Listing management dashboard (seller's active/draft/archived listings)                           |
+| `/listing/[id]`                 | Public listing detail page — server-rendered with SEO metadata                                   |
 
 ## Key Patterns
 

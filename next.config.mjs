@@ -8,6 +8,10 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   reactStrictMode: true,
 
+  experimental: {
+    proxyClientMaxBodySize: '25mb',
+  },
+
   sassOptions: {
     sourceMap: true,
     includePaths: [path.join(__dirname, 'src/styles')],

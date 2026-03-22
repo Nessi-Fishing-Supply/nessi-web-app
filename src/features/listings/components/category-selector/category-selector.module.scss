@@ -1,0 +1,81 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.fieldset {
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm);
+  min-height: 80px;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-color),
+    background-color var(--transition-color);
+
+  &:hover {
+    border-color: var(--color-gray-400);
+    background-color: var(--color-gray-50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.tileSelected {
+  border-color: var(--color-primary);
+  border-width: 2px;
+  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+}
+
+.icon {
+  font-size: var(--font-size-xl);
+  color: var(--color-gray-700);
+
+  .tileSelected & {
+    color: var(--color-primary);
+  }
+}
+
+.label {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-gray-700);
+  text-align: center;
+  line-height: 1.2;
+
+  .tileSelected & {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}

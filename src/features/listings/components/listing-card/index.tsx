@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useState } from 'react';
 import styles from './listing-card.module.scss';
 import { useRouter } from 'next/navigation';
 import ConditionBadge from '@/features/listings/components/condition-badge';
@@ -21,44 +21,22 @@ interface ListingCardProps {
 
 export default function ListingCard({ listing }: ListingCardProps) {
   const router = useRouter();
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push(`/item/${listing.id}`);
+    router.push(`/listing/${listing.id}`);
   };
-
-  const handleMouseEnter = (e: React.MouseEvent) => {
-    const swiper = e.currentTarget.querySelector('.swiper__listing-card');
-    swiper?.classList.add('swiper-hovered');
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent) => {
-    const swiper = e.currentTarget.querySelector('.swiper__listing-card');
-    swiper?.classList.remove('swiper-hovered');
-  };
-
-  useEffect(() => {
-    const stop = (e: Event) => e.stopPropagation();
-    const buttons = document.querySelectorAll('.swiper-button-prev, .swiper-button-next');
-    const bullets = document.querySelectorAll('.swiper-pagination-bullet');
-
-    buttons.forEach((btn) => btn.addEventListener('click', stop));
-    bullets.forEach((bullet) => bullet.addEventListener('click', stop));
-
-    return () => {
-      buttons.forEach((btn) => btn.removeEventListener('click', stop));
-      bullets.forEach((bullet) => bullet.removeEventListener('click', stop));
-    };
-  }, []);
 
   const photos = listing.listing_photos ?? [];
 
   return (
     <a
+      href={`/listing/${listing.id}`}
       className={styles.card}
       onClick={handleViewDetails}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className={styles.carousel}>
         <span className={styles.conditionBadge}>
@@ -66,10 +44,11 @@ export default function ListingCard({ listing }: ListingCardProps) {
         </span>
         <Favorite className={styles.favorite} />
         <Swiper
-          className="swiper__listing-card"
+          className={`swiper__listing-card${isHovered ? ' swiper-hovered' : ''}`}
           modules={[Navigation, Pagination]}
           navigation
           pagination={{ clickable: true }}
+          onClick={(_, e) => e?.stopPropagation()}
         >
           {photos.map((photo, index) =>
             photo.thumbnail_url || photo.image_url ? (

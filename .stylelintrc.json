@@ -5,6 +5,7 @@
     "scss/no-global-function-names": null,
     "custom-property-pattern": null,
     "scss/at-extend-no-missing-placeholder": null,
-    "no-empty-source": null
+    "no-empty-source": null,
+    "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": [":global", ":local"] }]
   }
 }

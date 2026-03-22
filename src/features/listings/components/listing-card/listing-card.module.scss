@@ -24,6 +24,14 @@
   border-radius: var(--radius-md);
   overflow: hidden;
 
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global(.swiper),
+  :global(.swiper-wrapper),
+  :global(.swiper-slide) {
+    height: 100%;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+
   .conditionBadge {
     position: absolute;
     top: var(--space-xs);

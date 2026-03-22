@@ -27,6 +27,8 @@ const Textarea: React.FC<TextareaProps> = ({
   }
   const { control } = formContext;
 
+  const errorId = `${name}-error`;
+
   return (
     <Controller
       name={name}
@@ -36,7 +38,12 @@ const Textarea: React.FC<TextareaProps> = ({
           {label && (
             <label htmlFor={name}>
               {label}
-              {isRequired && <span>*</span>}
+              {isRequired && (
+                <>
+                  <span aria-hidden="true">*</span>
+                  <span className="sr-only"> (required)</span>
+                </>
+              )}
             </label>
           )}
           <textarea
@@ -45,13 +52,20 @@ const Textarea: React.FC<TextareaProps> = ({
             value={value}
             placeholder={placeholder}
             className="textarea"
+            aria-required={isRequired}
+            aria-invalid={error ? 'true' : 'false'}
+            aria-describedby={error ? errorId : undefined}
             onChange={(e) => {
               field.onChange(e);
               if (onChange) onChange(e);
             }}
           />
           {helperText && !error && <small className="helperText">{helperText}</small>}
-          {error && <small className="errorText">{error.message}</small>}
+          {error && (
+            <small id={errorId} className="errorText" role="alert">
+              {error.message}
+            </small>
+          )}
         </div>
       )}
     />

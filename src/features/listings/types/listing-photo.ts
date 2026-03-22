@@ -13,6 +13,7 @@ export type ListingPhotoUpdate = Omit<
 >;
 
 export type UploadResult = {
+  photo: ListingPhoto;
   url: string;
   thumbnailUrl: string;
 };

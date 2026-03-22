@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -86,6 +86,17 @@ export default function PhotoManager({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const isTouchDevice = typeof window !== 'undefined' && 'ontouchstart' in window;
 
+  // Keep a ref to current photos so async callbacks don't use stale closures
+  const photosRef = useRef(photos);
+  useEffect(() => {
+    photosRef.current = photos;
+  }, [photos]);
+
+  const onPhotosChangeRef = useRef(onPhotosChange);
+  useEffect(() => {
+    onPhotosChangeRef.current = onPhotosChange;
+  }, [onPhotosChange]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -96,7 +107,6 @@ export default function PhotoManager({
 
   const processFiles = useCallback(
     async (files: File[]) => {
-      // Validate each file before anything else
       const validFiles: File[] = [];
       for (const file of files) {
         if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -118,7 +128,8 @@ export default function PhotoManager({
         validFiles.push(file);
       }
 
-      const available = maxPhotos - photos.length;
+      const currentPhotos = photosRef.current;
+      const available = maxPhotos - currentPhotos.length;
       if (available <= 0) return;
 
       if (validFiles.length > available) {
@@ -132,13 +143,13 @@ export default function PhotoManager({
       const filesToProcess = validFiles.slice(0, available);
       if (filesToProcess.length === 0) return;
 
-      // Process in batches of MAX_CONCURRENT_UPLOADS
       for (let batch = 0; batch < filesToProcess.length; batch += MAX_CONCURRENT_UPLOADS) {
         const batchFiles = filesToProcess.slice(batch, batch + MAX_CONCURRENT_UPLOADS);
 
         await Promise.all(
           batchFiles.map(async (file, batchIndex) => {
-            const photoIndex = photos.length + batch + batchIndex;
+            const latest = photosRef.current;
+            const photoIndex = latest.length + batchIndex;
             const tempId = crypto.randomUUID();
             const objectUrl = URL.createObjectURL(file);
 
@@ -151,7 +162,7 @@ export default function PhotoManager({
               created_at: new Date().toISOString(),
             };
 
-            onPhotosChange([...photos, tempPhoto]);
+            onPhotosChangeRef.current([...photosRef.current, tempPhoto]);
 
             setUploadingFiles((prev) => {
               const next = new Map(prev);
@@ -162,16 +173,8 @@ export default function PhotoManager({
             try {
               const result = await uploadListingPhoto(file, listingId);
               URL.revokeObjectURL(objectUrl);
-              onPhotosChange(
-                photos.map((p) =>
-                  p.id === tempId
-                    ? {
-                        ...p,
-                        image_url: result.url,
-                        thumbnail_url: result.thumbnailUrl,
-                      }
-                    : p,
-                ),
+              onPhotosChangeRef.current(
+                photosRef.current.map((p) => (p.id === tempId ? result.photo : p)),
               );
               setUploadingFiles((prev) => {
                 const next = new Map(prev);
@@ -189,7 +192,7 @@ export default function PhotoManager({
         );
       }
     },
-    [listingId, maxPhotos, onPhotosChange, photos, showToast],
+    [listingId, maxPhotos, showToast],
   );
 
   const handleRetry = useCallback(
@@ -206,16 +209,8 @@ export default function PhotoManager({
 
       uploadListingPhoto(entry.file, listingId)
         .then((result) => {
-          onPhotosChange(
-            photos.map((p) =>
-              p.id === tempId
-                ? {
-                    ...p,
-                    image_url: result.url,
-                    thumbnail_url: result.thumbnailUrl,
-                  }
-                : p,
-            ),
+          onPhotosChangeRef.current(
+            photosRef.current.map((p) => (p.id === tempId ? result.photo : p)),
           );
           setUploadingFiles((prev) => {
             const next = new Map(prev);
@@ -238,7 +233,7 @@ export default function PhotoManager({
           }
         });
     },
-    [uploadingFiles, listingId, onPhotosChange, photos, showToast],
+    [uploadingFiles, listingId, showToast],
   );
 
   const handleFileChange = useCallback(
@@ -278,23 +273,20 @@ export default function PhotoManager({
     }
   }, [isTouchDevice]);
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-      const oldIndex = photos.findIndex((p) => p.id === active.id);
-      const newIndex = photos.findIndex((p) => p.id === over.id);
-      if (oldIndex === -1 || newIndex === -1) return;
+    const oldIndex = photosRef.current.findIndex((p) => p.id === active.id);
+    const newIndex = photosRef.current.findIndex((p) => p.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
 
-      const reordered = arrayMove(photos, oldIndex, newIndex).map((p, idx) => ({
-        ...p,
-        position: idx,
-      }));
-      onPhotosChange(reordered);
-    },
-    [photos, onPhotosChange],
-  );
+    const reordered = arrayMove(photosRef.current, oldIndex, newIndex).map((p, idx) => ({
+      ...p,
+      position: idx,
+    }));
+    onPhotosChangeRef.current(reordered);
+  }, []);
 
   const handleDeleteConfirm = useCallback(() => {
     if (!showDeleteConfirm) return;
@@ -310,12 +302,12 @@ export default function PhotoManager({
       });
     }
 
-    const updated = photos
+    const updated = photosRef.current
       .filter((p) => p.id !== showDeleteConfirm)
       .map((p, idx) => ({ ...p, position: idx }));
-    onPhotosChange(updated);
+    onPhotosChangeRef.current(updated);
     setShowDeleteConfirm(null);
-  }, [showDeleteConfirm, photos, onPhotosChange, uploadingFiles, showToast]);
+  }, [showDeleteConfirm, uploadingFiles, showToast]);
 
   const canAddMore = photos.length < maxPhotos;
 
@@ -362,6 +354,7 @@ export default function PhotoManager({
         >
           <HiPhoto className={styles.dropZoneIcon} aria-hidden="true" />
           <span className={styles.dropZoneText}>Drag photos here or tap to upload</span>
+          <span className={styles.dropZoneHint}>JPEG, PNG, WebP, or HEIC — 20MB max per photo</span>
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

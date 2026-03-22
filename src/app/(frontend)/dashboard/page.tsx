@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import AppLink from '@/components/controls/app-link';
+import Button from '@/components/controls/button';
 import { useAuth } from '@/features/auth/context';
 import { useMember } from '@/features/members/hooks/use-member';
 import { formatMemberName } from '@/features/members/utils/format-name';
@@ -72,7 +73,8 @@ export default function Dashboard() {
           {!memberLoading && member?.is_seller === true && (
             <div className={styles.sellerSection}>
               <h2 className={styles.sellerHeading}>Your listings</h2>
-              <AppLink href="/dashboard/products">Manage your listings</AppLink>
+              <Button onClick={() => router.push('/dashboard/listings/new')}>Create Listing</Button>
+              <AppLink href="/dashboard/listings">Manage your listings</AppLink>
             </div>
           )}
 
@@ -92,6 +94,7 @@ export default function Dashboard() {
           <p>
             <strong>{shop.shop_name}</strong> — Shop dashboard coming soon
           </p>
+          <Button onClick={() => router.push('/dashboard/listings/new')}>Create Listing</Button>
         </div>
       )}
     </div>
