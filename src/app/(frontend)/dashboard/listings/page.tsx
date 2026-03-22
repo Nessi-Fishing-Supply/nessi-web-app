@@ -15,6 +15,7 @@ import ListingRow from '@/features/listings/components/listing-row';
 import ListingActionsMenu from '@/features/listings/components/listing-actions-menu';
 import MarkSoldModal from '@/features/listings/components/mark-sold-modal';
 import DeleteListingModal from '@/features/listings/components/delete-listing-modal';
+import QuickEditPrice from '@/features/listings/components/quick-edit-price';
 import {
   DASHBOARD_STATUS_TABS,
   DASHBOARD_TAB_LABELS,
@@ -24,7 +25,7 @@ import type { ListingWithPhotos } from '@/features/listings/types/listing';
 
 import styles from './listings-dashboard.module.scss';
 
-type ModalType = 'actions' | 'mark-sold' | 'delete' | null;
+type ModalType = 'actions' | 'mark-sold' | 'delete' | 'quick-price' | null;
 
 function filterByTab(listings: ListingWithPhotos[], tab: DashboardStatusTab): ListingWithPhotos[] {
   if (tab === 'all') return listings.filter((l) => l.status !== 'deleted');
@@ -56,6 +57,11 @@ export default function ListingsDashboard() {
   function openActions(listing: ListingWithPhotos) {
     setTargetListing(listing);
     setOpenModal('actions');
+  }
+
+  function openQuickPrice(listing: ListingWithPhotos) {
+    setTargetListing(listing);
+    setOpenModal('quick-price');
   }
 
   function closeModal() {
@@ -168,6 +174,7 @@ export default function ListingsDashboard() {
               key={listing.id}
               listing={listing}
               onActionsClick={openActions}
+              onPriceClick={openQuickPrice}
             />
           ))}
         </div>
@@ -203,6 +210,14 @@ export default function ListingsDashboard() {
           onClose={closeModal}
           onConfirm={handleDelete}
           loading={deleteListing.isPending}
+        />
+      )}
+
+      {targetListing && openModal === 'quick-price' && (
+        <QuickEditPrice
+          listing={targetListing}
+          isOpen
+          onClose={closeModal}
         />
       )}
     </div>
