@@ -3,7 +3,7 @@
   "issue": 24,
   "title": "Listing create wizard — 5-step flow with auto-save drafts",
   "branch": "feat/24/listing-create-wizard",
-  "status": "needs_fixes",
+  "status": "complete",
   "phase": {
     "current": 4,
     "total": 4,
@@ -13,7 +13,7 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "fail", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-22T18:00:00Z", "lastActivity": "2026-03-22T19:20:00Z" }
+  "timestamps": { "started": "2026-03-22T18:00:00Z", "lastActivity": "2026-03-22T19:30:00Z" }
 }
