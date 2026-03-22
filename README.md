@@ -165,9 +165,9 @@ Vercel deploys automatically on push to `main` (production) and on PR branches (
 
 MCP (Model Context Protocol) servers are configured in `.mcp.json` at the project root, used by Claude Code and other AI tooling.
 
-| Server   | Package                   | Purpose                                                    |
-| -------- | ------------------------- | ---------------------------------------------------------- |
-| `stitch` | `@_davideast/stitch-mcp`  | AI-powered UI design — generates screens, variants, and design systems |
+| Server   | Package                  | Purpose                                                                |
+| -------- | ------------------------ | ---------------------------------------------------------------------- |
+| `stitch` | `@_davideast/stitch-mcp` | AI-powered UI design — generates screens, variants, and design systems |
 
 **Setup:** Export `STITCH_API_KEY` in `~/.zshrc` (see [Shell Environment](#shell-environment) above).
 
