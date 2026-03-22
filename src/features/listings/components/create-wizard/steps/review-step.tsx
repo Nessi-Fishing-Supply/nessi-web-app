@@ -133,7 +133,7 @@ export default function ReviewStep() {
                 <div className={styles.detailRow}>
                   <dt className={styles.detailLabel}>Dimensions</dt>
                   <dd className={styles.detailValue}>
-                    {packageDimensions.length}" × {packageDimensions.width}" × {packageDimensions.height}"
+                    {packageDimensions.length}&quot; × {packageDimensions.width}&quot; × {packageDimensions.height}&quot;
                   </dd>
                 </div>
               )}

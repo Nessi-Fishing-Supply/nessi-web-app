@@ -166,7 +166,6 @@ export default function ShippingStep() {
                   type="radio"
                   value="buyer"
                   className={styles.radioInput}
-                  aria-required="true"
                   onChange={() => setValue('shippingPaidBy', 'buyer', { shouldDirty: true })}
                 />
                 <span className={styles.radioLabel}>Buyer pays shipping</span>
@@ -177,10 +176,9 @@ export default function ShippingStep() {
                   type="radio"
                   value="seller"
                   className={styles.radioInput}
-                  aria-required="true"
                   onChange={() => setValue('shippingPaidBy', 'seller', { shouldDirty: true })}
                 />
-                <span className={styles.radioLabel}>I'll offer free shipping</span>
+                <span className={styles.radioLabel}>I&apos;ll offer free shipping</span>
               </label>
             </div>
           </fieldset>

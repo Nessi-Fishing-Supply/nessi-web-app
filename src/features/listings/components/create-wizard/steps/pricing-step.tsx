@@ -77,7 +77,7 @@ export default function PricingStep() {
   useEffect(() => {
     setDisplayValue(dollarsToDisplay(priceCents));
     setFeeDisplay(priceCents);
-  }, []);
+  }, [priceCents]);
 
   // Cleanup debounce on unmount
   useEffect(() => {
