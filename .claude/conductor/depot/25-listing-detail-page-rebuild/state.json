@@ -3,7 +3,7 @@
   "issue": 25,
   "title": "Listing detail page rebuild — full marketplace layout",
   "branch": "feat/25/listing-detail-page-rebuild",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 4,
     "total": 4,
@@ -13,7 +13,9 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-22T00:00:00Z", "lastActivity": "2026-03-22T00:25:00Z" }
+  "timestamps": { "started": "2026-03-22T00:00:00Z", "lastActivity": "2026-03-22T00:30:00Z" },
+  "completedAt": "2026-03-22T00:30:00Z",
+  "pruneAfter": "2026-05-21T00:30:00Z"
 }
