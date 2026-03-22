@@ -110,12 +110,12 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Components
 
-| Component            | Location                       | Purpose                                                                              |
-| -------------------- | ------------------------------ | ------------------------------------------------------------------------------------ |
-| `PhotoManager`       | `components/photo-manager/`    | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards. |
-| `ConditionBadge`     | `components/condition-badge/`  | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).   |
-| `ConditionSelector`  | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance. |
-| `ConditionFilter`    | `components/condition-filter/` | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`. |
+| Component           | Location                         | Purpose                                                                                                 |
+| ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `PhotoManager`      | `components/photo-manager/`      | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                    |
+| `ConditionBadge`    | `components/condition-badge/`    | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                      |
+| `ConditionSelector` | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance. |
+| `ConditionFilter`   | `components/condition-filter/`   | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.               |
 
 ## Pages (planned)
 
