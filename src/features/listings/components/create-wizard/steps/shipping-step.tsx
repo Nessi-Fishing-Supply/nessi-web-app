@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 
 import CollapsibleCard from '@/components/layout/collapsible-card';
-import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
+import { useWizardStore } from '@/features/listings/components/create-wizard/wizard-store-context';
 
 import styles from './shipping-step.module.scss';
 
@@ -15,9 +15,10 @@ interface ShippingFormValues {
 }
 
 export default function ShippingStep({ errors = {} }: { errors?: Record<string, string> }) {
-  const weightOz = useCreateWizardStore.use.weightOz();
-  const shippingPaidBy = useCreateWizardStore.use.shippingPaidBy();
-  const setField = useCreateWizardStore.use.setField();
+  const store = useWizardStore();
+  const weightOz = store.use.weightOz();
+  const shippingPaidBy = store.use.shippingPaidBy();
+  const setField = store.use.setField();
 
   const storedLbs = Math.floor(weightOz / 16);
   const storedOz = weightOz % 16;

@@ -1,9 +1,9 @@
 'use client';
 
 import ConditionBadge from '@/features/listings/components/condition-badge';
+import { useWizardStore } from '@/features/listings/components/create-wizard/wizard-store-context';
 import { getCategoryLabel } from '@/features/listings/constants/category';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
-import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
 import type { WizardPhoto } from '@/features/listings/stores/wizard-photo-store';
 import type { ListingCategory, ListingCondition } from '@/features/listings/types/listing';
 import { calculateFee, calculateNet, formatPrice } from '@/features/listings/utils/format';
@@ -17,14 +17,15 @@ interface ReviewStepProps {
 }
 
 export default function ReviewStep({ photos }: ReviewStepProps) {
-  const category = useCreateWizardStore.use.category();
-  const condition = useCreateWizardStore.use.condition();
-  const title = useCreateWizardStore.use.title();
-  const description = useCreateWizardStore.use.description();
-  const priceCents = useCreateWizardStore.use.priceCents();
-  const shippingPreference = useCreateWizardStore.use.shippingPreference();
-  const shippingPaidBy = useCreateWizardStore.use.shippingPaidBy();
-  const weightOz = useCreateWizardStore.use.weightOz();
+  const store = useWizardStore();
+  const category = store.use.category();
+  const condition = store.use.condition();
+  const title = store.use.title();
+  const description = store.use.description();
+  const priceCents = store.use.priceCents();
+  const shippingPreference = store.use.shippingPreference();
+  const shippingPaidBy = store.use.shippingPaidBy();
+  const weightOz = store.use.weightOz();
 
   const coverPhoto = photos[0] ?? null;
   const coverUrl = coverPhoto?.previewUrl ?? null;

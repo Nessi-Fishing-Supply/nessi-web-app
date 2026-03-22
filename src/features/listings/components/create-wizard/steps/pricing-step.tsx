@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
+import { useWizardStore } from '@/features/listings/components/create-wizard/wizard-store-context';
 import { calculateFee, calculateNet, formatPrice } from '@/features/listings/utils/format';
 
 import styles from './pricing-step.module.scss';
@@ -30,9 +30,10 @@ function calcEtsyFee(cents: number): number {
 }
 
 export default function PricingStep() {
-  const priceCents = useCreateWizardStore.use.priceCents();
-  const shippingPreference = useCreateWizardStore.use.shippingPreference();
-  const setField = useCreateWizardStore.use.setField();
+  const store = useWizardStore();
+  const priceCents = store.use.priceCents();
+  const shippingPreference = store.use.shippingPreference();
+  const setField = store.use.setField();
 
   const [displayValue, setDisplayValue] = useState(() => dollarsToDisplay(priceCents));
   const [feeDisplay, setFeeDisplay] = useState(priceCents);

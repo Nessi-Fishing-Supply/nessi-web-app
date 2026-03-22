@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Input } from '@/components/controls';
 import Textarea from '@/components/controls/text-area';
-import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
+import { useWizardStore } from '@/features/listings/components/create-wizard/wizard-store-context';
 import { detailsSchema } from '@/features/listings/validations/listing';
 
 import styles from './details-step.module.scss';
@@ -17,9 +17,10 @@ interface DetailsFormValues {
 }
 
 export default function DetailsStep() {
-  const title = useCreateWizardStore.use.title();
-  const description = useCreateWizardStore.use.description();
-  const setField = useCreateWizardStore.use.setField();
+  const store = useWizardStore();
+  const title = store.use.title();
+  const description = store.use.description();
+  const setField = store.use.setField();
 
   const methods = useForm<DetailsFormValues>({
     resolver: yupResolver(detailsSchema) as any,
