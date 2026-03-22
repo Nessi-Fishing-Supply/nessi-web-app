@@ -51,7 +51,18 @@ export default function ListingActionsMenu({
     action();
   }
 
-  const actions: ActionItem[] = [{ label: 'Edit', onClick: handleEdit }];
+  function handleViewListing() {
+    onClose();
+    router.push(`/listing/${listing.id}`);
+  }
+
+  const actions: ActionItem[] = [];
+
+  if (status === 'active' || status === 'sold') {
+    actions.push({ label: 'View listing', onClick: handleViewListing });
+  }
+
+  actions.push({ label: 'Edit', onClick: handleEdit });
 
   if (status === 'active') {
     actions.push({ label: 'Mark as Sold', onClick: () => handleAction(onMarkSold) });

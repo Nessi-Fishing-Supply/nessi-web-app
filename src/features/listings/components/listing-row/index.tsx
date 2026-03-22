@@ -28,25 +28,51 @@ export default function ListingRow({ listing, onActionsClick, onPriceClick }: Li
   const daysListed = getDaysListed(listing);
   const isDraft = status === 'draft';
   const isActive = status === 'active';
+  const hasDetailPage = status === 'active' || status === 'sold';
+  const detailHref = `/listing/${listing.id}`;
 
   return (
     <div className={styles.row}>
-      <div className={styles.thumbnail}>
-        {thumbnail ? (
-          <Image
-            src={thumbnail}
-            alt={listing.title}
-            fill
-            sizes="(max-width: 480px) 60px, 80px"
-            style={{ objectFit: 'cover' }}
-          />
-        ) : (
-          <div className={styles.thumbnailEmpty} aria-hidden="true" />
-        )}
-      </div>
+      {hasDetailPage ? (
+        <Link href={detailHref} className={styles.thumbnailLink}>
+          <div className={styles.thumbnail}>
+            {thumbnail ? (
+              <Image
+                src={thumbnail}
+                alt={listing.title}
+                fill
+                sizes="(max-width: 480px) 60px, 80px"
+                style={{ objectFit: 'cover' }}
+              />
+            ) : (
+              <div className={styles.thumbnailEmpty} aria-hidden="true" />
+            )}
+          </div>
+        </Link>
+      ) : (
+        <div className={styles.thumbnail}>
+          {thumbnail ? (
+            <Image
+              src={thumbnail}
+              alt={listing.title}
+              fill
+              sizes="(max-width: 480px) 60px, 80px"
+              style={{ objectFit: 'cover' }}
+            />
+          ) : (
+            <div className={styles.thumbnailEmpty} aria-hidden="true" />
+          )}
+        </div>
+      )}
 
       <div className={styles.info}>
-        <p className={styles.title}>{listing.title}</p>
+        {hasDetailPage ? (
+          <Link href={detailHref} className={styles.titleLink}>
+            {listing.title}
+          </Link>
+        ) : (
+          <p className={styles.title}>{listing.title}</p>
+        )}
         <div className={styles.meta}>
           <Pill color={LISTING_STATUS_COLORS[status]}>{LISTING_STATUS_LABELS[status]}</Pill>
           {daysListed > 0 && (

@@ -44,6 +44,16 @@
   gap: var(--space-2xs);
 }
 
+.thumbnailLink {
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
 .title {
   margin: 0;
   font-size: var(--font-size-sm);
@@ -52,6 +62,31 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-base);
+  }
+}
+
+.titleLink {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-dark);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
 
   @include breakpoint(md) {
     font-size: var(--font-size-base);
