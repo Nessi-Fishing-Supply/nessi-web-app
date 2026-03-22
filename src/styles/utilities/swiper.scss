@@ -112,6 +112,54 @@
   }
 }
 
+// Photo Lightbox
+.swiper__lightbox {
+  height: 100%;
+  width: 100%;
+
+  .swiper-wrapper {
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+
+      > div {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: 44px;
+    height: 44px;
+    color: var(--color-white);
+    background: rgb(0 0 0 / 40%);
+    border-radius: var(--radius-2xl);
+    transition: var(--transition-basic);
+    display: none;
+
+    &::after {
+      font-size: var(--font-size-sm);
+    }
+
+    &:hover {
+      background: rgb(0 0 0 / 70%);
+    }
+
+    &.swiper-button-disabled {
+      opacity: 0.3;
+    }
+
+    @include breakpoint(md) {
+      display: flex;
+    }
+  }
+}
+
 // Listing Detail
 .swiper__listing-detail {
   height: 100%;

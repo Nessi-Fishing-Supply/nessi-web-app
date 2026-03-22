@@ -1,0 +1,55 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.gallery {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  @include breakpoint(md) {
+    padding-bottom: 0;
+    height: 500px;
+  }
+
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global(.swiper),
+  :global(.swiper-wrapper),
+  :global(.swiper-slide) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+
+  .favorite {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    z-index: 20;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .photoCount {
+    position: absolute;
+    bottom: var(--space-sm);
+    right: var(--space-sm);
+    z-index: 20;
+    background-color: rgb(0 0 0 / 55%);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+  }
+
+  .slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+}

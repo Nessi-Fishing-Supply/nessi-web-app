@@ -89,3 +89,7 @@ export { default as ConditionBadge } from './components/condition-badge';
 export { default as ConditionSelector } from './components/condition-selector';
 export { default as ConditionFilter } from './components/condition-filter';
 export { default as CategorySelector } from './components/category-selector';
+export { default as PhotoGallery } from './components/photo-gallery';
+export { default as PhotoLightbox } from './components/photo-lightbox';
+export { default as SellerStrip } from './components/seller-strip';
+export { default as ExpandableSection } from './components/expandable-section';
