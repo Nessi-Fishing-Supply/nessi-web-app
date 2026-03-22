@@ -17,6 +17,8 @@ export type {
   ListingDraft,
   ListingCondition,
   ListingCategory,
+  SellerProfile,
+  ListingDetailData,
 } from './types/listing';
 export type {
   ListingPhoto,
@@ -61,6 +63,7 @@ export {
 // Server Services
 export {
   getListingByIdServer,
+  getListingWithSellerServer,
   getListingsByMemberServer,
   getListingsByShopServer,
   getActiveListingsServer,

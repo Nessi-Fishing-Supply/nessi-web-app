@@ -36,3 +36,14 @@ export type ListingStatus = Database['public']['Enums']['listing_status'];
 export type ListingWithPhotos = Listing & { listing_photos: ListingPhoto[] };
 
 export type ListingDraft = Partial<ListingInsert>;
+
+export type SellerProfile = {
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
+  slug: string;
+  created_at: string;
+  is_seller: boolean;
+};
+
+export type ListingDetailData = ListingWithPhotos & { seller: SellerProfile | null };

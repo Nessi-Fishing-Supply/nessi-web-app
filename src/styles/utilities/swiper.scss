@@ -1,3 +1,5 @@
+@use '../mixins/breakpoints' as *;
+
 ////////////////////////
 /// Swiper Styles
 /// Swiper requires override styles to be in the root styles.
@@ -94,6 +96,114 @@
     padding: var(--space-2xs) var(--space-xs);
     border-radius: var(--radius-2xl);
     opacity: 0;
+    transition: var(--transition-basic);
+
+    .swiper-pagination-bullet {
+      width: var(--space-2xs);
+      height: var(--space-2xs);
+      background: var(--color-gray-500);
+      margin: 0 !important;
+      opacity: 1;
+
+      &.swiper-pagination-bullet-active {
+        background-color: var(--color-white);
+      }
+    }
+  }
+}
+
+// Listing Detail
+.swiper__listing-detail {
+  height: 100%;
+  width: 100%;
+
+  .swiper-wrapper {
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+
+      > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(43%);
+    width: var(--space-md);
+    height: var(--space-md);
+    background-color: var(--color-white);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-modal);
+    opacity: 0;
+    transition: var(--transition-basic);
+    display: none;
+
+    &.swiper-button-disabled {
+      opacity: 0.35;
+    }
+
+    &::after {
+      font-size: var(--font-size-xs);
+      color: var(--color-dark);
+      margin-top: 1px;
+    }
+
+    @include breakpoint(lg) {
+      display: flex;
+    }
+  }
+
+  .swiper-button-prev {
+    left: var(--space-xs);
+
+    &::after {
+      margin-right: var(--space-3xs);
+    }
+  }
+
+  .swiper-button-next {
+    right: var(--space-xs);
+
+    &::after {
+      margin-left: var(--space-3xs);
+    }
+  }
+
+  &:hover {
+    .swiper-button-prev,
+    .swiper-button-next {
+      @include breakpoint(lg) {
+        opacity: 1;
+
+        &.swiper-button-disabled {
+          opacity: 0.35;
+        }
+      }
+    }
+  }
+
+  .swiper-pagination {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    width: fit-content !important;
+    position: absolute;
+    bottom: var(--space-xs) !important;
+    left: 50% !important;
+    transform: translateX(-50%);
+    background-color: rgb(255 255 255 / 50%);
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-2xl);
+    opacity: 1;
     transition: var(--transition-basic);
 
     .swiper-pagination-bullet {
