@@ -14,12 +14,21 @@ export async function GET(req: Request) {
     }
 
     const status = new URL(req.url).searchParams.get('status') as ListingStatus | null;
+    const contextHeader = req.headers.get('X-Nessi-Context') ?? 'member';
+    const isShopContext = contextHeader.startsWith('shop:');
+    const shopId = isShopContext ? contextHeader.replace('shop:', '') : null;
 
     let query = supabase
       .from('listings')
       .select('*, listing_photos(*)')
       .eq('seller_id', user.id)
       .is('deleted_at', null);
+
+    if (isShopContext && shopId) {
+      query = query.eq('shop_id', shopId);
+    } else {
+      query = query.is('shop_id', null);
+    }
 
     if (status) {
       query = query.eq('status', status);

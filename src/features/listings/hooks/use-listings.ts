@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import useContextStore from '@/features/context/stores/context-store';
 import {
   getListings,
   getListingById,
@@ -30,8 +31,11 @@ export function useListing(id: string | undefined) {
 }
 
 export function useSellerListings(status?: string) {
+  const activeContext = useContextStore.use.activeContext();
+  const contextKey = activeContext.type === 'shop' ? `shop:${activeContext.shopId}` : 'member';
+
   return useQuery({
-    queryKey: ['listings', 'seller', status],
+    queryKey: ['listings', 'seller', contextKey, status],
     queryFn: () => getSellerListings(status),
   });
 }

@@ -103,11 +103,17 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
+    const contextHeader = req.headers.get('X-Nessi-Context') ?? 'member';
+    const isShopContext = contextHeader.startsWith('shop:');
+    const shopId = isShopContext ? contextHeader.replace('shop:', '') : null;
+
     const { data: listing, error: insertError } = await supabase
       .from('listings')
       .insert({
         ...body,
         seller_id: user.id,
+        member_id: isShopContext ? null : user.id,
+        shop_id: shopId,
         status: body.status ?? 'draft',
       })
       .select('id')

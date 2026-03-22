@@ -33,7 +33,7 @@ export async function GET() {
   }
 }
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
     const supabase = await createClient();
     const {
@@ -44,10 +44,16 @@ export async function POST() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const contextHeader = req.headers.get('X-Nessi-Context') ?? 'member';
+    const isShopContext = contextHeader.startsWith('shop:');
+    const shopId = isShopContext ? contextHeader.replace('shop:', '') : null;
+
     const { data: draft, error } = await supabase
       .from('listings')
       .insert({
         seller_id: user.id,
+        member_id: isShopContext ? null : user.id,
+        shop_id: shopId,
         status: 'draft',
         title: 'Untitled Draft',
         price_cents: 0,
