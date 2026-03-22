@@ -1,22 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-import { createClient } from '@/libs/supabase/server';
 import { notFound } from 'next/navigation';
-import ProductClientComponent from './item-id-page';
-import type { ProductWithImages } from '@/features/products/types/product';
+import { getListingByIdServer } from '@/features/listings/services/listing-server';
+import { formatPrice } from '@/features/listings/utils/format';
+import ListingDetailClient from './item-id-page';
 import type { Metadata } from 'next';
-
-async function getProduct(id: string): Promise<ProductWithImages | null> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('products')
-    .select('*, product_images(*)')
-    .eq('id', id)
-    .single();
-
-  if (error || !data) return null;
-  return data as ProductWithImages;
-}
 
 export async function generateMetadata({
   params,
@@ -24,25 +10,21 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const product = await getProduct(id);
+  const listing = await getListingByIdServer(id);
 
-  if (!product) {
-    return { title: 'Product Not Found' };
+  if (!listing) {
+    return { title: 'Listing Not Found' };
   }
 
-  const price =
-    typeof product.price === 'number'
-      ? product.price.toFixed(2)
-      : parseFloat(product.price).toFixed(2);
-
-  const image = product.product_images?.[0]?.image_url;
+  const price = formatPrice(listing.price_cents);
+  const image = listing.listing_photos?.[0]?.image_url;
 
   return {
-    title: product.title,
-    description: product.description || `${product.title} — $${price} on Nessi`,
+    title: listing.title,
+    description: listing.description || `${listing.title} — ${price} on Nessi`,
     openGraph: {
-      title: product.title,
-      description: product.description || `${product.title} — $${price} on Nessi`,
+      title: listing.title,
+      description: listing.description || `${listing.title} — ${price} on Nessi`,
       ...(image && { images: [{ url: image }] }),
     },
   };
@@ -50,11 +32,11 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const listing = await getListingByIdServer(id);
 
-  if (!product) {
+  if (!listing) {
     notFound();
   }
 
-  return <ProductClientComponent product={product} />;
+  return <ListingDetailClient listing={listing} />;
 }

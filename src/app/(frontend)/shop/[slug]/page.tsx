@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getShopBySlugServer } from '@/features/shops/services/shop-server';
-import { getProductsByShopServer } from '@/features/products/services/product-server';
-import ProductCard from '@/features/products/components/product-card';
+import { getListingsByShopServer } from '@/features/listings/services/listing-server';
+import ListingCard from '@/features/listings/components/listing-card';
 import styles from './shop-page.module.scss';
 
 export async function generateMetadata({
@@ -41,7 +41,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     notFound();
   }
 
-  const products = await getProductsByShopServer(shop.id);
+  const listings = await getListingsByShopServer(shop.id);
 
   const shopSince = new Intl.DateTimeFormat('en-US', {
     month: 'long',
@@ -90,11 +90,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       </section>
 
       <section className={styles.listings}>
-        <h2 className={styles.sectionHeading}>Products</h2>
-        {products.length > 0 ? (
+        <h2 className={styles.sectionHeading}>Listings</h2>
+        {listings.length > 0 ? (
           <div className={styles.productGrid}>
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {listings.map((listing) => (
+              <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
         ) : (

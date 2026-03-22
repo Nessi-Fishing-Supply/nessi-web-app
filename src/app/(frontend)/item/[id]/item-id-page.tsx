@@ -1,44 +1,40 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 'use client';
 
-import { ProductWithImages } from '@/features/products/types/product';
+import type { ListingWithPhotos } from '@/features/listings/types/listing';
+import { formatPrice } from '@/features/listings/utils/format';
+import ConditionBadge from '@/features/listings/components/condition-badge';
 import Image from 'next/image';
-import React from 'react';
 
-const ProductClientComponent = ({ product }: { product: ProductWithImages }) => {
-  if (!product) return <p>No product found</p>;
+export default function ListingDetailClient({ listing }: { listing: ListingWithPhotos }) {
+  const photos = listing.listing_photos ?? [];
 
   return (
     <div>
-      <h1>{product.title}</h1>
-      <p>{product.description}</p>
-      <p>
-        Price: $
-        {typeof product.price === 'string'
-          ? parseFloat(product.price).toFixed(2)
-          : product.price.toFixed(2)}
-      </p>
+      <h1>{listing.title}</h1>
+      <ConditionBadge condition={listing.condition} size="md" />
+      <p>{listing.description}</p>
+      <p>Price: {formatPrice(listing.price_cents)}</p>
+      {listing.location_state && (
+        <p>
+          {listing.location_city ? `${listing.location_city}, ` : ''}
+          {listing.location_state}
+        </p>
+      )}
 
       <div>
-        {product.product_images.map(
-          (image, index) =>
-            image.image_url && (
-              <Image
-                key={index}
-                src={image.image_url}
-                alt={`${product.title} image ${index + 1}`}
-                width={600}
-                height={600}
-                sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 600px"
-                style={{ objectFit: 'cover' }}
-                priority={index === 0}
-              />
-            ),
-        )}
+        {photos.map((photo, index) => (
+          <Image
+            key={photo.id}
+            src={photo.image_url}
+            alt={`${listing.title} image ${index + 1}`}
+            width={600}
+            height={600}
+            sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 600px"
+            style={{ objectFit: 'cover' }}
+            priority={index === 0}
+          />
+        ))}
       </div>
     </div>
   );
-};
-
-export default ProductClientComponent;
+}

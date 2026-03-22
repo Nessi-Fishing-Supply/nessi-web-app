@@ -3,8 +3,8 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getMemberBySlugServer } from '@/features/members/services/member-server';
 import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';
-import { getProductsByMemberServer } from '@/features/products/services/product-server';
-import ProductCard from '@/features/products/components/product-card';
+import { getListingsByMemberServer } from '@/features/listings/services/listing-server';
+import ListingCard from '@/features/listings/components/listing-card';
 import Pill from '@/components/indicators/pill';
 import styles from './member-profile.module.scss';
 
@@ -44,7 +44,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     notFound();
   }
 
-  const products = member.is_seller ? await getProductsByMemberServer(member.id) : [];
+  const listings = member.is_seller ? await getListingsByMemberServer(member.id) : [];
 
   const memberSince = new Intl.DateTimeFormat('en-US', {
     month: 'long',
@@ -122,10 +122,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
           <section className={styles.listings}>
             <h2 className={styles.sectionHeading}>Listings</h2>
-            {products.length > 0 ? (
+            {listings.length > 0 ? (
               <div className={styles.productGrid}>
-                {products.map((p) => (
-                  <ProductCard key={p.id} product={p} />
+                {listings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
                 ))}
               </div>
             ) : (

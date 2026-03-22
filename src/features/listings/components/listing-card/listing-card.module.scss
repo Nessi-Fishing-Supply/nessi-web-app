@@ -1,0 +1,81 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+  width: 100%;
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 0 transparent;
+  cursor: pointer;
+  transition: var(--transition-basic);
+
+  &:hover,
+  &:focus,
+  &:active {
+    box-shadow: var(--shadow-modal);
+  }
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 224px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  .conditionBadge {
+    position: absolute;
+    top: var(--space-xs);
+    left: var(--space-xs);
+    z-index: 20;
+  }
+
+  .favorite {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    z-index: 20;
+  }
+
+  .slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  .title {
+    font-weight: 700;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .priceSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .price {
+      font-weight: 700;
+      font-size: var(--font-size-md);
+      margin: 0;
+    }
+  }
+
+  .location {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin: 0;
+  }
+}
