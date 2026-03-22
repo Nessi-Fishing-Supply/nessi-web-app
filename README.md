@@ -54,6 +54,16 @@ vercel link
 vercel env pull .env.local
 ```
 
+### Shell Environment
+
+Some tooling (MCP servers) requires API keys exported in your shell profile. Add the following to `~/.zshrc`:
+
+```sh
+export STITCH_API_KEY="your-stitch-api-key"
+```
+
+These are referenced via `${VAR}` interpolation in `.mcp.json` — the actual keys are never committed to the repo.
+
 ### Development
 
 ```bash
@@ -150,6 +160,16 @@ GitHub Actions runs on every push to `main` and every PR:
 6. Next.js production build
 
 Vercel deploys automatically on push to `main` (production) and on PR branches (preview).
+
+## MCP Servers
+
+MCP (Model Context Protocol) servers are configured in `.mcp.json` at the project root, used by Claude Code and other AI tooling.
+
+| Server   | Package                   | Purpose                                                    |
+| -------- | ------------------------- | ---------------------------------------------------------- |
+| `stitch` | `@_davideast/stitch-mcp`  | AI-powered UI design — generates screens, variants, and design systems |
+
+**Setup:** Export `STITCH_API_KEY` in `~/.zshrc` (see [Shell Environment](#shell-environment) above).
 
 ## AI Development Fleet
 

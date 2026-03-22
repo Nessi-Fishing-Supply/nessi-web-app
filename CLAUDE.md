@@ -179,6 +179,26 @@ SCSS with CSS Modules for component-scoped styles. Global variables in `src/styl
 
 Required in `.env.local` (see `.env.local.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_APP_URL`.
 
+### Shell Environment (`.zshrc`)
+
+The following environment variables must be exported in your shell profile (`~/.zshrc`) for MCP servers to function:
+
+```sh
+export STITCH_API_KEY="your-stitch-api-key"
+```
+
+These are referenced via `${VAR}` interpolation in `.mcp.json` and are **not** stored in `.env.local`.
+
+## MCP Servers
+
+MCP (Model Context Protocol) servers are configured in `.mcp.json` at the project root.
+
+| Server  | Package                     | Purpose                                          |
+| ------- | --------------------------- | ------------------------------------------------ |
+| `stitch` | `@_davideast/stitch-mcp`   | AI-powered UI design tool — generates screens, variants, and design systems for Nessi |
+
+**Setup:** The Stitch MCP server requires a `STITCH_API_KEY` environment variable exported in `~/.zshrc` (see Shell Environment above). The `.mcp.json` file references it via `${STITCH_API_KEY}` interpolation — the actual key is never committed to the repo.
+
 ## Observability
 
 - **Vercel Analytics** (`@vercel/analytics`) — page views, visitors, referrers. Auto-enabled on Vercel.
