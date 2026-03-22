@@ -195,7 +195,7 @@ MCP (Model Context Protocol) servers are configured in `.mcp.json` at the projec
 
 | Server   | Package                  | Purpose                                                                               |
 | -------- | ------------------------ | ------------------------------------------------------------------------------------- |
-| `stitch` | `@_davideast/stitch-mcp` | AI-powered UI design tool — generates screens, variants, and design systems for Nessi |
+| `stitch` | `@_davideast/stitch-mcp` | AI-powered UI design tool — generates screens, variants, and design systems. Integrated with `/ui-design "stitch:..."` for screen-to-code builds |
 
 **Setup:** The Stitch MCP server requires a `STITCH_API_KEY` environment variable exported in `~/.zshrc` (see Shell Environment above). The `.mcp.json` file references it via `${STITCH_API_KEY}` interpolation — the actual key is never committed to the repo.
 
@@ -260,7 +260,11 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 - **`/db-migrate "{change}"`** — Generate Supabase SQL migrations with RLS policies
 - **`/write-tests "{file}"`** — Generate Vitest tests following project patterns
 - **`/debug "{problem}"`** — 7-step investigation protocol (reproduce → isolate → fix → verify)
-- **`/ui-design "{spec or path}"`** — Design new components or audit existing ones against the design system
+- **`/ui-design "{spec or path}"`** — Design new components, audit existing ones, or build from Stitch screens
+  - Design mode: `/ui-design "hero banner with image overlay"` — creates new component from description
+  - Audit mode: `/ui-design "audit: src/features/shops/components/"` — audits existing components
+  - Stitch Build: `/ui-design "stitch: Shop Page - Elias Thorne"` — builds page/component from Stitch screen reference
+  - Stitch Browse: `/ui-design "stitch:list"` — browse all Stitch screens to pick from
 
 ### Tech Expert Skills (auto-trigger on file edits)
 
