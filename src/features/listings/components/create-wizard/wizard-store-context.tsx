@@ -8,7 +8,6 @@ import useCreateWizardStore from '@/features/listings/stores/create-wizard-store
  * Uses `any` for the store type to avoid coupling the context to a specific
  * store shape — both stores are structurally compatible via createSelectors.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WizardStoreHook = any;
 
 const WizardStoreContext = createContext<WizardStoreHook>(useCreateWizardStore);
