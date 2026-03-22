@@ -1,11 +1,10 @@
 'use client';
 
-import Image from 'next/image';
-
 import ConditionBadge from '@/features/listings/components/condition-badge';
 import { getCategoryLabel } from '@/features/listings/constants/category';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
+import type { WizardPhoto } from '@/features/listings/stores/wizard-photo-store';
 import type { ListingCategory, ListingCondition } from '@/features/listings/types/listing';
 import { calculateFee, calculateNet, formatPrice } from '@/features/listings/utils/format';
 
@@ -13,21 +12,22 @@ import styles from './review-step.module.scss';
 
 const MAX_DESCRIPTION_LENGTH = 300;
 
-export default function ReviewStep() {
-  const photos = useCreateWizardStore.use.photos();
+interface ReviewStepProps {
+  photos: WizardPhoto[];
+}
+
+export default function ReviewStep({ photos }: ReviewStepProps) {
   const category = useCreateWizardStore.use.category();
   const condition = useCreateWizardStore.use.condition();
   const title = useCreateWizardStore.use.title();
   const description = useCreateWizardStore.use.description();
-  const fishingHistory = useCreateWizardStore.use.fishingHistory();
   const priceCents = useCreateWizardStore.use.priceCents();
   const shippingPreference = useCreateWizardStore.use.shippingPreference();
   const shippingPaidBy = useCreateWizardStore.use.shippingPaidBy();
   const weightOz = useCreateWizardStore.use.weightOz();
-  const packageDimensions = useCreateWizardStore.use.packageDimensions();
 
-  const coverPhoto = photos.find((p) => p.position === 0) ?? photos[0] ?? null;
-  const coverUrl = coverPhoto?.thumbnail_url ?? coverPhoto?.image_url ?? null;
+  const coverPhoto = photos[0] ?? null;
+  const coverUrl = coverPhoto?.previewUrl ?? null;
 
   const conditionTier = condition ? CONDITION_TIERS.find((t) => t.value === condition) : null;
 
@@ -43,17 +43,14 @@ export default function ReviewStep() {
     <div className={styles.step}>
       <h2 className={styles.heading}>Review your listing</h2>
 
-      {/* Preview card */}
       <div className={styles.previewCard}>
         <div className={styles.previewPhoto}>
           {coverUrl ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={coverUrl}
               alt={title || 'Listing cover photo'}
-              fill
-              sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 300px"
-              style={{ objectFit: 'cover' }}
-              priority
+              className={styles.previewImage}
             />
           ) : (
             <div className={styles.previewPhotoEmpty} aria-hidden="true" />
@@ -71,11 +68,15 @@ export default function ReviewStep() {
         </div>
       </div>
 
-      {/* Details summary */}
       <div className={styles.summary}>
         <h3 className={styles.summaryHeading}>Details</h3>
 
         <dl className={styles.detailList}>
+          <div className={styles.detailRow}>
+            <dt className={styles.detailLabel}>Photos</dt>
+            <dd className={styles.detailValue}>{photos.length}</dd>
+          </div>
+
           {category && (
             <div className={styles.detailRow}>
               <dt className={styles.detailLabel}>Category</dt>
@@ -102,13 +103,6 @@ export default function ReviewStep() {
             </div>
           )}
 
-          {fishingHistory && (
-            <div className={styles.detailRow}>
-              <dt className={styles.detailLabel}>Fishing History</dt>
-              <dd className={styles.detailValue}>{fishingHistory}</dd>
-            </div>
-          )}
-
           <div className={styles.detailRow}>
             <dt className={styles.detailLabel}>Shipping</dt>
             <dd className={styles.detailValue}>
@@ -122,16 +116,6 @@ export default function ReviewStep() {
                 <div className={styles.detailRow}>
                   <dt className={styles.detailLabel}>Weight</dt>
                   <dd className={styles.detailValue}>{weightOz} oz</dd>
-                </div>
-              )}
-
-              {packageDimensions && (
-                <div className={styles.detailRow}>
-                  <dt className={styles.detailLabel}>Dimensions</dt>
-                  <dd className={styles.detailValue}>
-                    {packageDimensions.length}&quot; × {packageDimensions.width}&quot; ×{' '}
-                    {packageDimensions.height}&quot;
-                  </dd>
                 </div>
               )}
 

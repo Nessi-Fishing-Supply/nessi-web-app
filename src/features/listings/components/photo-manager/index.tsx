@@ -15,23 +15,16 @@ import { HiPhoto, HiCamera, HiPlus } from 'react-icons/hi2';
 import Modal from '@/components/layout/modal';
 import { useToast } from '@/components/indicators/toast/context';
 import PhotoThumbnail from './photo-thumbnail';
-import { uploadListingPhoto } from '../../services/listing-photo';
-import type { ListingPhoto } from '../../types/listing-photo';
+import type { WizardPhoto } from '../../stores/wizard-photo-store';
 import styles from './photo-manager.module.scss';
 
 interface PhotoManagerProps {
-  listingId: string;
-  photos: ListingPhoto[];
-  onPhotosChange: (photos: ListingPhoto[]) => void;
+  photos: WizardPhoto[];
+  onPhotosChange: (photos: WizardPhoto[]) => void;
+  onPhotosAdd: (files: File[]) => void;
+  onPhotoRemove: (id: string) => void;
   maxPhotos?: number;
   minPhotos?: number;
-}
-
-interface UploadEntry {
-  progress: number;
-  error: boolean;
-  retryCount: number;
-  file: File;
 }
 
 interface SortableItemRenderProps {
@@ -69,33 +62,26 @@ function SortableItem({
 }
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
-const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20MB
-const MAX_CONCURRENT_UPLOADS = 3;
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
 
 export default function PhotoManager({
-  listingId,
   photos,
   onPhotosChange,
+  onPhotosAdd,
+  onPhotoRemove,
   maxPhotos = 12,
   minPhotos = 2,
 }: PhotoManagerProps) {
   const { showToast } = useToast();
-  const [uploadingFiles, setUploadingFiles] = useState<Map<string, UploadEntry>>(new Map());
   const [isDragOver, setIsDragOver] = useState(false);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const isTouchDevice = typeof window !== 'undefined' && 'ontouchstart' in window;
 
-  // Keep a ref to current photos so async callbacks don't use stale closures
   const photosRef = useRef(photos);
   useEffect(() => {
     photosRef.current = photos;
   }, [photos]);
-
-  const onPhotosChangeRef = useRef(onPhotosChange);
-  useEffect(() => {
-    onPhotosChangeRef.current = onPhotosChange;
-  }, [onPhotosChange]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -106,7 +92,7 @@ export default function PhotoManager({
   );
 
   const processFiles = useCallback(
-    async (files: File[]) => {
+    (files: File[]) => {
       const validFiles: File[] = [];
       for (const file of files) {
         if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -128,8 +114,7 @@ export default function PhotoManager({
         validFiles.push(file);
       }
 
-      const currentPhotos = photosRef.current;
-      const available = maxPhotos - currentPhotos.length;
+      const available = maxPhotos - photosRef.current.length;
       if (available <= 0) return;
 
       if (validFiles.length > available) {
@@ -140,100 +125,12 @@ export default function PhotoManager({
         });
       }
 
-      const filesToProcess = validFiles.slice(0, available);
-      if (filesToProcess.length === 0) return;
-
-      for (let batch = 0; batch < filesToProcess.length; batch += MAX_CONCURRENT_UPLOADS) {
-        const batchFiles = filesToProcess.slice(batch, batch + MAX_CONCURRENT_UPLOADS);
-
-        await Promise.all(
-          batchFiles.map(async (file, batchIndex) => {
-            const latest = photosRef.current;
-            const photoIndex = latest.length + batchIndex;
-            const tempId = crypto.randomUUID();
-            const objectUrl = URL.createObjectURL(file);
-
-            const tempPhoto: ListingPhoto = {
-              id: tempId,
-              listing_id: listingId,
-              image_url: objectUrl,
-              thumbnail_url: null,
-              position: photoIndex,
-              created_at: new Date().toISOString(),
-            };
-
-            onPhotosChangeRef.current([...photosRef.current, tempPhoto]);
-
-            setUploadingFiles((prev) => {
-              const next = new Map(prev);
-              next.set(tempId, { progress: 0, error: false, retryCount: 0, file });
-              return next;
-            });
-
-            try {
-              const result = await uploadListingPhoto(file, listingId);
-              URL.revokeObjectURL(objectUrl);
-              onPhotosChangeRef.current(
-                photosRef.current.map((p) => (p.id === tempId ? result.photo : p)),
-              );
-              setUploadingFiles((prev) => {
-                const next = new Map(prev);
-                next.delete(tempId);
-                return next;
-              });
-            } catch {
-              setUploadingFiles((prev) => {
-                const next = new Map(prev);
-                next.set(tempId, { progress: 0, error: true, retryCount: 0, file });
-                return next;
-              });
-            }
-          }),
-        );
+      const filesToAdd = validFiles.slice(0, available);
+      if (filesToAdd.length > 0) {
+        onPhotosAdd(filesToAdd);
       }
     },
-    [listingId, maxPhotos, showToast],
-  );
-
-  const handleRetry = useCallback(
-    (tempId: string) => {
-      const entry = uploadingFiles.get(tempId);
-      if (!entry || entry.retryCount >= 3) return;
-      const newRetryCount = entry.retryCount + 1;
-
-      setUploadingFiles((prev) => {
-        const next = new Map(prev);
-        next.set(tempId, { ...entry, error: false, retryCount: newRetryCount });
-        return next;
-      });
-
-      uploadListingPhoto(entry.file, listingId)
-        .then((result) => {
-          onPhotosChangeRef.current(
-            photosRef.current.map((p) => (p.id === tempId ? result.photo : p)),
-          );
-          setUploadingFiles((prev) => {
-            const next = new Map(prev);
-            next.delete(tempId);
-            return next;
-          });
-        })
-        .catch(() => {
-          setUploadingFiles((prev) => {
-            const next = new Map(prev);
-            next.set(tempId, { ...entry, error: true, retryCount: newRetryCount });
-            return next;
-          });
-          if (newRetryCount >= 3) {
-            showToast({
-              message: 'Upload failed',
-              description: 'Could not upload photo after multiple attempts',
-              type: 'error',
-            });
-          }
-        });
-    },
-    [uploadingFiles, listingId, showToast],
+    [maxPhotos, showToast, onPhotosAdd],
   );
 
   const handleFileChange = useCallback(
@@ -273,47 +170,34 @@ export default function PhotoManager({
     }
   }, [isTouchDevice]);
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
 
-    const oldIndex = photosRef.current.findIndex((p) => p.id === active.id);
-    const newIndex = photosRef.current.findIndex((p) => p.id === over.id);
-    if (oldIndex === -1 || newIndex === -1) return;
+      const oldIndex = photosRef.current.findIndex((p) => p.id === active.id);
+      const newIndex = photosRef.current.findIndex((p) => p.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
 
-    const reordered = arrayMove(photosRef.current, oldIndex, newIndex).map((p, idx) => ({
-      ...p,
-      position: idx,
-    }));
-    onPhotosChangeRef.current(reordered);
-  }, []);
+      const reordered = arrayMove(photosRef.current, oldIndex, newIndex).map((p, idx) => ({
+        ...p,
+        position: idx,
+      }));
+      onPhotosChange(reordered);
+    },
+    [onPhotosChange],
+  );
 
   const handleDeleteConfirm = useCallback(() => {
     if (!showDeleteConfirm) return;
-
-    // Warn if deleting a photo that was mid-upload — it may have partially
-    // reached storage and can't be cleaned up client-side.
-    const uploadEntry = uploadingFiles.get(showDeleteConfirm);
-    if (uploadEntry) {
-      showToast({
-        message: 'Delete warning',
-        description: 'Photo removed locally but may still exist in storage',
-        type: 'error',
-      });
-    }
-
-    const updated = photosRef.current
-      .filter((p) => p.id !== showDeleteConfirm)
-      .map((p, idx) => ({ ...p, position: idx }));
-    onPhotosChangeRef.current(updated);
+    onPhotoRemove(showDeleteConfirm);
     setShowDeleteConfirm(null);
-  }, [showDeleteConfirm, uploadingFiles, showToast]);
+  }, [showDeleteConfirm, onPhotoRemove]);
 
   const canAddMore = photos.length < maxPhotos;
 
   return (
     <div className={styles.photoManager}>
-      {/* Hidden file inputs */}
       <input
         ref={fileInputRef}
         type="file"
@@ -366,34 +250,31 @@ export default function PhotoManager({
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
-              {photos.map((photo, index) => {
-                const uploadEntry = uploadingFiles.get(photo.id);
-                const isUploading = !!uploadEntry && !uploadEntry.error;
-                const hasError = !!uploadEntry?.error;
-                const canRetry = hasError && (uploadEntry?.retryCount ?? 0) < 3;
-
-                return (
-                  <SortableItem key={photo.id} id={photo.id}>
-                    {({ setNodeRef, style, dragAttributes, dragListeners }) => (
-                      <PhotoThumbnail
-                        photo={photo}
-                        index={index}
-                        total={photos.length}
-                        isUploading={isUploading}
-                        uploadProgress={uploadEntry?.progress ?? 0}
-                        hasError={hasError && !canRetry ? false : hasError}
-                        onRetry={() => handleRetry(photo.id)}
-                        onDelete={() => setShowDeleteConfirm(photo.id)}
-                        isCover={photo.position === 0}
-                        setNodeRef={setNodeRef}
-                        style={style}
-                        dragAttributes={dragAttributes}
-                        dragListeners={dragListeners}
-                      />
-                    )}
-                  </SortableItem>
-                );
-              })}
+              {photos.map((photo, index) => (
+                <SortableItem key={photo.id} id={photo.id}>
+                  {({ setNodeRef, style, dragAttributes, dragListeners }) => (
+                    <PhotoThumbnail
+                      photo={{
+                        id: photo.id,
+                        image_url: photo.previewUrl,
+                        thumbnail_url: null,
+                      }}
+                      index={index}
+                      total={photos.length}
+                      isUploading={false}
+                      uploadProgress={0}
+                      hasError={false}
+                      onRetry={() => {}}
+                      onDelete={() => setShowDeleteConfirm(photo.id)}
+                      isCover={index === 0}
+                      setNodeRef={setNodeRef}
+                      style={style}
+                      dragAttributes={dragAttributes}
+                      dragListeners={dragListeners}
+                    />
+                  )}
+                </SortableItem>
+              ))}
 
               {canAddMore && (
                 <button
@@ -416,7 +297,6 @@ export default function PhotoManager({
         </p>
       )}
 
-      {/* Delete confirmation modal */}
       <Modal
         isOpen={showDeleteConfirm !== null}
         onClose={() => setShowDeleteConfirm(null)}
@@ -431,7 +311,6 @@ export default function PhotoManager({
         </button>
       </Modal>
 
-      {/* Mobile bottom sheet for photo source */}
       <Modal
         isOpen={showBottomSheet}
         onClose={() => setShowBottomSheet(false)}

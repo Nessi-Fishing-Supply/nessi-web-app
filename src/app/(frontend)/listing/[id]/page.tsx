@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
-import { getListingByIdServer } from '@/features/listings/services/listing-server';
+import { getListingWithSellerServer } from '@/features/listings/services/listing-server';
 import { formatPrice } from '@/features/listings/utils/format';
-import ListingDetailClient from './item-id-page';
+import { CONDITION_TIERS } from '@/features/listings/constants/condition';
+import { createClient } from '@/libs/supabase/server';
+import ListingDetail from './listing-detail';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -10,21 +12,29 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const listing = await getListingByIdServer(id);
+  const listing = await getListingWithSellerServer(id);
 
   if (!listing) {
     return { title: 'Listing Not Found' };
   }
 
+  const conditionTier = CONDITION_TIERS.find((t) => t.value === listing.condition);
+  const conditionLabel = conditionTier?.label ?? listing.condition;
+  const title = `${listing.title} — ${conditionLabel}`;
+
   const price = formatPrice(listing.price_cents);
-  const image = listing.listing_photos?.[0]?.image_url;
+  const description = listing.description
+    ? listing.description.slice(0, 160)
+    : `${listing.title} — ${price} on Nessi`;
+
+  const image = listing.cover_photo_url;
 
   return {
-    title: listing.title,
-    description: listing.description || `${listing.title} — ${price} on Nessi`,
+    title,
+    description,
     openGraph: {
-      title: listing.title,
-      description: listing.description || `${listing.title} — ${price} on Nessi`,
+      title,
+      description,
       ...(image && { images: [{ url: image }] }),
     },
   };
@@ -32,11 +42,19 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const listing = await getListingByIdServer(id);
+  const listing = await getListingWithSellerServer(id);
 
-  if (!listing) {
+  if (!listing || (listing.status !== 'active' && listing.status !== 'sold')) {
     notFound();
   }
 
-  return <ListingDetailClient listing={listing} />;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const currentUserId = user?.id ?? null;
+
+  const { seller, ...listingData } = listing;
+
+  return <ListingDetail listing={listingData} seller={seller} currentUserId={currentUserId} />;
 }

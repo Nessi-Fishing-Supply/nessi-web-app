@@ -8,42 +8,42 @@ Extracted from the Stitch design system page. Every token, value, and specificat
 
 ### 1.1 Color Tokens — Base Palette
 
-| Token | Hex | RGB | Usage |
-|-------|-----|-----|-------|
-| `--c-parchment` | `#EDE0CB` | `rgb(237, 224, 203)` | Page background. Every screen. Every gap. The ground state. |
-| `--c-green` | `#1E4A40` | `rgb(30, 74, 64)` | Top nav, primary buttons, active tab, active filter, condition fill. |
-| `--c-orange` | `#E27739` | `rgb(226, 119, 57)` | Sell FAB, watcher heart, SHOP pill, card prices, active offer, unread dot. |
-| `--c-maroon` | `#681A19` | `rgb(104, 26, 25)` | "For Parts / As-Is" badge only. Never a button fill. |
-| `--c-text` | `#1C1C1C` | `rgb(28, 28, 28)` | Headings, body, listing price in detail header, spec values. |
-| `--c-text-2` | `#7A6E62` | `rgb(122, 110, 98)` | Labels, metadata, secondary copy. Always warm — never cool grey. |
-| `--c-border` | `#D9CCBA` | `rgb(217, 204, 186)` | All borders, dividers, inactive thumbnails, skeleton base. |
-| `--c-fill` | `#F0E8DA` | `rgb(240, 232, 218)` | Input bg, stats rows, inactive pills, skeleton highlight. |
-| `--c-white` | `#FFFFFF` | `rgb(255, 255, 255)` | White surfaces (seller card, modals, sheets, toasts). |
+| Token           | Hex       | RGB                  | Usage                                                                      |
+| --------------- | --------- | -------------------- | -------------------------------------------------------------------------- |
+| `--c-parchment` | `#EDE0CB` | `rgb(237, 224, 203)` | Page background. Every screen. Every gap. The ground state.                |
+| `--c-green`     | `#1E4A40` | `rgb(30, 74, 64)`    | Top nav, primary buttons, active tab, active filter, condition fill.       |
+| `--c-orange`    | `#E27739` | `rgb(226, 119, 57)`  | Sell FAB, watcher heart, SHOP pill, card prices, active offer, unread dot. |
+| `--c-maroon`    | `#681A19` | `rgb(104, 26, 25)`   | "For Parts / As-Is" badge only. Never a button fill.                       |
+| `--c-text`      | `#1C1C1C` | `rgb(28, 28, 28)`    | Headings, body, listing price in detail header, spec values.               |
+| `--c-text-2`    | `#7A6E62` | `rgb(122, 110, 98)`  | Labels, metadata, secondary copy. Always warm — never cool grey.           |
+| `--c-border`    | `#D9CCBA` | `rgb(217, 204, 186)` | All borders, dividers, inactive thumbnails, skeleton base.                 |
+| `--c-fill`      | `#F0E8DA` | `rgb(240, 232, 218)` | Input bg, stats rows, inactive pills, skeleton highlight.                  |
+| `--c-white`     | `#FFFFFF` | `rgb(255, 255, 255)` | White surfaces (seller card, modals, sheets, toasts).                      |
 
 ### 1.2 Color Tokens — Semantic Colors
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--c-success` | `#1A6B43` | Net payout, successful upload, transaction complete. |
-| `--c-success-bg` | `#D4EDDA` | Success background fill. |
-| `--c-success-border` | `#A8D9BC` | Success border. |
-| `--c-warning` | `#B86E0A` | Offer expiring, verification incomplete, action needed. |
-| `--c-warning-bg` | `#FEF3DC` | Warning background fill. |
-| `--c-warning-border` | `#F5D08A` | Warning border. |
-| `--c-error` | `#B91C1C` | Payment failed, upload failed, validation error. |
-| `--c-error-bg` | `#FDE8E8` | Error background fill. |
-| `--c-error-border` | `#F5B5B5` | Error border. |
-| `--c-info` | `#1E4A40` | Contextual help, shipping guidance, platform updates. |
-| `--c-info-bg` | `#D6E9E4` | Info background fill. |
-| `--c-info-border` | `#9ECABB` | Info border. |
+| Token                | Hex       | Usage                                                   |
+| -------------------- | --------- | ------------------------------------------------------- |
+| `--c-success`        | `#1A6B43` | Net payout, successful upload, transaction complete.    |
+| `--c-success-bg`     | `#D4EDDA` | Success background fill.                                |
+| `--c-success-border` | `#A8D9BC` | Success border.                                         |
+| `--c-warning`        | `#B86E0A` | Offer expiring, verification incomplete, action needed. |
+| `--c-warning-bg`     | `#FEF3DC` | Warning background fill.                                |
+| `--c-warning-border` | `#F5D08A` | Warning border.                                         |
+| `--c-error`          | `#B91C1C` | Payment failed, upload failed, validation error.        |
+| `--c-error-bg`       | `#FDE8E8` | Error background fill.                                  |
+| `--c-error-border`   | `#F5B5B5` | Error border.                                           |
+| `--c-info`           | `#1E4A40` | Contextual help, shipping guidance, platform updates.   |
+| `--c-info-bg`        | `#D6E9E4` | Info background fill.                                   |
+| `--c-info-border`    | `#9ECABB` | Info border.                                            |
 
 ### 1.3 Color Tokens — Interactive States
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--c-green-hover` | `#163831` | Green button/element hover state. |
-| `--c-green-active` | `#0E2822` | Green button/element active/pressed state. |
-| `--c-orange-hover` | `#CC6830` | Orange button/element hover state. |
+| Token               | Hex       | Usage                                       |
+| ------------------- | --------- | ------------------------------------------- |
+| `--c-green-hover`   | `#163831` | Green button/element hover state.           |
+| `--c-green-active`  | `#0E2822` | Green button/element active/pressed state.  |
+| `--c-orange-hover`  | `#CC6830` | Orange button/element hover state.          |
 | `--c-orange-active` | `#B55A28` | Orange button/element active/pressed state. |
 
 Disabled state: `opacity: 0.38; pointer-events: none;`
@@ -51,27 +51,27 @@ Loading state: `pointer-events: none;` with spinner overlay.
 
 ### 1.4 Color Tokens — CRUD State Colors
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--c-crud-create` | `#1E4A40` | Publish listing, post message, submit form. |
-| `--c-crud-create-bg` | `#D6E9E4` | Create action background. |
-| `--c-crud-read` | `#1C1C1C` | View listing, browse, read message, order history. |
-| `--c-crud-read-bg` | `#F0E8DA` | Read action background. |
-| `--c-crud-update` | `#E27739` | Edit listing, update price, counter offer. |
-| `--c-crud-update-bg` | `#FBE9D9` | Update action background. |
-| `--c-crud-delete` | `#B91C1C` | Remove listing, decline offer, cancel order. |
-| `--c-crud-delete-bg` | `#FDE8E8` | Delete action background. |
+| Token                | Hex       | Usage                                              |
+| -------------------- | --------- | -------------------------------------------------- |
+| `--c-crud-create`    | `#1E4A40` | Publish listing, post message, submit form.        |
+| `--c-crud-create-bg` | `#D6E9E4` | Create action background.                          |
+| `--c-crud-read`      | `#1C1C1C` | View listing, browse, read message, order history. |
+| `--c-crud-read-bg`   | `#F0E8DA` | Read action background.                            |
+| `--c-crud-update`    | `#E27739` | Edit listing, update price, counter offer.         |
+| `--c-crud-update-bg` | `#FBE9D9` | Update action background.                          |
+| `--c-crud-delete`    | `#B91C1C` | Remove listing, decline offer, cancel order.       |
+| `--c-crud-delete-bg` | `#FDE8E8` | Delete action background.                          |
 
 ### 1.5 Condition Badge Colors (Computed)
 
-| Condition | Background RGB | Hex Equivalent |
-|-----------|---------------|----------------|
-| New (Unfished) | `rgb(30, 74, 64)` | `#1E4A40` (same as `--c-green`) |
-| Excellent | `rgb(46, 107, 94)` | `#2E6B5E` |
-| Very Good | `rgb(61, 122, 108)` | `#3D7A6C` |
-| Good | `rgb(92, 122, 78)` | `#5C7A4E` |
-| Fair | `rgb(181, 149, 90)` | `#B5955A` |
-| For Parts / As-Is | `rgb(104, 26, 25)` | `#681A19` (same as `--c-maroon`) |
+| Condition         | Background RGB      | Hex Equivalent                   |
+| ----------------- | ------------------- | -------------------------------- |
+| New (Unfished)    | `rgb(30, 74, 64)`   | `#1E4A40` (same as `--c-green`)  |
+| Excellent         | `rgb(46, 107, 94)`  | `#2E6B5E`                        |
+| Very Good         | `rgb(61, 122, 108)` | `#3D7A6C`                        |
+| Good              | `rgb(92, 122, 78)`  | `#5C7A4E`                        |
+| Fair              | `rgb(181, 149, 90)` | `#B5955A`                        |
+| For Parts / As-Is | `rgb(104, 26, 25)`  | `#681A19` (same as `--c-maroon`) |
 
 All condition badges use white text.
 
@@ -81,59 +81,61 @@ All condition badges use white text.
 
 ### 2.1 Font Families
 
-| Token | Value |
-|-------|-------|
-| `--f-sans` | `"DM Sans", system-ui, sans-serif` |
+| Token       | Value                                |
+| ----------- | ------------------------------------ |
+| `--f-sans`  | `"DM Sans", system-ui, sans-serif`   |
 | `--f-serif` | `"DM Serif Display", Georgia, serif` |
 
 ### 2.2 Font Weights
 
-| Token | Value | Name |
-|-------|-------|------|
-| `--w-light` | `300` | Light |
-| `--w-regular` | `400` | Regular |
-| `--w-medium` | `500` | Medium |
+| Token          | Value | Name     |
+| -------------- | ----- | -------- |
+| `--w-light`    | `300` | Light    |
+| `--w-regular`  | `400` | Regular  |
+| `--w-medium`   | `500` | Medium   |
 | `--w-semibold` | `600` | SemiBold |
-| `--w-bold` | `700` | Bold |
+| `--w-bold`     | `700` | Bold     |
 
 ### 2.3 Line Heights
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--lh-tight` | `1.20` | Display heads |
-| `--lh-snug` | `1.35` | Card titles, UI |
-| `--lh-normal` | `1.50` | Body default |
-| `--lh-relaxed` | `1.65` | Long descriptions |
-| `--lh-loose` | `1.80` | Instructional copy |
+| Token          | Value  | Usage              |
+| -------------- | ------ | ------------------ |
+| `--lh-tight`   | `1.20` | Display heads      |
+| `--lh-snug`    | `1.35` | Card titles, UI    |
+| `--lh-normal`  | `1.50` | Body default       |
+| `--lh-relaxed` | `1.65` | Long descriptions  |
+| `--lh-loose`   | `1.80` | Instructional copy |
 
 ### 2.4 Full Type Scale
 
-| Size | Font | Weight | Line Height | Letter Spacing | Usage |
-|------|------|--------|-------------|----------------|-------|
-| `48px` | DM Serif Display | 400 | 1.2 | — | Hero editorial headers only |
-| `40px` | DM Serif Display | 400 | 1.2 | — | Large editorial section headers |
-| `32px` | DM Serif Display | 400 | 1.25 | — | Section titles on listing detail, shop pages |
-| `28px` | DM Sans | 700 (Bold) | 1.25 | — | Listing price in detail header. Always `--c-text`, never orange. |
-| `24px` | DM Sans | 700 (Bold) | 1.3 | — | Fee calculator net payout, offer amount in bubble |
-| `22px` | DM Sans | 600 (SemiBold) | 1.25 | — | Listing detail title (DM Sans, not Serif) |
-| `20px` | DM Serif Display | 400 | 1.3 | — | In-page section headers on listing detail |
-| `17px` | DM Sans | 600 (SemiBold) | 1.35 | — | Shop name, profile name, modal title |
-| `15px` | DM Sans | 400 (Regular) | 1.5 | — | Body copy, inputs, seller name, nav search |
-| `14px` | DM Sans | 400 (Regular) | 1.65 | — | Listing description, long-form copy |
-| `13px` | DM Sans | 400 (Regular) | 1.5 | — | Metadata, helper text, secondary body |
-| `12px` | DM Sans | 600 (SemiBold) | — | `+0.05em` | Form field labels, eyebrows (uppercase) |
-| `11px` | DM Sans | 400 (Regular) | 1.5 | — | Card seller line, timestamps, secondary metadata |
-| `10px` | DM Sans | 600 (SemiBold) | — | `+0.07em` | Spec table keys, nav tab labels, stat labels (uppercase) |
-| `9px` | DM Sans | 500 (Medium) | — | `+0.05em` | Condition badges and status pills only (uppercase) |
+| Size   | Font             | Weight         | Line Height | Letter Spacing | Usage                                                            |
+| ------ | ---------------- | -------------- | ----------- | -------------- | ---------------------------------------------------------------- |
+| `48px` | DM Serif Display | 400            | 1.2         | —              | Hero editorial headers only                                      |
+| `40px` | DM Serif Display | 400            | 1.2         | —              | Large editorial section headers                                  |
+| `32px` | DM Serif Display | 400            | 1.25        | —              | Section titles on listing detail, shop pages                     |
+| `28px` | DM Sans          | 700 (Bold)     | 1.25        | —              | Listing price in detail header. Always `--c-text`, never orange. |
+| `24px` | DM Sans          | 700 (Bold)     | 1.3         | —              | Fee calculator net payout, offer amount in bubble                |
+| `22px` | DM Sans          | 600 (SemiBold) | 1.25        | —              | Listing detail title (DM Sans, not Serif)                        |
+| `20px` | DM Serif Display | 400            | 1.3         | —              | In-page section headers on listing detail                        |
+| `17px` | DM Sans          | 600 (SemiBold) | 1.35        | —              | Shop name, profile name, modal title                             |
+| `15px` | DM Sans          | 400 (Regular)  | 1.5         | —              | Body copy, inputs, seller name, nav search                       |
+| `14px` | DM Sans          | 400 (Regular)  | 1.65        | —              | Listing description, long-form copy                              |
+| `13px` | DM Sans          | 400 (Regular)  | 1.5         | —              | Metadata, helper text, secondary body                            |
+| `12px` | DM Sans          | 600 (SemiBold) | —           | `+0.05em`      | Form field labels, eyebrows (uppercase)                          |
+| `11px` | DM Sans          | 400 (Regular)  | 1.5         | —              | Card seller line, timestamps, secondary metadata                 |
+| `10px` | DM Sans          | 600 (SemiBold) | —           | `+0.07em`      | Spec table keys, nav tab labels, stat labels (uppercase)         |
+| `9px`  | DM Sans          | 500 (Medium)   | —           | `+0.05em`      | Condition badges and status pills only (uppercase)               |
 
 ### 2.5 Serif Usage Rules
 
 **Use Serif (DM Serif Display) for:**
+
 - Section headers: "Condition", "More from Caleb", "Similar Gear", "Just Listed", "Maker Spotlight"
 - Empty state headlines
 - The Nessi wordmark
 
 **Never use Serif on:**
+
 - Listing titles
 - Any price
 - Navigation labels
@@ -153,64 +155,64 @@ All condition badges use white text.
 
 All spacing values are multiples of 4:
 
-| Value | Usage |
-|-------|-------|
-| `4px` | Micro spacing |
-| `8px` | Browse grid gap (3-col mobile), tight gaps |
-| `12px` | Component internal gaps |
+| Value  | Usage                                                                              |
+| ------ | ---------------------------------------------------------------------------------- |
+| `4px`  | Micro spacing                                                                      |
+| `8px`  | Browse grid gap (3-col mobile), tight gaps                                         |
+| `12px` | Component internal gaps                                                            |
 | `16px` | `--sp-page` page horizontal padding, form group bottom margin, seller card padding |
-| `20px` | Bottom sheet side padding, section headers |
-| `24px` | Bottom sheet bottom padding |
-| `28px` | Modal internal padding |
-| `32px` | Large section spacing |
-| `40px` | Section separators |
-| `48px` | Large section padding |
-| `64px` | Maximum spacing |
+| `20px` | Bottom sheet side padding, section headers                                         |
+| `24px` | Bottom sheet bottom padding                                                        |
+| `28px` | Modal internal padding                                                             |
+| `32px` | Large section spacing                                                              |
+| `40px` | Section separators                                                                 |
+| `48px` | Large section padding                                                              |
+| `64px` | Maximum spacing                                                                    |
 
 ### 3.2 Component Spacing Reference
 
-| Component | Spacing |
-|-----------|---------|
-| Page horizontal padding | `--sp-page: 16px` |
-| Browse grid gap (3-col mobile) | `8px` between cards |
-| Card metadata row gap | `3px` between rows |
-| Seller card internal padding | `16px` all sides |
-| Sticky purchase bar padding | `12px` vertical, `16px` horizontal |
-| Form group bottom margin | `16px` |
-| Modal internal padding | `28px` |
-| Bottom sheet padding | `16px` top, `20px` sides, `24px` bottom |
+| Component                      | Spacing                                 |
+| ------------------------------ | --------------------------------------- |
+| Page horizontal padding        | `--sp-page: 16px`                       |
+| Browse grid gap (3-col mobile) | `8px` between cards                     |
+| Card metadata row gap          | `3px` between rows                      |
+| Seller card internal padding   | `16px` all sides                        |
+| Sticky purchase bar padding    | `12px` vertical, `16px` horizontal      |
+| Form group bottom margin       | `16px`                                  |
+| Modal internal padding         | `28px`                                  |
+| Bottom sheet padding           | `16px` top, `20px` sides, `24px` bottom |
 
 ---
 
 ## 4. Border Radius
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--r-xs` | `4px` | Micro tags |
-| `--r-sm` | `6px` | Small button |
-| `--r-base` | `8px` | Photo/thumbnails |
-| `--r-md` | `10px` | Cards, inputs |
-| `--r-lg` | `12px` | Sheet top corners |
-| `--r-xl` | `16px` | Modal |
-| `--r-2xl` | `24px` | Sheet edge, bottom sheet top corners |
-| `--r-pill` | `999px` | All pills |
-| `--r-circle` | `50%` | Avatar, FAB |
+| Token        | Value   | Usage                                |
+| ------------ | ------- | ------------------------------------ |
+| `--r-xs`     | `4px`   | Micro tags                           |
+| `--r-sm`     | `6px`   | Small button                         |
+| `--r-base`   | `8px`   | Photo/thumbnails                     |
+| `--r-md`     | `10px`  | Cards, inputs                        |
+| `--r-lg`     | `12px`  | Sheet top corners                    |
+| `--r-xl`     | `16px`  | Modal                                |
+| `--r-2xl`    | `24px`  | Sheet edge, bottom sheet top corners |
+| `--r-pill`   | `999px` | All pills                            |
+| `--r-circle` | `50%`   | Avatar, FAB                          |
 
 ---
 
 ## 5. Shadows
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--sh-xs` | `0 1px 2px rgba(0,0,0,0.06)` | Filter chips |
-| `--sh-sm` | `0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)` | Seller card |
-| `--sh-md` | `0 4px 16px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06)` | Toast |
-| `--sh-lg` | `0 8px 32px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)` | Bottom sheet |
-| `--sh-xl` | `0 16px 48px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.06)` | Modal |
-| `--sh-sell` | `0 4px 12px rgba(226,119,57,0.45)` | Sell FAB only |
-| `--sh-focus-green` | `0 0 0 3px rgba(30,74,64,0.28)` | Primary inputs, green buttons focus |
-| `--sh-focus-orange` | `0 0 0 3px rgba(226,119,57,0.28)` | Orange elements focus |
-| `--sh-focus-error` | `0 0 0 3px rgba(185,28,28,0.22)` | Error inputs focus |
+| Token               | Value                                                       | Usage                               |
+| ------------------- | ----------------------------------------------------------- | ----------------------------------- |
+| `--sh-xs`           | `0 1px 2px rgba(0,0,0,0.06)`                                | Filter chips                        |
+| `--sh-sm`           | `0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)`    | Seller card                         |
+| `--sh-md`           | `0 4px 16px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06)`   | Toast                               |
+| `--sh-lg`           | `0 8px 32px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)`   | Bottom sheet                        |
+| `--sh-xl`           | `0 16px 48px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.06)` | Modal                               |
+| `--sh-sell`         | `0 4px 12px rgba(226,119,57,0.45)`                          | Sell FAB only                       |
+| `--sh-focus-green`  | `0 0 0 3px rgba(30,74,64,0.28)`                             | Primary inputs, green buttons focus |
+| `--sh-focus-orange` | `0 0 0 3px rgba(226,119,57,0.28)`                           | Orange elements focus               |
+| `--sh-focus-error`  | `0 0 0 3px rgba(185,28,28,0.22)`                            | Error inputs focus                  |
 
 Shadows are warm (black alpha) — never cool blue-grey.
 
@@ -220,33 +222,39 @@ Shadows are warm (black alpha) — never cool blue-grey.
 
 ### 6.1 Duration Tokens
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--dur-fast` | `100ms` | Button hover, icon color, tab active, pill selection |
-| `--dur-base` | `180ms` | Default — card hover, input focus, accordion, toggle |
-| `--dur-slow` | `300ms` | Page transitions, bottom sheet open, condition track |
-| `--dur-slower` | `450ms` | Modal entrance, toast slide-in |
+| Token           | Value   | Usage                                                   |
+| --------------- | ------- | ------------------------------------------------------- |
+| `--dur-fast`    | `100ms` | Button hover, icon color, tab active, pill selection    |
+| `--dur-base`    | `180ms` | Default — card hover, input focus, accordion, toggle    |
+| `--dur-slow`    | `300ms` | Page transitions, bottom sheet open, condition track    |
+| `--dur-slower`  | `450ms` | Modal entrance, toast slide-in                          |
 | `--dur-slowest` | `600ms` | Skeleton shimmer cycle, progress bars, photo cross-fade |
 
 ### 6.2 Easing Tokens
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` | Default for almost all UI. Card hover, input focus, pill transitions, bottom sheet open. Fast start, smooth finish. |
-| `--ease-in` | `cubic-bezier(0.4, 0, 1, 1)` | Exit and dismissal only: modal close, toast disappear, bottom sheet dismiss. Starts slow, accelerates away. |
+| Token           | Value                               | Usage                                                                                                                 |
+| --------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `--ease-out`    | `cubic-bezier(0.16, 1, 0.3, 1)`     | Default for almost all UI. Card hover, input focus, pill transitions, bottom sheet open. Fast start, smooth finish.   |
+| `--ease-in`     | `cubic-bezier(0.4, 0, 1, 1)`        | Exit and dismissal only: modal close, toast disappear, bottom sheet dismiss. Starts slow, accelerates away.           |
 | `--ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Micro-interactions with slight overshoot: Sell FAB hover, toggle switch, heart/watchlist tap, star fill. Feels alive. |
-| `ease-linear` | `linear` | Progress bars, skeleton shimmer, spinner rotation. Mechanical and continuous. |
+| `ease-linear`   | `linear`                            | Progress bars, skeleton shimmer, spinner rotation. Mechanical and continuous.                                         |
 
 ### 6.3 Keyframe Animations
 
 ```css
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -400% 0; }
-  100% { background-position: 400% 0; }
+  0% {
+    background-position: -400% 0;
+  }
+  100% {
+    background-position: 400% 0;
+  }
 }
 ```
 
@@ -254,31 +262,31 @@ Shadows are warm (black alpha) — never cool blue-grey.
 
 ## 7. Z-Index Stacking Order
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| (base) | `0` | Normal flow |
-| (raised) | `10` | Card hover |
-| `--z-sticky` | `100` | Top nav, filter strip |
-| `--z-filter` | `150` | Filter chip strip (sticky below top nav) |
-| `--z-nav-bottom` | `300` | Bottom tab bar — always on top |
-| (sheet-backdrop) | `400` | Sheet dim backdrop |
-| `--z-sheet` | `410` | Bottom sheet panel |
-| (modal-backdrop) | `500` | Modal dim backdrop |
-| `--z-modal` | `510` | Modal panel |
-| `--z-toast` | `600` | Toasts — above modals |
-| (tooltip) | `700` | Always topmost |
+| Token            | Value | Usage                                    |
+| ---------------- | ----- | ---------------------------------------- |
+| (base)           | `0`   | Normal flow                              |
+| (raised)         | `10`  | Card hover                               |
+| `--z-sticky`     | `100` | Top nav, filter strip                    |
+| `--z-filter`     | `150` | Filter chip strip (sticky below top nav) |
+| `--z-nav-bottom` | `300` | Bottom tab bar — always on top           |
+| (sheet-backdrop) | `400` | Sheet dim backdrop                       |
+| `--z-sheet`      | `410` | Bottom sheet panel                       |
+| (modal-backdrop) | `500` | Modal dim backdrop                       |
+| `--z-modal`      | `510` | Modal panel                              |
+| `--z-toast`      | `600` | Toasts — above modals                    |
+| (tooltip)        | `700` | Always topmost                           |
 
 ---
 
 ## 8. Breakpoints
 
-| Width | Name | Description |
-|-------|------|-------------|
-| `320px` | xs | Small phones. All layouts must work. No horizontal overflow. |
-| `375px` | sm | **Primary design target** (iPhone 14). 3-column card grid. Bottom tab bar. |
-| `768px` | md | Tablet. 4-column grid. Bottom nav persists. Sidebar layouts emerge. |
-| `1024px` | lg | Desktop. Top nav replaces bottom nav. Category pill row. Right-column sticky panel on listing detail. |
-| `1280px` | xl | Large desktop. Max content width 1200px centered. |
+| Width    | Name | Description                                                                                           |
+| -------- | ---- | ----------------------------------------------------------------------------------------------------- |
+| `320px`  | xs   | Small phones. All layouts must work. No horizontal overflow.                                          |
+| `375px`  | sm   | **Primary design target** (iPhone 14). 3-column card grid. Bottom tab bar.                            |
+| `768px`  | md   | Tablet. 4-column grid. Bottom nav persists. Sidebar layouts emerge.                                   |
+| `1024px` | lg   | Desktop. Top nav replaces bottom nav. Category pill row. Right-column sticky panel on listing detail. |
+| `1280px` | xl   | Large desktop. Max content width 1200px centered.                                                     |
 
 **Mobile-first.** Base CSS targets 375px. Desktop overrides: `@media (min-width: 1024px)`. Never use device names or orientation — only viewport width.
 
@@ -286,22 +294,22 @@ Shadows are warm (black alpha) — never cool blue-grey.
 
 ## 9. Fixed Component Heights
 
-| Token / Component | Value |
-|-------------------|-------|
-| `--h-nav-top` | `56px` — Top nav (both green and parchment variants) |
-| `--h-nav-bottom` | `60px` — Bottom tab bar (+ `env(safe-area-inset-bottom)`) |
-| `--h-btn-lg` | `52px` — Large button |
-| `--h-btn-md` | `44px` — Medium button (default) |
-| `--h-btn-sm` | `36px` — Small button |
-| `--h-btn-xs` | `28px` — Extra-small button |
-| `--h-input` | `48px` — Text input |
-| `--h-input-sm` | `40px` — Small text input |
-| `--min-tap` | `44px` — Minimum tap target (44x44px) |
-| `--sp-page` | `16px` — Page horizontal padding |
-| Sell FAB | `48x48px`, floats `8px` above bar |
-| Filter chip strip | `40px` height |
-| Sticky purchase bar | `80px` + `safe-area-inset-bottom` |
-| Thumbnail strip | `56x56px` each |
+| Token / Component   | Value                                                     |
+| ------------------- | --------------------------------------------------------- |
+| `--h-nav-top`       | `56px` — Top nav (both green and parchment variants)      |
+| `--h-nav-bottom`    | `60px` — Bottom tab bar (+ `env(safe-area-inset-bottom)`) |
+| `--h-btn-lg`        | `52px` — Large button                                     |
+| `--h-btn-md`        | `44px` — Medium button (default)                          |
+| `--h-btn-sm`        | `36px` — Small button                                     |
+| `--h-btn-xs`        | `28px` — Extra-small button                               |
+| `--h-input`         | `48px` — Text input                                       |
+| `--h-input-sm`      | `40px` — Small text input                                 |
+| `--min-tap`         | `44px` — Minimum tap target (44x44px)                     |
+| `--sp-page`         | `16px` — Page horizontal padding                          |
+| Sell FAB            | `48x48px`, floats `8px` above bar                         |
+| Filter chip strip   | `40px` height                                             |
+| Sticky purchase bar | `80px` + `safe-area-inset-bottom`                         |
+| Thumbnail strip     | `56x56px` each                                            |
 
 ---
 
@@ -387,16 +395,17 @@ Shadows are warm (black alpha) — never cool blue-grey.
 
 ### 11.2 Button Sizes
 
-| Size | Height | Padding | Font Size | Border Radius |
-|------|--------|---------|-----------|---------------|
-| `btn-lg` | `52px` (`--h-btn-lg`) | `0 28px` | `16px` | `--r-md` (`10px`) |
-| `btn-md` | `44px` (`--h-btn-md`) | `0 20px` | `15px` | `--r-md` (`10px`) |
-| `btn-sm` | `36px` (`--h-btn-sm`) | `0 14px` | `13px` | `--r-base` (`8px`) |
-| `btn-xs` | `28px` (`--h-btn-xs`) | `0 10px` | `12px` | `--r-sm` (`6px`) |
+| Size     | Height                | Padding  | Font Size | Border Radius      |
+| -------- | --------------------- | -------- | --------- | ------------------ |
+| `btn-lg` | `52px` (`--h-btn-lg`) | `0 28px` | `16px`    | `--r-md` (`10px`)  |
+| `btn-md` | `44px` (`--h-btn-md`) | `0 20px` | `15px`    | `--r-md` (`10px`)  |
+| `btn-sm` | `36px` (`--h-btn-sm`) | `0 14px` | `13px`    | `--r-base` (`8px`) |
+| `btn-xs` | `28px` (`--h-btn-xs`) | `0 10px` | `12px`    | `--r-sm` (`6px`)   |
 
 ### 11.3 Button Variants
 
 **Primary (`.btn-primary`)**
+
 - Background: `--c-green`
 - Color: white
 - Hover: `--c-green-hover`
@@ -404,6 +413,7 @@ Shadows are warm (black alpha) — never cool blue-grey.
 - Focus: `box-shadow: --sh-focus-green`
 
 **Ghost/Secondary (`.btn-ghost`)**
+
 - Background: transparent
 - Color: `--c-text`
 - Border: `1.5px solid --c-text`
@@ -411,6 +421,7 @@ Shadows are warm (black alpha) — never cool blue-grey.
 - Active: `scale(0.98)`
 
 **Orange Accent (`.btn-orange`)**
+
 - Background: `--c-orange`
 - Color: white
 - Hover: `--c-orange-hover`
@@ -418,12 +429,14 @@ Shadows are warm (black alpha) — never cool blue-grey.
 - Focus: `--sh-focus-orange`
 
 **Ghost Orange (`.btn-ghost-orange`)**
+
 - Background: transparent
 - Color: `--c-orange`
 - Border: `1.5px solid --c-orange`
 - Hover: bg `rgba(226, 119, 57, 0.07)`
 
 **Danger/Destructive (`.btn-danger`)**
+
 - Background: `--c-error` (`#B91C1C`)
 - Color: white
 - Hover: `rgb(155, 26, 26)` (darker)
@@ -431,6 +444,7 @@ Shadows are warm (black alpha) — never cool blue-grey.
 - Focus: `--sh-focus-error`
 
 **Ghost Danger (`.btn-ghost-danger`)**
+
 - Background: transparent
 - Color: `--c-error`
 - Border: `1.5px solid --c-error`
@@ -448,6 +462,7 @@ Shadows are warm (black alpha) — never cool blue-grey.
 ### 11.5 Special Buttons
 
 **Message Button (`.btn-msg`)**
+
 - Height: `28px`
 - Padding: `0 12px`
 - Font: `12px`, weight `500`
@@ -455,6 +470,7 @@ Shadows are warm (black alpha) — never cool blue-grey.
 - Background: `--c-green`, hover: `--c-green-hover`
 
 **Sell FAB**
+
 - `48px` x `48px`, border-radius `50%`
 - Background: `--c-orange`
 - Shadow: `--sh-sell`
@@ -462,6 +478,7 @@ Shadows are warm (black alpha) — never cool blue-grey.
 - Position: relative, `top: -6px` (floats above bar)
 
 **Sticky Purchase Bar**
+
 - Two-button split: `40/60` ratio
 - "Make Offer" ghost + "Buy Now" primary
 - No price. No shipping copy.
@@ -483,34 +500,34 @@ Shadows are warm (black alpha) — never cool blue-grey.
 
 ### 12.2 Pill Sizes
 
-| Size | Font Size | Padding |
-|------|-----------|---------|
-| Default | `9px` | `3px 9px` |
-| `pill-lg` | `11px` | `5px 12px` |
-| `pill-sm` | `8px` | `2px 7px` |
+| Size      | Font Size | Padding    |
+| --------- | --------- | ---------- |
+| Default   | `9px`     | `3px 9px`  |
+| `pill-lg` | `11px`    | `5px 12px` |
+| `pill-sm` | `8px`     | `2px 7px`  |
 
 ### 12.3 Condition Badges
 
 Position: absolute, `bottom: 8px`, `left: 8px`, `z-index: 2` on photo overlays.
 9px on photo overlay. 11px in condition section. Always uppercase.
 
-| Condition | Class | Background | Text |
-|-----------|-------|------------|------|
-| New (Unfished) | `.pill-new` | `#1E4A40` | white |
-| Excellent | `.pill-excellent` | `#2E6B5E` | white |
-| Very Good | `.pill-verygood` | `#3D7A6C` | white |
-| Good | `.pill-good` | `#5C7A4E` | white |
-| Fair | `.pill-fair` | `#B5955A` | white |
-| For Parts / As-Is | `.pill-parts` | `#681A19` | white |
+| Condition         | Class             | Background | Text  |
+| ----------------- | ----------------- | ---------- | ----- |
+| New (Unfished)    | `.pill-new`       | `#1E4A40`  | white |
+| Excellent         | `.pill-excellent` | `#2E6B5E`  | white |
+| Very Good         | `.pill-verygood`  | `#3D7A6C`  | white |
+| Good              | `.pill-good`      | `#5C7A4E`  | white |
+| Fair              | `.pill-fair`      | `#B5955A`  | white |
+| For Parts / As-Is | `.pill-parts`     | `#681A19`  | white |
 
 ### 12.4 Listing Status Pills
 
-| Status | Class | Background | Color | Border |
-|--------|-------|------------|-------|--------|
-| Active | `.pill-active` | `--c-success-bg` | `--c-success` | `1px solid --c-success-border` |
+| Status       | Class           | Background       | Color         | Border                         |
+| ------------ | --------------- | ---------------- | ------------- | ------------------------------ |
+| Active       | `.pill-active`  | `--c-success-bg` | `--c-success` | `1px solid --c-success-border` |
 | Pending Sale | `.pill-pending` | `--c-warning-bg` | `--c-warning` | `1px solid --c-warning-border` |
-| Sold | `.pill-sold` | `#EDE0CB` | `--c-text-2` | `1px solid --c-border` |
-| Draft | `.pill-draft` | `--c-fill` | `--c-text-2` | `1px solid --c-border` |
+| Sold         | `.pill-sold`    | `#EDE0CB`        | `--c-text-2`  | `1px solid --c-border`         |
+| Draft        | `.pill-draft`   | `--c-fill`       | `--c-text-2`  | `1px solid --c-border`         |
 
 Dashboard and order management only. Never on buyer-facing browse or listing detail.
 
@@ -565,15 +582,15 @@ Dashboard and order management only. Never on buyer-facing browse or listing det
 
 ### 13.2 Input States
 
-| State | Border | Background | Shadow |
-|-------|--------|------------|--------|
-| Default | `--c-border` | `--c-fill` | none |
-| Hover | `rgb(192, 179, 160)` (darker border) | `--c-fill` | none |
-| Focus | `--c-green` | white | `--sh-focus-green` |
-| Success | `--c-success` | white | none |
-| Error | `--c-error` | white | `--sh-focus-error` |
-| Disabled | `--c-border` | `--c-fill` | none, `opacity: 0.45` |
-| Read-only | `--c-border` | `--c-fill` | none, color `--c-text-2` |
+| State     | Border                               | Background | Shadow                   |
+| --------- | ------------------------------------ | ---------- | ------------------------ |
+| Default   | `--c-border`                         | `--c-fill` | none                     |
+| Hover     | `rgb(192, 179, 160)` (darker border) | `--c-fill` | none                     |
+| Focus     | `--c-green`                          | white      | `--sh-focus-green`       |
+| Success   | `--c-success`                        | white      | none                     |
+| Error     | `--c-error`                          | white      | `--sh-focus-error`       |
+| Disabled  | `--c-border`                         | `--c-fill` | none, `opacity: 0.45`    |
+| Read-only | `--c-border`                         | `--c-fill` | none, color `--c-text-2` |
 
 ### 13.3 Small Input
 
@@ -740,12 +757,12 @@ Dashboard and order management only. Never on buyer-facing browse or listing det
 
 ### 16.1 Avatar Sizes
 
-| Size | Class | Dimensions | Font Size |
-|------|-------|------------|-----------|
-| Large | `.av-lg` | `48px` x `48px` | `18px` |
-| Medium | `.av-md` | `40px` x `40px` | `15px` |
-| Small | `.av-sm` | `32px` x `32px` | `12px` |
-| Extra Small | `.av-xs` | `24px` x `24px` | `9px` |
+| Size        | Class    | Dimensions      | Font Size |
+| ----------- | -------- | --------------- | --------- |
+| Large       | `.av-lg` | `48px` x `48px` | `18px`    |
+| Medium      | `.av-md` | `40px` x `40px` | `15px`    |
+| Small       | `.av-sm` | `32px` x `32px` | `12px`    |
+| Extra Small | `.av-xs` | `24px` x `24px` | `9px`     |
 
 ### 16.2 Avatar Style
 
@@ -757,11 +774,11 @@ Dashboard and order management only. Never on buyer-facing browse or listing det
 
 ### 16.3 Avatar Gradients (Deterministic per User)
 
-| Variant | Class | Gradient |
-|---------|-------|----------|
-| Green | `.av-g` | `linear-gradient(135deg, #1E4A40, #2E6B5E)` |
-| Orange | `.av-o` | `linear-gradient(135deg, #E27739, #C47030)` |
-| Maroon | `.av-m` | `linear-gradient(135deg, #681A19, #8B2525)` |
+| Variant | Class   | Gradient                                    |
+| ------- | ------- | ------------------------------------------- |
+| Green   | `.av-g` | `linear-gradient(135deg, #1E4A40, #2E6B5E)` |
+| Orange  | `.av-o` | `linear-gradient(135deg, #E27739, #C47030)` |
+| Maroon  | `.av-m` | `linear-gradient(135deg, #681A19, #8B2525)` |
 
 Shop owners: `2px --c-orange` border ring everywhere their avatar appears.
 Gradient is deterministic per user — never random on re-render.
@@ -790,14 +807,14 @@ Gradient is deterministic per user — never random on re-render.
 
 ### 17.3 Condition Tier Descriptions (Exact Language — Never Paraphrase)
 
-| Tier | Description |
-|------|-------------|
-| **New (Unfished)** | Never used, original packaging or equivalent. No wear of any kind. |
-| **Excellent** | Used briefly (1-2 trips), no visible wear, functions perfectly, all original parts. |
-| **Very Good** | Normal use, minor cosmetic wear only (light scratches, slight cork compression), functions perfectly. |
-| **Good** | Visible wear consistent with regular use. May have minor repairs. Functions as intended. |
-| **Fair** | Heavy use or storage wear. Functional but cosmetic condition is rough. Priced to reflect. |
-| **For Parts / As-Is** | Does not fully function or has significant damage. Sold as described, no returns. |
+| Tier                  | Description                                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| **New (Unfished)**    | Never used, original packaging or equivalent. No wear of any kind.                                    |
+| **Excellent**         | Used briefly (1-2 trips), no visible wear, functions perfectly, all original parts.                   |
+| **Very Good**         | Normal use, minor cosmetic wear only (light scratches, slight cork compression), functions perfectly. |
+| **Good**              | Visible wear consistent with regular use. May have minor repairs. Functions as intended.              |
+| **Fair**              | Heavy use or storage wear. Functional but cosmetic condition is rough. Priced to reflect.             |
+| **For Parts / As-Is** | Does not fully function or has significant damage. Sold as described, no returns.                     |
 
 ---
 
@@ -858,11 +875,13 @@ Gradient is deterministic per user — never random on re-render.
 - Font: `14px`, line-height `1.65`
 
 **Received (`.msg-r`):**
+
 - Background: white
 - Border radius: `--r-md --r-md --r-md 4px` (flat bottom-left corner)
 - Color: `--c-text`
 
 **Sent (`.msg-s`):**
+
 - Background: `--c-green`
 - Border radius: `--r-md --r-md 4px --r-md` (flat bottom-right corner)
 - Color: white
@@ -960,14 +979,14 @@ Empty states are marketing moments — never a raw "No results found."
 
 ### 23.2 Empty State Examples
 
-| Context | Icon | Title | Description | CTA |
-|---------|------|-------|-------------|-----|
-| No listings | fish | No listings yet. | Start with your most-used rod — that's the one someone else would actually want. | List Your First Item |
-| No search results | search | Nothing matches. | Try "Shimano" or "7ft medium rod" — or clear your filters. | Clear Filters |
-| No messages | checkmark | No messages yet. | When buyers ask about your listings, threads appear here. | Browse Listings |
-| No watchlist | heart | Nothing saved. | Tap the heart on any listing. You'll know when the price drops. | Start Browsing |
-| No orders | box | No orders yet. | Your purchase history lives here once you've bought something. | Browse Gear |
-| No reviews | star | No reviews yet. | Reviews appear after completed transactions. First sale is the hardest one. | View Listings |
+| Context           | Icon      | Title            | Description                                                                      | CTA                  |
+| ----------------- | --------- | ---------------- | -------------------------------------------------------------------------------- | -------------------- |
+| No listings       | fish      | No listings yet. | Start with your most-used rod — that's the one someone else would actually want. | List Your First Item |
+| No search results | search    | Nothing matches. | Try "Shimano" or "7ft medium rod" — or clear your filters.                       | Clear Filters        |
+| No messages       | checkmark | No messages yet. | When buyers ask about your listings, threads appear here.                        | Browse Listings      |
+| No watchlist      | heart     | Nothing saved.   | Tap the heart on any listing. You'll know when the price drops.                  | Start Browsing       |
+| No orders         | box       | No orders yet.   | Your purchase history lives here once you've bought something.                   | Browse Gear          |
+| No reviews        | star      | No reviews yet.  | Reviews appear after completed transactions. First sale is the hardest one.      | View Listings        |
 
 ---
 
@@ -1020,12 +1039,12 @@ Empty states are marketing moments — never a raw "No results found."
 
 ### 25.2 Toast Variants
 
-| Variant | Class | Border Left |
-|---------|-------|-------------|
+| Variant | Class      | Border Left             |
+| ------- | ---------- | ----------------------- |
 | Success | `.toast-s` | `4px solid --c-success` |
-| Error | `.toast-e` | `4px solid --c-error` |
+| Error   | `.toast-e` | `4px solid --c-error`   |
 | Warning | `.toast-w` | `4px solid --c-warning` |
-| Info | `.toast-i` | `4px solid --c-info` |
+| Info    | `.toast-i` | `4px solid --c-info`    |
 
 All toasts: white background, left border accent.
 
@@ -1077,22 +1096,27 @@ Knowledgeable fishing friend — not a platform. Earned, specific, tactile.
 **Test:** Would a 52-year-old muskie collector or a 26-year-old lure maker read this and think "these people get it"?
 
 ### Listing Descriptions
+
 - DO: Specific gear details, honest condition notes, personal experience, fishing-specific language
 - DON'T: Generic superlatives, "must-have", "don't miss out", exclamation marks
 
 ### Seller Onboarding
+
 - DO: "You know this gear better than we do. Tell buyers what they actually need to know..."
 - DON'T: "Welcome to Nessi! Complete your seller profile to start listing..."
 
 ### Marketing Emails
+
 - DO: Seasonal, specific, understated — "It's April. The bass are shallow..."
 - DON'T: Emoji-heavy, ALL CAPS, "Don't miss out — listings go fast!"
 
 ### Error Messages
+
 - DO: Specific, honest, with a path forward
 - DON'T: Error codes, generic "something went wrong", Stripe codes
 
 ### Empty States
+
 - DO: Short headline + one helpful sentence + CTA
 - DON'T: Raw "No results found" or generic marketplace language
 
@@ -1103,60 +1127,60 @@ Knowledgeable fishing friend — not a platform. Earned, specific, tactile.
 ```css
 :root {
   /* Colors — Base Palette */
-  --c-parchment: #EDE0CB;
-  --c-green: #1E4A40;
-  --c-orange: #E27739;
-  --c-maroon: #681A19;
-  --c-text: #1C1C1C;
-  --c-text-2: #7A6E62;
-  --c-border: #D9CCBA;
-  --c-fill: #F0E8DA;
-  --c-white: #FFFFFF;
+  --c-parchment: #ede0cb;
+  --c-green: #1e4a40;
+  --c-orange: #e27739;
+  --c-maroon: #681a19;
+  --c-text: #1c1c1c;
+  --c-text-2: #7a6e62;
+  --c-border: #d9ccba;
+  --c-fill: #f0e8da;
+  --c-white: #ffffff;
 
   /* Colors — Semantic */
-  --c-success: #1A6B43;
-  --c-success-bg: #D4EDDA;
-  --c-success-border: #A8D9BC;
-  --c-warning: #B86E0A;
-  --c-warning-bg: #FEF3DC;
-  --c-warning-border: #F5D08A;
-  --c-error: #B91C1C;
-  --c-error-bg: #FDE8E8;
-  --c-error-border: #F5B5B5;
-  --c-info: #1E4A40;
-  --c-info-bg: #D6E9E4;
-  --c-info-border: #9ECABB;
+  --c-success: #1a6b43;
+  --c-success-bg: #d4edda;
+  --c-success-border: #a8d9bc;
+  --c-warning: #b86e0a;
+  --c-warning-bg: #fef3dc;
+  --c-warning-border: #f5d08a;
+  --c-error: #b91c1c;
+  --c-error-bg: #fde8e8;
+  --c-error-border: #f5b5b5;
+  --c-info: #1e4a40;
+  --c-info-bg: #d6e9e4;
+  --c-info-border: #9ecabb;
 
   /* Colors — Interactive States */
   --c-green-hover: #163831;
-  --c-green-active: #0E2822;
-  --c-orange-hover: #CC6830;
-  --c-orange-active: #B55A28;
+  --c-green-active: #0e2822;
+  --c-orange-hover: #cc6830;
+  --c-orange-active: #b55a28;
 
   /* Colors — CRUD */
-  --c-crud-create: #1E4A40;
-  --c-crud-create-bg: #D6E9E4;
-  --c-crud-read: #1C1C1C;
-  --c-crud-read-bg: #F0E8DA;
-  --c-crud-update: #E27739;
-  --c-crud-update-bg: #FBE9D9;
-  --c-crud-delete: #B91C1C;
-  --c-crud-delete-bg: #FDE8E8;
+  --c-crud-create: #1e4a40;
+  --c-crud-create-bg: #d6e9e4;
+  --c-crud-read: #1c1c1c;
+  --c-crud-read-bg: #f0e8da;
+  --c-crud-update: #e27739;
+  --c-crud-update-bg: #fbe9d9;
+  --c-crud-delete: #b91c1c;
+  --c-crud-delete-bg: #fde8e8;
 
   /* Typography */
-  --f-sans: "DM Sans", system-ui, sans-serif;
-  --f-serif: "DM Serif Display", Georgia, serif;
+  --f-sans: 'DM Sans', system-ui, sans-serif;
+  --f-serif: 'DM Serif Display', Georgia, serif;
 
   /* Shadows */
-  --sh-xs: 0 1px 2px rgba(0,0,0,0.06);
-  --sh-sm: 0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-  --sh-md: 0 4px 16px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
-  --sh-lg: 0 8px 32px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
-  --sh-xl: 0 16px 48px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.06);
-  --sh-sell: 0 4px 12px rgba(226,119,57,0.45);
-  --sh-focus-green: 0 0 0 3px rgba(30,74,64,0.28);
-  --sh-focus-orange: 0 0 0 3px rgba(226,119,57,0.28);
-  --sh-focus-error: 0 0 0 3px rgba(185,28,28,0.22);
+  --sh-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --sh-sm: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --sh-md: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+  --sh-xl: 0 16px 48px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.06);
+  --sh-sell: 0 4px 12px rgba(226, 119, 57, 0.45);
+  --sh-focus-green: 0 0 0 3px rgba(30, 74, 64, 0.28);
+  --sh-focus-orange: 0 0 0 3px rgba(226, 119, 57, 0.28);
+  --sh-focus-error: 0 0 0 3px rgba(185, 28, 28, 0.22);
 
   /* Border Radius */
   --r-xs: 4px;

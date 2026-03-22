@@ -193,8 +193,8 @@ These are referenced via `${VAR}` interpolation in `.mcp.json` and are **not** s
 
 MCP (Model Context Protocol) servers are configured in `.mcp.json` at the project root.
 
-| Server   | Package                  | Purpose                                                                               |
-| -------- | ------------------------ | ------------------------------------------------------------------------------------- |
+| Server   | Package                  | Purpose                                                                                                                                          |
+| -------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `stitch` | `@_davideast/stitch-mcp` | AI-powered UI design tool — generates screens, variants, and design systems. Integrated with `/ui-design "stitch:..."` for screen-to-code builds |
 
 **Setup:** The Stitch MCP server requires a `STITCH_API_KEY` environment variable exported in `~/.zshrc` (see Shell Environment above). The `.mcp.json` file references it via `${STITCH_API_KEY}` interpolation — the actual key is never committed to the repo.

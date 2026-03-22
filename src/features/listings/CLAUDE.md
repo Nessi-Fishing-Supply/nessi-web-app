@@ -6,13 +6,14 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 
 ## Architecture
 
-- **types/listing.ts** — Database-derived types: `Listing`, `ListingInsert`, `ListingUpdate`, `ListingStatus`, `ListingWithPhotos`, `ListingDraft`, `ListingCondition`, `ListingCategory`
+- **types/listing.ts** — Database-derived types: `Listing`, `ListingInsert`, `ListingUpdate`, `ListingStatus`, `ListingWithPhotos`, `ListingDraft`, `ListingCondition`, `ListingCategory`, `SellerProfile`, `ListingDetailData`
 - **types/listing-photo.ts** — Photo types: `ListingPhoto`, `ListingPhotoInsert`, `ListingPhotoUpdate`, `UploadResult`
 - **constants/condition.ts** — `CONDITION_TIERS` (6-tier array with labels, descriptions, WCAG AA colors), `CATEGORY_PHOTO_GUIDANCE` (per-category photo tips), `ConditionTier` type
 - **constants/category.ts** — `LISTING_CATEGORIES` (10 categories with labels and react-icons), `getCategoryLabel()`, `getCategoryIcon()`
 - **utils/format.ts** — `formatPrice(cents)` → "$29.99", `calculateFee(cents)` → marketplace fee in cents (flat $0.99 under $15, 6% above), `calculateNet(cents)` → price minus fee
 - **services/listing.ts** — Client-side service functions calling API routes via `@/libs/fetch` helpers (`getListings`, `getListingById`, `createListing`, `updateListing`, `deleteListing`, `updateListingStatus`, etc.)
 - **services/listing-photo.ts** — Photo upload/delete services calling API routes
+- **services/listing-server.ts** — Server-side Supabase queries: `getListingByIdServer`, `getListingWithSellerServer` (listing + seller profile), `getListingsByMemberServer`, `getListingsByShopServer`, `getActiveListingsServer`
 - **hooks/use-listings.ts** — Tanstack Query hooks for listing data fetching and mutations
 - **hooks/use-listing-photos.ts** — Tanstack Query hooks for photo upload and delete
 - **components/photo-manager/** — Multi-photo upload, reorder, and delete UI for listing creation and editing
@@ -142,15 +143,19 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Components
 
-| Component           | Location                         | Purpose                                                                                                      |
-| ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `PhotoManager`      | `components/photo-manager/`      | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                         |
-| `ConditionBadge`    | `components/condition-badge/`    | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                           |
-| `ConditionSelector` | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance.      |
-| `ConditionFilter`   | `components/condition-filter/`   | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.                    |
-| `CategorySelector`  | `components/category-selector/`  | Tile grid for selecting listing category. Props: `value`, `onChange`. `role="radiogroup"` with keyboard nav. |
-| `CreateWizard`      | `components/create-wizard/`      | 5-step listing creation wizard with auto-save, draft resume, and publish/save-draft actions. See below.      |
-| `WizardProgress`    | `components/create-wizard/`      | Horizontal step progress indicator. Props: `currentStep`, `totalSteps`, `shippingSkipped`.                   |
+| Component           | Location                         | Purpose                                                                                                                                    |
+| ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PhotoManager`      | `components/photo-manager/`      | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                                                       |
+| `ConditionBadge`    | `components/condition-badge/`    | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                                                         |
+| `ConditionSelector` | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance.                                    |
+| `ConditionFilter`   | `components/condition-filter/`   | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.                                                  |
+| `CategorySelector`  | `components/category-selector/`  | Tile grid for selecting listing category. Props: `value`, `onChange`. `role="radiogroup"` with keyboard nav.                               |
+| `PhotoGallery`      | `components/photo-gallery/`      | Swiper carousel for listing detail. Props: `photos`, `title`, `onPhotoTap`. Handles 0, 1, and multi-photo states. ARIA carousel roles.     |
+| `PhotoLightbox`     | `components/photo-lightbox/`     | Full-screen photo viewer via portal. Props: `photos`, `initialIndex`, `isOpen`, `onClose`, `title`. Focus trap, scroll lock, Escape close. |
+| `SellerStrip`       | `components/seller-strip/`       | Seller info row: avatar (or initials fallback), name, "New seller" badge, "View shop" link. Props: `seller: SellerProfile`.                |
+| `ExpandableSection` | `components/expandable-section/` | Two modes: accordion (chevron toggle, `grid-template-rows` animation) and text truncation (`-webkit-line-clamp` with "Read more").         |
+| `CreateWizard`      | `components/create-wizard/`      | 5-step listing creation wizard with auto-save, draft resume, and publish/save-draft actions. See below.                                    |
+| `WizardProgress`    | `components/create-wizard/`      | Horizontal step progress indicator. Props: `currentStep`, `totalSteps`, `shippingSkipped`.                                                 |
 
 ## Create Wizard
 

@@ -193,6 +193,48 @@
   }
 }
 
+// Saving/publishing overlay
+.savingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255 255 255 / 90%);
+  backdrop-filter: blur(4px);
+}
+
+.savingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+}
+
+.savingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-gray-200);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.savingText {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-dark);
+  margin: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .slideLeft,
   .slideRight {

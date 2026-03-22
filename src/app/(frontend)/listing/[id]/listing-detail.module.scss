@@ -1,0 +1,283 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+// Page container
+.page {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 72px;
+
+  @include breakpoint(lg) {
+    padding-bottom: var(--space-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+// Two-column layout at lg
+.layout {
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint(lg) {
+    flex-direction: row;
+    gap: var(--space-xl);
+    padding: var(--space-md) var(--space-base);
+  }
+}
+
+// Gallery column — left side on desktop
+.galleryColumn {
+  @include breakpoint(lg) {
+    flex: 0 0 58%;
+    max-width: 58%;
+  }
+}
+
+// Details column — right side, sticky on desktop
+.detailsColumn {
+  padding: var(--space-base);
+
+  @include breakpoint(lg) {
+    flex: 1;
+    position: sticky;
+    top: var(--space-md);
+    align-self: flex-start;
+    padding: 0;
+  }
+}
+
+// Condition badge row
+.conditionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.quantityBadge {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-600);
+  background-color: var(--color-gray-50);
+  padding: var(--space-3xs) var(--space-xs);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+// Title
+.title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-dark);
+  margin: 0 0 var(--space-xs);
+  line-height: 1.3;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-xl);
+  }
+}
+
+// Price
+.priceRow {
+  margin-bottom: var(--space-sm);
+}
+
+.price {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-dark);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+// Shipping
+.shippingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.shippingIcon {
+  flex-shrink: 0;
+  font-size: var(--font-size-md);
+  color: var(--color-gray-500);
+}
+
+.shippingLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+.shippingFree {
+  font-size: var(--font-size-sm);
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+// Sold banner
+.soldBanner {
+  padding: var(--space-md);
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.soldText {
+  font-weight: 600;
+  color: var(--color-gray-600);
+  font-size: var(--font-size-base);
+}
+
+// Action buttons
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.messageLink {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-gray-400);
+  cursor: not-allowed;
+  background: none;
+  border: none;
+  padding: var(--space-xs) 0;
+}
+
+// Seller section
+.sellerSection {
+  padding-top: var(--space-sm);
+}
+
+// Below-fold content
+.belowFold {
+  padding: 0 var(--space-base);
+
+  @include breakpoint(lg) {
+    padding: 0 var(--space-base);
+    max-width: 58%;
+  }
+}
+
+// Content sections with visual separation
+.contentSection {
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin: 0 0 var(--space-sm);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-lg);
+  }
+}
+
+.descriptionText {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-700);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-base);
+  }
+}
+
+// Product specs table
+.specsTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.specRow {
+  display: flex;
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-gray-50);
+  font-size: var(--font-size-sm);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.specLabel {
+  flex: 0 0 140px;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+.specValue {
+  flex: 1;
+  color: var(--color-dark);
+}
+
+// Report
+.reportRow {
+  padding: var(--space-md) var(--space-base);
+}
+
+.reportLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  color: var(--color-gray-400);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-gray-600);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Sticky bar — mobile only
+.stickyBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-base);
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-gray-100);
+  box-shadow: var(--shadow-lg);
+
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
+.stickyPrice {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-dark);
+  white-space: nowrap;
+}
