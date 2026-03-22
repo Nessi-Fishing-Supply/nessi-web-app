@@ -5,41 +5,24 @@ import useCreateWizardStore from '@/features/listings/stores/create-wizard-store
 
 /**
  * Shared interface for both create and edit wizard stores.
- * Only includes the selectors that step components actually use.
+ * Uses `any` for the store type to avoid coupling the context to a specific
+ * store shape — both stores are structurally compatible via createSelectors.
  */
-interface WizardStoreApi {
-  use: {
-    step: () => number;
-    photoCount: () => number;
-    category: () => string | null;
-    condition: () => string | null;
-    title: () => string;
-    description: () => string;
-    priceCents: () => number;
-    shippingPreference: () => 'ship' | 'local_pickup';
-    shippingPaidBy: () => 'buyer' | 'seller' | null;
-    weightOz: () => number;
-    draftId: () => string | null;
-    setStep: () => (step: number) => void;
-    setField: () => <K extends string>(key: K, value: unknown) => void;
-    reset: () => () => void;
-  };
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type WizardStoreHook = any;
 
-const WizardStoreContext = createContext<WizardStoreApi>(
-  useCreateWizardStore as unknown as WizardStoreApi,
-);
+const WizardStoreContext = createContext<WizardStoreHook>(useCreateWizardStore);
 
 export function WizardStoreProvider({
   store,
   children,
 }: {
-  store: WizardStoreApi;
+  store: WizardStoreHook;
   children: React.ReactNode;
 }) {
   return <WizardStoreContext.Provider value={store}>{children}</WizardStoreContext.Provider>;
 }
 
-export function useWizardStore(): WizardStoreApi {
+export function useWizardStore() {
   return useContext(WizardStoreContext);
 }

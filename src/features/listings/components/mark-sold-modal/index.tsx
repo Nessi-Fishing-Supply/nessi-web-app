@@ -33,6 +33,13 @@ export default function MarkSoldModal({
   const titleId = useId();
   const [priceDisplay, setPriceDisplay] = useState('');
 
+  function handlePriceInput(value: string) {
+    // Only allow digits and a single decimal point with up to 2 decimal places
+    if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+      setPriceDisplay(value);
+    }
+  }
+
   function handleConfirm() {
     const cents = displayToCents(priceDisplay);
     onConfirm(cents > 0 ? cents : undefined);
@@ -45,7 +52,9 @@ export default function MarkSoldModal({
           Mark as Sold
         </h3>
         <p className={styles.listingTitle}>{listing.title}</p>
-        <p className={styles.listedPrice}>Listed at {formatPrice(listing.price_cents)}</p>
+        <p id={`${titleId}-listed-price`} className={styles.listedPrice}>
+          Listed at {formatPrice(listing.price_cents)}
+        </p>
 
         <div className={styles.fieldGroup}>
           <label htmlFor="sold-price" className={styles.label}>
@@ -61,15 +70,22 @@ export default function MarkSoldModal({
               inputMode="decimal"
               className={styles.priceInput}
               value={priceDisplay}
-              onChange={(e) => setPriceDisplay(e.target.value)}
+              onChange={(e) => handlePriceInput(e.target.value)}
               placeholder="0.00"
               autoComplete="off"
+              aria-describedby={`${titleId}-listed-price`}
             />
           </div>
         </div>
 
         <div className={styles.actions}>
-          <Button style="primary" fullWidth onClick={handleConfirm} loading={loading} disabled={loading}>
+          <Button
+            style="primary"
+            fullWidth
+            onClick={handleConfirm}
+            loading={loading}
+            disabled={loading}
+          >
             Mark as Sold
           </Button>
           <Button style="secondary" fullWidth outline onClick={onClose} disabled={loading}>

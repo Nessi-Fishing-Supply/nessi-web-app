@@ -40,11 +40,14 @@ export default function QuickEditPrice({ listing, isOpen, onClose }: QuickEditPr
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Reset and focus when modal opens — use a callback ref pattern
-  const focusCallback = useCallback((node: HTMLInputElement | null) => {
-    if (node && isOpen) {
-      requestAnimationFrame(() => node.focus());
-    }
-  }, [isOpen]);
+  const focusCallback = useCallback(
+    (node: HTMLInputElement | null) => {
+      if (node && isOpen) {
+        requestAnimationFrame(() => node.focus());
+      }
+    },
+    [isOpen],
+  );
 
   useEffect(() => {
     return () => {
@@ -82,10 +85,18 @@ export default function QuickEditPrice({ listing, isOpen, onClose }: QuickEditPr
       {
         onSuccess: () => {
           onClose();
-          showToast({ type: 'success', message: 'Price updated', description: `New price: ${formatPrice(newCents)}` });
+          showToast({
+            type: 'success',
+            message: 'Price updated',
+            description: `New price: ${formatPrice(newCents)}`,
+          });
         },
         onError: () => {
-          showToast({ type: 'error', message: 'Failed to update price', description: 'Please try again.' });
+          showToast({
+            type: 'error',
+            message: 'Failed to update price',
+            description: 'Please try again.',
+          });
         },
       },
     );
@@ -145,8 +156,8 @@ export default function QuickEditPrice({ listing, isOpen, onClose }: QuickEditPr
 
         {listing.watcher_count > 0 && (
           <p className={styles.watcherNotice} role="status">
-            {listing.watcher_count} {listing.watcher_count === 1 ? 'person is' : 'people are'} watching.
-            Lowering your price will notify them.
+            {listing.watcher_count} {listing.watcher_count === 1 ? 'person is' : 'people are'}{' '}
+            watching. Lowering your price will notify them.
           </p>
         )}
 

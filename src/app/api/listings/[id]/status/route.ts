@@ -2,6 +2,8 @@ import { createClient } from '@/libs/supabase/server';
 import type { ListingStatus } from '@/features/listings/types/listing';
 import { NextResponse } from 'next/server';
 
+// Note: Active listings can be deleted via DELETE /api/listings/[id] (soft delete),
+// not through status transitions. This map only covers status-to-status changes.
 const VALID_TRANSITIONS: Record<ListingStatus, ListingStatus[]> = {
   draft: ['active', 'deleted'],
   active: ['archived', 'sold'],

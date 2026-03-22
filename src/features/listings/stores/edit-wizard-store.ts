@@ -17,9 +17,17 @@ interface EditWizardState {
   draftId: string | null;
   changedFields: Set<string>;
   setStep: (step: number) => void;
-  setField: <K extends keyof Omit<EditWizardState, 'setStep' | 'setField' | 'reset' | 'hydrate' | 'getChangedData' | 'changedFields'>>(
+  setField: <
+    K extends keyof Omit<
+      EditWizardState,
+      'setStep' | 'setField' | 'reset' | 'hydrate' | 'getChangedData' | 'changedFields'
+    >,
+  >(
     key: K,
-    value: Omit<EditWizardState, 'setStep' | 'setField' | 'reset' | 'hydrate' | 'getChangedData' | 'changedFields'>[K],
+    value: Omit<
+      EditWizardState,
+      'setStep' | 'setField' | 'reset' | 'hydrate' | 'getChangedData' | 'changedFields'
+    >[K],
   ) => void;
   hydrate: (listing: ListingWithPhotos) => void;
   getChangedData: () => Record<string, unknown>;

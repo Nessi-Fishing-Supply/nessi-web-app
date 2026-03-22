@@ -13,7 +13,6 @@ import type { WizardPhoto } from '@/features/listings/stores/wizard-photo-store'
 
 import CategoryConditionStep from '../create-wizard/steps/category-condition-step';
 import DetailsStep from '../create-wizard/steps/details-step';
-import PhotosStep from '../create-wizard/steps/photos-step';
 import PricingStep from '../create-wizard/steps/pricing-step';
 import ReviewStep from '../create-wizard/steps/review-step';
 import ShippingStep from '../create-wizard/steps/shipping-step';
@@ -24,10 +23,12 @@ interface EditWizardProps {
   listing: ListingWithPhotos;
 }
 
+/** Edit wizard skips Photos (step 1) — photo editing is a future feature */
+const EDIT_STEPS = [2, 3, 4, 5, 6] as const;
+const FIRST_STEP = EDIT_STEPS[0];
 const TOTAL_STEPS = 6;
 
 const STEP_LABELS: Record<number, string> = {
-  1: 'Photos',
   2: 'Category and Condition',
   3: 'Details',
   4: 'Pricing',
@@ -50,23 +51,24 @@ export default function EditWizard({ listing }: EditWizardProps) {
 
   const isLocalPickup = shippingPreference === 'local_pickup';
 
-  // Convert server photos to WizardPhoto format for PhotosStep
+  // Convert server photos to WizardPhoto format for ReviewStep display
   const [photos] = useState<WizardPhoto[]>(() =>
     (listing.listing_photos ?? []).map((p) => ({
       id: p.id,
-      file: null as unknown as File,
+      file: null,
       previewUrl: p.image_url,
       position: p.position,
     })),
   );
 
-  // Hydrate store on mount
+  // Hydrate store on mount — start at step 2 (skip Photos)
   const hydratedRef = useRef(false);
   useEffect(() => {
     if (hydratedRef.current) return;
     hydratedRef.current = true;
     useEditWizardStore.getState().hydrate(listing);
-  }, [listing]);
+    setStep(FIRST_STEP);
+  }, [listing, setStep]);
 
   // Step announcements
   const prevStepRef = useRef(step);
@@ -74,7 +76,7 @@ export default function EditWizard({ listing }: EditWizardProps) {
     if (step !== prevStepRef.current) {
       prevStepRef.current = step;
       const label = STEP_LABELS[step] ?? `Step ${step}`;
-      setStepAnnouncement(`Step ${step} of ${TOTAL_STEPS}: ${label}`);
+      setStepAnnouncement(`${label}`);
     }
   }, [step]);
 
@@ -85,7 +87,10 @@ export default function EditWizard({ listing }: EditWizardProps) {
   }, [step]);
 
   function handleStepClick(targetStep: number) {
-    setStep(targetStep);
+    // Only allow jumping to edit-mode steps (skip Photos)
+    if (targetStep >= FIRST_STEP) {
+      setStep(targetStep);
+    }
   }
 
   async function handleSave() {
@@ -128,15 +133,6 @@ export default function EditWizard({ listing }: EditWizardProps) {
 
   function renderStep() {
     switch (step) {
-      case 1:
-        return (
-          <PhotosStep
-            photos={photos}
-            onPhotosChange={() => {}}
-            onPhotosAdd={() => {}}
-            onPhotoRemove={() => {}}
-          />
-        );
       case 2:
         return <CategoryConditionStep />;
       case 3:
@@ -153,7 +149,7 @@ export default function EditWizard({ listing }: EditWizardProps) {
   }
 
   return (
-    <WizardStoreProvider store={useEditWizardStore as unknown as Parameters<typeof WizardStoreProvider>[0]['store']}>
+    <WizardStoreProvider store={useEditWizardStore}>
       <div className={styles.wizard}>
         <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
           {stepAnnouncement}
@@ -206,13 +202,7 @@ export default function EditWizard({ listing }: EditWizardProps) {
         </main>
 
         <footer className={styles.footer}>
-          <Button
-            style="primary"
-            fullWidth
-            onClick={handleSave}
-            loading={saving}
-            disabled={saving}
-          >
+          <Button style="primary" fullWidth onClick={handleSave} loading={saving} disabled={saving}>
             Save Changes
           </Button>
           <Button style="secondary" fullWidth outline onClick={handleCancel} disabled={saving}>

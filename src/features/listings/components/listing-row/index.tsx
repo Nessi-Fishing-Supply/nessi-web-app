@@ -75,20 +75,12 @@ export default function ListingRow({ listing, onActionsClick, onPriceClick }: Li
         )}
         <div className={styles.meta}>
           <Pill color={LISTING_STATUS_COLORS[status]}>{LISTING_STATUS_LABELS[status]}</Pill>
-          {daysListed > 0 && (
-            <span className={styles.stat}>
-              {daysListed}d listed
-            </span>
-          )}
+          {daysListed > 0 && <span className={styles.stat}>{daysListed}d listed</span>}
           {listing.view_count > 0 && (
-            <span className={styles.stat}>
-              {listing.view_count} views
-            </span>
+            <span className={styles.stat}>{listing.view_count} views</span>
           )}
           {listing.watcher_count > 0 && (
-            <span className={styles.stat}>
-              {listing.watcher_count} watchers
-            </span>
+            <span className={styles.stat}>{listing.watcher_count} watchers</span>
           )}
         </div>
         {isDraft && (
@@ -103,7 +95,9 @@ export default function ListingRow({ listing, onActionsClick, onPriceClick }: Li
           type="button"
           className={`${styles.price} ${isActive && onPriceClick ? styles.priceEditable : ''}`}
           onClick={isActive && onPriceClick ? () => onPriceClick(listing) : undefined}
-          aria-label={isActive && onPriceClick ? `Edit price: ${formatPrice(listing.price_cents)}` : undefined}
+          aria-label={
+            isActive && onPriceClick ? `Edit price: ${formatPrice(listing.price_cents)}` : undefined
+          }
           disabled={!isActive || !onPriceClick}
         >
           {formatPrice(listing.price_cents)}

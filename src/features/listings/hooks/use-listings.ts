@@ -78,9 +78,8 @@ export function useUpdateListing() {
       const previousSeller = queryClient.getQueriesData<ListingWithPhotos[]>({
         queryKey: ['listings', 'seller'],
       });
-      queryClient.setQueriesData<ListingWithPhotos[]>(
-        { queryKey: ['listings', 'seller'] },
-        (old) => old?.map((l) => (l.id === id ? { ...l, ...data } : l)),
+      queryClient.setQueriesData<ListingWithPhotos[]>({ queryKey: ['listings', 'seller'] }, (old) =>
+        old?.map((l) => (l.id === id ? { ...l, ...data } : l)),
       );
       return { previousSeller };
     },
@@ -106,9 +105,8 @@ export function useDeleteListing() {
       const previousSeller = queryClient.getQueriesData<ListingWithPhotos[]>({
         queryKey: ['listings', 'seller'],
       });
-      queryClient.setQueriesData<ListingWithPhotos[]>(
-        { queryKey: ['listings', 'seller'] },
-        (old) => old?.filter((l) => l.id !== id),
+      queryClient.setQueriesData<ListingWithPhotos[]>({ queryKey: ['listings', 'seller'] }, (old) =>
+        old?.filter((l) => l.id !== id),
       );
       return { previousSeller };
     },
@@ -152,21 +150,17 @@ export function useUpdateListingStatus() {
       const previousSeller = queryClient.getQueriesData<ListingWithPhotos[]>({
         queryKey: ['listings', 'seller'],
       });
-      queryClient.setQueriesData<ListingWithPhotos[]>(
-        { queryKey: ['listings', 'seller'] },
-        (old) =>
-          old?.map((l) =>
-            l.id === id
-              ? {
-                  ...l,
-                  status: status as ListingWithPhotos['status'],
-                  ...(status === 'sold' ? { sold_at: new Date().toISOString() } : {}),
-                  ...(status === 'deleted'
-                    ? { deleted_at: new Date().toISOString() }
-                    : {}),
-                }
-              : l,
-          ),
+      queryClient.setQueriesData<ListingWithPhotos[]>({ queryKey: ['listings', 'seller'] }, (old) =>
+        old?.map((l) =>
+          l.id === id
+            ? {
+                ...l,
+                status: status as ListingWithPhotos['status'],
+                ...(status === 'sold' ? { sold_at: new Date().toISOString() } : {}),
+                ...(status === 'deleted' ? { deleted_at: new Date().toISOString() } : {}),
+              }
+            : l,
+        ),
       );
       return { previousSeller };
     },

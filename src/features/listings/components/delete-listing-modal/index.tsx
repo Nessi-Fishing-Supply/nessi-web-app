@@ -32,7 +32,9 @@ export default function DeleteListingModal({
           Delete this listing?
         </h3>
         <p className={styles.listingTitle}>{listing.title}</p>
-        <p className={styles.warning}>This can&apos;t be undone.</p>
+        <p className={styles.warning}>
+          This listing will be permanently removed from your dashboard.
+        </p>
 
         <div className={styles.actions}>
           <Button style="danger" fullWidth onClick={onConfirm} loading={loading} disabled={loading}>

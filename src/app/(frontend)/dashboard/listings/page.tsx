@@ -75,9 +75,17 @@ export default function ListingsDashboard() {
       { id: targetListing.id, status: 'archived' },
       {
         onSuccess: () =>
-          showToast({ type: 'success', message: 'Listing deactivated', description: 'Hidden from public search.' }),
+          showToast({
+            type: 'success',
+            message: 'Listing deactivated',
+            description: 'Hidden from public search.',
+          }),
         onError: () =>
-          showToast({ type: 'error', message: 'Failed to deactivate', description: 'Please try again.' }),
+          showToast({
+            type: 'error',
+            message: 'Failed to deactivate',
+            description: 'Please try again.',
+          }),
       },
     );
   }
@@ -88,9 +96,17 @@ export default function ListingsDashboard() {
       { id: targetListing.id, status: 'active' },
       {
         onSuccess: () =>
-          showToast({ type: 'success', message: 'Listing activated', description: 'Now visible to buyers.' }),
+          showToast({
+            type: 'success',
+            message: 'Listing activated',
+            description: 'Now visible to buyers.',
+          }),
         onError: () =>
-          showToast({ type: 'error', message: 'Failed to activate', description: 'Please try again.' }),
+          showToast({
+            type: 'error',
+            message: 'Failed to activate',
+            description: 'Please try again.',
+          }),
       },
     );
   }
@@ -102,10 +118,18 @@ export default function ListingsDashboard() {
       {
         onSuccess: () => {
           closeModal();
-          showToast({ type: 'success', message: 'Marked as sold', description: 'Congrats on the sale!' });
+          showToast({
+            type: 'success',
+            message: 'Marked as sold',
+            description: 'Congrats on the sale!',
+          });
         },
         onError: () =>
-          showToast({ type: 'error', message: 'Failed to mark as sold', description: 'Please try again.' }),
+          showToast({
+            type: 'error',
+            message: 'Failed to mark as sold',
+            description: 'Please try again.',
+          }),
       },
     );
   }
@@ -115,7 +139,11 @@ export default function ListingsDashboard() {
     deleteListing.mutate(targetListing.id, {
       onSuccess: () => {
         closeModal();
-        showToast({ type: 'success', message: 'Listing deleted', description: 'The listing has been removed.' });
+        showToast({
+          type: 'success',
+          message: 'Listing deleted',
+          description: 'The listing has been removed.',
+        });
       },
       onError: () =>
         showToast({ type: 'error', message: 'Failed to delete', description: 'Please try again.' }),
@@ -214,11 +242,7 @@ export default function ListingsDashboard() {
       )}
 
       {targetListing && openModal === 'quick-price' && (
-        <QuickEditPrice
-          listing={targetListing}
-          isOpen
-          onClose={closeModal}
-        />
+        <QuickEditPrice listing={targetListing} isOpen onClose={closeModal} />
       )}
     </div>
   );
