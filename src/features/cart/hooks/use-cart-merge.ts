@@ -46,6 +46,13 @@ export function useCartMerge(): void {
           });
         }
       },
+      onError: () => {
+        showToast({
+          message: 'Could not merge your guest cart',
+          description: 'Please try adding items again.',
+          type: 'error',
+        });
+      },
     });
   }, [user, mergeGuestCart, showToast]);
 }

@@ -51,18 +51,18 @@ Server-side validation enforced in `addToCartServer` and `mergeGuestCartServer`:
 
 ## Hooks
 
-| Hook                  | Query Key                       | Purpose                              | Optimistic                                                         |
-| --------------------- | ------------------------------- | ------------------------------------ | ------------------------------------------------------------------ |
-| `useCart()`           | `['cart', userId]`              | Full cart with listing + seller data | —                                                                  |
-| `useCartCount()`      | `['cart-count', userId]`        | Lightweight count for badge          | —                                                                  |
-| `useAddToCart()`      | mutation, invalidates both keys | Add item to cart                     | Yes — increments count, rollback on error                          |
-| `useRemoveFromCart()` | mutation, invalidates both keys | Remove item from cart                | Yes — filters item from cache, decrements count, rollback on error |
-| `useClearCart()`      | mutation, invalidates both keys | Clear entire cart                    | Yes — sets empty cart and zero count, rollback on error            |
-| `useValidateCart()`   | mutation (no invalidation)      | Pre-checkout validation              | No — server is source of truth                                     |
-| `useMergeGuestCart()` | mutation, invalidates both keys | Merge guest cart on login            | No — calls `clearGuestCart()` on success                           |
-| `useRefreshExpiry()`  | mutation, invalidates cart key  | Reset item expiry timer              | No                                                                 |
-| `useCartBadgeCount()` | wrapper (no own key)            | Unified badge count for auth + guest | — returns DB count when auth'd, guest count when not               |
-| `useCartMerge()`      | side-effect (no own key)        | Detects login transition, merges guest cart, shows toast | — fire-and-forget, wired into Navbar |
+| Hook                  | Query Key                       | Purpose                                                  | Optimistic                                                         |
+| --------------------- | ------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------ |
+| `useCart()`           | `['cart', userId]`              | Full cart with listing + seller data                     | —                                                                  |
+| `useCartCount()`      | `['cart-count', userId]`        | Lightweight count for badge                              | —                                                                  |
+| `useAddToCart()`      | mutation, invalidates both keys | Add item to cart                                         | Yes — increments count, rollback on error                          |
+| `useRemoveFromCart()` | mutation, invalidates both keys | Remove item from cart                                    | Yes — filters item from cache, decrements count, rollback on error |
+| `useClearCart()`      | mutation, invalidates both keys | Clear entire cart                                        | Yes — sets empty cart and zero count, rollback on error            |
+| `useValidateCart()`   | mutation (no invalidation)      | Pre-checkout validation                                  | No — server is source of truth                                     |
+| `useMergeGuestCart()` | mutation, invalidates both keys | Merge guest cart on login                                | No — calls `clearGuestCart()` on success                           |
+| `useRefreshExpiry()`  | mutation, invalidates cart key  | Reset item expiry timer                                  | No                                                                 |
+| `useCartBadgeCount()` | wrapper (no own key)            | Unified badge count for auth + guest                     | — returns DB count when auth'd, guest count when not               |
+| `useCartMerge()`      | side-effect (no own key)        | Detects login transition, merges guest cart, shows toast | — fire-and-forget, wired into Navbar                               |
 
 **Query key convention:** Both `['cart', userId]` and `['cart-count', userId]` are user-scoped. All mutations that modify cart contents invalidate both keys in `onSettled`.
 
