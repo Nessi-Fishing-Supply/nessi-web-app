@@ -38,6 +38,9 @@ import Autocomplete from '@/features/listings/components/autocomplete';
 import SearchOverlay from '@/features/listings/components/search-overlay';
 import type { AutocompleteSuggestion } from '@/features/listings/types/search';
 
+// Cart
+import CartIcon from '@/features/cart/components/cart-icon';
+
 // Auth & Toast
 import { useAuth } from '@/features/auth/context';
 import { logout } from '@/features/auth/services/auth';
@@ -370,9 +373,7 @@ export default function Navbar() {
           )
         )}
 
-        {mounted && !isShopContext && (
-          <HiOutlineShoppingBag className={styles.icon} aria-hidden="true" />
-        )}
+        {mounted && <CartIcon />}
       </div>
 
       <div className={styles.categories}>
