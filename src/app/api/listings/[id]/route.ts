@@ -1,6 +1,18 @@
 import { createClient } from '@/libs/supabase/server';
 import { NextResponse } from 'next/server';
 
+function parseStoragePath(publicUrl: string): string | null {
+  try {
+    const url = new URL(publicUrl);
+    const marker = '/storage/v1/object/public/listing-images/';
+    const idx = url.pathname.indexOf(marker);
+    if (idx === -1) return null;
+    return url.pathname.slice(idx + marker.length);
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
 
@@ -107,6 +119,33 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
 
     if (existing.seller_id !== user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    // Clean up listing photos from storage (best-effort)
+    try {
+      const { data: photos } = await supabase
+        .from('listing_photos')
+        .select('image_url, thumbnail_url')
+        .eq('listing_id', id);
+
+      if (photos && photos.length > 0) {
+        const paths = photos.flatMap((photo) => {
+          const results: string[] = [];
+          const imgPath = parseStoragePath(photo.image_url);
+          if (imgPath) results.push(imgPath);
+          if (photo.thumbnail_url) {
+            const thumbPath = parseStoragePath(photo.thumbnail_url);
+            if (thumbPath) results.push(thumbPath);
+          }
+          return results;
+        });
+
+        if (paths.length > 0) {
+          await supabase.storage.from('listing-images').remove(paths);
+        }
+      }
+    } catch (storageError) {
+      console.error('Listing storage cleanup error (non-blocking):', storageError);
     }
 
     const { error } = await supabase
