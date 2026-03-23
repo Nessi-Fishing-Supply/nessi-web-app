@@ -30,6 +30,15 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
     }
 
+    // Verify ownership: storage path format is {user_id}/{listing_id}/{uuid}.webp
+    const ownershipPath = parseStoragePath(imageUrl);
+    if (ownershipPath) {
+      const pathUserId = ownershipPath.split('/')[0];
+      if (pathUserId !== user.id) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
+
     const paths: string[] = [];
 
     const imagePath = parseStoragePath(imageUrl);
