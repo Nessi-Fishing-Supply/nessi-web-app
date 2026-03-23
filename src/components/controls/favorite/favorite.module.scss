@@ -11,7 +11,7 @@
   cursor: pointer;
 
   &:hover {
-    box-shadow: var(--shadow-modal);
+    box-shadow: var(--shadow-500);
     transform: scale(1.1);
 
     > svg {

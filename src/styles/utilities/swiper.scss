@@ -52,7 +52,7 @@
     height: var(--spacing-600);
     background-color: var(--color-white);
     border-radius: var(--radius-800);
-    box-shadow: var(--shadow-modal);
+    box-shadow: var(--shadow-500);
     opacity: 0;
     transition: var(--transition-basic);
 
@@ -190,7 +190,7 @@
     height: var(--spacing-600);
     background-color: var(--color-white);
     border-radius: var(--radius-800);
-    box-shadow: var(--shadow-modal);
+    box-shadow: var(--shadow-500);
     opacity: 0;
     transition: var(--transition-basic);
     display: none;
