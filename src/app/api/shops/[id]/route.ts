@@ -78,6 +78,17 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     console.error('Shop storage cleanup error (non-blocking):', storageError);
   }
 
+  // Soft-delete all listings associated with this shop
+  try {
+    await admin
+      .from('listings')
+      .update({ deleted_at: new Date().toISOString(), status: 'deleted' as const })
+      .eq('shop_id', shopId)
+      .is('deleted_at', null);
+  } catch (listingError) {
+    console.error('Shop listing cleanup error (non-blocking):', listingError);
+  }
+
   const { error: deleteError } = await admin
     .from('shops')
     .update({ deleted_at: new Date().toISOString() })
