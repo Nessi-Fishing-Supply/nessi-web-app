@@ -3,7 +3,7 @@
   "issue": 28,
   "title": "Keyword search with autocomplete, full-text results, and structured filter system",
   "branch": "feat/28/keyword-search-autocomplete-filters",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 5,
     "total": 5,
@@ -15,5 +15,7 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-23T18:00:00Z", "lastActivity": "2026-03-23T20:20:00Z" }
+  "timestamps": { "started": "2026-03-23T18:00:00Z", "lastActivity": "2026-03-23T20:25:00Z" },
+  "completedAt": "2026-03-23T20:25:00Z",
+  "pruneAfter": "2026-05-22T20:25:00Z"
 }
