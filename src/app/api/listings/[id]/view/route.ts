@@ -6,6 +6,15 @@ export async function POST(_: Request, context: { params: Promise<{ id: string }
     const { id } = await context.params;
     const supabase = await createClient();
 
+    // Only increment view count for authenticated users to prevent bot inflation
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ success: true });
+    }
+
     const { data: listing, error: fetchError } = await supabase
       .from('listings')
       .select('id, view_count')

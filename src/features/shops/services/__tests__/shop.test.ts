@@ -11,7 +11,7 @@ vi.mock('@/libs/fetch', () => ({
 }));
 
 import { createClient } from '@/libs/supabase/client';
-import { del, post } from '@/libs/fetch';
+import { del } from '@/libs/fetch';
 import {
   getShop,
   getShopBySlug,

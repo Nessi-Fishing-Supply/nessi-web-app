@@ -128,8 +128,9 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       .eq('id', id);
 
     if (updateError) {
+      console.error('Listing update error:', updateError);
       return NextResponse.json(
-        { error: updateError.message },
+        { error: 'Failed to update listing' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -143,8 +144,9 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       .single();
 
     if (error) {
+      console.error('Listing refetch error:', error);
       return NextResponse.json(
-        { error: error.message },
+        { error: 'Failed to update listing' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -229,8 +231,9 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
       .eq('id', id);
 
     if (error) {
+      console.error('Listing delete error:', error);
       return NextResponse.json(
-        { error: error.message },
+        { error: 'Failed to delete listing' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }

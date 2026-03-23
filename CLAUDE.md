@@ -98,15 +98,14 @@ DELETE /api/auth/delete-account
     → members row CASCADE (FK: members_id_fkey ON DELETE CASCADE)
       → BEFORE DELETE trigger: handle_member_deletion()
         → Releases member slug and owned shop slugs from `slugs` table
-        → Deletes avatar from storage
-        → Deletes listing images from storage
+        (Storage cleanup is handled in the API layer above, not in the DB trigger)
       → Member row removed
 ```
 
 **When adding new user-owned resources** (listings, orders, messages, reviews, etc.):
 
 1. Add a FK to `members.id` (or `auth.users.id`) with `ON DELETE CASCADE`
-2. If the resource has storage objects, add cleanup logic to both `DELETE /api/auth/delete-account` (application layer) and `handle_member_deletion()` (database trigger) in Supabase
+2. If the resource has storage objects, add cleanup logic to `DELETE /api/auth/delete-account` (application layer). The `handle_member_deletion()` trigger only handles slug release — storage cleanup must be done in API routes because Supabase DB triggers cannot call the Storage API.
 3. If the resource is a blocking dependency for account deletion (like shop ownership), add an ownership gate in `DELETE /api/auth/delete-account` that returns 409 until the dependency is resolved
 4. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's CLAUDE.md
 5. Test the full deletion chain before shipping

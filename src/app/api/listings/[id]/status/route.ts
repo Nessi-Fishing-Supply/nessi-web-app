@@ -92,8 +92,9 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       .single();
 
     if (updateError) {
+      console.error('Listing status update error:', updateError);
       return NextResponse.json(
-        { error: updateError.message },
+        { error: 'Failed to update listing status' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }

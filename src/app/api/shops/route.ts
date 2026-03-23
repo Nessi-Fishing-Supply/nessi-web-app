@@ -47,8 +47,9 @@ export async function POST(request: Request) {
     .single();
 
   if (insertError) {
+    console.error('Shop insert error:', insertError);
     return NextResponse.json(
-      { error: `Failed to create shop: ${insertError.message}` },
+      { error: 'Failed to create shop' },
       { status: 500, headers: AUTH_CACHE_HEADERS },
     );
   }
@@ -78,8 +79,9 @@ export async function POST(request: Request) {
       );
     }
 
+    console.error('Shop slug reservation error:', slugError);
     return NextResponse.json(
-      { error: slugError.message },
+      { error: 'Failed to reserve slug' },
       { status: 500, headers: AUTH_CACHE_HEADERS },
     );
   }
@@ -96,8 +98,9 @@ export async function POST(request: Request) {
     await admin.from('slugs').delete().eq('entity_type', 'shop').eq('entity_id', shop.id);
     await admin.from('shops').delete().eq('id', shop.id);
 
+    console.error('Shop member insert error:', memberError);
     return NextResponse.json(
-      { error: `Failed to add shop member: ${memberError.message}` },
+      { error: 'Failed to add shop member' },
       { status: 500, headers: AUTH_CACHE_HEADERS },
     );
   }

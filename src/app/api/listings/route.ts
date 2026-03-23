@@ -3,6 +3,30 @@ import type { ListingWithPhotos } from '@/features/listings/types/listing';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Fields sellers are allowed to set when creating a listing
+const ALLOWED_CREATE_FIELDS = [
+  'title',
+  'description',
+  'price_cents',
+  'category',
+  'condition',
+  'brand',
+  'model',
+  'quantity',
+  'weight_oz',
+  'shipping_paid_by',
+  'shipping_price_cents',
+  'cover_photo_url',
+  'location_city',
+  'location_state',
+  'is_visible',
+  'length_inches',
+  'width_inches',
+  'height_inches',
+] as const;
+
 export async function GET(req: Request) {
   try {
     const supabase = await createClient();
@@ -52,7 +76,8 @@ export async function GET(req: Request) {
     const { count, error: countError } = await countQuery;
 
     if (countError) {
-      return NextResponse.json({ error: countError.message }, { status: 500 });
+      console.error('Listing count error:', countError);
+      return NextResponse.json({ error: 'Failed to fetch listings' }, { status: 500 });
     }
 
     let dataQuery = buildQuery(supabase.from('listings').select('*, listing_photos(*)')).range(
@@ -76,7 +101,8 @@ export async function GET(req: Request) {
     const { data: listings, error } = await dataQuery;
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('Listing fetch error:', error);
+      return NextResponse.json({ error: 'Failed to fetch listings' }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -111,21 +137,54 @@ export async function POST(req: Request) {
     const isShopContext = contextHeader.startsWith('shop:');
     const shopId = isShopContext ? contextHeader.replace('shop:', '') : null;
 
+    // Validate shop context: must be a valid UUID and user must be a member
+    if (isShopContext && shopId) {
+      if (!UUID_RE.test(shopId)) {
+        return NextResponse.json(
+          { error: 'Invalid shop ID format' },
+          { status: 400, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+
+      const { data: membership } = await supabase
+        .from('shop_members')
+        .select('member_id')
+        .eq('shop_id', shopId)
+        .eq('member_id', user.id)
+        .single();
+
+      if (!membership) {
+        return NextResponse.json(
+          { error: 'Forbidden: not a member of this shop' },
+          { status: 403, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+    }
+
+    // Whitelist: only allow fields that sellers can set
+    const filteredBody: Record<string, unknown> = {};
+    for (const key of ALLOWED_CREATE_FIELDS) {
+      if (key in body) {
+        filteredBody[key] = body[key];
+      }
+    }
+
     const { data: listing, error: insertError } = await supabase
       .from('listings')
       .insert({
-        ...body,
+        ...filteredBody,
         seller_id: user.id,
         member_id: isShopContext ? null : user.id,
         shop_id: shopId,
-        status: body.status ?? 'draft',
-      })
+        status: 'draft' as const,
+      } as any)
       .select('id')
       .single();
 
     if (insertError) {
+      console.error('Listing insert error:', insertError);
       return NextResponse.json(
-        { error: insertError.message },
+        { error: 'Failed to create listing' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -138,8 +197,9 @@ export async function POST(req: Request) {
       .single();
 
     if (fetchError) {
+      console.error('Listing refetch error:', fetchError);
       return NextResponse.json(
-        { error: fetchError.message },
+        { error: 'Failed to create listing' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }

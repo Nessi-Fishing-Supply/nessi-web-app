@@ -67,8 +67,9 @@ export async function POST(request: Request) {
       );
     }
 
+    console.error('Slug update error:', rpcError);
     return NextResponse.json(
-      { error: rpcError.message },
+      { error: 'Failed to update slug' },
       { status: 500, headers: AUTH_CACHE_HEADERS },
     );
   }

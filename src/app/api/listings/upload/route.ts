@@ -92,9 +92,9 @@ export async function POST(req: Request) {
       .upload(fullPath, fullImage, { contentType: 'image/webp', upsert: false });
 
     if (fullError) {
-      console.error('Storage upload error (full):', fullError.message);
+      console.error('Storage upload error (full):', fullError);
       return NextResponse.json(
-        { error: `Storage: ${fullError.message}` },
+        { error: 'Failed to upload image' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -104,10 +104,10 @@ export async function POST(req: Request) {
       .upload(thumbPath, thumbnail, { contentType: 'image/webp', upsert: false });
 
     if (thumbError) {
-      console.error('Storage upload error (thumb):', thumbError.message);
+      console.error('Storage upload error (thumb):', thumbError);
       await supabase.storage.from('listing-images').remove([fullPath]);
       return NextResponse.json(
-        { error: `Storage thumb: ${thumbError.message}` },
+        { error: 'Failed to upload thumbnail' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -141,10 +141,11 @@ export async function POST(req: Request) {
       .single();
 
     if (photoError) {
+      console.error('Photo DB insert error:', photoError);
       // Cleanup storage on DB insert failure
       await supabase.storage.from('listing-images').remove([fullPath, thumbPath]);
       return NextResponse.json(
-        { error: photoError.message },
+        { error: 'Failed to save photo record' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -156,10 +157,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ photo, url, thumbnailUrl }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
-    console.error('Upload error:', error instanceof Error ? error.message : error);
-    console.error('Upload stack:', error instanceof Error ? error.stack : 'no stack');
+    console.error('Upload error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Upload failed' },
+      { error: 'Upload failed' },
       { status: 500, headers: AUTH_CACHE_HEADERS },
     );
   }

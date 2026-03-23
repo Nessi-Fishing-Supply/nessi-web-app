@@ -3,6 +3,8 @@ import type { ListingWithPhotos } from '@/features/listings/types/listing';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -27,8 +29,9 @@ export async function GET() {
       .order('position', { referencedTable: 'listing_photos', ascending: true });
 
     if (error) {
+      console.error('Drafts fetch error:', error);
       return NextResponse.json(
-        { error: error.message },
+        { error: 'Failed to fetch drafts' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -63,6 +66,30 @@ export async function POST(req: Request) {
     const isShopContext = contextHeader.startsWith('shop:');
     const shopId = isShopContext ? contextHeader.replace('shop:', '') : null;
 
+    // Validate shop context: must be a valid UUID and user must be a member
+    if (isShopContext && shopId) {
+      if (!UUID_RE.test(shopId)) {
+        return NextResponse.json(
+          { error: 'Invalid shop ID format' },
+          { status: 400, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+
+      const { data: membership } = await supabase
+        .from('shop_members')
+        .select('member_id')
+        .eq('shop_id', shopId)
+        .eq('member_id', user.id)
+        .single();
+
+      if (!membership) {
+        return NextResponse.json(
+          { error: 'Forbidden: not a member of this shop' },
+          { status: 403, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+    }
+
     const { data: draft, error } = await supabase
       .from('listings')
       .insert({
@@ -79,8 +106,9 @@ export async function POST(req: Request) {
       .single();
 
     if (error) {
+      console.error('Draft create error:', error);
       return NextResponse.json(
-        { error: error.message },
+        { error: 'Failed to create draft' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
@@ -145,8 +173,9 @@ export async function DELETE(req: Request) {
     const { error: deleteError } = await supabase.from('listings').delete().eq('id', id);
 
     if (deleteError) {
+      console.error('Draft delete error:', deleteError);
       return NextResponse.json(
-        { error: deleteError.message },
+        { error: 'Failed to delete draft' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
       );
     }
