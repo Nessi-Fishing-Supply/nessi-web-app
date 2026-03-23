@@ -73,17 +73,6 @@ export default function CartPage() {
   const activeContext = useContextStore.use.activeContext();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: cartItems, isLoading: cartLoading } = useCart();
-
-  // Shops cannot purchase — redirect to home
-  useEffect(() => {
-    if (activeContext.type === 'shop') {
-      router.replace('/');
-    }
-  }, [activeContext.type, router]);
-
-  if (activeContext.type === 'shop') {
-    return null;
-  }
   const {
     mutate: removeFromCart,
     isPending: isRemoving,
@@ -96,6 +85,13 @@ export default function CartPage() {
   const [staleBannerItems, setStaleBannerItems] = useState<CartValidationResult['removed']>([]);
   const [showStaleBanner, setShowStaleBanner] = useState(false);
   const hasValidated = useRef(false);
+
+  // Shops cannot purchase — redirect to home
+  useEffect(() => {
+    if (activeContext.type === 'shop') {
+      router.replace('/');
+    }
+  }, [activeContext.type, router]);
 
   useEffect(() => {
     if (isAuthenticated && user && !hasValidated.current) {
@@ -113,6 +109,10 @@ export default function CartPage() {
       });
     }
   }, [isAuthenticated, user, validateCart, removeFromCart]);
+
+  if (activeContext.type === 'shop') {
+    return null;
+  }
 
   if (authLoading || (isAuthenticated && cartLoading)) {
     return (
