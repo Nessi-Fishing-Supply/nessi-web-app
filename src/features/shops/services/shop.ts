@@ -185,49 +185,15 @@ export async function removeShopMember(shopId: string, memberId: string): Promis
 }
 
 export async function transferOwnership(shopId: string, newOwnerId: string): Promise<void> {
-  const supabase = createClient();
+  const response = await fetch(`/api/shops/${shopId}/ownership`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ newOwnerId }),
+  });
 
-  const { data: currentShop, error: shopFetchError } = await supabase
-    .from('shops')
-    .select('owner_id')
-    .eq('id', shopId)
-    .single();
-
-  if (shopFetchError) {
-    throw new Error(`Failed to fetch current shop owner: ${shopFetchError.message}`);
-  }
-
-  const currentOwnerId = currentShop.owner_id;
-
-  const { error: updateShopError } = await supabase
-    .from('shops')
-    .update({ owner_id: newOwnerId })
-    .eq('id', shopId);
-
-  if (updateShopError) {
-    throw new Error(`Failed to transfer shop ownership: ${updateShopError.message}`);
-  }
-
-  const { error: updateNewOwnerRoleError } = await supabase
-    .from('shop_members')
-    .update({ role: 'owner' })
-    .eq('shop_id', shopId)
-    .eq('member_id', newOwnerId);
-
-  if (updateNewOwnerRoleError) {
-    throw new Error(`Failed to update new owner role: ${updateNewOwnerRoleError.message}`);
-  }
-
-  if (currentOwnerId) {
-    const { error: updateOldOwnerRoleError } = await supabase
-      .from('shop_members')
-      .update({ role: 'manager' })
-      .eq('shop_id', shopId)
-      .eq('member_id', currentOwnerId);
-
-    if (updateOldOwnerRoleError) {
-      throw new Error(`Failed to update old owner role: ${updateOldOwnerRoleError.message}`);
-    }
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to transfer ownership');
   }
 }
 
