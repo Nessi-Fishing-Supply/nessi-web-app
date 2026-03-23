@@ -122,6 +122,34 @@ The guest cart enables unauthenticated users to add items to a localStorage-back
 - Listing detail action buttons section (full width)
 - Listing detail sticky bottom bar (natural width beside price)
 
+### CartItemCard
+
+`components/cart-item-card/index.tsx` — Client component displaying a cart item as a horizontal card: 80px thumbnail, title link, condition badge, price with change detection, and remove button.
+
+**Props:** `item: CartItemWithListing`, `onRemove: (cartItemId: string) => void`, `isRemoving?: boolean`
+
+**Features:**
+- Price change notice: old price struck through + "Price changed" warning pill when `price_at_add !== listing.price_cents`
+- Remove button: `aria-label="Remove {title} from cart"`, 44x44px minimum tap target (WCAG)
+- All images via `next/image` with `sizes="80px"`
+
+### CartSummary
+
+`components/cart-summary/index.tsx` — Order summary card: item count, subtotal, shipping placeholder, disclaimer, disabled checkout button (MVP), clear cart action.
+
+**Props:** `itemCount: number`, `subtotalCents: number`, `onClearCart: () => void`, `isClearing?: boolean`
+
+### Cart Page
+
+`src/app/(frontend)/cart/` — Full cart page at `/cart`:
+- **page.tsx** — Server component with `{ title: 'Your Cart' }` metadata
+- **cart-page.tsx** — Client component orchestrating all cart states:
+  - Loading: skeleton placeholders matching cart layout
+  - Empty: centered icon + "Your cart is empty" + "Start Shopping" CTA
+  - Authenticated: items grouped by seller (header with 32px avatar + name + profile link), two-column layout at lg+, sticky sidebar summary, mobile sticky checkout bar
+  - Guest: minimal item list with "Sign in to checkout" CTA
+  - Stale items: auto-removal on mount + dismissible banner with per-item reasons
+
 ## Related Features
 
 - `src/features/listings/` — Listing entity; `listing_id` FK on cart items, listing types used for JOIN
