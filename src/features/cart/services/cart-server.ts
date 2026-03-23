@@ -40,7 +40,16 @@ export async function getCartServer(userId: string): Promise<CartItemWithListing
   ];
 
   // Batch fetch shops
-  const shopMap = new Map<string, { shop_name: string; avatar_url: string | null; slug: string; created_at: string; is_verified: boolean } & { id: string }>();
+  const shopMap = new Map<
+    string,
+    {
+      shop_name: string;
+      avatar_url: string | null;
+      slug: string;
+      created_at: string;
+      is_verified: boolean;
+    } & { id: string }
+  >();
   if (shopIds.length > 0) {
     const { data: shops } = await supabase
       .from('shops')
@@ -53,7 +62,17 @@ export async function getCartServer(userId: string): Promise<CartItemWithListing
   }
 
   // Batch fetch members
-  const memberMap = new Map<string, { first_name: string; last_name: string; avatar_url: string | null; slug: string; created_at: string; is_seller: boolean } & { id: string }>();
+  const memberMap = new Map<
+    string,
+    {
+      first_name: string;
+      last_name: string;
+      avatar_url: string | null;
+      slug: string;
+      created_at: string;
+      is_seller: boolean;
+    } & { id: string }
+  >();
   if (sellerIds.length > 0) {
     const { data: members } = await supabase
       .from('members')
@@ -71,14 +90,29 @@ export async function getCartServer(userId: string): Promise<CartItemWithListing
     if (item.listing?.shop_id) {
       const shop = shopMap.get(item.listing.shop_id);
       if (shop) {
-        seller = { type: 'shop', shop_name: shop.shop_name, avatar_url: shop.avatar_url, slug: shop.slug, created_at: shop.created_at, is_verified: shop.is_verified };
+        seller = {
+          type: 'shop',
+          shop_name: shop.shop_name,
+          avatar_url: shop.avatar_url,
+          slug: shop.slug,
+          created_at: shop.created_at,
+          is_verified: shop.is_verified,
+        };
       }
     }
 
     if (!seller && item.listing?.seller_id) {
       const member = memberMap.get(item.listing.seller_id);
       if (member) {
-        seller = { type: 'member', first_name: member.first_name, last_name: member.last_name, avatar_url: member.avatar_url, slug: member.slug, created_at: member.created_at, is_seller: member.is_seller };
+        seller = {
+          type: 'member',
+          first_name: member.first_name,
+          last_name: member.last_name,
+          avatar_url: member.avatar_url,
+          slug: member.slug,
+          created_at: member.created_at,
+          is_seller: member.is_seller,
+        };
       }
     }
 
