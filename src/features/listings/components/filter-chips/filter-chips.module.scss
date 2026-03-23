@@ -3,15 +3,15 @@
 .container {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-base);
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-400);
   flex-wrap: wrap;
 }
 
 .chips {
   display: flex;
   flex-wrap: nowrap;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   overflow-x: auto;
 
   @include breakpoint(md) {
@@ -25,8 +25,8 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: var(--font-size-xs);
-  color: var(--color-primary);
+  font-size: var(--font-size-400);
+  color: var(--color-primary-500);
   font-weight: 600;
   white-space: nowrap;
   padding: 0;
@@ -36,8 +36,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-100);
   }
 }

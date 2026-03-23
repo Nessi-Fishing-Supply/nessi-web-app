@@ -2,18 +2,18 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--color-gray-100);
+  border-top: 1px solid var(--color-neutral-200);
 }
 
 .item {
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
   cursor: pointer;
-  font-size: var(--font-size-sm);
-  color: var(--color-gray-800);
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-800);
 
   &:hover,
   &.active {
-    background-color: var(--color-gray-50);
-    color: var(--color-primary);
+    background-color: var(--color-neutral-100);
+    color: var(--color-primary-500);
   }
 }

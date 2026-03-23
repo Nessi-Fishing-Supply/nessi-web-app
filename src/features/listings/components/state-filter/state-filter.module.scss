@@ -1,26 +1,26 @@
 .container {
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
 }
 
 .label {
   display: block;
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-400);
-  margin-bottom: var(--space-2xs);
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+  margin-bottom: var(--spacing-100);
 }
 
 .select {
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
-  color: var(--color-dark);
+  padding: var(--spacing-200) var(--spacing-300);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-100);
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-900);
   background-color: var(--color-white);
   appearance: auto;
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }

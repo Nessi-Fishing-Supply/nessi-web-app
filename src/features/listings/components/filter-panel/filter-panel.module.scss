@@ -9,39 +9,39 @@
     width: 240px;
     min-width: 240px;
     position: sticky;
-    top: var(--space-base);
-    max-height: calc(100vh - var(--space-xl));
+    top: var(--spacing-400);
+    max-height: calc(100vh - var(--spacing-900));
     overflow-y: auto;
-    padding-right: var(--space-base);
-    border-right: 1px solid var(--color-gray-100);
+    padding-right: var(--spacing-400);
+    border-right: 1px solid var(--color-neutral-200);
   }
 }
 
 .railTitle {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-700);
   font-weight: 700;
-  color: var(--color-dark);
-  margin-bottom: var(--space-base);
+  color: var(--color-neutral-900);
+  margin-bottom: var(--spacing-400);
 }
 
 // Mobile trigger button — hidden at lg+
 .mobileButton {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-sm);
+  gap: var(--spacing-200);
+  padding: var(--spacing-200) var(--spacing-300);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-100);
   background-color: var(--color-white);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-600);
   font-weight: 600;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   cursor: pointer;
   min-height: 44px;
 
   > svg {
-    width: var(--space-base);
-    height: var(--space-base);
+    width: var(--spacing-400);
+    height: var(--spacing-400);
   }
 
   @include breakpoint(lg) {
@@ -56,9 +56,9 @@
   min-width: 20px;
   height: 20px;
   border-radius: 10px;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   color: var(--color-white);
-  font-size: var(--font-size-2xs);
+  font-size: var(--font-size-200);
   font-weight: 700;
 }
 
@@ -66,12 +66,12 @@
 .clearAll {
   display: block;
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
   background: none;
   border: none;
   cursor: pointer;
-  font-size: var(--font-size-sm);
-  color: var(--color-primary);
+  font-size: var(--font-size-600);
+  color: var(--color-primary-500);
   text-align: left;
   font-weight: 600;
 
@@ -82,7 +82,7 @@
 
 // Collapsible filter group
 .group {
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-neutral-200);
 
   &[open] > .groupTitle::after {
     transform: rotate(180deg);
@@ -93,10 +93,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-sm);
-  font-size: var(--font-size-sm);
+  padding: var(--spacing-300);
+  font-size: var(--font-size-600);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   cursor: pointer;
   list-style: none;
   min-height: 44px;
@@ -107,14 +107,14 @@
 
   &::after {
     content: '▾';
-    font-size: var(--font-size-xs);
-    color: var(--color-gray-400);
+    font-size: var(--font-size-400);
+    color: var(--color-neutral-500);
     transition: transform 0.2s ease;
   }
 }
 
 .toggleGroup {
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 
 // Bottom sheet overlay
@@ -131,7 +131,7 @@
   width: 100%;
   max-height: 85vh;
   background-color: var(--color-white);
-  border-radius: var(--space-sm) var(--space-sm) 0 0;
+  border-radius: var(--spacing-300) var(--spacing-300) 0 0;
   display: flex;
   flex-direction: column;
   outline: none;
@@ -141,15 +141,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-base);
-  border-bottom: 1px solid var(--color-gray-100);
+  padding: var(--spacing-400);
+  border-bottom: 1px solid var(--color-neutral-200);
   flex-shrink: 0;
 }
 
 .sheetTitle {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-900);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .sheetClose {
@@ -163,32 +163,32 @@
   cursor: pointer;
 
   > svg {
-    width: var(--space-lg);
-    height: var(--space-lg);
-    color: var(--color-dark);
+    width: var(--spacing-700);
+    height: var(--spacing-700);
+    color: var(--color-neutral-900);
   }
 }
 
 .sheetBody {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-sm) 0;
+  padding: var(--spacing-300) 0;
 }
 
 .sheetFooter {
   flex-shrink: 0;
-  padding: var(--space-base);
-  border-top: 1px solid var(--color-gray-100);
+  padding: var(--spacing-400);
+  border-top: 1px solid var(--color-neutral-200);
 }
 
 .showResultsButton {
   width: 100%;
-  padding: var(--space-sm) var(--space-base);
-  background-color: var(--color-primary);
+  padding: var(--spacing-300) var(--spacing-400);
+  background-color: var(--color-primary-500);
   color: var(--color-white);
   border: none;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-base);
+  border-radius: var(--radius-100);
+  font-size: var(--font-size-700);
   font-weight: 700;
   cursor: pointer;
   min-height: 48px;
@@ -198,7 +198,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }

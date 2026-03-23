@@ -8,7 +8,7 @@
 .row {
   display: flex;
   align-items: flex-end;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 }
 
 .inputGroup {
@@ -17,35 +17,35 @@
 
 .label {
   display: block;
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-400);
-  margin-bottom: var(--space-2xs);
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+  margin-bottom: var(--spacing-100);
 }
 
 .inputWrapper {
   display: flex;
   align-items: center;
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-100);
   overflow: hidden;
   background-color: var(--color-white);
 
   &:focus-within {
-    border-color: var(--color-primary);
+    border-color: var(--color-primary-500);
   }
 }
 
 .prefix {
-  padding-left: var(--space-sm);
-  color: var(--color-gray-400);
-  font-size: var(--font-size-sm);
+  padding-left: var(--spacing-300);
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-600);
 }
 
 .input {
   flex: 1;
   border: none;
-  padding: var(--space-xs) var(--space-sm);
-  font-size: var(--font-size-sm);
+  padding: var(--spacing-200) var(--spacing-300);
+  font-size: var(--font-size-600);
   min-width: 0;
   background: transparent;
 
@@ -54,18 +54,18 @@
   }
 
   &::placeholder {
-    color: var(--color-gray-300);
+    color: var(--color-neutral-400);
   }
 }
 
 .separator {
-  padding-bottom: var(--space-xs);
-  color: var(--color-gray-300);
-  font-size: var(--font-size-sm);
+  padding-bottom: var(--spacing-200);
+  color: var(--color-neutral-400);
+  font-size: var(--font-size-600);
 }
 
 .error {
-  margin-top: var(--space-2xs);
-  font-size: var(--font-size-xs);
-  color: var(--color-error);
+  margin-top: var(--spacing-100);
+  font-size: var(--font-size-400);
+  color: var(--color-error-500);
 }

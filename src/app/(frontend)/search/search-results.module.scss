@@ -1,21 +1,21 @@
 @use '@/styles/mixins/breakpoints' as *;
 
 .container {
-  padding: var(--space-md) var(--space-sm);
+  padding: var(--spacing-500) var(--spacing-300);
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--spacing-700) var(--spacing-500);
   }
 }
 
 .layout {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 
   @include breakpoint(lg) {
     flex-direction: row;
-    gap: var(--space-lg);
+    gap: var(--spacing-700);
   }
 }
 
@@ -27,8 +27,8 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-500);
 
   @include breakpoint(md) {
     flex-direction: row;
@@ -38,9 +38,9 @@
 }
 
 .title {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-1100);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   margin: 0;
 
   @include breakpoint(md) {
