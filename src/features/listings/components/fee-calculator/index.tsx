@@ -1,7 +1,7 @@
 'use client';
 
 import { HiInformationCircle } from 'react-icons/hi';
-import { calculateFee, calculateNet, formatPrice } from '@/features/shared/utils/format';
+import { formatPrice } from '@/features/shared/utils/format';
 import styles from './fee-calculator.module.scss';
 
 interface FeeCalculatorProps {
@@ -17,8 +17,8 @@ export default function FeeCalculator({
   isShop = false,
   className,
 }: FeeCalculatorProps) {
-  const feeCents = calculateFee(price);
-  const netCents = calculateNet(price);
+  const feeCents = Math.round(price * feeRate);
+  const netCents = price - feeCents;
 
   return (
     <div className={`${styles.card} ${className ?? ''}`}>
