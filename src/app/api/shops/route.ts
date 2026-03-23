@@ -10,7 +10,10 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const body = await request.json();

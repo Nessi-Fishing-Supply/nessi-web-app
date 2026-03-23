@@ -10,14 +10,20 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const body = await request.json();
   const { shopId, slug } = body ?? {};
 
   if (!shopId || !slug) {
-    return NextResponse.json({ error: 'shopId and slug are required' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'shopId and slug are required' },
+      { status: 400, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const admin = createAdminClient();
@@ -30,7 +36,10 @@ export async function POST(request: Request) {
     .single();
 
   if (!shop) {
-    return NextResponse.json({ error: 'Shop not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Shop not found' },
+      { status: 404, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   if (shop.owner_id !== user.id) {
@@ -45,14 +54,23 @@ export async function POST(request: Request) {
 
   if (rpcError) {
     if (rpcError.code === '23505') {
-      return NextResponse.json({ error: 'Slug is already taken' }, { status: 409, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Slug is already taken' },
+        { status: 409, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (rpcError.message?.includes('Invalid slug format')) {
-      return NextResponse.json({ error: 'Invalid slug format' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Invalid slug format' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    return NextResponse.json({ error: rpcError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: rpcError.message },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   return NextResponse.json({ success: true, slug }, { headers: AUTH_CACHE_HEADERS });

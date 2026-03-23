@@ -11,7 +11,10 @@ export async function GET(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const status = new URL(req.url).searchParams.get('status') as ListingStatus | null;
@@ -42,12 +45,20 @@ export async function GET(req: Request) {
     const { data: listings, error } = await query;
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    return NextResponse.json((listings ?? []) as ListingWithPhotos[], { headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json((listings ?? []) as ListingWithPhotos[], {
+      headers: AUTH_CACHE_HEADERS,
+    });
   } catch (error) {
     console.error('Error fetching seller listings:', error);
-    return NextResponse.json({ error: 'Failed to fetch seller listings' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Failed to fetch seller listings' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

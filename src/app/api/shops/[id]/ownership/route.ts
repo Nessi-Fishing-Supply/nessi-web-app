@@ -12,7 +12,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   let newOwnerId: string;
@@ -20,11 +23,17 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const body = await request.json();
     newOwnerId = body.newOwnerId;
   } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Invalid request body' },
+      { status: 400, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   if (!newOwnerId) {
-    return NextResponse.json({ error: 'newOwnerId is required' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'newOwnerId is required' },
+      { status: 400, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const admin = createAdminClient();
@@ -38,7 +47,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     .single();
 
   if (!shop) {
-    return NextResponse.json({ error: 'Shop not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Shop not found' },
+      { status: 404, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   if (shop.owner_id !== user.id) {
@@ -63,8 +75,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   // Atomically update ownership: shops.owner_id, new owner role → 'owner', current owner role → 'manager'
   const [shopUpdate, newOwnerRoleUpdate, currentOwnerRoleUpdate] = await Promise.all([
     admin.from('shops').update({ owner_id: newOwnerId }).eq('id', shopId),
-    admin.from('shop_members').update({ role: 'owner' }).eq('shop_id', shopId).eq('member_id', newOwnerId),
-    admin.from('shop_members').update({ role: 'manager' }).eq('shop_id', shopId).eq('member_id', user.id),
+    admin
+      .from('shop_members')
+      .update({ role: 'owner' })
+      .eq('shop_id', shopId)
+      .eq('member_id', newOwnerId),
+    admin
+      .from('shop_members')
+      .update({ role: 'manager' })
+      .eq('shop_id', shopId)
+      .eq('member_id', user.id),
   ]);
 
   if (shopUpdate.error) {

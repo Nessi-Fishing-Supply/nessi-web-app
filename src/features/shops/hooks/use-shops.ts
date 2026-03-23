@@ -68,8 +68,12 @@ export function useShopSlugCheck(slug: string) {
 export function useCreateShop() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: { shopName: string; slug: string; description?: string | null; ownerId: string }) =>
-      createShop(data),
+    mutationFn: (data: {
+      shopName: string;
+      slug: string;
+      description?: string | null;
+      ownerId: string;
+    }) => createShop(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
     },

@@ -86,9 +86,7 @@ async function collectStoragePaths(
           const imagePaths = shopPhotos
             .flatMap((photo) => [
               parseStoragePath('listing-images', photo.image_url),
-              photo.thumbnail_url
-                ? parseStoragePath('listing-images', photo.thumbnail_url)
-                : null,
+              photo.thumbnail_url ? parseStoragePath('listing-images', photo.thumbnail_url) : null,
             ])
             .filter((path): path is string => path !== null);
 
@@ -127,7 +125,10 @@ export async function DELETE() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const admin = createAdminClient();
@@ -140,7 +141,10 @@ export async function DELETE() {
       .is('deleted_at', null);
 
     if (activeShops && activeShops.length > 0) {
-      return NextResponse.json({ error: 'OWNS_SHOPS', shops: activeShops }, { status: 409, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'OWNS_SHOPS', shops: activeShops },
+        { status: 409, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     // Collect storage paths BEFORE any deletions (non-blocking)
@@ -174,7 +178,10 @@ export async function DELETE() {
     const { error } = await admin.auth.admin.deleteUser(user.id);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     // Clean up storage AFTER successful auth deletion (best-effort)
@@ -187,6 +194,9 @@ export async function DELETE() {
     return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Delete account error:', error);
-    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Failed to delete account' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

@@ -14,22 +14,34 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const formData = await req.formData();
     const file = formData.get('file') as File;
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'No file provided' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (!file.type.startsWith('image/') || !ALLOWED_MIME_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Invalid file type' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File exceeds 5MB limit' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'File exceeds 5MB limit' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -48,7 +60,10 @@ export async function POST(req: Request) {
       });
 
     if (uploadError) {
-      return NextResponse.json({ error: uploadError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: uploadError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const {
@@ -58,6 +73,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: publicUrl }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Upload failed' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

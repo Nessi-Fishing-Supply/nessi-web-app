@@ -19,7 +19,10 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const admin = createAdminClient();
@@ -32,7 +35,10 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     .single();
 
   if (!shop) {
-    return NextResponse.json({ error: 'Shop not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Shop not found' },
+      { status: 404, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   if (shop.owner_id !== user.id) {
@@ -96,7 +102,10 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     .eq('id', shopId);
 
   if (deleteError) {
-    return NextResponse.json({ error: deleteError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: deleteError.message },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   // Release the shop's slug so it can be reused

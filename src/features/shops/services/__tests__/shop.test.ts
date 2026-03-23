@@ -192,9 +192,7 @@ describe('getShopsByOwner', () => {
   });
 
   it('throws when Supabase returns an error', async () => {
-    const mockIs = vi
-      .fn()
-      .mockResolvedValue({ data: null, error: { message: 'Database error' } });
+    const mockIs = vi.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } });
     const mockEq = vi.fn(() => ({ is: mockIs }));
     const mockSelect = vi.fn(() => ({ eq: mockEq }));
     const mockFrom = vi.fn(() => ({ select: mockSelect }));
@@ -359,9 +357,7 @@ describe('checkShopSlugAvailable', () => {
   });
 
   it('returns false when the slug is taken (non-empty result set)', async () => {
-    const mockLimit = vi
-      .fn()
-      .mockResolvedValue({ data: [{ slug: 'tackle-box' }], error: null });
+    const mockLimit = vi.fn().mockResolvedValue({ data: [{ slug: 'tackle-box' }], error: null });
     const mockEq = vi.fn(() => ({ limit: mockLimit }));
     const mockSelect = vi.fn(() => ({ eq: mockEq }));
     const mockFrom = vi.fn(() => ({ select: mockSelect }));

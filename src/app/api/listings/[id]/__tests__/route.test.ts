@@ -91,7 +91,10 @@ describe('GET /api/listings/[id]', () => {
       storage: { from: vi.fn() },
     } as any);
 
-    const response = await GET(new Request('http://localhost/api/listings/test-listing-id'), makeContext());
+    const response = await GET(
+      new Request('http://localhost/api/listings/test-listing-id'),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -118,7 +121,10 @@ describe('GET /api/listings/[id]', () => {
       storage: { from: vi.fn() },
     } as any);
 
-    const response = await GET(new Request('http://localhost/api/listings/missing-id'), makeContext('missing-id'));
+    const response = await GET(
+      new Request('http://localhost/api/listings/missing-id'),
+      makeContext('missing-id'),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(404);
@@ -146,7 +152,10 @@ describe('GET /api/listings/[id]', () => {
       storage: { from: vi.fn() },
     } as any);
 
-    const response = await GET(new Request('http://localhost/api/listings/test-listing-id'), makeContext());
+    const response = await GET(
+      new Request('http://localhost/api/listings/test-listing-id'),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(404);
@@ -174,7 +183,10 @@ describe('GET /api/listings/[id]', () => {
       storage: { from: vi.fn() },
     } as any);
 
-    const response = await GET(new Request('http://localhost/api/listings/test-listing-id'), makeContext());
+    const response = await GET(
+      new Request('http://localhost/api/listings/test-listing-id'),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -338,7 +350,10 @@ describe('PUT /api/listings/[id]', () => {
     } as any);
 
     // Only disallowed fields — none will pass the whitelist filter
-    const response = await PUT(makePutRequest({ seller_id: 'hax', deleted_at: 'now' }), makeContext());
+    const response = await PUT(
+      makePutRequest({ seller_id: 'hax', deleted_at: 'now' }),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(400);
@@ -364,7 +379,10 @@ describe('DELETE /api/listings/[id]', () => {
       storage: { from: vi.fn() },
     } as any);
 
-    const response = await DELETE(new Request('http://localhost/api/listings/test-listing-id'), makeContext());
+    const response = await DELETE(
+      new Request('http://localhost/api/listings/test-listing-id'),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(401);
@@ -390,7 +408,10 @@ describe('DELETE /api/listings/[id]', () => {
       storage: { from: vi.fn() },
     } as any);
 
-    const response = await DELETE(new Request('http://localhost/api/listings/test-listing-id'), makeContext());
+    const response = await DELETE(
+      new Request('http://localhost/api/listings/test-listing-id'),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(403);
@@ -441,7 +462,10 @@ describe('DELETE /api/listings/[id]', () => {
       storage: { from: vi.fn().mockReturnValue({ remove: mockStorageRemove }) },
     } as any);
 
-    const response = await DELETE(new Request('http://localhost/api/listings/test-listing-id'), makeContext());
+    const response = await DELETE(
+      new Request('http://localhost/api/listings/test-listing-id'),
+      makeContext(),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(200);

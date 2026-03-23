@@ -15,7 +15,10 @@ export async function DELETE(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const admin = createAdminClient();
@@ -36,7 +39,10 @@ export async function DELETE(
     .eq('member_id', memberId);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });

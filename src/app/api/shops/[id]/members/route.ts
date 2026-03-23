@@ -12,7 +12,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   const body = await request.json();
@@ -33,7 +36,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 
   return NextResponse.json(data, { headers: AUTH_CACHE_HEADERS });

@@ -10,20 +10,21 @@
 
 ### Tables
 
-| Table | Status | Decision |
-|-------|--------|----------|
-| `members` | ACTIVE | KEEP — full CRUD |
-| `shops` | ACTIVE | KEEP — full CRUD |
-| `shop_members` | ACTIVE | KEEP — full CRUD |
-| `listings` | ACTIVE | KEEP — renamed from `products` |
-| `listing_photos` | ACTIVE | KEEP — renamed from `product_images` |
-| `listing_drafts` | DROPPED | REMOVE — drafts are now `listings` with `status='draft'` |
-| `slugs` | ACTIVE | KEEP — cross-entity uniqueness via RPCs |
-| `search_suggestions` | UNUSED | DEFER — zero code references, future search autocomplete |
+| Table                | Status  | Decision                                                 |
+| -------------------- | ------- | -------------------------------------------------------- |
+| `members`            | ACTIVE  | KEEP — full CRUD                                         |
+| `shops`              | ACTIVE  | KEEP — full CRUD                                         |
+| `shop_members`       | ACTIVE  | KEEP — full CRUD                                         |
+| `listings`           | ACTIVE  | KEEP — renamed from `products`                           |
+| `listing_photos`     | ACTIVE  | KEEP — renamed from `product_images`                     |
+| `listing_drafts`     | DROPPED | REMOVE — drafts are now `listings` with `status='draft'` |
+| `slugs`              | ACTIVE  | KEEP — cross-entity uniqueness via RPCs                  |
+| `search_suggestions` | UNUSED  | DEFER — zero code references, future search autocomplete |
 
 ### Columns — Unused / Schema-Only
 
 **Members:**
+
 - `is_stripe_connected`, `stripe_account_id`, `stripe_onboarding_status` — KEEP (Stripe Connect planned)
 - `average_rating`, `review_count` — KEEP (read on public profile, reviews planned)
 - `response_time_hours` — KEEP (read on public profile, messaging planned)
@@ -31,6 +32,7 @@
 - `last_seen_at` — KEEP (never written — needs implementation or removal decision)
 
 **Shops:**
+
 - All Stripe/subscription columns — KEEP (payments planned)
 - `brand_colors` — DEFER (completely unreferenced, no planned use documented)
 - `hero_banner_url` — KEEP (used in storage cleanup, TODO for premium shops)
@@ -38,6 +40,7 @@
 - `average_rating`, `review_count`, `total_transactions` — KEEP (some read on public shop page)
 
 **Listings:**
+
 - `search_vector` — ACTIVE (DB trigger + full-text search in API)
 - `view_count` — ACTIVE (incremented via API, displayed in dashboard)
 - `favorite_count` — SCHEMA-ONLY, KEEP (favorites not built yet)
@@ -49,22 +52,22 @@
 
 ### Enums
 
-| Enum | Issue | Tag |
-|------|-------|-----|
-| `listing_status` | `reserved` value unreachable — removed from app code (state machine, labels, UI). Retained in DB enum for future checkout/reservation feature. | RESOLVED |
-| `shipping_paid_by` | `split` value blocked by validation — form only allows buyer/seller. Kept in DB enum for future shipping options expansion. | RESOLVED |
-| `listing_category` | Photo guidance has keys `lures_hard`/`lures_soft` that don't match `lures` enum | FIX |
-| `listing_condition` | All 6 values fully integrated | PASS |
+| Enum                | Issue                                                                                                                                          | Tag      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `listing_status`    | `reserved` value unreachable — removed from app code (state machine, labels, UI). Retained in DB enum for future checkout/reservation feature. | RESOLVED |
+| `shipping_paid_by`  | `split` value blocked by validation — form only allows buyer/seller. Kept in DB enum for future shipping options expansion.                    | RESOLVED |
+| `listing_category`  | Photo guidance has keys `lures_hard`/`lures_soft` that don't match `lures` enum                                                                | FIX      |
+| `listing_condition` | All 6 values fully integrated                                                                                                                  | PASS     |
 
 ### RPCs
 
-| RPC | Status | Tag |
-|-----|--------|-----|
-| `check_slug_available` | ACTIVE | KEEP |
-| `reserve_slug` | ACTIVE | KEEP |
-| `release_slug` | Defined, never called | FIX — should be called during deletion |
-| `show_limit` | Defined, never called | REMOVE — debug utility |
-| `show_trgm` | Defined, never called | DEFER — future search feature |
+| RPC                    | Status                | Tag                                    |
+| ---------------------- | --------------------- | -------------------------------------- |
+| `check_slug_available` | ACTIVE                | KEEP                                   |
+| `reserve_slug`         | ACTIVE                | KEEP                                   |
+| `release_slug`         | Defined, never called | FIX — should be called during deletion |
+| `show_limit`           | Defined, never called | REMOVE — debug utility                 |
+| `show_trgm`            | Defined, never called | DEFER — future search feature          |
 
 ### Slugs Table — No FK Relationships
 
@@ -88,31 +91,33 @@ All operations correctly placed. No migrations needed.
 
 ### Shops — 4 MIGRATIONS NEEDED
 
-| Operation | Risk | Issue | Action |
-|-----------|------|-------|--------|
-| `createShop()` | CRITICAL | No atomic slug reservation — race condition | MIGRATE to `POST /api/shops` |
-| `transferOwnership()` | CRITICAL | Non-atomic 4-step multi-table update | MIGRATE to `POST /api/shops/[id]/ownership` |
-| `addShopMember()` | HIGH | No explicit authorization at API layer | MIGRATE to `POST /api/shops/[id]/members` |
-| `removeShopMember()` | HIGH | Same as addShopMember | MIGRATE to `DELETE /api/shops/[id]/members/[memberId]` |
-| `updateShop()` | Low | RLS sufficient, no audit trail | KEEP (document assumption) |
-| All reads | None | RLS-protected | KEEP |
+| Operation             | Risk     | Issue                                       | Action                                                 |
+| --------------------- | -------- | ------------------------------------------- | ------------------------------------------------------ |
+| `createShop()`        | CRITICAL | No atomic slug reservation — race condition | MIGRATE to `POST /api/shops`                           |
+| `transferOwnership()` | CRITICAL | Non-atomic 4-step multi-table update        | MIGRATE to `POST /api/shops/[id]/ownership`            |
+| `addShopMember()`     | HIGH     | No explicit authorization at API layer      | MIGRATE to `POST /api/shops/[id]/members`              |
+| `removeShopMember()`  | HIGH     | Same as addShopMember                       | MIGRATE to `DELETE /api/shops/[id]/members/[memberId]` |
+| `updateShop()`        | Low      | RLS sufficient, no audit trail              | KEEP (document assumption)                             |
+| All reads             | None     | RLS-protected                               | KEEP                                                   |
 
 ### Listings — 3 FIXES NEEDED
 
-| Operation | Risk | Issue | Action |
-|-----------|------|-------|--------|
-| `deleteListingPhoto` | SECURITY | No listing ownership verification — any auth user can delete any photo by URL | FIX — add ownership check |
-| `GET /api/listings/[id]` | SECURITY | Returns draft listings publicly | FIX — return 404 for drafts to non-owners |
-| `PUT /api/listings/[id]` | DATA INTEGRITY | No server-side field whitelist | FIX — add field whitelist + type validation |
+| Operation                | Risk           | Issue                                                                         | Action                                      |
+| ------------------------ | -------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| `deleteListingPhoto`     | SECURITY       | No listing ownership verification — any auth user can delete any photo by URL | FIX — add ownership check                   |
+| `GET /api/listings/[id]` | SECURITY       | Returns draft listings publicly                                               | FIX — return 404 for drafts to non-owners   |
+| `PUT /api/listings/[id]` | DATA INTEGRITY | No server-side field whitelist                                                | FIX — add field whitelist + type validation |
 
 ### Service Pattern Boundary Rule
 
 **Direct Supabase (acceptable):**
+
 - All read-only queries (RLS sufficient)
 - Simple single-row updates with RLS protection
 - Supabase SDK auth operations (login, logout, password)
 
 **API Route (required):**
+
 - Multi-table orchestration
 - Operations with side effects
 - File processing (Sharp requires Node.js)
@@ -125,15 +130,15 @@ All operations correctly placed. No migrations needed.
 
 ### RLS Policies
 
-| Table | SELECT | INSERT | UPDATE | DELETE | Notes |
-|-------|--------|--------|--------|--------|-------|
-| `members` | PASS | PASS | PASS | N/A | DELETE via CASCADE only (intentional) |
-| `shops` | PASS | PASS | PASS | PASS | Owner/admin UPDATE |
-| `shop_members` | PASS | PASS | PASS | PASS | Fixed recursion bug. Gap: members can't self-remove |
-| `listings` | PASS | PASS | PASS | PASS | Dual ownership (seller + shop context) |
-| `listing_photos` | PASS | PASS | PASS | PASS | Follows parent listing visibility |
-| `slugs` | PASS | N/A | N/A | N/A | Write-protected via SECURITY DEFINER RPCs |
-| `search_suggestions` | PASS | N/A | N/A | N/A | Service role only (intentional) |
+| Table                | SELECT | INSERT | UPDATE | DELETE | Notes                                               |
+| -------------------- | ------ | ------ | ------ | ------ | --------------------------------------------------- |
+| `members`            | PASS   | PASS   | PASS   | N/A    | DELETE via CASCADE only (intentional)               |
+| `shops`              | PASS   | PASS   | PASS   | PASS   | Owner/admin UPDATE                                  |
+| `shop_members`       | PASS   | PASS   | PASS   | PASS   | Fixed recursion bug. Gap: members can't self-remove |
+| `listings`           | PASS   | PASS   | PASS   | PASS   | Dual ownership (seller + shop context)              |
+| `listing_photos`     | PASS   | PASS   | PASS   | PASS   | Follows parent listing visibility                   |
+| `slugs`              | PASS   | N/A    | N/A    | N/A    | Write-protected via SECURITY DEFINER RPCs           |
+| `search_suggestions` | PASS   | N/A    | N/A    | N/A    | Service role only (intentional)                     |
 
 ### API Route Auth Checks
 
@@ -173,6 +178,7 @@ All operations correctly placed. No migrations needed.
 ### CRITICAL: `listings.seller_id ON DELETE RESTRICT` Blocks Member Deletion
 
 Member account deletion **fails** for any member with personal listings. The cascade chain:
+
 1. Storage cleanup runs (avatar, photos deleted) — succeeds
 2. Slug deleted — succeeds
 3. `auth.admin.deleteUser()` cascades to `members` row
@@ -191,11 +197,11 @@ Member account deletion **fails** for any member with personal listings. The cas
 
 ### Deletion Matrix
 
-| Entity Deleted | Listings | Photos (DB) | Photos (Storage) | Shop Members | Slugs |
-|---|---|---|---|---|---|
-| **Member Account** | BLOCKED (RESTRICT) | CASCADE | MANUAL CLEANUP | CASCADE | MANUAL CLEANUP |
-| **Shop** | CASCADE | CASCADE | MANUAL CLEANUP | CASCADE | GAP (not released) |
-| **Individual Listing** | N/A | CASCADE | GAP (not cleaned) | N/A | N/A |
+| Entity Deleted         | Listings           | Photos (DB) | Photos (Storage)  | Shop Members | Slugs              |
+| ---------------------- | ------------------ | ----------- | ----------------- | ------------ | ------------------ |
+| **Member Account**     | BLOCKED (RESTRICT) | CASCADE     | MANUAL CLEANUP    | CASCADE      | MANUAL CLEANUP     |
+| **Shop**               | CASCADE            | CASCADE     | MANUAL CLEANUP    | CASCADE      | GAP (not released) |
+| **Individual Listing** | N/A                | CASCADE     | GAP (not cleaned) | N/A          | N/A                |
 
 ### Other Gaps
 
@@ -207,19 +213,24 @@ Member account deletion **fails** for any member with personal listings. The cas
 ## Phase 5: UI Coverage
 
 ### Auth — 8/8 PASS
+
 All flows have UI surfaces (login/register modals, forgot/reset password, verification, logout, account deletion).
 
 ### Members — 9/9 PASS
+
 All flows covered (profile edit, fishing identity, notifications, seller toggle, onboarding, public profile, completeness).
 
 ### Shops — 8/9
+
 - All flows covered except **shop member management** (add/remove/invite) — MISSING
 - Shop subscription section shows "Coming Soon" placeholder — EXPECTED
 
 ### Listings — 9/9 PASS
+
 All flows covered (create wizard, dashboard with status tabs, edit wizard, delete, photos, detail page, status management, drafts, browse).
 
 ### Expected Gaps (Future Features)
+
 - Favorites: toggle exists, no "my favorites" page — EXPECTED
 - Search: navbar form exists but disabled — EXPECTED
 - Reviews: star component exists, no submission flow — EXPECTED
@@ -229,20 +240,24 @@ All flows covered (create wizard, dashboard with status tabs, edit wizard, delet
 ## Phase 6: Repo Organization
 
 ### Component Placement
+
 - `AvatarUpload` → MOVE to `src/components/controls/` (used by members + shops, 3 locations)
 - `context/` feature → KEEP (infrastructure-specific, not generic)
 - `shared/` utilities → KEEP (correctly placed)
 
 ### Validation Consistency
+
 - 100% Yup across all features — no Zod. No inconsistency.
 
 ### Service Pattern
+
 - Listings: consistently uses fetch wrapper → API routes
 - Members/Shops: mix of direct Supabase + API routes (documented in Phase 2)
 - Auth: intentionally uses direct `fetch()` for timeout control
 - Minor: some shops/listings services use raw `fetch()` instead of wrapper
 
 ### Naming
+
 - Kebab-case fully compliant
 - Products → Listings rename complete, zero legacy code
 
@@ -251,28 +266,32 @@ All flows covered (create wizard, dashboard with status tabs, edit wizard, delet
 ## Phase 7: Cross-Cutting Quality
 
 ### Error Handling — PASS
+
 Consistent `{ error }` format, FetchError properly used, try/catch on all routes.
 
 ### Type Safety — PASS
+
 Zero `any` types in critical paths. Database types current (Mar 22). All feature types derive from `Database` schema.
 
 ### Test Coverage — CRITICAL GAP
 
-| Feature | Test Files | Status |
-|---------|-----------|--------|
-| auth | 6 files (61+ tests) | Well tested |
-| members | 0 | No tests |
-| shops | 0 | No tests |
-| listings | 1 (utility only) | Missing service/hook/component tests |
-| context | 0 | No tests |
-| API routes | 1 (register only) | 18+ routes untested |
-| shared | 1 (`use-form-state`) | OK |
-| proxy | 1 | OK |
+| Feature    | Test Files           | Status                               |
+| ---------- | -------------------- | ------------------------------------ |
+| auth       | 6 files (61+ tests)  | Well tested                          |
+| members    | 0                    | No tests                             |
+| shops      | 0                    | No tests                             |
+| listings   | 1 (utility only)     | Missing service/hook/component tests |
+| context    | 0                    | No tests                             |
+| API routes | 1 (register only)    | 18+ routes untested                  |
+| shared     | 1 (`use-form-state`) | OK                                   |
+| proxy      | 1                    | OK                                   |
 
 ### Stubs & Landmines — PASS
+
 Only 2 TODOs: orders count placeholder in seller-preconditions, hero banner on shop page.
 
 ### Query Key Conventions — MINOR
+
 Mostly consistent (`['domain', ...params]`). No centralized key registry. Mutations use broad invalidation (`['listings']` invalidates all). Could optimize but not blocking.
 
 ---
@@ -281,25 +300,25 @@ Mostly consistent (`['domain', ...params]`). No centralized key registry. Mutati
 
 ### CLAUDE.md Accuracy — 96% Accurate
 
-| File | Status | Issues |
-|------|--------|--------|
-| Root CLAUDE.md | STALE | 3 references to "products" that should say "listings" (lines 72, 102, 118, 123) |
-| auth/CLAUDE.md | ACCURATE | No changes needed |
-| members/CLAUDE.md | ACCURATE | No changes needed |
-| shops/CLAUDE.md | ACCURATE | No changes needed |
-| listings/CLAUDE.md | MOSTLY ACCURATE | `useReorderListingPhotos()` hook documented but doesn't exist in code |
-| context/CLAUDE.md | ACCURATE | No changes needed |
+| File               | Status          | Issues                                                                          |
+| ------------------ | --------------- | ------------------------------------------------------------------------------- |
+| Root CLAUDE.md     | STALE           | 3 references to "products" that should say "listings" (lines 72, 102, 118, 123) |
+| auth/CLAUDE.md     | ACCURATE        | No changes needed                                                               |
+| members/CLAUDE.md  | ACCURATE        | No changes needed                                                               |
+| shops/CLAUDE.md    | ACCURATE        | No changes needed                                                               |
+| listings/CLAUDE.md | MOSTLY ACCURATE | `useReorderListingPhotos()` hook documented but doesn't exist in code           |
+| context/CLAUDE.md  | ACCURATE        | No changes needed                                                               |
 
 ### Rate Limiting — ZERO PROTECTION
 
-| Endpoint | Auth | Rate Limit | Risk |
-|----------|------|-----------|------|
-| `POST /api/auth/register` | No | None | CRITICAL — spam accounts, email quota |
-| `POST /api/listings/[id]/view` | No | None | HIGH — view inflation, ranking manipulation |
-| `POST /api/listings/upload` | Yes | None | HIGH — storage spam, CPU exhaustion |
-| `POST /api/listings` | Yes | None | MEDIUM — listing spam |
-| `POST /api/members/avatar` | Yes | None | MEDIUM — CPU abuse |
-| Forgot password (client-side) | N/A | Supabase only | MEDIUM — email enumeration |
+| Endpoint                       | Auth | Rate Limit    | Risk                                        |
+| ------------------------------ | ---- | ------------- | ------------------------------------------- |
+| `POST /api/auth/register`      | No   | None          | CRITICAL — spam accounts, email quota       |
+| `POST /api/listings/[id]/view` | No   | None          | HIGH — view inflation, ranking manipulation |
+| `POST /api/listings/upload`    | Yes  | None          | HIGH — storage spam, CPU exhaustion         |
+| `POST /api/listings`           | Yes  | None          | MEDIUM — listing spam                       |
+| `POST /api/members/avatar`     | Yes  | None          | MEDIUM — CPU abuse                          |
+| Forgot password (client-side)  | N/A  | Supabase only | MEDIUM — email enumeration                  |
 
 No `vercel.json` exists — no Vercel Firewall/WAF rules configured.
 

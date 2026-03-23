@@ -25,7 +25,10 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { data: listing, error: fetchError } = await supabase
@@ -36,11 +39,17 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       .single();
 
     if (fetchError || !listing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Listing not found' },
+        { status: 404, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (listing.seller_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Forbidden' },
+        { status: 403, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { status, sold_price_cents } = await req.json();
@@ -83,12 +92,18 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       .single();
 
     if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: updateError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     return NextResponse.json(updated, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Error updating listing status:', error);
-    return NextResponse.json({ error: 'Failed to update listing status' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Failed to update listing status' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

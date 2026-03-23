@@ -21,6 +21,7 @@
 ### Task 1.1: Fix `listings.seller_id ON DELETE RESTRICT` (#18)
 
 **Files:**
+
 - Create: `supabase/migrations/YYYYMMDDHHMMSS_fix_seller_id_cascade.sql`
 
 - [ ] **Step 1: Write the migration SQL**
@@ -89,6 +90,7 @@ git commit -m "fix(cascade): change listings.seller_id from RESTRICT to SET NULL
 ### Task 1.2: Add storage cleanup to listing deletion (#19)
 
 **Files:**
+
 - Modify: `src/app/api/listings/[id]/route.ts`
 
 - [ ] **Step 1: Read the current DELETE handler** (lines 84-126)
@@ -108,17 +110,16 @@ try {
     .eq('listing_id', id);
 
   if (photos && photos.length > 0) {
-    const paths = photos
-      .flatMap((photo) => {
-        const results: string[] = [];
-        const imgPath = parseStoragePath(photo.image_url);
-        if (imgPath) results.push(imgPath);
-        if (photo.thumbnail_url) {
-          const thumbPath = parseStoragePath(photo.thumbnail_url);
-          if (thumbPath) results.push(thumbPath);
-        }
-        return results;
-      });
+    const paths = photos.flatMap((photo) => {
+      const results: string[] = [];
+      const imgPath = parseStoragePath(photo.image_url);
+      if (imgPath) results.push(imgPath);
+      if (photo.thumbnail_url) {
+        const thumbPath = parseStoragePath(photo.thumbnail_url);
+        if (thumbPath) results.push(thumbPath);
+      }
+      return results;
+    });
 
     if (paths.length > 0) {
       await supabase.storage.from('listing-images').remove(paths);
@@ -162,6 +163,7 @@ git commit -m "fix(listings): add storage cleanup to listing deletion to prevent
 ### Task 1.3: Release slug on shop deletion (#20)
 
 **Files:**
+
 - Modify: `src/app/api/shops/[id]/route.ts`
 
 - [ ] **Step 1: Add slug release after soft-delete**
@@ -196,6 +198,7 @@ git commit -m "fix(shops): release slug from slugs table on shop deletion"
 > **Dependency:** This task restructures the entire delete-account route, including the listing soft-delete code added in Task 1.1 Step 2. Execute Task 1.1 first, then this task refactors the route holistically.
 
 **Files:**
+
 - Modify: `src/app/api/auth/delete-account/route.ts`
 
 - [ ] **Step 1: Move storage cleanup to after listing soft-delete**
@@ -232,6 +235,7 @@ try {
 - [ ] **Step 2: Extract `collectStoragePaths` and `cleanupStorage` from current `cleanupUserStorage`**
 
 Split the existing function into two parts:
+
 1. `collectStoragePaths(admin, userId)` — returns `{ avatarPaths: string[], listingPaths: string[], shopPaths: string[] }`
 2. `cleanupStorage(admin, paths)` — removes all collected paths from appropriate buckets
 
@@ -252,6 +256,7 @@ git commit -m "fix(cascade): reorder delete-account to collect paths first, dele
 ### Task 1.5: Soft-delete shop listings on shop deletion (#22)
 
 **Files:**
+
 - Modify: `src/app/api/shops/[id]/route.ts`
 
 - [ ] **Step 1: Add listing soft-delete after storage cleanup, before shop soft-delete**
@@ -293,6 +298,7 @@ git commit -m "fix(shops): soft-delete shop listings when shop is deleted"
 ### Task 2.1: Add ownership check to photo delete endpoint (#3)
 
 **Files:**
+
 - Modify: `src/app/api/listings/upload/delete/route.ts`
 
 - [ ] **Step 1: Add listing ownership verification**
@@ -328,6 +334,7 @@ git commit -m "fix(security): add ownership verification to listing photo delete
 ### Task 2.2: Filter draft listings from public GET (#4)
 
 **Files:**
+
 - Modify: `src/app/api/listings/[id]/route.ts`
 
 - [ ] **Step 1: Add status filter to GET handler**
@@ -364,6 +371,7 @@ git commit -m "fix(security): hide draft listings from non-owners in public GET 
 ### Task 2.3: Add field whitelist to listing PUT (#5)
 
 **Files:**
+
 - Modify: `src/app/api/listings/[id]/route.ts`
 
 - [ ] **Step 1: Add field whitelist before update**
@@ -396,19 +404,14 @@ const ALLOWED_FIELDS = [
 ] as const;
 
 const filteredBody = Object.fromEntries(
-  Object.entries(body).filter(([key]) =>
-    (ALLOWED_FIELDS as readonly string[]).includes(key)
-  )
+  Object.entries(body).filter(([key]) => (ALLOWED_FIELDS as readonly string[]).includes(key)),
 );
 
 if (Object.keys(filteredBody).length === 0) {
   return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
 }
 
-const { error: updateError } = await supabase
-  .from('listings')
-  .update(filteredBody)
-  .eq('id', id);
+const { error: updateError } = await supabase.from('listings').update(filteredBody).eq('id', id);
 ```
 
 - [ ] **Step 2: Verify build**
@@ -428,6 +431,7 @@ git commit -m "fix(security): add field whitelist to listing PUT endpoint"
 ### Task 2.4: Add Cache-Control headers to all authenticated routes (#15)
 
 **Files:**
+
 - Modify: All API route files that return authenticated responses (20 files)
 
 - [ ] **Step 1: Create a shared constant**
@@ -451,6 +455,7 @@ return NextResponse.json(data, { headers: AUTH_CACHE_HEADERS });
 ```
 
 Apply to all routes in:
+
 - `src/app/api/members/avatar/route.ts`
 - `src/app/api/members/seller-preconditions/route.ts`
 - `src/app/api/members/toggle-seller/route.ts`
@@ -483,6 +488,7 @@ git commit -m "fix(security): add Cache-Control private,no-store headers to all 
 ### Task 2.5: Create vercel.json and document rate limiting plan (#33; #30, #31, #32 deferred)
 
 **Files:**
+
 - Create: `vercel.json`
 
 - [ ] **Step 1: Create vercel.json with WAF rules**
@@ -497,6 +503,7 @@ git commit -m "fix(security): add Cache-Control private,no-store headers to all 
 > **Note:** Vercel Firewall WAF rules are configured via the Vercel Dashboard (Security tab), not via `vercel.json`. The `vercel.json` file establishes project configuration. Rate limiting requires Vercel's Advanced Security add-on or application-level middleware.
 >
 > For now, create a ticket to configure WAF rules in the Vercel Dashboard:
+>
 > - Registration: 5 req/min per IP
 > - View count: 10 req/min per IP
 > - File upload: 10 req/hour per user
@@ -520,6 +527,7 @@ git commit -m "chore: add vercel.json project configuration"
 ### Task 3.1: Create `POST /api/shops` for atomic shop creation (#1)
 
 **Files:**
+
 - Create: `src/app/api/shops/route.ts`
 - Modify: `src/features/shops/services/shop.ts` (update `createShop` to call API)
 - Modify: `src/features/shops/hooks/use-shops.ts` (update mutation)
@@ -540,7 +548,10 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { shopName, slug, description } = await req.json();
@@ -559,7 +570,10 @@ export async function POST(req: Request) {
         p_entity_id: user.id, // temporary — will update after shop creation
       });
     } catch (slugError) {
-      return NextResponse.json({ error: 'Slug is already taken' }, { status: 409, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Slug is already taken' },
+        { status: 409, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     // Create the shop
@@ -581,10 +595,7 @@ export async function POST(req: Request) {
     }
 
     // Update slug entity_id to the actual shop ID
-    await admin
-      .from('slugs')
-      .update({ entity_id: shop.id })
-      .eq('slug', slug);
+    await admin.from('slugs').update({ entity_id: shop.id }).eq('slug', slug);
 
     // Add owner as shop member
     await admin
@@ -645,12 +656,14 @@ git commit -m "feat(shops): migrate createShop to POST /api/shops with atomic sl
 ### Task 3.2: Create `POST /api/shops/[id]/ownership` for atomic transfer (#2)
 
 **Files:**
+
 - Create: `src/app/api/shops/[id]/ownership/route.ts`
 - Modify: `src/features/shops/services/shop.ts` (update `transferOwnership`)
 
 - [ ] **Step 1: Create the API route with server-side transaction**
 
 The route should:
+
 1. Verify authenticated user is current shop owner
 2. Verify `newOwnerId` is an existing shop member
 3. Atomically: update `shops.owner_id`, update new owner role to `'owner'`, demote old owner to `'manager'`
@@ -691,6 +704,7 @@ git commit -m "feat(shops): migrate transferOwnership to POST /api/shops/[id]/ow
 ### Task 3.3: Create shop member management API routes (#6, #7)
 
 **Files:**
+
 - Create: `src/app/api/shops/[id]/members/route.ts` (POST for add)
 - Create: `src/app/api/shops/[id]/members/[memberId]/route.ts` (DELETE for remove)
 - Modify: `src/features/shops/services/shop.ts` (update both functions)
@@ -706,7 +720,11 @@ Verify authenticated user is shop owner (or the member removing themselves — #
 - [ ] **Step 3: Update service functions to call API routes**
 
 ```typescript
-export async function addShopMember(shopId: string, memberId: string, role: ShopMemberRole): Promise<ShopMember> {
+export async function addShopMember(
+  shopId: string,
+  memberId: string,
+  role: ShopMemberRole,
+): Promise<ShopMember> {
   const response = await fetch(`/api/shops/${shopId}/members`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -757,6 +775,7 @@ git commit -m "feat(shops): migrate addShopMember and removeShopMember to API ro
 ### Task 4.1: Fix lures photo guidance mismatch (#10)
 
 **Files:**
+
 - Modify: `src/features/listings/constants/condition.ts`
 
 - [ ] **Step 1: Fix the CATEGORY_PHOTO_GUIDANCE keys**
@@ -766,10 +785,14 @@ Replace `lures_hard` and `lures_soft` with a single `lures` key:
 ```typescript
 export const CATEGORY_PHOTO_GUIDANCE: Record<string, string> = {
   rods: 'Show the full rod, then close-ups of: cork/EVA grip condition, guide wraps and inserts, rod tip, and any marks on the blank.',
-  reels: 'Show the reel from both sides, then close-ups of: drag knob, bail/levelwind, spool edge, and body/foot condition.',
-  lures: 'Show all sides of the lure. For hard baits: highlight hook points, split rings, paint chips, and eye condition. For soft plastics: show individual bait condition, any tears, and tail integrity.',
-  flies: 'Show a top-down shot on a light background, then a profile view. Highlight: hackle condition, hook point, and any material loss.',
-  _default: 'Show the item from multiple angles. Include close-ups of any wear, damage, or notable features mentioned in your condition rating.',
+  reels:
+    'Show the reel from both sides, then close-ups of: drag knob, bail/levelwind, spool edge, and body/foot condition.',
+  lures:
+    'Show all sides of the lure. For hard baits: highlight hook points, split rings, paint chips, and eye condition. For soft plastics: show individual bait condition, any tears, and tail integrity.',
+  flies:
+    'Show a top-down shot on a light background, then a profile view. Highlight: hackle condition, hook point, and any material loss.',
+  _default:
+    'Show the item from multiple angles. Include close-ups of any wear, damage, or notable features mentioned in your condition rating.',
 };
 ```
 
@@ -790,12 +813,14 @@ git commit -m "fix(listings): merge lures_hard/lures_soft photo guidance into si
 ### Task 4.2: Update CLAUDE.md docs (#34, #35)
 
 **Files:**
+
 - Modify: `CLAUDE.md` (root)
 - Modify: `src/features/listings/CLAUDE.md`
 
 - [ ] **Step 1: Fix root CLAUDE.md "products" references**
 
 Replace:
+
 - "Product detail pages" → "Listing detail pages"
 - "Deletes product images" → "Deletes listing images"
 - `src/features/products/` directory reference → remove or update to `src/features/listings/`
@@ -817,6 +842,7 @@ git commit -m "docs: update CLAUDE.md files — fix products→listings referenc
 ### Task 4.3: Remove `show_limit` RPC (#14)
 
 **Files:**
+
 - Create: `supabase/migrations/YYYYMMDDHHMMSS_remove_show_limit_rpc.sql`
 
 - [ ] **Step 1: Write migration**
@@ -846,6 +872,7 @@ git commit -m "chore(schema): remove unused show_limit RPC"
 ### Task 5.1: Move AvatarUpload to shared components (#24)
 
 **Files:**
+
 - Move: `src/features/members/components/avatar-upload/` → `src/components/controls/avatar-upload/`
 - Modify: All imports (3 files)
 
@@ -858,6 +885,7 @@ mv src/features/members/components/avatar-upload src/components/controls/avatar-
 - [ ] **Step 2: Update imports**
 
 Update all files that import AvatarUpload:
+
 - `src/features/members/components/onboarding/step-display-name/index.tsx`
 - `src/features/members/components/account/personal-info/index.tsx`
 - `src/features/shops/components/shop-settings/shop-details-section/index.tsx`
@@ -882,6 +910,7 @@ git commit -m "refactor: move AvatarUpload to src/components/controls/ (used by 
 ### Task 5.2: Add `priority` to homepage listing grid (#36)
 
 **Files:**
+
 - Modify: Homepage component that renders the listing grid
 
 - [ ] **Step 1: Find and update the listing card rendering**
@@ -905,6 +934,7 @@ git commit -m "perf: add priority to first listing card on homepage for LCP opti
 ### Task 5.3: Migrate raw `fetch()` calls to shared fetch wrapper (#29)
 
 **Files:**
+
 - Modify: `src/features/shops/services/shop.ts` (lines 113, 122 — `deleteShop`, `updateShopSlug`)
 - Modify: `src/features/listings/services/listing.ts` (line ~70 — `deleteDraft`)
 
@@ -964,6 +994,7 @@ This is a **manual task** — cannot be done via code.
 ### Task 6.2: Add self-removal to shop_members RLS (#17)
 
 **Files:**
+
 - Create: `supabase/migrations/YYYYMMDDHHMMSS_allow_shop_member_self_removal.sql`
 
 - [ ] **Step 1: Write migration**
@@ -1044,15 +1075,15 @@ git commit -m "fix(rls): allow shop members to remove themselves from shops"
 
 These items require product decisions before implementation:
 
-| # | Item | Decision Needed |
-|---|------|----------------|
-| 11 | `watcher_count` displayed but never written | Implement watcher feature or remove display? |
-| 12 | `reserved` listing status unreachable | Implement reservation flow or remove from enum? |
-| 13 | `split` shipping option blocked | Implement split shipping or remove from enum? |
-| 23 | Shop member management UI missing | Build UI now or defer to shop membership feature? |
-| 30 | Registration rate limiting | Requires Vercel WAF or Upstash Redis — configure in dashboard |
-| 31 | View count rate limiting | Requires application-level throttle or WAF rule |
-| 32 | Upload rate limiting | Requires per-user quota tracking |
+| #   | Item                                        | Decision Needed                                               |
+| --- | ------------------------------------------- | ------------------------------------------------------------- |
+| 11  | `watcher_count` displayed but never written | Implement watcher feature or remove display?                  |
+| 12  | `reserved` listing status unreachable       | Implement reservation flow or remove from enum?               |
+| 13  | `split` shipping option blocked             | Implement split shipping or remove from enum?                 |
+| 23  | Shop member management UI missing           | Build UI now or defer to shop membership feature?             |
+| 30  | Registration rate limiting                  | Requires Vercel WAF or Upstash Redis — configure in dashboard |
+| 31  | View count rate limiting                    | Requires application-level throttle or WAF rule               |
+| 32  | Upload rate limiting                        | Requires per-user quota tracking                              |
 
 ---
 

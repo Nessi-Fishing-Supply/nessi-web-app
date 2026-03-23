@@ -11,7 +11,10 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { data: drafts, error } = await supabase
@@ -24,13 +27,21 @@ export async function GET() {
       .order('position', { referencedTable: 'listing_photos', ascending: true });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    return NextResponse.json((drafts ?? []) as ListingWithPhotos[], { headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json((drafts ?? []) as ListingWithPhotos[], {
+      headers: AUTH_CACHE_HEADERS,
+    });
   } catch (error) {
     console.error('Error fetching drafts:', error);
-    return NextResponse.json({ error: 'Failed to fetch drafts' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Failed to fetch drafts' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }
 
@@ -42,7 +53,10 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const contextHeader = req.headers.get('X-Nessi-Context') ?? 'member';
@@ -65,13 +79,22 @@ export async function POST(req: Request) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    return NextResponse.json(draft as ListingWithPhotos, { status: 201, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(draft as ListingWithPhotos, {
+      status: 201,
+      headers: AUTH_CACHE_HEADERS,
+    });
   } catch (error) {
     console.error('Error creating draft:', error);
-    return NextResponse.json({ error: 'Failed to create draft' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Failed to create draft' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }
 
@@ -83,14 +106,20 @@ export async function DELETE(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing listing id' }, { status: 400, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Missing listing id' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { data: listing, error: fetchError } = await supabase
@@ -100,22 +129,34 @@ export async function DELETE(req: Request) {
       .single();
 
     if (fetchError || !listing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Listing not found' },
+        { status: 404, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (listing.seller_id !== user.id || listing.status !== 'draft') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Forbidden' },
+        { status: 403, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { error: deleteError } = await supabase.from('listings').delete().eq('id', id);
 
     if (deleteError) {
-      return NextResponse.json({ error: deleteError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: deleteError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Error deleting draft:', error);
-    return NextResponse.json({ error: 'Failed to delete draft' }, { status: 500, headers: AUTH_CACHE_HEADERS });
+    return NextResponse.json(
+      { error: 'Failed to delete draft' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }
