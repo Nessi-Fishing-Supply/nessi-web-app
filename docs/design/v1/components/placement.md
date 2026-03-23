@@ -1,0 +1,109 @@
+# Component Placement Report -- Nessi Design System v1
+
+Source: `https://0m34aamgen-7200.hosted.obvious.ai/design-system.html`
+Generated: 2026-03-23
+
+## Legend
+
+- **Exists**: Component already exists in the codebase (skip scaffold generation)
+- **New**: Component needs scaffolding
+- **Ambiguous**: Could not be auto-sorted by placement rules
+
+---
+
+## Placement Table
+
+| # | Component | Atomic Level | DS Category | Target Location | Rule Applied | Status | Notes |
+|---|-----------|-------------|-------------|-----------------|-------------|--------|-------|
+| 1 | Button | Atom | Buttons | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/button/` -- needs variant updates (ghost, orange, danger, sizes, icon-only) |
+| 2 | Text Link | Atom | Buttons | `src/components/controls/` | Generic UI primitive | New | AppLink exists but DS defines more link variants |
+| 3 | Pill (Condition Badge) | Atom | Pills | `src/components/indicators/` | Display-only | Exists | `src/components/indicators/pill/` -- needs condition color variants |
+| 4 | Pill (Listing Status) | Atom | Pills | `src/components/indicators/` | Display-only | Exists | Same pill component, different variant set |
+| 5 | Pill (Filter Chip) | Atom | Pills | `src/components/controls/` | Interactive UI primitive | Exists | `src/features/listings/components/filter-chip/` -- exists in listings |
+| 6 | Pill (Category Pill) | Atom | Pills | `src/components/controls/` | Interactive UI primitive | Exists | `src/components/controls/pill-selector/` |
+| 7 | Pill (Member Badge) | Atom | Pills | `src/components/indicators/` | Display-only | New | Earned/locked states with tooltip |
+| 8 | Input | Atom | Forms | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/input/` |
+| 9 | Textarea | Atom | Forms | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/text-area/` |
+| 10 | Select | Atom | Forms | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/select/` |
+| 11 | Checkbox | Atom | Forms | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/checkbox/` |
+| 12 | Radio Button | Atom | Forms | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/radio-button/` |
+| 13 | Toggle | Atom | Forms | `src/components/controls/` | Generic UI primitive | Exists | `src/components/controls/toggle/` |
+| 14 | Divider | Atom | Dividers | `src/components/layout/` | Structural | Exists | `src/components/layout/divider/` -- needs labeled variant |
+| 15 | Tooltip | Atom | Tooltips | `src/components/controls/` | Generic UI primitive | New | Dark fill, arrow, max 80 chars |
+| 16 | Date Time Display | Atom | Date & Time | `src/components/indicators/` | Display-only | New | Relative/absolute/countdown variants |
+| 17 | Location Chip | Atom | Location | `src/components/indicators/` | Display-only | New | Inline, pill, local pickup variants |
+| 18 | Avatar | Molecule | Avatars | `src/components/controls/` | Reusable across features | New | 4 sizes, gradient, photo, shop ring. Note: avatar-upload exists but not display avatar |
+| 19 | Rating Display | Molecule | Rating | `src/components/indicators/` | Status/info display | Exists | `src/components/indicators/reviews/` -- needs breakdown bar |
+| 20 | Product Card | Molecule | Product Cards | `src/features/listings/components/` | Listing domain | Exists | `src/features/listings/components/listing-card/` |
+| 21 | Seller Card | Molecule | Seller Card | `src/features/listings/components/` | Listing domain | Exists | `src/features/listings/components/seller-strip/` -- DS has richer version |
+| 22 | Condition Track | Molecule | Condition Grading | `src/features/listings/components/` | Listing domain | Exists | `src/features/listings/components/condition-badge/` and condition-selector |
+| 23 | Tabs | Molecule | Tabs | `src/components/controls/` | Reusable across features | New | Underline style with count |
+| 24 | Accordion | Molecule | Tabs | `src/components/controls/` | Reusable across features | Exists | `src/components/layout/collapsible-card/` -- similar pattern |
+| 25 | Price Display | Molecule | Price & Specs | `src/features/listings/components/` | Listing domain | New | Standard, below-avg, price-drop variants |
+| 26 | Fee Calculator | Molecule | Price & Specs | `src/features/listings/components/` | Listing domain | New | Live calculator with shop discount note |
+| 27 | Spec Table | Molecule | Price & Specs | `src/features/listings/components/` | Listing domain | New | Key-value display, never empty rows |
+| 28 | Message Thread | Molecule | Messaging | `src/features/messaging/components/` | Messaging domain | New | Sent/received bubbles + offer inline |
+| 29 | Offer Bubble | Molecule | Messaging | `src/features/messaging/components/` | Messaging domain | New | Part of message thread |
+| 30 | Watchlist Toggle | Molecule | Watchlist | `src/features/listings/components/` | Listing domain | Exists | `src/components/controls/favorite/` -- heart toggle exists |
+| 31 | Search Input | Molecule | Search Input | `src/components/controls/` | Reusable across features | Exists | `src/features/listings/components/search-overlay/` + autocomplete |
+| 32 | Filter Panel | Molecule | Filter Panel | `src/features/search/components/` | Search domain | Exists | `src/features/listings/components/filter-panel/` -- exists in listings |
+| 33 | Page Header | Molecule | Page Header | `src/components/layout/` | Structural/layout | New | Back + title + actions pattern |
+| 34 | Stepper | Molecule | Stepper & Progress | `src/components/layout/` | Structural/layout | Exists | `src/features/listings/components/create-wizard/wizard-progress.tsx` + `src/features/members/components/onboarding/progress-indicator/` |
+| 35 | Progress Bar | Molecule | Stepper & Progress | `src/components/layout/` | Structural/layout | New | Linear bar with label and percentage |
+| 36 | Inline Banner | Molecule | Inline Banner | `src/components/indicators/` | Status/info display | New | Warning, error, info, success variants |
+| 37 | Photo Upload | Molecule | Photo Upload | `src/features/listings/components/` | Listing domain | Exists | `src/features/listings/components/photo-manager/` |
+| 38 | Shipping Rate Card | Molecule | Shipping Rate Card | `src/features/listings/components/` | Listing domain | New | Carrier option selection card |
+| 39 | Order Timeline | Molecule | Order Timeline | `src/features/orders/components/` | Orders domain | New | Vertical status stepper |
+| 40 | Category Tile | Molecule | Category Tile | `src/features/listings/components/` | Listing domain | New | Photo bg + label overlay grid tile |
+| 41 | Pagination | Molecule | Pagination | `src/components/controls/` | Reusable across features | Exists | `src/features/listings/components/infinite-scroll/` |
+| 42 | Quantity Stepper | Molecule | Quantity Stepper | `src/components/controls/` | Reusable across features | New | +/- buttons with count |
+| 43 | Notification Row | Molecule | Notification Row | `src/components/indicators/` | Status/info display | New | Icon + title + desc + timestamp + unread dot |
+| 44 | Settings Row | Molecule | Settings Row | `src/components/indicators/` | Status/info display | New | Label + value/toggle + chevron |
+| 45 | Fishing Identity Tag | Molecule | Trust & Identity | `src/features/members/components/` | Member/trust domain | Exists | `src/features/members/components/account/fishing-identity/` -- settings UI exists, display tag is new |
+| 46 | Verification Badge | Molecule | Trust & Identity | `src/features/members/components/` | Member/trust domain | New | Earned badge display with tooltip |
+| 47 | Trust Stat Row | Molecule | Trust & Identity | `src/features/members/components/` | Member/trust domain | New | Avatar + stats + message button |
+| 48 | Offer UI | Molecule | Trust & Identity | `src/features/members/components/` | Member/trust domain | New | Pending/accepted/floor-warning states |
+| 49 | KPI Stat Tile | Molecule | Dashboard | `src/features/dashboard/components/` | Dashboard domain | New | Label + value + trend |
+| 50 | Listing Performance Row | Molecule | Dashboard | `src/features/dashboard/components/` | Dashboard domain | Exists | `src/features/listings/components/listing-row/` -- exists in listings |
+| 51 | Quick Action Card | Molecule | Dashboard | `src/features/dashboard/components/` | Dashboard domain | New | Icon + label + badge + chevron |
+| 52 | Sparkline | Molecule | Dashboard | `src/features/dashboard/components/` | Dashboard domain | New | SVG micro-chart, no library |
+| 53 | Shop Upgrade Prompt | Molecule | Dashboard | `src/features/dashboard/components/` | Dashboard domain | New | Dark green card with benefits |
+| 54 | Shop Highlight | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | Hero image + shop info + preview grid |
+| 55 | Maker Story Block | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | Photo + serif quote + narrative |
+| 56 | Featured Listing Card | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | 16:9 hero card with overlay |
+| 57 | Species Browse Row | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | Horizontal scroll circle icons |
+| 58 | Social Proof Strip | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | Stat strip + activity feed variants |
+| 59 | Price Drop Alert | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | Banner + saved tab row variants |
+| 60 | Recently Sold Ticker | Molecule | Editorial | `src/features/editorial/components/` | Editorial domain | New | Auto-scrolling transaction feed |
+| 61 | Modal (Confirm) | Organism | Modals | `src/components/layout/` | Global structural | Exists | `src/components/layout/modal/` -- needs DS alignment |
+| 62 | Bottom Sheet | Organism | Overlays | `src/components/layout/` | Global structural | New | Handle + title + content + CTA pattern |
+| 63 | Photo Viewer | Organism | Modals | `src/components/layout/` | Global structural | Exists | `src/features/listings/components/photo-lightbox/` |
+| 64 | Skeleton Loader | Feedback | Loading | `src/components/indicators/` | Global feedback | Exists | `src/features/listings/components/listing-skeleton/` -- domain-specific |
+| 65 | Empty State | Feedback | Empty States | `src/components/indicators/` | Global feedback | Exists | `src/features/listings/components/empty-state/` -- domain-specific |
+| 66 | Error State | Feedback | Error States | `src/components/indicators/` | Global feedback | New | Inline form, page banner, 404 variants |
+| 67 | Toast | Feedback | Toasts | `src/components/indicators/` | Global feedback | Exists | `src/components/indicators/toast/` |
+| 68 | Navigation System | Organism | Navigation | `src/components/navigation/` | Global nav | Exists | `src/components/navigation/navbar/` + `side-nav/` -- needs DS bottom bar |
+| 69 | Voice & Tone | Pattern | Patterns | `docs/design/v1/voice-and-tone.md` | Documentation only | New | Not a component |
+
+---
+
+## Summary
+
+| Status | Count |
+|--------|-------|
+| Existing (skip scaffold) | 32 |
+| New (needs scaffold) | 37 |
+| Total components extracted | 69 |
+
+## Ambiguous Components
+
+None. All components matched a placement rule.
+
+## New Feature Directories Needed
+
+| Directory | Domain | Components |
+|-----------|--------|------------|
+| `src/features/messaging/components/` | Messaging | Message Thread, Offer Bubble |
+| `src/features/orders/components/` | Orders | Order Timeline |
+| `src/features/dashboard/components/` | Dashboard | KPI Stat Tile, Quick Action Card, Sparkline, Shop Upgrade Prompt |
+| `src/features/editorial/components/` | Editorial | Shop Highlight, Maker Story Block, Featured Listing Card, Species Browse Row, Social Proof Strip, Price Drop Alert, Recently Sold Ticker |

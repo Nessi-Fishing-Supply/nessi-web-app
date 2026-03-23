@@ -3,3 +3,8 @@ export { default as Button } from './button';
 export { default as Checkbox } from './checkbox';
 export { default as AppLink } from './app-link';
 export { Dropdown, DropdownItem, DropdownTitle, DropdownDivider } from './dropdown';
+export { default as Tooltip } from './tooltip';
+export { default as Avatar } from './avatar';
+export { default as Tabs } from './tabs';
+export type { TabItem } from './tabs';
+export { default as QuantityStepper } from './quantity-stepper';

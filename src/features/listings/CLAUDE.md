@@ -199,6 +199,11 @@ All listing API routes live in `src/app/api/listings/`:
 | `InfiniteScroll`     | `components/infinite-scroll/`      | Intersection Observer sentinel that triggers `onLoadMore` when scrolled into view. Props: `onLoadMore`, `hasMore`, `isLoading`.            |
 | `SortSelect`         | `components/sort-select/`          | Dropdown for choosing listing sort order (e.g., newest, price asc/desc). Props: `value`, `onChange`.                                       |
 | `EmptyState`         | `components/empty-state/`          | Zero-result state with icon, heading, and optional CTA. Used when a category or search returns no listings.                                |
+| `PriceDisplay`       | `components/price-display/`        | Price with variants: standard ("or offer"), below-avg signal, price drop (strikethrough + %). Watcher count with orange heart.              |
+| `FeeCalculator`      | `components/fee-calculator/`       | Live fee calculator: listing price → fee → net payout. Shop discount info banner.                                                          |
+| `SpecTable`          | `components/spec-table/`           | Key-value spec display. Semantic `<dl>`. Filters empty rows. Props: `specs: { key, value }[]`.                                             |
+| `ShippingRateCard`   | `components/shipping-rate-card/`   | Carrier option selection card. Selected/unselected states. Free shipping variant. Props: `carrier`, `price`, `isSelected`, `onSelect`.      |
+| `CategoryTile`       | `components/category-tile/`        | 1:1 photo tile with gradient overlay and label. Uses `next/image` + `Link`. Grid: mobile 2-col, desktop 4-col.                             |
 
 ## Create Wizard
 

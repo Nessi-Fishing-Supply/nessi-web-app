@@ -110,6 +110,14 @@ Full-width CTA card shown on the dashboard when `is_seller === false`. Displays 
 
 2-step modal for post-onboarding seller opt-in. Step 1: terms/info with checkbox acceptance. Step 2: seller type choice (free profile vs shop) using a keyboard-navigable radiogroup card pattern. Choosing "free" calls `useUpdateMember` to set `is_seller: true` with a success toast. Choosing "shop" signals the parent to redirect to `/dashboard/shop/create`. Props: `isOpen`, `onClose`, `userId`, `onComplete(path: 'free' | 'shop')`.
 
+### Trust & Identity Components (scaffolded — typed props only)
+
+| Component              | Location                         | Purpose                                                                                                              |
+| ---------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `VerificationBadge`    | `components/verification-badge/` | Pill badge: Trusted Seller, Tournament Angler, Verified Maker, etc. Variant colors. Tap opens tooltip.               |
+| `TrustStatRow`         | `components/trust-stat-row/`     | Seller summary: avatar + name + rating + message button + 3-stat row (response time, joined, sales). Vertical dividers. |
+| `OfferUi`              | `components/offer-ui/`           | Offer lifecycle: pending (3 buttons), floor warning (70% minimum), accepted (checkout CTA). Countdown timer.          |
+
 ## State Management
 
 The onboarding wizard uses a Zustand store (`stores/onboarding-store.ts`) to hold step data across renders without lifting state to a parent.

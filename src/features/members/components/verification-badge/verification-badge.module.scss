@@ -1,0 +1,48 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  padding: 6px 12px;
+  border-radius: var(--radius-800);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-100);
+  white-space: nowrap;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1em;
+}
+
+.label {
+  display: inline;
+}
+
+.success {
+  background-color: var(--color-success-500);
+  color: var(--color-white);
+}
+
+.green {
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+}
+
+.orange {
+  background-color: var(--color-accent-500);
+  color: var(--color-white);
+}
+
+.maroon {
+  background-color: var(--color-destructive-500);
+  color: var(--color-white);
+}
+
+.neutral {
+  background-color: var(--color-surface-300);
+  color: var(--color-neutral-600);
+}
