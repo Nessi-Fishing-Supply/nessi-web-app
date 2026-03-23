@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Inter } from 'next/font/google';
+import { DM_Sans, DM_Serif_Display } from 'next/font/google';
 import '@/styles/globals.scss';
 import Navbar from '@/components/navigation/navbar';
 import OnboardingBanner from '@/components/navigation/onboarding-banner';
@@ -7,11 +7,18 @@ import Providers from '@/libs/providers';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-inter',
+  display: 'swap',
+  variable: '--font-dm-sans',
+  weight: ['300', '400', '500', '600', '700'],
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-dm-serif',
+  weight: '400',
 });
 
 export default function RootLayout({
@@ -21,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${dmSans.className} ${dmSerif.variable}`}>
         <Providers>
           <Suspense fallback={<div>Loading...</div>}>
             <Navbar />
