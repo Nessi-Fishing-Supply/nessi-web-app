@@ -157,30 +157,28 @@ export async function addShopMember(
   memberId: string,
   role: ShopMemberRole,
 ): Promise<ShopMember> {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from('shop_members')
-    .insert({ shop_id: shopId, member_id: memberId, role })
-    .select()
-    .single();
+  const response = await fetch(`/api/shops/${shopId}/members`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ memberId, role }),
+  });
 
-  if (error) {
-    throw new Error(`Failed to add shop member: ${error.message}`);
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to add shop member');
   }
 
-  return data;
+  return response.json();
 }
 
 export async function removeShopMember(shopId: string, memberId: string): Promise<void> {
-  const supabase = createClient();
-  const { error } = await supabase
-    .from('shop_members')
-    .delete()
-    .eq('shop_id', shopId)
-    .eq('member_id', memberId);
+  const response = await fetch(`/api/shops/${shopId}/members/${memberId}`, {
+    method: 'DELETE',
+  });
 
-  if (error) {
-    throw new Error(`Failed to remove shop member: ${error.message}`);
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to remove shop member');
   }
 }
 
