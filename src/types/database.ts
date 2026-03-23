@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      cart_items: {
+        Row: {
+          added_at: string
+          added_from: string | null
+          expires_at: string
+          id: string
+          listing_id: string
+          price_at_add: number
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_from?: string | null
+          expires_at?: string
+          id?: string
+          listing_id: string
+          price_at_add: number
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          added_from?: string | null
+          expires_at?: string
+          id?: string
+          listing_id?: string
+          price_at_add?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cart_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_photos: {
         Row: {
           created_at: string
