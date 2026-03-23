@@ -3,7 +3,7 @@
   "issue": 130,
   "title": "feat(cart): #50.8 — navbar cart icon, badge count, and guest merge on login",
   "branch": "feat/130/navbar-cart-icon-badge-guest-merge",
-  "status": "fixing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,7 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-23T00:00:00Z", "lastActivity": "2026-03-23T00:09:00Z" }
+  "timestamps": { "started": "2026-03-23T00:00:00Z", "lastActivity": "2026-03-23T00:10:00Z" },
+  "completedAt": "2026-03-23T00:10:00Z",
+  "pruneAfter": "2026-05-22T00:10:00Z"
 }
