@@ -3,6 +3,7 @@ import type { ListingStatus } from '../types/listing';
 export const LISTING_STATUS_LABELS: Record<ListingStatus, string> = {
   draft: 'Draft',
   active: 'Active',
+  // reserved: exists in the DB enum but has no transitions — unreachable in app code
   reserved: 'Reserved',
   sold: 'Sold',
   archived: 'Deactivated',
@@ -15,7 +16,8 @@ export const LISTING_STATUS_COLORS: Record<
 > = {
   draft: 'default',
   active: 'success',
-  reserved: 'primary',
+  // reserved: exists in the DB enum but has no transitions — unreachable in app code
+  reserved: 'default',
   sold: 'primary',
   archived: 'warning',
   deleted: 'error',

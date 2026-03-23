@@ -5,12 +5,13 @@ import { NextResponse } from 'next/server';
 
 // Note: Active listings can be deleted via DELETE /api/listings/[id] (soft delete),
 // not through status transitions. This map only covers status-to-status changes.
-const VALID_TRANSITIONS: Record<ListingStatus, ListingStatus[]> = {
+// Note: 'reserved' exists in the DB enum but is intentionally excluded here — it has
+// no valid transitions and is unreachable via the API.
+const VALID_TRANSITIONS: Partial<Record<ListingStatus, ListingStatus[]>> = {
   draft: ['active', 'deleted'],
   active: ['archived', 'sold'],
   archived: ['active'],
   sold: [],
-  reserved: [],
   deleted: [],
 };
 
