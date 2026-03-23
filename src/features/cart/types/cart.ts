@@ -1,5 +1,5 @@
 import type { Database } from '@/types/database';
-import type { Listing } from '@/features/listings/types/listing';
+import type { Listing, SellerIdentity } from '@/features/listings/types/listing';
 import type { ListingPhoto } from '@/features/listings/types/listing-photo';
 
 export type CartItem = Database['public']['Tables']['cart_items']['Row'];
@@ -12,10 +12,24 @@ export type CartItemInsert = Omit<
 export type CartItemWithListing = CartItem & {
   listing: Pick<
     Listing,
-    'title' | 'price_cents' | 'cover_photo_url' | 'status' | 'seller_id' | 'member_id' | 'shop_id'
+    | 'title'
+    | 'price_cents'
+    | 'cover_photo_url'
+    | 'status'
+    | 'seller_id'
+    | 'member_id'
+    | 'shop_id'
+    | 'condition'
   > & {
     listing_photos: ListingPhoto[];
   };
+  seller: SellerIdentity | null;
+};
+
+export type CartSellerGroup = {
+  seller: SellerIdentity | null;
+  items: CartItemWithListing[];
+  subtotalCents: number;
 };
 
 export type GuestCartItem = {

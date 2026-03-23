@@ -5,6 +5,7 @@ import type {
   CartValidationResult,
   GuestCartItem,
 } from '@/features/cart/types/cart';
+import type { SellerIdentity } from '@/features/listings/types/listing';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_CART_SIZE = 25;
@@ -17,7 +18,7 @@ export async function getCartServer(userId: string): Promise<CartItemWithListing
   const { data, error } = await supabase
     .from('cart_items')
     .select(
-      '*, listing:listings(title, price_cents, cover_photo_url, status, seller_id, member_id, shop_id, listing_photos(*))',
+      '*, listing:listings(title, price_cents, cover_photo_url, status, seller_id, member_id, shop_id, condition, listing_photos(*))',
     )
     .eq('user_id', userId)
     .order('added_at', { ascending: false });
@@ -26,7 +27,63 @@ export async function getCartServer(userId: string): Promise<CartItemWithListing
     throw new Error(`Failed to fetch cart: ${error.message}`);
   }
 
-  return (data ?? []) as CartItemWithListing[];
+  const items = (data ?? []) as Omit<CartItemWithListing, 'seller'>[];
+
+  // Collect unique shop_ids and seller_ids for batch fetching
+  const shopIds = [...new Set(items.map((i) => i.listing?.shop_id).filter(Boolean) as string[])];
+  const sellerIds = [
+    ...new Set(
+      items
+        .map((i) => (i.listing?.shop_id ? null : i.listing?.seller_id))
+        .filter(Boolean) as string[],
+    ),
+  ];
+
+  // Batch fetch shops
+  const shopMap = new Map<string, { shop_name: string; avatar_url: string | null; slug: string; created_at: string; is_verified: boolean } & { id: string }>();
+  if (shopIds.length > 0) {
+    const { data: shops } = await supabase
+      .from('shops')
+      .select('id, shop_name, avatar_url, slug, created_at, is_verified')
+      .in('id', shopIds)
+      .is('deleted_at', null);
+    for (const shop of shops ?? []) {
+      shopMap.set(shop.id, shop);
+    }
+  }
+
+  // Batch fetch members
+  const memberMap = new Map<string, { first_name: string; last_name: string; avatar_url: string | null; slug: string; created_at: string; is_seller: boolean } & { id: string }>();
+  if (sellerIds.length > 0) {
+    const { data: members } = await supabase
+      .from('members')
+      .select('id, first_name, last_name, avatar_url, slug, created_at, is_seller')
+      .in('id', sellerIds);
+    for (const member of members ?? []) {
+      memberMap.set(member.id, member);
+    }
+  }
+
+  // Attach seller identity to each cart item
+  return items.map((item) => {
+    let seller: SellerIdentity | null = null;
+
+    if (item.listing?.shop_id) {
+      const shop = shopMap.get(item.listing.shop_id);
+      if (shop) {
+        seller = { type: 'shop', shop_name: shop.shop_name, avatar_url: shop.avatar_url, slug: shop.slug, created_at: shop.created_at, is_verified: shop.is_verified };
+      }
+    }
+
+    if (!seller && item.listing?.seller_id) {
+      const member = memberMap.get(item.listing.seller_id);
+      if (member) {
+        seller = { type: 'member', first_name: member.first_name, last_name: member.last_name, avatar_url: member.avatar_url, slug: member.slug, created_at: member.created_at, is_seller: member.is_seller };
+      }
+    }
+
+    return { ...item, seller } as CartItemWithListing;
+  });
 }
 
 export async function getCartCountServer(userId: string): Promise<number> {
