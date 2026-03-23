@@ -7,11 +7,7 @@ import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 import { createShopSchema } from '@/features/shops/validations/shop';
-import {
-  useCreateShop,
-  useAddShopMember,
-  useShopSlugCheck,
-} from '@/features/shops/hooks/use-shops';
+import { useCreateShop, useShopSlugCheck } from '@/features/shops/hooks/use-shops';
 import { generateSlug } from '@/features/shared/utils/slug';
 import useContextStore from '@/features/context/stores/context-store';
 import { useToast } from '@/components/indicators/toast/context';
@@ -28,7 +24,6 @@ export default function ShopCreationForm({ ownerId }: ShopCreationFormProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const createShopMutation = useCreateShop();
-  const addShopMemberMutation = useAddShopMember();
 
   const methods = useForm<ShopCreationFormData>({
     resolver: yupResolver(createShopSchema),
@@ -64,26 +59,16 @@ export default function ShopCreationForm({ ownerId }: ShopCreationFormProps) {
   const availabilityKnown = slugIsLongEnough && !isCheckingSlug;
   const slugIsTaken = availabilityKnown && isSlugAvailable === false;
   const canSubmit =
-    isValid &&
-    !errors.slug &&
-    isSlugAvailable === true &&
-    !createShopMutation.isPending &&
-    !addShopMemberMutation.isPending;
+    isValid && !errors.slug && isSlugAvailable === true && !createShopMutation.isPending;
 
-  const isLoading = createShopMutation.isPending || addShopMemberMutation.isPending;
+  const isLoading = createShopMutation.isPending;
 
   const onSubmit = async (data: ShopCreationFormData) => {
     const shop = await createShopMutation.mutateAsync({
-      shop_name: data.shopName,
+      shopName: data.shopName,
       slug: data.slug,
       description: data.description || null,
-      owner_id: ownerId,
-      avatar_url: null,
-    });
-    await addShopMemberMutation.mutateAsync({
-      shopId: shop.id,
-      memberId: ownerId,
-      role: 'owner',
+      ownerId,
     });
     useContextStore.getState().switchToShop(shop.id);
     showToast({

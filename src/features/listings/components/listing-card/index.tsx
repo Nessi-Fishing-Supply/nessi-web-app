@@ -17,9 +17,10 @@ import type { ListingWithPhotos } from '@/features/listings/types/listing';
 
 interface ListingCardProps {
   listing: ListingWithPhotos;
+  priority?: boolean;
 }
 
-export default function ListingCard({ listing }: ListingCardProps) {
+export default function ListingCard({ listing, priority = false }: ListingCardProps) {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -60,6 +61,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
                     fill
                     sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 300px"
                     style={{ objectFit: 'cover' }}
+                    priority={priority && index === 0}
                   />
                 </div>
               </SwiperSlide>

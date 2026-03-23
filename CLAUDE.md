@@ -69,7 +69,7 @@ All images in Nessi follow a strict pipeline: **validate → optimize → store 
 - **Always use `next/image`** — never raw `<img>` tags for user-uploaded or remote images
 - **Always provide `sizes`** — tells the browser which srcset variant to download. Examples:
   - Product cards: `sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 300px"`
-  - Product detail: `sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 600px"`
+  - Listing detail: `sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 600px"`
   - Fixed-size avatars: `sizes="120px"` or use `width`/`height` props
 - **Use `fill` layout** when the image should fill its container (carousel slides, avatar circles). Parent must have `position: relative`.
 - **Use `width`/`height`** for fixed-size inline images (navbar avatar at 32x32)
@@ -99,7 +99,7 @@ DELETE /api/auth/delete-account
       → BEFORE DELETE trigger: handle_member_deletion()
         → Releases member slug and owned shop slugs from `slugs` table
         → Deletes avatar from storage
-        → Deletes product images from storage
+        → Deletes listing images from storage
       → Member row removed
 ```
 
@@ -115,12 +115,11 @@ DELETE /api/auth/delete-account
 
 - `src/features/auth/` — Auth domain: services, types, validations, context, form components (see its CLAUDE.md)
 - `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its CLAUDE.md)
-- `src/features/products/` — Products domain (legacy, being replaced by listings): services, types, hooks, components (see its CLAUDE.md)
-- `src/features/listings/` — Listings domain: photo upload/processing, reorderable photo manager, types, services, hooks (see its CLAUDE.md)
+- `src/features/listings/` — Listings domain: types, services, hooks, components for the full listing lifecycle — create wizard, edit wizard, photo management, status actions (see its CLAUDE.md)
 - `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
 - `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
-- `src/app/api/` — API routes (auth, products, upload)
+- `src/app/api/` — API routes (auth, listings, upload)
 - `src/app/(frontend)/` — UI pages (App Router with route group)
 - `src/components/` — Shared React components: controls, layout, navigation, indicators
 - `src/types/` — Generated/infra types (database.ts)

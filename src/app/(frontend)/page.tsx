@@ -19,8 +19,8 @@ export default function Home() {
         <p>No listings available.</p>
       ) : (
         <Grid columns={4}>
-          {listings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
+          {listings.map((listing, index) => (
+            <ListingCard key={listing.id} listing={listing} priority={index === 0} />
           ))}
         </Grid>
       )}

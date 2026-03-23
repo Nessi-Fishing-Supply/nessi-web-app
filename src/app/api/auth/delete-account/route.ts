@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 function parseStoragePath(bucketName: string, publicUrl: string): string | null {
@@ -9,89 +10,110 @@ function parseStoragePath(bucketName: string, publicUrl: string): string | null 
   return publicUrl.slice(index + marker.length) || null;
 }
 
-/**
- * Clean up storage objects for a user before account deletion.
- * Must use the Storage API — direct SQL DELETE on storage.objects
- * is blocked by Supabase ("Direct deletion from storage tables is not allowed").
- */
-async function cleanupUserStorage(admin: ReturnType<typeof createAdminClient>, userId: string) {
-  // Delete avatar
-  await admin.storage.from('avatars').remove([`${userId}.webp`]);
+interface StoragePaths {
+  avatarPaths: string[];
+  listingImagePaths: string[];
+}
 
-  // Delete all listing photos (stored under listings/ folder in listing-images bucket)
-  const { data: listingPhotos } = await admin.storage.from('listing-images').list(userId);
-  if (listingPhotos && listingPhotos.length > 0) {
-    // Listing photos are nested: {user_id}/{listing_id}/{file}.webp
-    // We need to list subdirectories and remove recursively
-    for (const item of listingPhotos) {
+/**
+ * Collect all storage paths that need to be cleaned up for a user.
+ * Queries the DB for paths but does NOT delete anything.
+ */
+async function collectStoragePaths(
+  admin: ReturnType<typeof createAdminClient>,
+  userId: string,
+): Promise<StoragePaths> {
+  const avatarPaths: string[] = [];
+  const listingImagePaths: string[] = [];
+
+  // Member avatar
+  avatarPaths.push(`${userId}.webp`);
+
+  // Member listing photos (stored under {user_id}/{listing_id}/{file}.webp)
+  const { data: listingFolders } = await admin.storage.from('listing-images').list(userId);
+  if (listingFolders && listingFolders.length > 0) {
+    for (const item of listingFolders) {
       if (item.id === null) {
         // It's a folder (listing_id) — list its contents
         const { data: photos } = await admin.storage
           .from('listing-images')
           .list(`${userId}/${item.name}`);
         if (photos && photos.length > 0) {
-          const paths = photos.map((f) => `${userId}/${item.name}/${f.name}`);
-          await admin.storage.from('listing-images').remove(paths);
+          for (const f of photos) {
+            listingImagePaths.push(`${userId}/${item.name}/${f.name}`);
+          }
         }
       } else {
         // It's a file directly under {user_id}/
-        await admin.storage.from('listing-images').remove([`${userId}/${item.name}`]);
+        listingImagePaths.push(`${userId}/${item.name}`);
       }
     }
   }
 
-  // Delete shop-owned storage objects (best-effort per shop)
-  try {
-    const { data: shops } = await admin
-      .from('shops')
-      .select('id, hero_banner_url')
-      .eq('owner_id', userId);
+  // Shop-owned storage objects
+  const { data: shops } = await admin
+    .from('shops')
+    .select('id, hero_banner_url')
+    .eq('owner_id', userId);
 
-    if (shops && shops.length > 0) {
-      for (const shop of shops) {
-        // Shop avatar
-        await admin.storage.from('avatars').remove([`shop-${shop.id}.webp`]);
+  if (shops && shops.length > 0) {
+    for (const shop of shops) {
+      // Shop avatar
+      avatarPaths.push(`shop-${shop.id}.webp`);
 
-        // Hero banner
-        if (shop.hero_banner_url) {
-          const heroPath = parseStoragePath('avatars', shop.hero_banner_url);
-          if (heroPath) {
-            await admin.storage.from('avatars').remove([heroPath]);
-          }
+      // Hero banner
+      if (shop.hero_banner_url) {
+        const heroPath = parseStoragePath('avatars', shop.hero_banner_url);
+        if (heroPath) {
+          avatarPaths.push(heroPath);
         }
+      }
 
-        // Shop listing photos
-        const { data: shopListings } = await admin
-          .from('listings')
-          .select('id')
-          .eq('shop_id', shop.id);
+      // Shop listing photos
+      const { data: shopListings } = await admin
+        .from('listings')
+        .select('id')
+        .eq('shop_id', shop.id);
 
-        if (shopListings && shopListings.length > 0) {
-          const listingIds = shopListings.map((l) => l.id);
-          const { data: shopPhotos } = await admin
-            .from('listing_photos')
-            .select('image_url, thumbnail_url')
-            .in('listing_id', listingIds);
+      if (shopListings && shopListings.length > 0) {
+        const listingIds = shopListings.map((l) => l.id);
+        const { data: shopPhotos } = await admin
+          .from('listing_photos')
+          .select('image_url, thumbnail_url')
+          .in('listing_id', listingIds);
 
-          if (shopPhotos && shopPhotos.length > 0) {
-            const imagePaths = shopPhotos
-              .flatMap((photo) => [
-                parseStoragePath('listing-images', photo.image_url),
-                photo.thumbnail_url
-                  ? parseStoragePath('listing-images', photo.thumbnail_url)
-                  : null,
-              ])
-              .filter((path): path is string => path !== null);
+        if (shopPhotos && shopPhotos.length > 0) {
+          const imagePaths = shopPhotos
+            .flatMap((photo) => [
+              parseStoragePath('listing-images', photo.image_url),
+              photo.thumbnail_url ? parseStoragePath('listing-images', photo.thumbnail_url) : null,
+            ])
+            .filter((path): path is string => path !== null);
 
-            if (imagePaths.length > 0) {
-              await admin.storage.from('listing-images').remove(imagePaths);
-            }
-          }
+          listingImagePaths.push(...imagePaths);
         }
       }
     }
-  } catch (shopCleanupError) {
-    console.error('Shop storage cleanup error (non-blocking):', shopCleanupError);
+  }
+
+  return { avatarPaths, listingImagePaths };
+}
+
+/**
+ * Remove all collected storage paths from their respective buckets.
+ * Must use the Storage API — direct SQL DELETE on storage.objects
+ * is blocked by Supabase ("Direct deletion from storage tables is not allowed").
+ */
+async function cleanupStorage(
+  admin: ReturnType<typeof createAdminClient>,
+  paths: StoragePaths,
+): Promise<void> {
+  if (paths.avatarPaths.length > 0) {
+    await admin.storage.from('avatars').remove(paths.avatarPaths);
+  }
+
+  if (paths.listingImagePaths.length > 0) {
+    await admin.storage.from('listing-images').remove(paths.listingImagePaths);
   }
 }
 
@@ -103,7 +125,10 @@ export async function DELETE() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const admin = createAdminClient();
@@ -116,14 +141,29 @@ export async function DELETE() {
       .is('deleted_at', null);
 
     if (activeShops && activeShops.length > 0) {
-      return NextResponse.json({ error: 'OWNS_SHOPS', shops: activeShops }, { status: 409 });
+      return NextResponse.json(
+        { error: 'OWNS_SHOPS', shops: activeShops },
+        { status: 409, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    // Clean up storage before deleting the user (best-effort)
+    // Collect storage paths BEFORE any deletions (non-blocking)
+    let storagePaths: StoragePaths = { avatarPaths: [], listingImagePaths: [] };
     try {
-      await cleanupUserStorage(admin, user.id);
-    } catch (storageError) {
-      console.error('Storage cleanup error (non-blocking):', storageError);
+      storagePaths = await collectStoragePaths(admin, user.id);
+    } catch (collectError) {
+      console.error('Storage path collection error (non-blocking):', collectError);
+    }
+
+    // Soft-delete all member's listings before deleting the user
+    try {
+      await admin
+        .from('listings')
+        .update({ deleted_at: new Date().toISOString(), status: 'deleted' as const })
+        .eq('seller_id', user.id)
+        .is('deleted_at', null);
+    } catch (listingError) {
+      console.error('Listing cleanup error (non-blocking):', listingError);
     }
 
     // Release the member's slug before deleting the user (best-effort, belt-and-suspenders
@@ -134,15 +174,29 @@ export async function DELETE() {
       console.error('Slug cleanup error (non-blocking):', slugError);
     }
 
+    // Critical operation: delete the auth user
     const { error } = await admin.auth.admin.deleteUser(user.id);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    return NextResponse.json({ success: true });
+    // Clean up storage AFTER successful auth deletion (best-effort)
+    try {
+      await cleanupStorage(admin, storagePaths);
+    } catch (storageError) {
+      console.error('Post-deletion storage cleanup error (non-blocking):', storageError);
+    }
+
+    return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Delete account error:', error);
-    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to delete account' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

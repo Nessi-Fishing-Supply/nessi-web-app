@@ -15,14 +15,18 @@ Items to address before Nessi goes to production. Organized by priority.
 - [ ] **Branded email templates** — Replace Supabase default auth email templates with branded versions using React Email + Resend. Covers: signup verification, password reset, email change confirmation.
 - [ ] **Transactional email layer** — Resend + React Email for non-auth emails: order confirmations, shipping notifications, seller alerts, buyer messages.
 - [ ] **Error monitoring** — Sentry (free tier: 5K errors/month) for error aggregation, deduplication, alerting. Install with `npx @sentry/wizard@latest -i nextjs`. Purely additive.
-- [ ] **Rate limiting** — Application-level rate limiting on API routes (product creation, image uploads, auth register). Vercel WAF handles DDoS at the infrastructure level.
+- [ ] **Rate limiting** ([#48](https://github.com/Nessi-Fishing-Supply/Nessi-Web-App/issues/48)) — Application-level rate limiting via Upstash Redis on critical API routes. Checkpoint audit findings:
+  - `POST /api/auth/register` — unauthenticated, spam account risk (5 req/min per IP)
+  - `POST /api/listings/[id]/view` — unauthenticated, view count inflation risk (10 req/min per IP)
+  - `POST /api/listings/upload` — storage/CPU abuse risk (20 req/min per user)
+  - No `vercel.json` WAF rules configured yet — consider Vercel Firewall rules as defense-in-depth
 
 ## High Priority — Auth Polish
 
 - [x] **WCAG 2.1 AA audit** — ~~Run accessibility audit on all auth forms.~~ Done 2026-03-19. Toast, Modal, Input, Button, Checkbox, all auth forms updated.
 - [x] **`autocomplete` attributes** — ~~Verify all auth form inputs have correct autocomplete hints.~~ Done 2026-03-19.
 - [ ] **`?redirect=` post-login routing** — After login, redirect to the page the user was trying to access (e.g., `/dashboard/products`) instead of always going to `/dashboard`.
-- [ ] **Loading/timeout behavior** — Add 8-second timeout on auth API calls with inline error "Something went wrong. Check your connection and try again." Preserve form data.
+- [x] **Loading/timeout behavior** — ~~Add 8-second timeout on auth API calls.~~ Done. All auth service functions use `withTimeout` helper with `AUTH_TIMEOUT_MS = 8000`. Form data preserved on timeout via React Hook Form.
 
 ## Post-Launch Infrastructure
 
@@ -32,5 +36,5 @@ Items to address before Nessi goes to production. Organized by priority.
 
 - [ ] **Social SSO (Google, Apple, Facebook)** — OAuth login via Supabase social providers. Requires Apple Developer account, Google Cloud Console, and Facebook App setup. Post-auth routing: first login → onboarding, returning → previous page.
 - [ ] **Email change flow** — Allow users to update their email address from account settings with re-verification.
-- [ ] **Account deletion** — Self-service account deletion with confirmation flow. Backend cascade is already in place: `auth.users` DELETE → profiles CASCADE → `handle_profile_deletion()` trigger cleans up `avatars` and `product-images` storage. As new user-owned tables are added (listings, orders, messages, reviews), ensure each has `ON DELETE CASCADE` FK and storage cleanup in the trigger.
+- [x] **Account deletion** — ~~Self-service account deletion with confirmation flow.~~ Done. Full cascade: soft-delete listings → release slug → deleteUser() → storage cleanup. Shop ownership gate (409). Hardened in checkpoint audit PR #119 (fixed seller_id FK, reordered storage cleanup, added listing soft-delete).
 - [ ] **Session management** — Show active sessions, allow users to revoke sessions on other devices.

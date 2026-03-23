@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
-import AvatarUpload from '@/features/members/components/avatar-upload';
+import AvatarUpload from '@/components/controls/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';

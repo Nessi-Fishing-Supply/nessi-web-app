@@ -14,7 +14,7 @@ import {
   removeShopMember,
   transferOwnership,
 } from '@/features/shops/services/shop';
-import type { ShopInsert, ShopUpdate, ShopMemberRole } from '@/features/shops/types/shop';
+import type { ShopUpdate, ShopMemberRole } from '@/features/shops/types/shop';
 
 export function useShop(id: string, enabled = true) {
   return useQuery({
@@ -68,7 +68,12 @@ export function useShopSlugCheck(slug: string) {
 export function useCreateShop() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: ShopInsert) => createShop(data),
+    mutationFn: (data: {
+      shopName: string;
+      slug: string;
+      description?: string | null;
+      ownerId: string;
+    }) => createShop(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });
     },

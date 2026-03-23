@@ -1,6 +1,4 @@
 import { get, post, put, del, patch } from '@/libs/fetch';
-import { FetchError } from '@/libs/fetch-error';
-import useContextStore from '@/features/context/stores/context-store';
 import type { ListingWithPhotos, Listing } from '@/features/listings/types/listing';
 
 const BASE_URL = '/api/listings';
@@ -63,33 +61,8 @@ export const updateListing = async (
 export const deleteListing = async (id: string): Promise<{ success: boolean }> =>
   del<{ success: boolean }>(`${BASE_URL}/${id}`);
 
-export const deleteDraft = async (id: string): Promise<{ success: boolean }> => {
-  const { activeContext } = useContextStore.getState();
-  const contextHeader = activeContext.type === 'member' ? 'member' : `shop:${activeContext.shopId}`;
-
-  const res = await fetch(`${BASE_URL}/drafts`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Nessi-Context': contextHeader,
-    },
-    body: JSON.stringify({ id }),
-  });
-
-  if (!res.ok) {
-    let message = `Request failed with status ${res.status}`;
-    try {
-      const errorData = await res.json();
-      if (errorData.error) message = errorData.error;
-      else if (errorData.message) message = errorData.message;
-    } catch {
-      // Response body is not JSON — use default message
-    }
-    throw new FetchError(message, res.status);
-  }
-
-  return res.json();
-};
+export const deleteDraft = async (id: string): Promise<{ success: boolean }> =>
+  del<{ success: boolean }>(`${BASE_URL}/drafts?id=${id}`);
 
 export const updateListingStatus = async (
   id: string,

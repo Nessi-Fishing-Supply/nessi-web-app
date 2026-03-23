@@ -1,6 +1,6 @@
 'use client';
 
-import AvatarUpload from '@/features/members/components/avatar-upload';
+import AvatarUpload from '@/components/controls/avatar-upload';
 import { useAuth } from '@/features/auth/context';
 import { formatMemberName } from '@/features/members/utils/format-name';
 import useOnboardingStore from '@/features/members/stores/onboarding-store';

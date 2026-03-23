@@ -1,4 +1,5 @@
 import { createClient } from '@/libs/supabase/server';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -9,7 +10,10 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { count, error } = await supabase
@@ -20,7 +24,10 @@ export async function GET() {
       .is('deleted_at', null);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const activeListingsCount = count ?? 0;
@@ -28,13 +35,19 @@ export async function GET() {
     const activeOrdersCount = 0;
     const canDisable = activeListingsCount === 0 && activeOrdersCount === 0;
 
-    return NextResponse.json({
-      canDisable,
-      activeListingsCount,
-      activeOrdersCount,
-    });
+    return NextResponse.json(
+      {
+        canDisable,
+        activeListingsCount,
+        activeOrdersCount,
+      },
+      { headers: AUTH_CACHE_HEADERS },
+    );
   } catch (error) {
     console.error('Seller preconditions error:', error);
-    return NextResponse.json({ error: 'Failed to check seller preconditions' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to check seller preconditions' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

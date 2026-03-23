@@ -103,7 +103,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 - `InlineEdit` from `@/components/controls/inline-edit`
 - `Modal` from `@/components/layout/modal`
-- `AvatarUpload` from `@/features/members/components/avatar-upload` — accepts configurable `uploadUrl` and `extraFormData` props
+- `AvatarUpload` from `@/components/controls/avatar-upload` — accepts configurable `uploadUrl` and `extraFormData` props
 - `Button` from `@/components/controls/button`
 - Toast context from `@/components/indicators/toast/context`
 

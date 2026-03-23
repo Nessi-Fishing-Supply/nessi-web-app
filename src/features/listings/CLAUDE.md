@@ -141,7 +141,6 @@ All listing API routes live in `src/app/api/listings/`:
 | `useIncrementViewCount()`     | mutation (fire-and-forget)               | Increment view count                                  |
 | `useUploadListingPhoto()`     | mutation, invalidates listing photos key | Upload photo via `POST /api/listings/upload`          |
 | `useDeleteListingPhoto()`     | mutation, invalidates listing photos key | Delete photo via `DELETE /api/listings/upload/delete` |
-| `useReorderListingPhotos()`   | mutation, invalidates listing photos key | Update position values after drag-to-reorder          |
 
 ## Components
 

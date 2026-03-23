@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/supabase/server';
 import type { ListingWithPhotos } from '@/features/listings/types/listing';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
@@ -98,7 +99,10 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const body = await req.json();
@@ -120,7 +124,10 @@ export async function POST(req: Request) {
       .single();
 
     if (insertError) {
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
+      return NextResponse.json(
+        { error: insertError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { data: fullListing, error: fetchError } = await supabase
@@ -131,12 +138,21 @@ export async function POST(req: Request) {
       .single();
 
     if (fetchError) {
-      return NextResponse.json({ error: fetchError.message }, { status: 500 });
+      return NextResponse.json(
+        { error: fetchError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
-    return NextResponse.json(fullListing as ListingWithPhotos, { status: 201 });
+    return NextResponse.json(fullListing as ListingWithPhotos, {
+      status: 201,
+      headers: AUTH_CACHE_HEADERS,
+    });
   } catch (error) {
     console.error('Error creating listing:', error);
-    return NextResponse.json({ error: 'Failed to create listing' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create listing' },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
+    );
   }
 }

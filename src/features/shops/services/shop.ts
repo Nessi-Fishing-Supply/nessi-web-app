@@ -1,3 +1,4 @@
+import { del, post } from '@/libs/fetch';
 import { createClient } from '@/libs/supabase/client';
 import type {
   Shop,
@@ -82,15 +83,25 @@ export async function getShopsByMember(memberId: string): Promise<Shop[]> {
   return data;
 }
 
-export async function createShop(data: ShopInsert): Promise<Shop> {
-  const supabase = createClient();
-  const { data: created, error } = await supabase.from('shops').insert(data).select().single();
+export async function createShop(data: {
+  shopName: string;
+  slug: string;
+  description?: string | null;
+  ownerId: string;
+}): Promise<Shop> {
+  const response = await fetch('/api/shops', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
 
-  if (error) {
-    throw new Error(`Failed to create shop: ${error.message}`);
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to create shop');
   }
 
-  return created;
+  const body = await response.json();
+  return body.shop;
 }
 
 export async function updateShop(id: string, data: ShopUpdate): Promise<Shop> {
@@ -110,25 +121,11 @@ export async function updateShop(id: string, data: ShopUpdate): Promise<Shop> {
 }
 
 export async function deleteShop(id: string): Promise<void> {
-  const response = await fetch(`/api/shops/${id}`, { method: 'DELETE' });
-
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.error || 'Failed to delete shop');
-  }
+  await del(`/api/shops/${id}`);
 }
 
 export async function updateShopSlug(shopId: string, slug: string): Promise<void> {
-  const response = await fetch('/api/shops/slug', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ shopId, slug }),
-  });
-
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.error || 'Failed to update shop slug');
-  }
+  await post('/api/shops/slug', { shopId, slug });
 }
 
 export async function getShopMembers(shopId: string): Promise<ShopMember[]> {
@@ -147,77 +144,41 @@ export async function addShopMember(
   memberId: string,
   role: ShopMemberRole,
 ): Promise<ShopMember> {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from('shop_members')
-    .insert({ shop_id: shopId, member_id: memberId, role })
-    .select()
-    .single();
+  const response = await fetch(`/api/shops/${shopId}/members`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ memberId, role }),
+  });
 
-  if (error) {
-    throw new Error(`Failed to add shop member: ${error.message}`);
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to add shop member');
   }
 
-  return data;
+  return response.json();
 }
 
 export async function removeShopMember(shopId: string, memberId: string): Promise<void> {
-  const supabase = createClient();
-  const { error } = await supabase
-    .from('shop_members')
-    .delete()
-    .eq('shop_id', shopId)
-    .eq('member_id', memberId);
+  const response = await fetch(`/api/shops/${shopId}/members/${memberId}`, {
+    method: 'DELETE',
+  });
 
-  if (error) {
-    throw new Error(`Failed to remove shop member: ${error.message}`);
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to remove shop member');
   }
 }
 
 export async function transferOwnership(shopId: string, newOwnerId: string): Promise<void> {
-  const supabase = createClient();
+  const response = await fetch(`/api/shops/${shopId}/ownership`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ newOwnerId }),
+  });
 
-  const { data: currentShop, error: shopFetchError } = await supabase
-    .from('shops')
-    .select('owner_id')
-    .eq('id', shopId)
-    .single();
-
-  if (shopFetchError) {
-    throw new Error(`Failed to fetch current shop owner: ${shopFetchError.message}`);
-  }
-
-  const currentOwnerId = currentShop.owner_id;
-
-  const { error: updateShopError } = await supabase
-    .from('shops')
-    .update({ owner_id: newOwnerId })
-    .eq('id', shopId);
-
-  if (updateShopError) {
-    throw new Error(`Failed to transfer shop ownership: ${updateShopError.message}`);
-  }
-
-  const { error: updateNewOwnerRoleError } = await supabase
-    .from('shop_members')
-    .update({ role: 'owner' })
-    .eq('shop_id', shopId)
-    .eq('member_id', newOwnerId);
-
-  if (updateNewOwnerRoleError) {
-    throw new Error(`Failed to update new owner role: ${updateNewOwnerRoleError.message}`);
-  }
-
-  if (currentOwnerId) {
-    const { error: updateOldOwnerRoleError } = await supabase
-      .from('shop_members')
-      .update({ role: 'manager' })
-      .eq('shop_id', shopId)
-      .eq('member_id', currentOwnerId);
-
-    if (updateOldOwnerRoleError) {
-      throw new Error(`Failed to update old owner role: ${updateOldOwnerRoleError.message}`);
-    }
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.error || 'Failed to transfer ownership');
   }
 }
 

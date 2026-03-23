@@ -1,4 +1,5 @@
 import { createClient } from '@/libs/supabase/server';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -18,7 +19,10 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const formData = await req.formData();
@@ -26,11 +30,17 @@ export async function POST(req: Request) {
     const listingId = formData.get('listingId') as string;
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No file provided' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (!listingId) {
-      return NextResponse.json({ error: 'No listing ID provided' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No listing ID provided' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { data: listing } = await supabase
@@ -40,18 +50,24 @@ export async function POST(req: Request) {
       .single();
 
     if (!listing || listing.seller_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json(
+        { error: 'Forbidden' },
+        { status: 403, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: 'Invalid file type. Accepted: JPEG, PNG, WebP, HEIC' },
-        { status: 400 },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
       );
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File exceeds 20MB limit' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'File exceeds 20MB limit' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const sharp = (await import('sharp')).default;
@@ -77,7 +93,10 @@ export async function POST(req: Request) {
 
     if (fullError) {
       console.error('Storage upload error (full):', fullError.message);
-      return NextResponse.json({ error: `Storage: ${fullError.message}` }, { status: 500 });
+      return NextResponse.json(
+        { error: `Storage: ${fullError.message}` },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const { error: thumbError } = await supabase.storage
@@ -87,7 +106,10 @@ export async function POST(req: Request) {
     if (thumbError) {
       console.error('Storage upload error (thumb):', thumbError.message);
       await supabase.storage.from('listing-images').remove([fullPath]);
-      return NextResponse.json({ error: `Storage thumb: ${thumbError.message}` }, { status: 500 });
+      return NextResponse.json(
+        { error: `Storage thumb: ${thumbError.message}` },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const {
@@ -121,7 +143,10 @@ export async function POST(req: Request) {
     if (photoError) {
       // Cleanup storage on DB insert failure
       await supabase.storage.from('listing-images').remove([fullPath, thumbPath]);
-      return NextResponse.json({ error: photoError.message }, { status: 500 });
+      return NextResponse.json(
+        { error: photoError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     // Update cover_photo_url if this is the first photo
@@ -129,13 +154,13 @@ export async function POST(req: Request) {
       await supabase.from('listings').update({ cover_photo_url: thumbnailUrl }).eq('id', listingId);
     }
 
-    return NextResponse.json({ photo, url, thumbnailUrl });
+    return NextResponse.json({ photo, url, thumbnailUrl }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Upload error:', error instanceof Error ? error.message : error);
     console.error('Upload stack:', error instanceof Error ? error.stack : 'no stack');
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Upload failed' },
-      { status: 500 },
+      { status: 500, headers: AUTH_CACHE_HEADERS },
     );
   }
 }
