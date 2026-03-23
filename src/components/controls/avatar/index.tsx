@@ -62,6 +62,7 @@ export default function Avatar({
     <span
       className={`${styles.avatar} ${styles[size]} ${isShop ? styles.shop : ''}`}
       style={{ width: px, height: px, minWidth: px }}
+      role="img"
       aria-label={name}
     >
       {imageUrl ? (

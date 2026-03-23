@@ -51,6 +51,7 @@
 
 .lg {
   .initials {
-    font-size: var(--font-size-800);
+    /* DS spec: 18px — no token exists at 18px; nearest is --font-size-800 (17px) */
+    font-size: 18px;
   }
 }

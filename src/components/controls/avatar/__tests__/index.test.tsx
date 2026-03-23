@@ -23,9 +23,9 @@ describe('Avatar', () => {
 
   it('renders an img element when imageUrl is provided', () => {
     render(<Avatar name="Alex Holloway" imageUrl="https://example.com/avatar.webp" />);
-    const img = screen.getByRole('img');
+    const img = screen.getByAltText('Alex Holloway');
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('alt', 'Alex Holloway');
+    expect(img.tagName).toBe('IMG');
   });
 
   it('applies shop ring class when isShop is true', () => {
