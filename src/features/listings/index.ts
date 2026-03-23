@@ -18,6 +18,8 @@ export type {
   ListingCondition,
   ListingCategory,
   SellerProfile,
+  ShopProfile,
+  SellerIdentity,
   ListingDetailData,
 } from './types/listing';
 export type {

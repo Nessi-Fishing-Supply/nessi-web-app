@@ -13,12 +13,12 @@ import { formatPrice } from '@/features/listings/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { getCategoryLabel } from '@/features/listings/constants/category';
 import { useIncrementViewCount } from '@/features/listings/hooks/use-listings';
-import type { ListingWithPhotos, SellerProfile } from '@/features/listings/types/listing';
+import type { ListingWithPhotos, SellerIdentity } from '@/features/listings/types/listing';
 import styles from './listing-detail.module.scss';
 
 type Props = {
   listing: ListingWithPhotos;
-  seller: SellerProfile | null;
+  seller: SellerIdentity | null;
   currentUserId: string | null;
 };
 

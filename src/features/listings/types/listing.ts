@@ -46,4 +46,16 @@ export type SellerProfile = {
   is_seller: boolean;
 };
 
-export type ListingDetailData = ListingWithPhotos & { seller: SellerProfile | null };
+export type ShopProfile = {
+  shop_name: string;
+  avatar_url: string | null;
+  slug: string;
+  created_at: string;
+  is_verified: boolean;
+};
+
+export type SellerIdentity =
+  | ({ type: 'member' } & SellerProfile)
+  | ({ type: 'shop' } & ShopProfile);
+
+export type ListingDetailData = ListingWithPhotos & { seller: SellerIdentity | null };

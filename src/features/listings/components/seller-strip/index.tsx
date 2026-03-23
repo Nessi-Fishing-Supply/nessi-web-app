@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import type { SellerProfile } from '@/features/listings/types/listing';
+import { HiOutlineShoppingBag } from 'react-icons/hi';
+import type { SellerIdentity } from '@/features/listings/types/listing';
 import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';
 import styles from './seller-strip.module.scss';
 
 interface SellerStripProps {
-  seller: SellerProfile;
+  seller: SellerIdentity;
 }
 
 function isNewSeller(createdAt: string): boolean {
@@ -16,9 +17,22 @@ function isNewSeller(createdAt: string): boolean {
   return new Date(createdAt) > thirtyDaysAgo;
 }
 
+function getShopInitials(name: string): string {
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase();
+}
+
 export default function SellerStrip({ seller }: SellerStripProps) {
-  const displayName = formatMemberName(seller.first_name, seller.last_name);
-  const initials = getMemberInitials(seller.first_name, seller.last_name);
+  const isShop = seller.type === 'shop';
+  const displayName = isShop
+    ? seller.shop_name
+    : formatMemberName(seller.first_name, seller.last_name);
+  const initials = isShop
+    ? getShopInitials(seller.shop_name)
+    : getMemberInitials(seller.first_name, seller.last_name);
+  const href = isShop ? `/shop/${seller.slug}` : `/member/${seller.slug}`;
+  const linkLabel = isShop ? 'View shop' : 'View profile';
   const newSeller = isNewSeller(seller.created_at);
 
   return (
@@ -42,14 +56,20 @@ export default function SellerStrip({ seller }: SellerStripProps) {
           )}
         </div>
         <span className={styles.name}>{displayName}</span>
-        {newSeller && (
+        {isShop && (
+          <span className={styles.shopBadge} aria-label="Shop">
+            <HiOutlineShoppingBag aria-hidden="true" />
+            Shop
+          </span>
+        )}
+        {newSeller && !isShop && (
           <span className={styles.newBadge} aria-label="New seller">
             New seller
           </span>
         )}
       </div>
-      <Link href={`/member/${seller.slug}`} className={styles.viewShop}>
-        View shop
+      <Link href={href} className={styles.viewLink}>
+        {linkLabel}
       </Link>
     </div>
   );
