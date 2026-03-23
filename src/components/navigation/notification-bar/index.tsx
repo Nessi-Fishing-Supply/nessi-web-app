@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import styles from './notification-bar.module.scss';
 import { HiChevronRight, HiX } from 'react-icons/hi';
@@ -9,17 +9,20 @@ interface NotificationBarProps {
   showOnboardingBanner?: boolean;
 }
 
+const DISMISS_KEY = 'nessi-onboarding-dismissed';
+
 export default function NotificationBar({ showOnboardingBanner = false }: NotificationBarProps) {
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const [dismissed, setDismissed] = useState(false);
 
-  // Read sessionStorage after mount to avoid hydration mismatch
-  useEffect(() => {
-    if (sessionStorage.getItem('nessi-onboarding-dismissed') === 'true') {
-      setDismissed(true);
-    }
-  }, []);
+  // Only check sessionStorage after hydration (mounted = true on client only)
+  const isDismissed = dismissed || (mounted && sessionStorage.getItem(DISMISS_KEY) === 'true');
 
-  if (showOnboardingBanner && !dismissed) {
+  if (showOnboardingBanner && !isDismissed) {
     return (
       <div className={`${styles.container} ${styles.onboarding}`} role="status" aria-live="polite">
         <p className={styles.text}>Complete your profile to start buying and selling on Nessi</p>

@@ -238,9 +238,7 @@ describe('verifyOtp', () => {
   });
 
   it('calls supabase.auth.verifyOtp with correct params for signup', async () => {
-    const verifyOtpMock = vi
-      .fn()
-      .mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
+    const verifyOtpMock = vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
     const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
 
@@ -253,9 +251,7 @@ describe('verifyOtp', () => {
   });
 
   it('calls supabase.auth.verifyOtp with correct params for recovery', async () => {
-    const verifyOtpMock = vi
-      .fn()
-      .mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
+    const verifyOtpMock = vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
     const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
 
@@ -277,9 +273,9 @@ describe('verifyOtp', () => {
       },
     };
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
-    await expect(
-      verifyOtp({ email: 'a@b.com', token: '000000', type: 'signup' }),
-    ).rejects.toThrow('Token has expired or is invalid');
+    await expect(verifyOtp({ email: 'a@b.com', token: '000000', type: 'signup' })).rejects.toThrow(
+      'Token has expired or is invalid',
+    );
   });
 
   it('times out after AUTH_TIMEOUT_MS', async () => {

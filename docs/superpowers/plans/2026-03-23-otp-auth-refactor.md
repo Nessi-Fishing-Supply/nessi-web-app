@@ -15,51 +15,55 @@
 ## File Structure
 
 ### New Files
-| File | Responsibility |
-|------|---------------|
-| `src/features/auth/components/otp-input/index.tsx` | Shared 6-digit OTP input component |
-| `src/features/auth/components/otp-input/otp-input.module.scss` | OTP input styles |
-| `src/features/auth/components/otp-input/__tests__/index.test.tsx` | OTP input component tests |
-| `src/app/(frontend)/auth/reset-password/page.tsx` | Multi-step reset password page |
-| `src/app/(frontend)/auth/reset-password/reset-password.module.scss` | Reset password page styles |
+
+| File                                                                | Responsibility                     |
+| ------------------------------------------------------------------- | ---------------------------------- |
+| `src/features/auth/components/otp-input/index.tsx`                  | Shared 6-digit OTP input component |
+| `src/features/auth/components/otp-input/otp-input.module.scss`      | OTP input styles                   |
+| `src/features/auth/components/otp-input/__tests__/index.test.tsx`   | OTP input component tests          |
+| `src/app/(frontend)/auth/reset-password/page.tsx`                   | Multi-step reset password page     |
+| `src/app/(frontend)/auth/reset-password/reset-password.module.scss` | Reset password page styles         |
 
 ### Modified Files
-| File | Changes |
-|------|---------|
-| `src/features/auth/services/auth.ts` | Add `verifyOtp()`, rename `forgotPassword()` → `sendResetCode()`, remove `emailRedirectTo` reference |
-| `src/features/auth/services/__tests__/auth.test.ts` | Add `verifyOtp` tests, update `forgotPassword` → `sendResetCode` tests |
-| `src/features/auth/types/forms.ts` | Remove `ForgotPasswordFormData`, add `OtpVerificationData` |
-| `src/features/auth/components/registration-form/index.tsx` | Add step transition (form → OTP) |
-| `src/features/auth/components/registration-form/__tests__/index.test.tsx` | Add OTP step transition tests |
-| `src/features/auth/components/login-form/index.tsx` | Remove `checkOnboardingComplete`, `banner`, `onResendVerification`; update forgot password link |
-| `src/features/auth/components/login-form/login-form.module.scss` | Remove dead banner/resend styles |
-| `src/features/auth/components/login-form/__tests__/index.test.tsx` | Remove onboarding assertions, add simplified tests |
-| `src/components/navigation/navbar/index.tsx` | Remove resend modal, query param handling; update register success flow |
-| `src/components/navigation/notification-bar/index.tsx` | Add onboarding banner |
-| `src/components/navigation/notification-bar/notification-bar.module.scss` | Add onboarding banner styles |
-| `src/app/api/auth/register/route.ts` | Remove `emailRedirectTo` from `signUp()` options |
-| `src/app/api/auth/callback/route.ts` | Update recovery redirect to `/auth/reset-password` |
-| `src/proxy.ts` | Update guard from `/auth/forgot-password` to `/auth/reset-password` |
-| `src/__tests__/proxy.test.ts` | Update tests for new route |
-| `src/features/auth/CLAUDE.md` | Update documentation |
+
+| File                                                                      | Changes                                                                                              |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `src/features/auth/services/auth.ts`                                      | Add `verifyOtp()`, rename `forgotPassword()` → `sendResetCode()`, remove `emailRedirectTo` reference |
+| `src/features/auth/services/__tests__/auth.test.ts`                       | Add `verifyOtp` tests, update `forgotPassword` → `sendResetCode` tests                               |
+| `src/features/auth/types/forms.ts`                                        | Remove `ForgotPasswordFormData`, add `OtpVerificationData`                                           |
+| `src/features/auth/components/registration-form/index.tsx`                | Add step transition (form → OTP)                                                                     |
+| `src/features/auth/components/registration-form/__tests__/index.test.tsx` | Add OTP step transition tests                                                                        |
+| `src/features/auth/components/login-form/index.tsx`                       | Remove `checkOnboardingComplete`, `banner`, `onResendVerification`; update forgot password link      |
+| `src/features/auth/components/login-form/login-form.module.scss`          | Remove dead banner/resend styles                                                                     |
+| `src/features/auth/components/login-form/__tests__/index.test.tsx`        | Remove onboarding assertions, add simplified tests                                                   |
+| `src/components/navigation/navbar/index.tsx`                              | Remove resend modal, query param handling; update register success flow                              |
+| `src/components/navigation/notification-bar/index.tsx`                    | Add onboarding banner                                                                                |
+| `src/components/navigation/notification-bar/notification-bar.module.scss` | Add onboarding banner styles                                                                         |
+| `src/app/api/auth/register/route.ts`                                      | Remove `emailRedirectTo` from `signUp()` options                                                     |
+| `src/app/api/auth/callback/route.ts`                                      | Update recovery redirect to `/auth/reset-password`                                                   |
+| `src/proxy.ts`                                                            | Update guard from `/auth/forgot-password` to `/auth/reset-password`                                  |
+| `src/__tests__/proxy.test.ts`                                             | Update tests for new route                                                                           |
+| `src/features/auth/CLAUDE.md`                                             | Update documentation                                                                                 |
 
 ### Deleted Files
-| File | Reason |
-|------|--------|
-| `src/app/(frontend)/auth/forgot-password/page.tsx` | Replaced by `/auth/reset-password` |
-| `src/app/(frontend)/auth/forgot-password/forgot-password.module.scss` | Replaced |
-| `src/app/(frontend)/auth/callback/page.tsx` | Both flows are now code-based |
-| `src/app/(frontend)/auth/callback/callback.module.scss` | Deleted with page |
-| `src/features/auth/components/resend-verification-form/index.tsx` | Resend is inline in OTP component |
-| `src/features/auth/components/resend-verification-form/resend-verification-form.module.scss` | Deleted with component |
-| `src/features/auth/components/forgot-password-form/index.tsx` | Absorbed into reset-password page |
-| `src/features/auth/components/reset-password-form/index.tsx` | Absorbed into reset-password page |
+
+| File                                                                                         | Reason                             |
+| -------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `src/app/(frontend)/auth/forgot-password/page.tsx`                                           | Replaced by `/auth/reset-password` |
+| `src/app/(frontend)/auth/forgot-password/forgot-password.module.scss`                        | Replaced                           |
+| `src/app/(frontend)/auth/callback/page.tsx`                                                  | Both flows are now code-based      |
+| `src/app/(frontend)/auth/callback/callback.module.scss`                                      | Deleted with page                  |
+| `src/features/auth/components/resend-verification-form/index.tsx`                            | Resend is inline in OTP component  |
+| `src/features/auth/components/resend-verification-form/resend-verification-form.module.scss` | Deleted with component             |
+| `src/features/auth/components/forgot-password-form/index.tsx`                                | Absorbed into reset-password page  |
+| `src/features/auth/components/reset-password-form/index.tsx`                                 | Absorbed into reset-password page  |
 
 ---
 
 ## Task 1: Service Layer — Add `verifyOtp` and rename `sendResetCode`
 
 **Files:**
+
 - Modify: `src/features/auth/services/auth.ts`
 - Modify: `src/features/auth/services/__tests__/auth.test.ts`
 - Modify: `src/features/auth/types/forms.ts`
@@ -69,7 +73,16 @@
 Add to `src/features/auth/services/__tests__/auth.test.ts`:
 
 ```typescript
-import { withTimeout, AUTH_TIMEOUT_MS, register, login, logout, getUserProfile, verifyOtp, sendResetCode } from '../auth';
+import {
+  withTimeout,
+  AUTH_TIMEOUT_MS,
+  register,
+  login,
+  logout,
+  getUserProfile,
+  verifyOtp,
+  sendResetCode,
+} from '../auth';
 
 // ... existing tests ...
 
@@ -122,9 +135,9 @@ describe('verifyOtp', () => {
     };
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
 
-    await expect(
-      verifyOtp({ email: 'a@b.com', token: '000000', type: 'signup' }),
-    ).rejects.toThrow('Token has expired or is invalid');
+    await expect(verifyOtp({ email: 'a@b.com', token: '000000', type: 'signup' })).rejects.toThrow(
+      'Token has expired or is invalid',
+    );
   });
 
   it('times out after AUTH_TIMEOUT_MS', async () => {
@@ -249,6 +262,7 @@ git commit -m "feat(auth): add verifyOtp service, rename forgotPassword to sendR
 ## Task 2: OTP Input Component — Tests + Implementation
 
 **Files:**
+
 - Create: `src/features/auth/components/otp-input/index.tsx`
 - Create: `src/features/auth/components/otp-input/otp-input.module.scss`
 - Create: `src/features/auth/components/otp-input/__tests__/index.test.tsx`
@@ -573,7 +587,11 @@ const OtpInput: React.FC<OtpInputProps> = ({ email, type, onSuccess, onResend })
         onSuccess();
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Verification failed';
-        setError(message.includes('expired') ? 'Code expired. Please request a new one.' : 'Invalid code. Please try again.');
+        setError(
+          message.includes('expired')
+            ? 'Code expired. Please request a new one.'
+            : 'Invalid code. Please try again.',
+        );
         setDigits(Array(OTP_LENGTH).fill(''));
         inputRefs.current[0]?.focus();
       } finally {
@@ -696,7 +714,9 @@ const OtpInput: React.FC<OtpInputProps> = ({ email, type, onSuccess, onResend })
         {digits.map((digit, index) => (
           <input
             key={index}
-            ref={(el) => { inputRefs.current[index] = el; }}
+            ref={(el) => {
+              inputRefs.current[index] = el;
+            }}
             type="text"
             inputMode="numeric"
             pattern="[0-9]"
@@ -757,6 +777,7 @@ git commit -m "feat(auth): add shared OTP input component with tests"
 ## Task 3: Registration Modal — Add OTP Step Transition
 
 **Files:**
+
 - Modify: `src/features/auth/components/registration-form/index.tsx`
 - Modify: `src/features/auth/components/registration-form/__tests__/index.test.tsx`
 
@@ -978,6 +999,7 @@ git commit -m "feat(auth): add OTP step transition to registration modal"
 ## Task 4: Login Form — Remove Onboarding Gate, Update Links
 
 **Files:**
+
 - Modify: `src/features/auth/components/login-form/index.tsx`
 - Modify: `src/features/auth/components/login-form/login-form.module.scss`
 - Modify: `src/features/auth/components/login-form/__tests__/index.test.tsx`
@@ -1161,7 +1183,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError, onClose }) =>
                   try {
                     const { resendVerification } = await import('@/features/auth/services/auth');
                     await resendVerification({ email });
-                    setError('Verification code sent! Check your inbox and enter the code when you register again.');
+                    setError(
+                      'Verification code sent! Check your inbox and enter the code when you register again.',
+                    );
                   } catch {
                     setError('Failed to resend verification code. Please try again.');
                   }
@@ -1216,6 +1240,7 @@ git commit -m "refactor(auth): remove onboarding gate from login, update reset p
 ## Task 5: Navbar — Remove Resend Modal, Update Register Flow
 
 **Files:**
+
 - Modify: `src/components/navigation/navbar/index.tsx`
 
 - [ ] **Step 1: Update navbar component**
@@ -1261,6 +1286,7 @@ git commit -m "refactor(auth): remove resend modal and link-based query params f
 ## Task 6: Reset Password Page — Multi-Step Form
 
 **Files:**
+
 - Create: `src/app/(frontend)/auth/reset-password/page.tsx`
 - Create: `src/app/(frontend)/auth/reset-password/reset-password.module.scss`
 
@@ -1494,6 +1520,7 @@ git commit -m "feat(auth): add multi-step reset password page with OTP verificat
 ## Task 7: Proxy + API Route Updates
 
 **Files:**
+
 - Modify: `src/proxy.ts`
 - Modify: `src/__tests__/proxy.test.ts`
 - Modify: `src/app/api/auth/register/route.ts`
@@ -1604,6 +1631,7 @@ git commit -m "refactor(auth): update proxy guard, remove emailRedirectTo, fix c
 ## Task 8: Notification Bar — Onboarding Banner
 
 **Files:**
+
 - Modify: `src/components/navigation/notification-bar/index.tsx`
 - Modify: `src/components/navigation/notification-bar/notification-bar.module.scss`
 - Modify: `src/components/navigation/navbar/index.tsx`
@@ -1708,7 +1736,7 @@ In `src/components/navigation/navbar/index.tsx`, update the `NotificationBar` us
 const showOnboardingBanner = isAuthenticated && !!member && !member.onboarding_completed_at;
 
 // In JSX:
-<NotificationBar showOnboardingBanner={showOnboardingBanner} />
+<NotificationBar showOnboardingBanner={showOnboardingBanner} />;
 ```
 
 - [ ] **Step 4: Verify in dev server**
@@ -1728,6 +1756,7 @@ git commit -m "feat(auth): add onboarding banner to notification bar"
 ## Task 9: Delete Old Files
 
 **Files:**
+
 - Delete: `src/app/(frontend)/auth/forgot-password/page.tsx`
 - Delete: `src/app/(frontend)/auth/forgot-password/forgot-password.module.scss`
 - Delete: `src/app/(frontend)/auth/callback/page.tsx`
@@ -1782,6 +1811,7 @@ git commit -m "chore(auth): delete old link-based auth pages and components"
 ## Task 10: Update Documentation
 
 **Files:**
+
 - Modify: `src/features/auth/CLAUDE.md`
 
 - [ ] **Step 1: Update auth CLAUDE.md**
@@ -1834,6 +1864,7 @@ git commit -m "fix: resolve lint/type/format issues from OTP auth refactor"
 Print reminder to the developer:
 
 > **MANUAL ACTION REQUIRED:** Before testing the OTP flows, update Supabase email templates in the dashboard:
+>
 > 1. Authentication > Email Templates > "Confirm signup" — replace confirmation link with `{{ .Token }}`
 > 2. Authentication > Email Templates > "Reset password" — replace reset link with `{{ .Token }}`
 > 3. Authentication > Settings — optionally reduce OTP expiry from 1 hour to 10-15 minutes

@@ -31,7 +31,8 @@ describe('LoginForm', () => {
     cleanup();
     vi.resetAllMocks();
     vi.mocked(loginMock).mockResolvedValue({
-      user: { id: 'u1' }, session: { access_token: 'tok' },
+      user: { id: 'u1' },
+      session: { access_token: 'tok' },
     } as any);
   });
 
@@ -39,7 +40,9 @@ describe('LoginForm', () => {
     const onSuccess = vi.fn();
     render(<LoginForm onSuccess={onSuccess} />);
     await fillAndSubmitForm();
-    await waitFor(() => { expect(onSuccess).toHaveBeenCalledOnce(); });
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledOnce();
+    });
   });
 
   it('renders reset password link', () => {

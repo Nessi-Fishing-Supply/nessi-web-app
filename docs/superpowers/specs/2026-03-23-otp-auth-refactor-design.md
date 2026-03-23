@@ -14,15 +14,15 @@ Replace link-based email verification with 6-digit OTP codes for both signup and
 
 ## Design Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Verification method | 6-digit OTP code | Modern UX standard, user stays in-app |
-| Both flows | OTP for signup AND password reset | Consistent UX, one pattern to learn |
-| Registration UI | Modal with in-place step transition | User never leaves their current page (critical for checkout conversion) |
-| Password reset UI | Standalone page at `/auth/reset-password` | Infrequent flow, benefits from a dedicated URL |
-| Post-verification | Auto-login + welcome toast | Zero friction — user just proved email ownership |
-| Onboarding | Remove forced redirect, use persistent banner | Purchases don't require a complete profile; don't block the primary conversion path |
-| Shared component | Single `OtpInput` component for both flows | DRY, consistent behavior and styling |
+| Decision            | Choice                                        | Rationale                                                                           |
+| ------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Verification method | 6-digit OTP code                              | Modern UX standard, user stays in-app                                               |
+| Both flows          | OTP for signup AND password reset             | Consistent UX, one pattern to learn                                                 |
+| Registration UI     | Modal with in-place step transition           | User never leaves their current page (critical for checkout conversion)             |
+| Password reset UI   | Standalone page at `/auth/reset-password`     | Infrequent flow, benefits from a dedicated URL                                      |
+| Post-verification   | Auto-login + welcome toast                    | Zero friction — user just proved email ownership                                    |
+| Onboarding          | Remove forced redirect, use persistent banner | Purchases don't require a complete profile; don't block the primary conversion path |
+| Shared component    | Single `OtpInput` component for both flows    | DRY, consistent behavior and styling                                                |
 
 ## Flow 1: Registration (Modal)
 
@@ -67,18 +67,21 @@ Internal state (`step: 'form' | 'otp'`) manages which content is displayed. The 
 3. Multi-step form on one page:
 
 **Step 1 — Email:**
+
 - User enters email, clicks "Send Code"
 - Calls `supabase.auth.resetPasswordForEmail(email)` (no `redirectTo` needed)
 - Supabase sends 6-digit code email (template uses `{{ .Token }}`)
 - Form advances to step 2
 
 **Step 2 — OTP:**
+
 - Same shared `OtpInput` component
 - User enters code → calls `supabase.auth.verifyOtp({ email, token, type: 'recovery' })`
 - On success, session is established (Supabase logs user in as part of recovery)
 - Form advances to step 3
 
 **Step 3 — New Password:**
+
 - User enters new password + confirmation
 - Calls `supabase.auth.updateUser({ password })`
 - On success → toast "Password updated!" → redirect to homepage (user is now logged in)

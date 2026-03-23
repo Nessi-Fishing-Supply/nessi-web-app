@@ -91,8 +91,8 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 
 ## Test Coverage
 
-- **services/__tests__/auth.test.ts** -- 21 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`
+- **services/**tests**/auth.test.ts** -- 21 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`
 - **validations/auth.test.ts** -- 17 tests: `loginSchema`, `registerSchema`, `resetPasswordSchema` (valid/invalid inputs, password complexity)
 - **validations/server.test.ts** -- 11 tests: `validateRegisterInput` (valid input, missing fields, invalid email, weak passwords, unaccepted terms, null/undefined handling)
-- **components/registration-form/__tests__/index.test.tsx** -- 6 tests: friendly duplicate email message, Sign in button, `onSwitchToLogin` callback, non-duplicate error passthrough
-- **api/auth/register/__tests__/route.test.ts** -- 2 tests: 409 DUPLICATE_EMAIL, 400 for other errors
+- **components/registration-form/**tests**/index.test.tsx** -- 6 tests: friendly duplicate email message, Sign in button, `onSwitchToLogin` callback, non-duplicate error passthrough
+- **api/auth/register/**tests**/route.test.ts** -- 2 tests: 409 DUPLICATE_EMAIL, 400 for other errors

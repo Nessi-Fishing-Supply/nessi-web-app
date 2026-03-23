@@ -37,7 +37,8 @@ function EmailStep({ onSuccess }: { onSuccess: (email: string) => void }) {
       setError(null);
       onSuccess(data.email);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      const message =
+        err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       setError(message);
     } finally {
       setLoading(false);
@@ -78,7 +79,8 @@ function PasswordStep({ onSuccess }: { onSuccess: () => void }) {
       setError(null);
       onSuccess();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      const message =
+        err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       setError(message);
     } finally {
       setLoading(false);

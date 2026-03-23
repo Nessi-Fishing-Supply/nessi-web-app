@@ -126,8 +126,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ email, type, onSuccess, onResend })
   return (
     <div className={styles.container}>
       <p className={styles.emailText}>
-        Enter the code sent to{' '}
-        <span className={styles.emailAddress}>{email}</span>
+        Enter the code sent to <span className={styles.emailAddress}>{email}</span>
       </p>
 
       <p id="otp-instructions" className={styles.instructions}>

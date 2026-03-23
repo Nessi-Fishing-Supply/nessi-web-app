@@ -133,7 +133,7 @@ describe('RegisterForm', () => {
 
   it('calls onSuccess after OTP verification succeeds', async () => {
     vi.mocked(registerMock).mockResolvedValueOnce({ message: 'Registration successful' });
-    vi.mocked(verifyOtpMock).mockResolvedValueOnce({ user: { id: 'user-123' } });
+    vi.mocked(verifyOtpMock).mockResolvedValueOnce({ user: { id: 'user-123' } } as any);
 
     const onSuccess = vi.fn();
     render(<RegisterForm onSuccess={onSuccess} onSwitchToLogin={vi.fn()} />);
