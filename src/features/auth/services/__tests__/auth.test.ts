@@ -1,6 +1,15 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { withTimeout, AUTH_TIMEOUT_MS, register, login, logout, getUserProfile } from '../auth';
+import {
+  withTimeout,
+  AUTH_TIMEOUT_MS,
+  register,
+  login,
+  logout,
+  getUserProfile,
+  verifyOtp,
+  sendResetCode,
+} from '../auth';
 
 const TIMEOUT_MESSAGE = 'Something went wrong. Check your connection and try again.';
 
@@ -216,5 +225,99 @@ describe('getUserProfile', () => {
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
 
     await expect(getUserProfile()).rejects.toThrow('Not authenticated');
+  });
+});
+
+describe('verifyOtp', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('calls supabase.auth.verifyOtp with correct params for signup', async () => {
+    const verifyOtpMock = vi
+      .fn()
+      .mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
+    const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await verifyOtp({ email: 'a@b.com', token: '123456', type: 'signup' });
+    expect(verifyOtpMock).toHaveBeenCalledWith({
+      email: 'a@b.com',
+      token: '123456',
+      type: 'signup',
+    });
+  });
+
+  it('calls supabase.auth.verifyOtp with correct params for recovery', async () => {
+    const verifyOtpMock = vi
+      .fn()
+      .mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
+    const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await verifyOtp({ email: 'a@b.com', token: '654321', type: 'recovery' });
+    expect(verifyOtpMock).toHaveBeenCalledWith({
+      email: 'a@b.com',
+      token: '654321',
+      type: 'recovery',
+    });
+  });
+
+  it('throws when verifyOtp returns an error', async () => {
+    const mockSupabase = {
+      auth: {
+        verifyOtp: vi.fn().mockResolvedValue({
+          data: { user: null },
+          error: { message: 'Token has expired or is invalid' },
+        }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+    await expect(
+      verifyOtp({ email: 'a@b.com', token: '000000', type: 'signup' }),
+    ).rejects.toThrow('Token has expired or is invalid');
+  });
+
+  it('times out after AUTH_TIMEOUT_MS', async () => {
+    const neverResolves = new Promise<never>(() => {});
+    const mockSupabase = { auth: { verifyOtp: vi.fn().mockReturnValue(neverResolves) } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+    const result = verifyOtp({ email: 'a@b.com', token: '123456', type: 'signup' });
+    vi.advanceTimersByTime(AUTH_TIMEOUT_MS + 1);
+    await expect(result).rejects.toThrow(TIMEOUT_MESSAGE);
+  });
+});
+
+describe('sendResetCode', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('calls resetPasswordForEmail without redirectTo', async () => {
+    const resetMock = vi.fn().mockResolvedValue({ error: null });
+    const mockSupabase = { auth: { resetPasswordForEmail: resetMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+    await sendResetCode({ email: 'a@b.com' });
+    expect(resetMock).toHaveBeenCalledWith('a@b.com');
+  });
+
+  it('throws when resetPasswordForEmail returns an error', async () => {
+    const mockSupabase = {
+      auth: {
+        resetPasswordForEmail: vi
+          .fn()
+          .mockResolvedValue({ error: { message: 'Rate limit exceeded' } }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+    await expect(sendResetCode({ email: 'a@b.com' })).rejects.toThrow('Rate limit exceeded');
   });
 });

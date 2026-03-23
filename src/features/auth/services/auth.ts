@@ -74,17 +74,15 @@ export const getUserProfile = async () => {
   return user;
 };
 
-export const forgotPassword = async (data: { email: string }) => {
+export const sendResetCode = async (data: { email: string }) => {
   const supabase = createClient();
   const { error } = await withTimeout(
-    supabase.auth.resetPasswordForEmail(data.email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?type=recovery`,
-    }),
+    supabase.auth.resetPasswordForEmail(data.email),
     AUTH_TIMEOUT_MS,
   );
 
   if (error) throw new Error(error.message);
-  return { message: 'Reset link sent! Check your email.' };
+  return { message: 'Reset code sent! Check your email.' };
 };
 
 export const resetPassword = async (data: { newPassword: string; confirmNewPassword: string }) => {
@@ -102,6 +100,25 @@ export const resetPassword = async (data: { newPassword: string; confirmNewPassw
 
   if (error) throw new Error(error.message);
   return { message: 'Password updated successfully' };
+};
+
+export const verifyOtp = async (data: {
+  email: string;
+  token: string;
+  type: 'signup' | 'recovery';
+}) => {
+  const supabase = createClient();
+  const { data: authData, error } = await withTimeout(
+    supabase.auth.verifyOtp({
+      email: data.email,
+      token: data.token,
+      type: data.type,
+    }),
+    AUTH_TIMEOUT_MS,
+  );
+
+  if (error) throw new Error(error.message);
+  return { user: authData.user };
 };
 
 export const resendVerification = async (data: { email: string }) => {
