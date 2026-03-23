@@ -1,0 +1,43 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-base);
+  flex-wrap: wrap;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-xs);
+  overflow-x: auto;
+
+  @include breakpoint(md) {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+.clearAll {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}

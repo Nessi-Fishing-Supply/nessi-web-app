@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useSearchFilters } from '@/features/listings/hooks/use-search-filters';
 import { useSearchListingsInfinite, useTrackSearchSuggestion } from '@/features/listings/hooks/use-search';
 import FilterPanel from '@/features/listings/components/filter-panel';
+import FilterChips from '@/features/listings/components/filter-chips';
 import ListingCard from '@/features/listings/components/listing-card';
 import ListingGrid from '@/features/listings/components/listing-grid';
 import ListingSkeleton from '@/features/listings/components/listing-skeleton';
@@ -13,11 +14,12 @@ import EmptyState from '@/features/listings/components/empty-state';
 import styles from './search-results.module.scss';
 
 export default function SearchResults() {
-  const { filters, setFilter, clearAllFilters, activeFilterCount } = useSearchFilters();
+  const { filters, setFilter, removeFilter, clearAllFilters, hasActiveFilters, activeFilterCount } =
+    useSearchFilters();
   const trackSuggestion = useTrackSearchSuggestion();
   const hasTracked = useRef(false);
 
-  const sort = filters.sort || (filters.q ? 'newest' : 'newest');
+  const sort = filters.sort || (filters.q ? 'relevance' : 'newest');
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useSearchListingsInfinite({
@@ -62,17 +64,34 @@ export default function SearchResults() {
                 ? `${total} result${total !== 1 ? 's' : ''} for "${filters.q}"`
                 : 'Search Results'}
             </h1>
-            <SortSelect value={sort} onChange={handleSortChange} />
+            <SortSelect value={sort} onChange={handleSortChange} showRelevance={!!filters.q} />
           </div>
+
+          {hasActiveFilters && (
+            <FilterChips
+              filters={filters}
+              onRemoveFilter={removeFilter}
+              onClearAll={clearAllFilters}
+            />
+          )}
 
           {isLoading ? (
             <ListingGrid>
               <ListingSkeleton count={8} />
             </ListingGrid>
+          ) : listings.length === 0 && hasActiveFilters ? (
+            <EmptyState
+              message="Nothing here yet"
+              description="Try adjusting your filters or search terms."
+              ctaLabel="Clear all filters"
+              ctaHref={filters.q ? `/search?q=${encodeURIComponent(filters.q)}` : '/search'}
+            />
           ) : listings.length === 0 ? (
             <EmptyState
-              message={`No results for "${filters.q}"`}
-              description="Try different keywords or browse a category."
+              message={filters.q ? `No results for "${filters.q}"` : 'No results found'}
+              description={
+                filters.q ? 'Try a different search term.' : 'Try different keywords or browse a category.'
+              }
               ctaLabel="Browse all listings"
               ctaHref="/"
             />

@@ -12,9 +12,10 @@ const SORT_OPTIONS = [
 interface SortSelectProps {
   value: string;
   onChange: (value: string) => void;
+  showRelevance?: boolean;
 }
 
-export default function SortSelect({ value, onChange }: SortSelectProps) {
+export default function SortSelect({ value, onChange, showRelevance = false }: SortSelectProps) {
   return (
     <div className={styles.wrapper}>
       <label htmlFor="sort-select" className={styles.label}>
@@ -26,6 +27,7 @@ export default function SortSelect({ value, onChange }: SortSelectProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
+        {showRelevance && <option value="relevance">Relevance</option>}
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

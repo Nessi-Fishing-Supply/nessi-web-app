@@ -8,19 +8,38 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 
 - **types/listing.ts** — Database-derived types: `Listing`, `ListingInsert`, `ListingUpdate`, `ListingStatus`, `ListingWithPhotos`, `ListingDraft`, `ListingCondition`, `ListingCategory`, `SellerProfile`, `ListingDetailData`
 - **types/listing-photo.ts** — Photo types: `ListingPhoto`, `ListingPhotoInsert`, `ListingPhotoUpdate`, `UploadResult`
+- **types/search.ts** — Search types: `SearchFilters` (URL param-driven filter state), `AutocompleteSuggestion`, `SearchSuggestion`
 - **constants/condition.ts** — `CONDITION_TIERS` (6-tier array with labels, descriptions, WCAG AA colors), `CATEGORY_PHOTO_GUIDANCE` (per-category photo tips), `ConditionTier` type
 - **constants/category.ts** — `LISTING_CATEGORIES` (10 categories with labels and react-icons), `getCategoryLabel()`, `getCategoryIcon()`
 - **utils/format.ts** — `formatPrice(cents)` → "$29.99", `calculateFee(cents)` → marketplace fee in cents (flat $0.99 under $15, 6% above), `calculateNet(cents)` → price minus fee
 - **services/listing.ts** — Client-side service functions calling API routes via `@/libs/fetch` helpers (`getListings`, `getListingById`, `createListing`, `updateListing`, `deleteListing`, `updateListingStatus`, etc.)
 - **services/listing-photo.ts** — Photo upload/delete services calling API routes
 - **services/listing-server.ts** — Server-side Supabase queries: `getListingByIdServer`, `getListingWithSellerServer` (listing + seller profile), `getListingsByMemberServer`, `getListingsByShopServer`, `getActiveListingsServer`
+- **services/search.ts** — Client-side search services: `searchListings()`, `getAutocompleteSuggestions()`, `trackSearchSuggestion()`
 - **config/categories.ts** — Category SEO config with `getCategoryBySlug()`, `CATEGORY_MAP`, `VALID_CATEGORY_SLUGS`
+- **config/species.ts** — `SPECIES_LIST` (15 common fishing species with value/label pairs), `Species` type
+- **config/us-states.ts** — `US_STATES` (50 states + DC, sorted alphabetically by label)
 - **hooks/use-listings.ts** — Tanstack Query hooks for listing data fetching and mutations
 - **hooks/use-listing-photos.ts** — Tanstack Query hooks for photo upload and delete
+- **hooks/use-search.ts** — `useSearchListingsInfinite` (infinite query for search), `useTrackSearchSuggestion` (fire-and-forget mutation)
+- **hooks/use-autocomplete.ts** — `useAutocomplete` (debounced query, 200ms, min 3 chars, 30s staleTime)
+- **hooks/use-debounced-value.ts** — Generic `useDebouncedValue<T>(value, delay)` hook
+- **hooks/use-search-filters.ts** — `useSearchFilters` — reads/writes all filter state from URL params, single source of truth
 - **components/photo-manager/** — Multi-photo upload, reorder, and delete UI for listing creation and editing
 - **components/condition-badge/** — Color-coded pill displaying condition tier with hover/tap popover description
 - **components/condition-selector/** — Vertical radio list for selecting condition tier in create wizard, with category-specific photo guidance accordion
 - **components/condition-filter/** — Multi-select checkbox group for filtering listings by condition, with optional count badges
+- **components/autocomplete/** — Keyboard-navigable autocomplete dropdown with ARIA listbox roles
+- **components/search-overlay/** — Full-screen mobile search overlay with focus trap, scroll lock, portal to `#modal-root`
+- **components/filter-panel/** — Desktop 240px left rail + mobile bottom sheet, renders all filter groups
+- **components/filter-chip/** — Removable filter pill with accessible X button
+- **components/filter-chips/** — Container rendering one chip per active filter + "Clear all filters" link
+- **components/category-filter/** — Multi-select checkbox for 10 categories (follows ConditionFilter pattern)
+- **components/price-range-filter/** — Dual min/max dollar inputs, debounced 500ms, emits cents
+- **components/boolean-filter/** — Label + Toggle row for boolean filters (e.g., "Free shipping")
+- **components/state-filter/** — Native select dropdown for US states
+- **components/species-filter/** — Multi-select checkbox for 15 species with count badges
+- **components/listing-type-filter/** — Multi-select checkbox for Used/Custom/New
 
 ## Database Schema
 
@@ -116,6 +135,12 @@ All listing API routes live in `src/app/api/listings/`:
 
 `PATCH /api/listings/[id]/status` — Authenticated + ownership. Status transitions: `draft→active` (sets `published_at`), `active→archived`, `active→sold`, `archived→active`, `draft→deleted`.
 
+`GET /api/listings/search` — Public. Full-text search with filters + trigram fallback for typo tolerance. Params: `q`, `category`, `condition`, `price_min`, `price_max`, `location_state`, `free_shipping`, `species`, `listing_type`, `sort`, `page`, `limit`. Falls back to ilike on title/brand when FTS returns 0 results. Returns `{ listings, total, page, limit }`.
+
+`GET /api/listings/autocomplete` — Public. Returns up to 8 suggestions from `search_suggestions` (popularity), listing titles (prefix), and category names. Requires `q` param >= 3 chars.
+
+`POST /api/listings/search-suggestions` — Public. Upserts search term into `search_suggestions` table (increments popularity or inserts with popularity=1). Fire-and-forget from client.
+
 `GET /api/listings/seller` — Authenticated. Returns all listings for the current user (all statuses except soft-deleted). Supports `status` query param filter.
 
 `GET /api/listings/drafts` — Authenticated. Returns user's draft listings.
@@ -143,6 +168,10 @@ All listing API routes live in `src/app/api/listings/`:
 | `useUploadListingPhoto()`     | mutation, invalidates listing photos key       | Upload photo via `POST /api/listings/upload`              |
 | `useDeleteListingPhoto()`     | mutation, invalidates listing photos key       | Delete photo via `DELETE /api/listings/upload/delete`     |
 | `useListingsInfinite(params)` | `['listings', 'infinite', { category, sort }]` | Infinite scroll listing feed with cursor-based pagination |
+| `useSearchListingsInfinite(filters)` | `['listings', 'search', filters]` | Infinite scroll search results with all filter params |
+| `useAutocomplete(query)` | `['autocomplete', debouncedQuery]` | Debounced (200ms) autocomplete suggestions, enabled >= 3 chars |
+| `useTrackSearchSuggestion()` | mutation (fire-and-forget) | Increments search_suggestions popularity counter |
+| `useSearchFilters()` | — (URL-based, no query key) | Reads/writes all filter state from URL params via `useSearchParams` + `useRouter` |
 
 ## Components
 
@@ -203,6 +232,7 @@ The listing creation wizard at `/dashboard/listings/new` is a 5-step flow plus r
 | `/dashboard/listings`           | Listing management dashboard (seller's active/draft/archived listings)                           |
 | `/listing/[id]`                 | Public listing detail page — server-rendered with SEO metadata                                   |
 | `/category/[slug]`              | Category browse page with infinite scroll and sort controls                                      |
+| `/search`                       | Search results with FTS, filters, infinite scroll, autocomplete (ticket #28)                     |
 
 ## Key Patterns
 
@@ -215,6 +245,9 @@ The listing creation wizard at `/dashboard/listings/new` is a 5-step flow plus r
 - **Draft-first flow** — Listings begin as `status: 'draft'` during the create wizard. The listing row is created before photos are uploaded so `listing_id` is available as the storage path segment. Status transitions to `'active'` on final publish.
 - **Context-aware seller identity** — `seller_id` is always `auth.users.id`. `member_id` or `shop_id` is set based on the active context from the Zustand context store (`@/features/context/`), determining which identity the listing is attributed to.
 - **Image pipeline** — Upload validates → Sharp resizes full + thumbnail → WebP → stored in `listing-images` bucket → rendered via `next/image` with `fill` + `sizes`.
+- **URL-as-truth for search filters** — All search filter state lives in URL search params (`?q=...&category=reels,rods&condition=good`). `useSearchFilters` reads params with `useSearchParams()` and updates with `router.replace()`. Sharing a URL preserves the exact filter state. Filter components are standalone controlled components (no react-hook-form).
+- **Search FTS + trigram fallback** — Primary search uses PostgreSQL `textSearch()` on the `search_vector` tsvector column. When FTS returns 0 results, falls back to `ilike` on title/brand for typo tolerance (e.g., "Shimamo" → matches "Shimano").
+- **Autocomplete** — Three sources: `search_suggestions` table (by popularity), listing title prefix matches, and category name matches. Debounced 200ms on client, min 3 chars. Max 8 suggestions, keyboard navigable.
 
 ## Related Features
 
