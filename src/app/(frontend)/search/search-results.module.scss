@@ -1,0 +1,33 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  padding: var(--space-md) var(--space-sm);
+
+  @include breakpoint(md) {
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin: 0;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-2xl);
+  }
+}
