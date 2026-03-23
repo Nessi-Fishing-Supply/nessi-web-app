@@ -1,10 +1,14 @@
 ////////////////////
-/// Radius
+/// Border Radius — Design System v1
 ////////////////////
 :root {
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 40px;
+  --radius-100: 4px;
+  --radius-200: 6px;
+  --radius-300: 8px;
+  --radius-400: 10px;
+  --radius-500: 12px;
+  --radius-600: 16px;
+  --radius-700: 24px;
+  --radius-800: 999px;
+  --radius-circle: 50%;
 }

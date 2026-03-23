@@ -1,13 +1,14 @@
 ////////////////////
-/// Shadows
+/// Shadows — Design System v1
 ////////////////////
 :root {
-  --shadow-xs: 0px 1px 2px 0px rgb(0 0 0 / 8%);
-  --shadow-sm: 0px 1px 2px -1px rgb(0 0 0 / 10%), 0px 1px 3px 0px rgb(0 0 0 / 10%);
-  --shadow-base: 0px 2px 4px -2px rgb(0 0 0 / 5%), 0px 4px 6px -1px rgb(0 0 0 / 10%);
-  --shadow-md: 0px 4px 6px 0px rgb(0 0 0 / 5%), 0px 10px 15px -3px rgb(0 0 0 / 10%);
-  --shadow-lg:
-    0px 10px 10px 0px rgb(0 0 0 / 4%),
-    0px 20px 25px -5px rgb(0 0 0 / 10%) --shadow-xl: 0px 25px 50px -12px rgb(0 0 0 / 25%);
-  --shadow-modal: 0px 0px 20px 0px rgb(0 0 0 / 20%);
+  --shadow-100: 0 1px 2px rgb(0 0 0 / 6%);
+  --shadow-200: 0 2px 8px rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 4%);
+  --shadow-300: 0 4px 16px rgb(0 0 0 / 10%), 0 2px 4px rgb(0 0 0 / 6%);
+  --shadow-400: 0 8px 32px rgb(0 0 0 / 12%), 0 4px 8px rgb(0 0 0 / 6%);
+  --shadow-500: 0 16px 48px rgb(0 0 0 / 15%), 0 8px 16px rgb(0 0 0 / 6%);
+  --shadow-sell: 0 4px 12px rgb(226 119 57 / 45%);
+  --shadow-focus-primary: 0 0 0 3px rgb(30 74 64 / 28%);
+  --shadow-focus-accent: 0 0 0 3px rgb(226 119 57 / 28%);
+  --shadow-focus-error: 0 0 0 3px rgb(185 28 28 / 22%);
 }

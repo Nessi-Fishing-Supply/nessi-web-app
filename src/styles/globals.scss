@@ -12,6 +12,8 @@
 @use 'variables/typography' as *;
 @use 'variables/shadows' as *;
 @use 'variables/radius' as *;
+@use 'variables/z-index' as *;
+@use 'variables/heights' as *;
 
 // Mixins
 @use 'mixins/breakpoints' as *;
