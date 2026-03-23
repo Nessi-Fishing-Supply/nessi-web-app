@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 function parseStoragePath(bucketName: string, publicUrl: string): string | null {
@@ -126,7 +127,7 @@ export async function DELETE() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
     }
 
     const admin = createAdminClient();
@@ -139,7 +140,7 @@ export async function DELETE() {
       .is('deleted_at', null);
 
     if (activeShops && activeShops.length > 0) {
-      return NextResponse.json({ error: 'OWNS_SHOPS', shops: activeShops }, { status: 409 });
+      return NextResponse.json({ error: 'OWNS_SHOPS', shops: activeShops }, { status: 409, headers: AUTH_CACHE_HEADERS });
     }
 
     // Collect storage paths BEFORE any deletions (non-blocking)
@@ -173,7 +174,7 @@ export async function DELETE() {
     const { error } = await admin.auth.admin.deleteUser(user.id);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
     }
 
     // Clean up storage AFTER successful auth deletion (best-effort)
@@ -183,9 +184,9 @@ export async function DELETE() {
       console.error('Post-deletion storage cleanup error (non-blocking):', storageError);
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Delete account error:', error);
-    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500, headers: AUTH_CACHE_HEADERS });
   }
 }

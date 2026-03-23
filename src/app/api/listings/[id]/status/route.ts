@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/supabase/server';
 import type { ListingStatus } from '@/features/listings/types/listing';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 // Note: Active listings can be deleted via DELETE /api/listings/[id] (soft delete),
@@ -23,7 +24,7 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
     }
 
     const { data: listing, error: fetchError } = await supabase
@@ -34,11 +35,11 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       .single();
 
     if (fetchError || !listing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
     }
 
     if (listing.seller_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
     }
 
     const { status, sold_price_cents } = await req.json();
@@ -51,7 +52,7 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
         {
           error: `Invalid status transition from '${currentStatus}' to '${status}'. Allowed transitions: ${allowed.length > 0 ? allowed.join(', ') : 'none'}.`,
         },
-        { status: 400 },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
       );
     }
 
@@ -81,12 +82,12 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       .single();
 
     if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500 });
+      return NextResponse.json({ error: updateError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
     }
 
-    return NextResponse.json(updated);
+    return NextResponse.json(updated, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Error updating listing status:', error);
-    return NextResponse.json({ error: 'Failed to update listing status' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update listing status' }, { status: 500, headers: AUTH_CACHE_HEADERS });
   }
 }

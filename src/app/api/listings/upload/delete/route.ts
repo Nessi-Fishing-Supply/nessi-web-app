@@ -1,4 +1,5 @@
 import { createClient } from '@/libs/supabase/server';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 function parseStoragePath(publicUrl: string): string | null {
@@ -21,13 +22,13 @@ export async function DELETE(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
     }
 
     const { imageUrl, thumbnailUrl } = await req.json();
 
     if (!imageUrl) {
-      return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Image URL is required' }, { status: 400, headers: AUTH_CACHE_HEADERS });
     }
 
     // Verify ownership: storage path format is {user_id}/{listing_id}/{uuid}.webp
@@ -35,7 +36,7 @@ export async function DELETE(req: Request) {
     if (ownershipPath) {
       const pathUserId = ownershipPath.split('/')[0];
       if (pathUserId !== user.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
       }
     }
 
@@ -57,9 +58,9 @@ export async function DELETE(req: Request) {
       }
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Delete error:', error);
-    return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
+    return NextResponse.json({ error: 'Delete failed' }, { status: 500, headers: AUTH_CACHE_HEADERS });
   }
 }

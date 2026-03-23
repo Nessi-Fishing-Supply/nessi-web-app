@@ -1,4 +1,5 @@
 import { createClient } from '@/libs/supabase/server';
+import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 
 function parseStoragePath(publicUrl: string): string | null {
@@ -59,7 +60,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
     }
 
     const { data: existing, error: fetchError } = await supabase
@@ -70,11 +71,11 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       .single();
 
     if (fetchError || !existing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
     }
 
     if (existing.seller_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
     }
 
     const body = await req.json();
@@ -108,7 +109,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     );
 
     if (Object.keys(filteredBody).length === 0) {
-      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400, headers: AUTH_CACHE_HEADERS });
     }
 
     const { error: updateError } = await supabase
@@ -117,7 +118,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       .eq('id', id);
 
     if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500 });
+      return NextResponse.json({ error: updateError.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
     }
 
     const { data: listing, error } = await supabase
@@ -129,13 +130,13 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
     }
 
-    return NextResponse.json(listing);
+    return NextResponse.json(listing, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Error updating listing:', error);
-    return NextResponse.json({ error: 'Failed to update listing' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update listing' }, { status: 500, headers: AUTH_CACHE_HEADERS });
   }
 }
 
@@ -149,7 +150,7 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
     }
 
     const { data: existing, error: fetchError } = await supabase
@@ -160,11 +161,11 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
       .single();
 
     if (fetchError || !existing) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404, headers: AUTH_CACHE_HEADERS });
     }
 
     if (existing.seller_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
     }
 
     // Clean up listing photos from storage (best-effort)
@@ -200,12 +201,12 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
       .eq('id', id);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500, headers: AUTH_CACHE_HEADERS });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     console.error('Error deleting listing:', error);
-    return NextResponse.json({ error: 'Failed to delete listing' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to delete listing' }, { status: 500, headers: AUTH_CACHE_HEADERS });
   }
 }
