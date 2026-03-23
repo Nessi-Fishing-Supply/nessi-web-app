@@ -44,6 +44,10 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
   const isOwnListing = isShopContext
     ? listing.shop_id === activeContext.shopId
     : currentUserId === listing.seller_id && !listing.shop_id;
+  // Detect member viewing their own shop's listing — show "Switch to shop" prompt
+  const isOwnShopListing =
+    !isShopContext && currentUserId === listing.seller_id && !!listing.shop_id;
+  const ownShopName = isOwnShopListing && seller?.type === 'shop' ? seller.shop_name : null;
   const conditionTier = CONDITION_TIERS.find((t) => t.value === listing.condition);
 
   function handlePhotoTap(index: number) {
@@ -110,6 +114,36 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
                 </Button>
               </Link>
             </div>
+          ) : isOwnShopListing ? (
+            <>
+              <div className={styles.shopContextNotice}>
+                <span className={styles.shopContextText}>
+                  You&apos;re an admin of {ownShopName ?? 'this shop'}. Switch to edit this listing.
+                </span>
+              </div>
+              <div className={styles.actionButtons}>
+                <Button style="primary" fullWidth disabled ariaLabel="Buy Now — Coming Soon">
+                  Buy Now
+                </Button>
+                <AddToCartButton
+                  listingId={listing.id}
+                  priceCents={listing.price_cents}
+                  currentUserId={currentUserId}
+                  sellerId={listing.seller_id}
+                  shopId={listing.shop_id}
+                  fullWidth
+                />
+                <Button
+                  style="secondary"
+                  fullWidth
+                  disabled
+                  outline
+                  ariaLabel="Make Offer — Coming Soon"
+                >
+                  Make Offer
+                </Button>
+              </div>
+            </>
           ) : isShopContext ? (
             <div className={styles.shopContextNotice}>
               <span className={styles.shopContextText}>
@@ -126,6 +160,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
                 priceCents={listing.price_cents}
                 currentUserId={currentUserId}
                 sellerId={listing.seller_id}
+                shopId={listing.shop_id}
                 fullWidth
               />
               <Button
@@ -220,7 +255,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
         </div>
       </div>
 
-      {/* Sticky Buy Now bar — mobile only, hidden in shop context */}
+      {/* Sticky Buy Now bar — mobile only, hidden for own member listings and shop context */}
       {!isSold && !isOwnListing && !isShopContext && (
         <div className={styles.stickyBar}>
           <div className={styles.stickyPrice}>{formatPrice(listing.price_cents)}</div>
@@ -229,6 +264,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
             priceCents={listing.price_cents}
             currentUserId={currentUserId}
             sellerId={listing.seller_id}
+            shopId={listing.shop_id}
             fullWidth={false}
           />
         </div>

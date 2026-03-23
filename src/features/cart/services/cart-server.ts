@@ -147,7 +147,7 @@ export async function addToCartServer(
   // 1. Fetch listing — must exist and be active
   const { data: listing, error: listingError } = await supabase
     .from('listings')
-    .select('id, price_cents, status, seller_id')
+    .select('id, price_cents, status, seller_id, shop_id')
     .eq('id', listingId)
     .is('deleted_at', null)
     .single();
@@ -160,8 +160,8 @@ export async function addToCartServer(
     throw new Error('Listing not found or no longer active');
   }
 
-  // 2. Cannot add own listing
-  if (listing.seller_id === userId) {
+  // 2. Cannot add own member listing (shop listings are purchasable by the shop owner)
+  if (listing.seller_id === userId && !listing.shop_id) {
     throw new Error('Cannot add your own listing to cart');
   }
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiOutlineShoppingCart, HiOutlineX } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context';
 import {
   useCart,
@@ -12,6 +13,7 @@ import {
   useValidateCart,
 } from '@/features/cart/hooks/use-cart';
 import { useGuestCart } from '@/features/cart/hooks/use-guest-cart';
+import useContextStore from '@/features/context/stores/context-store';
 import { groupCartBySeller } from '@/features/cart/utils/group-cart';
 import CartItemCard from '@/features/cart/components/cart-item-card';
 import CartSummary from '@/features/cart/components/cart-summary';
@@ -67,8 +69,21 @@ function SellerHeader({ seller }: { seller: SellerIdentity | null }) {
 }
 
 export default function CartPage() {
+  const router = useRouter();
+  const activeContext = useContextStore.use.activeContext();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: cartItems, isLoading: cartLoading } = useCart();
+
+  // Shops cannot purchase — redirect to home
+  useEffect(() => {
+    if (activeContext.type === 'shop') {
+      router.replace('/');
+    }
+  }, [activeContext.type, router]);
+
+  if (activeContext.type === 'shop') {
+    return null;
+  }
   const {
     mutate: removeFromCart,
     isPending: isRemoving,

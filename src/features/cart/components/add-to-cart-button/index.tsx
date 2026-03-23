@@ -16,6 +16,7 @@ interface AddToCartButtonProps {
   priceCents: number;
   currentUserId?: string | null;
   sellerId: string;
+  shopId?: string | null;
   fullWidth?: boolean;
 }
 
@@ -24,6 +25,7 @@ export default function AddToCartButton({
   priceCents,
   currentUserId,
   sellerId,
+  shopId,
   fullWidth = true,
 }: AddToCartButtonProps) {
   const { user } = useAuth();
@@ -38,7 +40,8 @@ export default function AddToCartButton({
     return null;
   }
 
-  if (currentUserId && currentUserId === sellerId) {
+  // Hide for own member listings, but allow purchasing from own shops
+  if (currentUserId && currentUserId === sellerId && !shopId) {
     return null;
   }
 
