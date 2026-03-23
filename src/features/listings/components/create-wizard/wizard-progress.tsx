@@ -7,6 +7,7 @@ interface WizardProgressProps {
   currentStep: number;
   totalSteps?: number;
   shippingSkipped?: boolean;
+  onStepClick?: (step: number) => void;
 }
 
 const STEPS = [
@@ -22,11 +23,13 @@ export default function WizardProgress({
   currentStep,
   totalSteps = 6,
   shippingSkipped = false,
+  onStepClick,
 }: WizardProgressProps) {
   const steps = STEPS.slice(0, totalSteps);
+  const isClickable = !!onStepClick;
 
   return (
-    <nav aria-label="Listing creation progress" className={styles.nav}>
+    <nav aria-label="Listing progress" className={styles.nav}>
       <ol className={styles.list}>
         {steps.map((step, index) => {
           const isCompleted = step.number < currentStep;
@@ -39,6 +42,14 @@ export default function WizardProgress({
           else if (isSkipped) itemClass += ` ${styles.itemSkipped}`;
           else itemClass += ` ${styles.itemFuture}`;
 
+          if (isClickable) itemClass += ` ${styles.itemClickable}`;
+
+          const circleContent = isCompleted ? (
+            <HiCheck className={styles.checkIcon} />
+          ) : (
+            <span className={styles.number}>{step.number}</span>
+          );
+
           return (
             <li
               key={step.number}
@@ -46,13 +57,20 @@ export default function WizardProgress({
               aria-current={isCurrent ? 'step' : undefined}
             >
               {index > 0 && <span className={styles.connector} aria-hidden="true" />}
-              <span className={styles.circle} aria-hidden="true">
-                {isCompleted ? (
-                  <HiCheck className={styles.checkIcon} />
-                ) : (
-                  <span className={styles.number}>{step.number}</span>
-                )}
-              </span>
+              {isClickable && !isCurrent ? (
+                <button
+                  type="button"
+                  className={styles.circleButton}
+                  onClick={() => onStepClick(step.number)}
+                  aria-label={`Go to step ${step.number}: ${step.label}`}
+                >
+                  {circleContent}
+                </button>
+              ) : (
+                <span className={styles.circle} aria-hidden="true">
+                  {circleContent}
+                </span>
+              )}
               <span className={styles.label}>{step.label}</span>
             </li>
           );

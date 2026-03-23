@@ -2,14 +2,15 @@
 
 import CategorySelector from '@/features/listings/components/category-selector';
 import ConditionSelector from '@/features/listings/components/condition-selector';
-import useCreateWizardStore from '@/features/listings/stores/create-wizard-store';
+import { useWizardStore } from '@/features/listings/components/create-wizard/wizard-store-context';
 import type { ListingCategory, ListingCondition } from '@/features/listings/types/listing';
 import styles from './category-condition-step.module.scss';
 
 export default function CategoryConditionStep() {
-  const category = useCreateWizardStore.use.category();
-  const condition = useCreateWizardStore.use.condition();
-  const setField = useCreateWizardStore.use.setField();
+  const store = useWizardStore();
+  const category = store.use.category();
+  const condition = store.use.condition();
+  const setField = store.use.setField();
 
   function handleCategoryChange(value: string) {
     setField('category', value);

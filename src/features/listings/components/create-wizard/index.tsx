@@ -263,8 +263,10 @@ export default function CreateWizard({ initialDraft }: CreateWizardProps) {
 
   async function uploadPhotosToListing(listingId: string, photoFiles: WizardPhoto[]) {
     for (let i = 0; i < photoFiles.length; i++) {
+      const file = photoFiles[i].file;
+      if (!file) continue;
       setSaveProgress(`Uploading photo ${i + 1} of ${photoFiles.length}...`);
-      await uploadListingPhoto(photoFiles[i].file, listingId);
+      await uploadListingPhoto(file, listingId);
     }
   }
 

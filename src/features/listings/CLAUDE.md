@@ -54,6 +54,8 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 | published_at         | timestamptz \| null           | Set when status → active                          |
 | created_at           | timestamptz                   |                                                   |
 | updated_at           | timestamptz                   |                                                   |
+| sold_at              | timestamptz \| null           | Set when status → sold                            |
+| watcher_count        | integer                       | Watcher count (displayed in quick-edit price)     |
 | deleted_at           | timestamptz \| null           | Soft delete                                       |
 
 ### listing_photos table
@@ -143,19 +145,25 @@ All listing API routes live in `src/app/api/listings/`:
 
 ## Components
 
-| Component           | Location                         | Purpose                                                                                                                                    |
-| ------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `PhotoManager`      | `components/photo-manager/`      | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                                                       |
-| `ConditionBadge`    | `components/condition-badge/`    | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                                                         |
-| `ConditionSelector` | `components/condition-selector/` | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance.                                    |
-| `ConditionFilter`   | `components/condition-filter/`   | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.                                                  |
-| `CategorySelector`  | `components/category-selector/`  | Tile grid for selecting listing category. Props: `value`, `onChange`. `role="radiogroup"` with keyboard nav.                               |
-| `PhotoGallery`      | `components/photo-gallery/`      | Swiper carousel for listing detail. Props: `photos`, `title`, `onPhotoTap`. Handles 0, 1, and multi-photo states. ARIA carousel roles.     |
-| `PhotoLightbox`     | `components/photo-lightbox/`     | Full-screen photo viewer via portal. Props: `photos`, `initialIndex`, `isOpen`, `onClose`, `title`. Focus trap, scroll lock, Escape close. |
-| `SellerStrip`       | `components/seller-strip/`       | Seller info row: avatar (or initials fallback), name, "New seller" badge, "View shop" link. Props: `seller: SellerProfile`.                |
-| `ExpandableSection` | `components/expandable-section/` | Two modes: accordion (chevron toggle, `grid-template-rows` animation) and text truncation (`-webkit-line-clamp` with "Read more").         |
-| `CreateWizard`      | `components/create-wizard/`      | 5-step listing creation wizard with auto-save, draft resume, and publish/save-draft actions. See below.                                    |
-| `WizardProgress`    | `components/create-wizard/`      | Horizontal step progress indicator. Props: `currentStep`, `totalSteps`, `shippingSkipped`.                                                 |
+| Component            | Location                           | Purpose                                                                                                                                    |
+| -------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PhotoManager`       | `components/photo-manager/`        | Multi-photo upload, drag-to-reorder, and delete UI. Used in create and edit wizards.                                                       |
+| `ConditionBadge`     | `components/condition-badge/`      | Color-coded pill with popover description. Props: `condition`, `size` (`sm`/`md`).                                                         |
+| `ConditionSelector`  | `components/condition-selector/`   | Vertical radio list for wizard. Props: `value`, `onChange`, optional `category` for accordion guidance.                                    |
+| `ConditionFilter`    | `components/condition-filter/`     | Multi-select checkbox group for search. Props: `selected`, `onChange`, optional `counts`.                                                  |
+| `CategorySelector`   | `components/category-selector/`    | Tile grid for selecting listing category. Props: `value`, `onChange`. `role="radiogroup"` with keyboard nav.                               |
+| `PhotoGallery`       | `components/photo-gallery/`        | Swiper carousel for listing detail. Props: `photos`, `title`, `onPhotoTap`. Handles 0, 1, and multi-photo states. ARIA carousel roles.     |
+| `PhotoLightbox`      | `components/photo-lightbox/`       | Full-screen photo viewer via portal. Props: `photos`, `initialIndex`, `isOpen`, `onClose`, `title`. Focus trap, scroll lock, Escape close. |
+| `SellerStrip`        | `components/seller-strip/`         | Seller info row: avatar (or initials fallback), name, "New seller" badge, "View shop" link. Props: `seller: SellerProfile`.                |
+| `ExpandableSection`  | `components/expandable-section/`   | Two modes: accordion (chevron toggle, `grid-template-rows` animation) and text truncation (`-webkit-line-clamp` with "Read more").         |
+| `CreateWizard`       | `components/create-wizard/`        | 5-step listing creation wizard with auto-save, draft resume, and publish/save-draft actions. See below.                                    |
+| `WizardProgress`     | `components/create-wizard/`        | Horizontal step progress indicator. Props: `currentStep`, `totalSteps`, `shippingSkipped`, `onStepClick` (edit mode).                      |
+| `EditWizard`         | `components/edit-wizard/`          | Edit wizard: same steps as create, pre-populated via edit store, jumpable steps, partial save (only changed fields).                       |
+| `ListingRow`         | `components/listing-row/`          | Dashboard listing row: thumbnail, title, price, status pill, stats, actions menu trigger. Mobile card / desktop row layout.                |
+| `ListingActionsMenu` | `components/listing-actions-menu/` | Context-aware action menu (Edit, Mark as Sold, Deactivate/Activate, Delete). Uses Modal as bottom sheet.                                   |
+| `MarkSoldModal`      | `components/mark-sold-modal/`      | Confirmation modal with optional sale price input. Calls `useUpdateListingStatus` with `sold` status.                                      |
+| `DeleteListingModal` | `components/delete-listing-modal/` | Delete confirmation dialog with danger button. Calls `useDeleteListing` (soft delete).                                                     |
+| `QuickEditPrice`     | `components/quick-edit-price/`     | Compact price editor (Modal). Auto-focused input, live fee calculator, watcher notice. Patches only `price_cents`.                         |
 
 ## Create Wizard
 
@@ -170,7 +178,9 @@ The listing creation wizard at `/dashboard/listings/new` is a 5-step flow plus r
 
 ### Wizard Architecture
 
-- **State:** Zustand store (`stores/create-wizard-store.ts`) with `persist` middleware (localStorage key: `nessi-create-wizard`) and `createSelectors` wrapper
+- **Store abstraction:** Step components use `WizardStoreContext` (`components/create-wizard/wizard-store-context.tsx`) which defaults to `useCreateWizardStore` but can be overridden by `WizardStoreProvider` for edit mode.
+- **Create store:** Zustand store (`stores/create-wizard-store.ts`) with `persist` middleware (localStorage key: `nessi-create-wizard`) and `createSelectors` wrapper
+- **Edit store:** Zustand store (`stores/edit-wizard-store.ts`) — no persist middleware, hydrates from server data, tracks `changedFields` set for partial save via `getChangedData()`
 - **Validation:** Per-step Yup schemas (`validations/listing.ts`) with `STEP_SCHEMAS` array
 - **Draft save:** Explicit "Save draft and exit" button persists wizard state to the API via `useUpdateListing`; Zustand `persist` middleware retains state in localStorage across page refreshes
 - **Draft resume:** Server component loads draft by `?draftId=` query param, wizard hydrates store and advances to first incomplete step

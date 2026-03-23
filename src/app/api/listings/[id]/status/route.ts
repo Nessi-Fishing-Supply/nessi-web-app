@@ -2,6 +2,8 @@ import { createClient } from '@/libs/supabase/server';
 import type { ListingStatus } from '@/features/listings/types/listing';
 import { NextResponse } from 'next/server';
 
+// Note: Active listings can be deleted via DELETE /api/listings/[id] (soft delete),
+// not through status transitions. This map only covers status-to-status changes.
 const VALID_TRANSITIONS: Record<ListingStatus, ListingStatus[]> = {
   draft: ['active', 'deleted'],
   active: ['archived', 'sold'],
@@ -39,7 +41,7 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { status } = await req.json();
+    const { status, sold_price_cents } = await req.json();
 
     const currentStatus = listing.status as ListingStatus;
     const allowed = VALID_TRANSITIONS[currentStatus] ?? [];
@@ -53,10 +55,17 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       );
     }
 
-    const updatePayload: Record<string, string | null> = { status };
+    const updatePayload: Record<string, string | number | null> = { status };
 
     if (status === 'active' && !listing.published_at) {
       updatePayload.published_at = new Date().toISOString();
+    }
+
+    if (status === 'sold') {
+      updatePayload.sold_at = new Date().toISOString();
+      if (typeof sold_price_cents === 'number' && sold_price_cents > 0) {
+        updatePayload.price_cents = sold_price_cents;
+      }
     }
 
     if (status === 'deleted') {

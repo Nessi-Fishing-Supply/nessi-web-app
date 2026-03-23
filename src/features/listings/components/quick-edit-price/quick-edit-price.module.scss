@@ -1,0 +1,102 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-base);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-dark);
+}
+
+.priceInputWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  }
+}
+
+.currencyPrefix {
+  padding: 0 var(--space-xs);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-gray-400);
+  background-color: var(--color-gray-50);
+  border-right: 1px solid var(--color-gray-300);
+  line-height: 44px;
+}
+
+.priceInput {
+  flex: 1;
+  border: none;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  min-height: 44px;
+  outline: none;
+}
+
+.feeCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--space-sm);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-sm);
+}
+
+.feeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feeLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+}
+
+.feeValue {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+.feeRowNet {
+  padding-top: var(--space-2xs);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.feeValueNet {
+  font-weight: 700;
+  color: var(--color-dark);
+  font-size: var(--font-size-base);
+}
+
+.watcherNotice {
+  margin: 0;
+  padding: var(--space-xs) var(--space-sm);
+  background-color: color-mix(in srgb, var(--color-warning) 10%, transparent);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-700);
+}

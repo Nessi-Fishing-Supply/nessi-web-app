@@ -205,6 +205,7 @@ Each agent is an autonomous AI subprocess with its own system prompt, tool acces
 | **task-executor** | Sonnet | Read, Write, Edit, Bash, Grep, Glob | 40 | Implements ONE task. Orient → Plan → Implement → Verify (`pnpm build`) → Report. Follows existing codebase patterns. Reports failure after 2 attempts. |
 | **phase-verifier** | Sonnet | Bash, Read | 10 | Runs verification commands at phase boundaries. Reports pass/fail. Does NOT fix issues. |
 | **review-orchestrator** | Sonnet | Bash, Read, Grep, Glob | 30 | Runs build, lint, and available quality checks. Categorizes findings as [B] Blocking, [W] Warning, [I] Info. |
+| **superpowers:code-reviewer** | (built-in) | All tools | — | Reviews implementation against plan, coding standards, and acceptance criteria. Launched during review phase. |
 | **finding-resolver** | Sonnet | Read, Write, Edit, Grep | 15 | Takes findings.md, creates atomic fix tasks. Blocking → auto-fixed. Warnings → auto-fixed. |
 | **debug-investigator** | Opus | Read, Write, Edit, Bash, Grep, Glob, WebFetch, WebSearch | 50 | 7-step protocol: Reproduce → Isolate → Research → Inspect → Hypothesize → Fix → Verify. Used on 3rd retry before escalation to blocked. |
 | **pr-creator** | Sonnet | Bash, Read, Grep, Glob | 20 | Git operations: stage, commit, push, `gh pr create`. Moves ticket on kanban via `gh project item-edit`. Never modifies source code. |
@@ -380,10 +381,11 @@ At phase boundary:
 
 1. Update status → `reviewing`
 2. Launch `review-orchestrator` (build, lint, and available quality checks)
-3. Invoke `/preflight` if available (comprehensive quality gate)
-4. Merge findings, write to `findings.md`
-5. Append to `review-log.md` (append-only, never overwritten)
-6. Clean → `complete`. Issues → `needs_fixes`.
+3. Invoke `/preflight` if available (comprehensive quality gate — includes code review)
+4. Launch `superpowers:code-reviewer` agent to review implementation against plan, coding standards, and acceptance criteria
+5. Merge all findings (preflight + code review), write to `findings.md`
+6. Append to `review-log.md` (append-only, never overwritten)
+7. Clean → `complete`. Issues → `needs_fixes`.
 
 ### Fix
 

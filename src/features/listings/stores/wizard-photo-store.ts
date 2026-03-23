@@ -4,7 +4,7 @@ const STORE_NAME = 'wizard-photos';
 
 export interface WizardPhoto {
   id: string;
-  file: File;
+  file: File | null;
   position: number;
   previewUrl: string;
 }

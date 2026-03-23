@@ -60,6 +60,19 @@ If the dev server is running on localhost:3000 or can be started:
 - This check is optional — preflight still passes without it, but reports "skipped"
 - Critical a11y findings (keyboard traps, missing form labels) are [B] Blocking
 
+### 9. Code Review (optional, requires plan or recent changes)
+If there is a conductor plan (`plan.md` in the active track) or recent git changes on the current branch:
+- Launch **superpowers:code-reviewer** agent to review implementation against:
+  - The original plan (if available from conductor track)
+  - Project coding standards (from CLAUDE.md)
+  - Codebase patterns and conventions
+- The agent reviews changed files and flags deviations from the plan or standards
+- This check is optional — preflight still passes without it, but reports "skipped"
+- Findings are categorized as:
+  - [B] Blocking — implementation contradicts plan requirements or violates coding standards
+  - [W] Warning — minor deviations, missed edge cases, code quality concerns
+  - [I] Info — suggestions, alternative approaches
+
 ## Output
 
 Display results as a structured report:
@@ -78,6 +91,7 @@ Display results as a structured report:
   ✅ Build          {pass|fail}  {duration}
   ✅ UI Tests       {pass|fail|skipped}  {duration}  {page_count} pages
   ✅ Accessibility  {pass|fail|skipped}  {duration}  {finding_count} findings
+  ✅ Code Review   {pass|fail|skipped}  {duration}  {finding_count} findings
 
 {if any failed:}
 ━━━━ Failures ━━━━

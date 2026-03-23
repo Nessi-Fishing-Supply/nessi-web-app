@@ -150,3 +150,61 @@
     color: var(--color-gray-300);
   }
 }
+
+// Clickable step button (edit mode)
+.circleButton {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  // Inner circle matches .circle styles
+  &::before {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--color-gray-300);
+    background-color: var(--color-white);
+    transition:
+      border-color var(--transition-color),
+      background-color var(--transition-color);
+
+    @include breakpoint(md) {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .number,
+  .checkIcon {
+    position: relative;
+    z-index: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 50%;
+  }
+}
+
+// Apply state colors to clickable buttons
+.itemClickable {
+  &.itemCompleted .circleButton::before {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+  }
+
+  &.itemFuture .circleButton::before {
+    border-color: var(--color-gray-200);
+  }
+}

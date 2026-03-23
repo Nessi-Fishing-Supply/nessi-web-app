@@ -124,10 +124,15 @@ Display the plan summary:
 ### Step 4: Review
 
 1. Update `state.json` → `status: "reviewing"`, persist to disk
-2. Invoke the `/preflight` skill (it runs build, lint, typecheck, format, tests)
-3. Parse preflight output into findings format ([B], [W], [I])
-4. Write findings to `findings.md`, append to `review-log.md`
-5. If all checks pass → `status: "complete"`. If any [B] blocking findings → `status: "needs_fixes"`
+2. Invoke the `/preflight` skill (it runs build, lint, typecheck, format, tests, and code review)
+3. Launch **superpowers:code-reviewer** agent to review implementation against:
+   - The plan (`plan.md` from the track directory)
+   - Project coding standards (CLAUDE.md files)
+   - Codebase patterns and conventions
+   - The original GitHub issue acceptance criteria
+4. Merge preflight output and code review findings into unified findings format ([B], [W], [I])
+5. Write findings to `findings.md`, append to `review-log.md`
+6. If all checks pass → `status: "complete"`. If any [B] blocking findings → `status: "needs_fixes"`
 
 ### Step 5: Fix (if needed)
 

@@ -84,7 +84,22 @@ Checks: build({status}), lint({status}), tests({status})
 Findings: {blocking}B / {warning}W / {info}I
 ```
 
-### 6. Image Handling Audit
+### 6. Code Review (against plan and standards)
+
+If a conductor plan exists (`.claude/conductor/tracks/*/plan.md` or `.claude/conductor/depot/*/plan.md`):
+1. Launch **superpowers:code-reviewer** agent to review implementation against:
+   - The implementation plan (`plan.md`)
+   - Project coding standards (CLAUDE.md files)
+   - Codebase patterns and conventions
+   - The original GitHub issue acceptance criteria
+2. Merge code review findings into the categorized findings report
+
+Flag as:
+- **[B] Blocking** — Implementation contradicts plan requirements, missing acceptance criteria, violates coding standards
+- **[W] Warning** — Minor deviations from plan, missed edge cases, code quality concerns
+- **[I] Info** — Suggestions, alternative approaches, non-critical observations
+
+### 7. Image Handling Audit
 
 If any files in the changeset involve images (upload routes, components rendering images), run these checks:
 
