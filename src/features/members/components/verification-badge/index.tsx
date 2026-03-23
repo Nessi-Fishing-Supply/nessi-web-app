@@ -19,10 +19,7 @@ export default function VerificationBadge({
   className,
 }: VerificationBadgeProps) {
   return (
-    <span
-      className={`${styles.badge} ${styles[variant]} ${className ?? ''}`}
-      data-type={type}
-    >
+    <span className={`${styles.badge} ${styles[variant]} ${className ?? ''}`} data-type={type}>
       {icon && (
         <span className={styles.icon} aria-hidden="true">
           {icon}

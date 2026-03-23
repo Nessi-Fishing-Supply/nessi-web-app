@@ -13,9 +13,11 @@ Knowledgeable fishing friend -- not a platform. Earned, specific, tactile.
 ## Listing Descriptions
 
 **Do:**
+
 > St. Croix Mojo Bass 7'2" MH, fast action. Fished two full seasons -- bass and some pike. No tip damage, guides are clean, cork grip shows normal use at thumb position. Casts a 1/2 oz jig like it was built for it. Because it was.
 
 **Don't:**
+
 > Great rod in excellent condition! Perfect for all bass fishing techniques. A must-have for any serious angler! Don't miss out!
 
 ---
@@ -23,9 +25,11 @@ Knowledgeable fishing friend -- not a platform. Earned, specific, tactile.
 ## Seller Onboarding
 
 **Do:**
+
 > You know this gear better than we do. Tell buyers what they actually need to know: how long you've had it, how hard you've fished it, anything that affects how it performs. One honest paragraph beats five stars.
 
 **Don't:**
+
 > Welcome to Nessi! Complete your seller profile to start listing your items and reaching thousands of buyers in our growing fishing community!
 
 ---
@@ -33,9 +37,11 @@ Knowledgeable fishing friend -- not a platform. Earned, specific, tactile.
 ## Marketing Email
 
 **Do:**
+
 > It's April. The bass are shallow, and someone just listed a 7'3" heavy swimbait rod they're not using this season. Probably worth a look.
 
 **Don't:**
+
 > Spring Fishing Season is HERE! Shop the latest pre-owned gear deals and SAVE big! Don't miss out -- listings go fast!
 
 ---
@@ -43,9 +49,11 @@ Knowledgeable fishing friend -- not a platform. Earned, specific, tactile.
 ## Error Messages
 
 **Do:**
+
 > That listing isn't available anymore -- it either sold or the seller took it down. Worth checking the seller's profile to see what else they've got.
 
 **Don't:**
+
 > Error 404: This listing could not be found. Please try again or contact support.
 
 ---
@@ -53,9 +61,11 @@ Knowledgeable fishing friend -- not a platform. Earned, specific, tactile.
 ## Empty States
 
 **Do:**
+
 > "Nothing saved yet." -- Tap the heart on any listing. You'll know when the price drops.
 
 **Don't:**
+
 > "No saved items found. Browse our marketplace to find items you love and save them to your wishlist!"
 
 ---

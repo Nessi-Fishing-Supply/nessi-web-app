@@ -60,9 +60,7 @@ export default function OfferBubble({
           ? `${savingsPct}% off the listed price of ${formatPrice(originalPrice)}`
           : `Listed at ${formatPrice(originalPrice)}`}
       </p>
-      {status === 'pending' && (
-        <p className={styles.expiry}>{countdown}</p>
-      )}
+      {status === 'pending' && <p className={styles.expiry}>{countdown}</p>}
       {status === 'accepted' && (
         <p className={`${styles.statusBadge} ${styles.accepted}`}>Accepted</p>
       )}

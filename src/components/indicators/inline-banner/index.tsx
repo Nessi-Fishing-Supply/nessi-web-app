@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  HiInformationCircle,
-  HiCheckCircle,
-  HiExclamation,
-  HiXCircle,
-} from 'react-icons/hi';
+import { HiInformationCircle, HiCheckCircle, HiExclamation, HiXCircle } from 'react-icons/hi';
 import styles from './inline-banner.module.scss';
 
 interface InlineBannerProps {

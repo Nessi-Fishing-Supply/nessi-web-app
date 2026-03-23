@@ -23,7 +23,10 @@ function formatDate(date: Date): string {
 
 export default function OrderTimeline({ steps, currentStep, className }: OrderTimelineProps) {
   return (
-    <ol className={`${styles.timeline}${className ? ` ${className}` : ''}`} aria-label="Order progress">
+    <ol
+      className={`${styles.timeline}${className ? ` ${className}` : ''}`}
+      aria-label="Order progress"
+    >
       {steps.map((step, index) => {
         const isCompleted = index < currentStep;
         const isActive = index === currentStep;

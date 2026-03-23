@@ -32,9 +32,7 @@ export default function PriceDisplay({
         {variant === 'price-drop' && originalPrice && (
           <span className={styles.originalPrice}>{formatPrice(originalPrice)}</span>
         )}
-        <span
-          className={`${styles.price} ${variant === 'price-drop' ? styles.priceDrop : ''}`}
-        >
+        <span className={`${styles.price} ${variant === 'price-drop' ? styles.priceDrop : ''}`}>
           {formatPrice(price)}
         </span>
         {variant === 'price-drop' && dropPercent !== null && (
@@ -42,9 +40,7 @@ export default function PriceDisplay({
             -{dropPercent}%
           </span>
         )}
-        {variant === 'standard' && (
-          <span className={styles.orOffer}>or offer</span>
-        )}
+        {variant === 'standard' && <span className={styles.orOffer}>or offer</span>}
       </div>
 
       {variant === 'below-avg' && (

@@ -41,9 +41,7 @@ export default function ShippingRateCard({
         <span className={`${styles.price} ${isFree ? styles.priceFree : ''}`}>
           {isFree ? 'Free' : formatPrice(price)}
         </span>
-        {isSelected && (
-          <HiCheckCircle className={styles.checkIcon} aria-hidden="true" />
-        )}
+        {isSelected && <HiCheckCircle className={styles.checkIcon} aria-hidden="true" />}
       </div>
     </button>
   );

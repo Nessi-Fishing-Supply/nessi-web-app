@@ -10,14 +10,24 @@ beforeEach(() => {
 describe('PriceDropAlert — banner variant', () => {
   it('renders "Price dropped!" heading', () => {
     render(
-      <PriceDropAlert variant="banner" itemName="G. Loomis NRX" oldPrice={49900} newPrice={39900} />,
+      <PriceDropAlert
+        variant="banner"
+        itemName="G. Loomis NRX"
+        oldPrice={49900}
+        newPrice={39900}
+      />,
     );
     expect(screen.getByText('Price dropped!')).toBeInTheDocument();
   });
 
   it('renders old and new formatted prices', () => {
     render(
-      <PriceDropAlert variant="banner" itemName="G. Loomis NRX" oldPrice={49900} newPrice={39900} />,
+      <PriceDropAlert
+        variant="banner"
+        itemName="G. Loomis NRX"
+        oldPrice={49900}
+        newPrice={39900}
+      />,
     );
     expect(screen.getByText('$499.00')).toBeInTheDocument();
     expect(screen.getByText('$399.00')).toBeInTheDocument();
@@ -25,7 +35,12 @@ describe('PriceDropAlert — banner variant', () => {
 
   it('renders the correct drop percentage badge', () => {
     render(
-      <PriceDropAlert variant="banner" itemName="G. Loomis NRX" oldPrice={50000} newPrice={40000} />,
+      <PriceDropAlert
+        variant="banner"
+        itemName="G. Loomis NRX"
+        oldPrice={50000}
+        newPrice={40000}
+      />,
     );
     expect(screen.getByText('-20%')).toBeInTheDocument();
   });

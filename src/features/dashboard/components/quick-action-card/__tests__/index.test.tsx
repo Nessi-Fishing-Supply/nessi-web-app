@@ -31,13 +31,25 @@ describe('QuickActionCard', () => {
   });
 
   it('caps badge display at 99+ for large values', () => {
-    render(<QuickActionCard icon={icon} label="Notifications" href="/dashboard/notifications" badge={150} />);
+    render(
+      <QuickActionCard
+        icon={icon}
+        label="Notifications"
+        href="/dashboard/notifications"
+        badge={150}
+      />,
+    );
     expect(screen.getByText('99+')).toBeInTheDocument();
   });
 
   it('renders optional subtitle when provided', () => {
     render(
-      <QuickActionCard icon={icon} label="Listings" href="/dashboard/listings" subtitle="3 active" />,
+      <QuickActionCard
+        icon={icon}
+        label="Listings"
+        href="/dashboard/listings"
+        subtitle="3 active"
+      />,
     );
     expect(screen.getByText('3 active')).toBeInTheDocument();
   });

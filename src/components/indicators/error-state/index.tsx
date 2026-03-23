@@ -28,21 +28,13 @@ const ErrorState: React.FC<ErrorStateProps> = ({
 
   if (variant === 'banner') {
     return (
-      <div
-        className={`${styles.banner} ${className ?? ''}`}
-        role="alert"
-        aria-live="assertive"
-      >
+      <div className={`${styles.banner} ${className ?? ''}`} role="alert" aria-live="assertive">
         <HiExclamationCircle className={styles.bannerIcon} aria-hidden="true" />
         <div className={styles.bannerBody}>
           <p className={styles.bannerTitle}>{message}</p>
           {description && <p className={styles.bannerDescription}>{description}</p>}
           {action && (
-            <button
-              type="button"
-              className={styles.bannerAction}
-              onClick={action.onClick}
-            >
+            <button type="button" className={styles.bannerAction} onClick={action.onClick}>
               {action.label}
             </button>
           )}
@@ -58,11 +50,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
       <p className={styles.pageMessage}>{message}</p>
       {description && <p className={styles.pageDescription}>{description}</p>}
       {action && (
-        <button
-          type="button"
-          className={styles.pageAction}
-          onClick={action.onClick}
-        >
+        <button type="button" className={styles.pageAction} onClick={action.onClick}>
           {action.label}
         </button>
       )}

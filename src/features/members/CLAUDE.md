@@ -112,11 +112,11 @@ Full-width CTA card shown on the dashboard when `is_seller === false`. Displays 
 
 ### Trust & Identity Components (scaffolded — typed props only)
 
-| Component              | Location                         | Purpose                                                                                                              |
-| ---------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `VerificationBadge`    | `components/verification-badge/` | Pill badge: Trusted Seller, Tournament Angler, Verified Maker, etc. Variant colors. Tap opens tooltip.               |
-| `TrustStatRow`         | `components/trust-stat-row/`     | Seller summary: avatar + name + rating + message button + 3-stat row (response time, joined, sales). Vertical dividers. |
-| `OfferUi`              | `components/offer-ui/`           | Offer lifecycle: pending (3 buttons), floor warning (70% minimum), accepted (checkout CTA). Countdown timer.          |
+| Component           | Location                         | Purpose                                                                                                                 |
+| ------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `VerificationBadge` | `components/verification-badge/` | Pill badge: Trusted Seller, Tournament Angler, Verified Maker, etc. Variant colors. Tap opens tooltip.                  |
+| `TrustStatRow`      | `components/trust-stat-row/`     | Seller summary: avatar + name + rating + message button + 3-stat row (response time, joined, sales). Vertical dividers. |
+| `OfferUi`           | `components/offer-ui/`           | Offer lifecycle: pending (3 buttons), floor warning (70% minimum), accepted (checkout CTA). Countdown timer.            |
 
 ## State Management
 

@@ -39,9 +39,7 @@ export default function MakerStoryBlock({
             style={{ objectFit: 'cover' }}
           />
         </div>
-        {imageCaption && (
-          <figcaption className={styles.caption}>{imageCaption}</figcaption>
-        )}
+        {imageCaption && <figcaption className={styles.caption}>{imageCaption}</figcaption>}
       </figure>
       <div className={styles.content}>
         <blockquote className={styles.pullQuote}>

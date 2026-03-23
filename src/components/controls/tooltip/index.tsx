@@ -55,11 +55,7 @@ export default function Tooltip({ content, placement = 'top', children }: Toolti
         {children}
       </span>
       {visible && (
-        <span
-          id={tooltipId}
-          role="tooltip"
-          className={`${styles.tooltip} ${styles[placement]}`}
-        >
+        <span id={tooltipId} role="tooltip" className={`${styles.tooltip} ${styles[placement]}`}>
           {truncated}
           <span className={styles.arrow} aria-hidden="true" />
         </span>

@@ -35,9 +35,7 @@ export default function SocialProofStrip({
           <div key={stat.label} className={styles.statItem}>
             <span className={styles.statValue}>{stat.value}</span>
             <span className={styles.statLabel}>{stat.label}</span>
-            {index < stats.length - 1 && (
-              <span className={styles.divider} aria-hidden="true" />
-            )}
+            {index < stats.length - 1 && <span className={styles.divider} aria-hidden="true" />}
           </div>
         ))}
       </div>

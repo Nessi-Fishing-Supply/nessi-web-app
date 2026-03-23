@@ -17,27 +17,13 @@ const futureDate = new Date(Date.now() + 3_600_000); // 1 hour from now
 
 describe('OfferUi — pending status', () => {
   it('renders the offer amount and original price', () => {
-    render(
-      <OfferUi
-        amount={80}
-        originalPrice={120}
-        expiresAt={futureDate}
-        status="pending"
-      />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={futureDate} status="pending" />);
     expect(screen.getByText('$80')).toBeInTheDocument();
     expect(screen.getByText('$120')).toBeInTheDocument();
   });
 
   it('renders the countdown expiry label', () => {
-    render(
-      <OfferUi
-        amount={80}
-        originalPrice={120}
-        expiresAt={futureDate}
-        status="pending"
-      />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={futureDate} status="pending" />);
     expect(screen.getByText('Expires in')).toBeInTheDocument();
   });
 
@@ -67,9 +53,7 @@ describe('OfferUi — pending status', () => {
   });
 
   it('hides action buttons when callbacks are not provided', () => {
-    render(
-      <OfferUi amount={80} originalPrice={120} expiresAt={futureDate} status="pending" />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={futureDate} status="pending" />);
     expect(screen.queryByRole('button', { name: /decline/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /counter/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /accept/i })).not.toBeInTheDocument();
@@ -92,12 +76,7 @@ describe('OfferUi — floor-warning status', () => {
 
   it('renders em dash when floorAmount is not provided', () => {
     render(
-      <OfferUi
-        amount={50}
-        originalPrice={120}
-        expiresAt={futureDate}
-        status="floor-warning"
-      />,
+      <OfferUi amount={50} originalPrice={120} expiresAt={futureDate} status="floor-warning" />,
     );
     expect(screen.getByText(/minimum offer is —/i)).toBeInTheDocument();
   });
@@ -119,14 +98,7 @@ describe('OfferUi — floor-warning status', () => {
 
 describe('OfferUi — accepted status', () => {
   it('renders Offer Accepted with the amount', () => {
-    render(
-      <OfferUi
-        amount={80}
-        originalPrice={120}
-        expiresAt={futureDate}
-        status="accepted"
-      />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={futureDate} status="accepted" />);
     expect(screen.getByText(/offer accepted/i)).toBeInTheDocument();
     expect(screen.getByText(/\$80/)).toBeInTheDocument();
   });
@@ -148,14 +120,7 @@ describe('OfferUi — accepted status', () => {
   });
 
   it('does not render checkout button when onCheckout is not provided', () => {
-    render(
-      <OfferUi
-        amount={80}
-        originalPrice={120}
-        expiresAt={futureDate}
-        status="accepted"
-      />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={futureDate} status="accepted" />);
     expect(screen.queryByRole('button', { name: /checkout now/i })).not.toBeInTheDocument();
   });
 });
@@ -163,18 +128,14 @@ describe('OfferUi — accepted status', () => {
 describe('OfferUi — countdown timer', () => {
   it('shows Expired when expiresAt is in the past', () => {
     const pastDate = new Date(Date.now() - 1000);
-    render(
-      <OfferUi amount={80} originalPrice={120} expiresAt={pastDate} status="pending" />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={pastDate} status="pending" />);
     expect(screen.getByText('Expired')).toBeInTheDocument();
   });
 
   it('updates countdown after 1 second via setInterval', () => {
     // Use a date exactly 65 seconds in the future so initial render shows "1m Xs"
     const expiresAt = new Date(Date.now() + 65_000);
-    render(
-      <OfferUi amount={80} originalPrice={120} expiresAt={expiresAt} status="pending" />,
-    );
+    render(<OfferUi amount={80} originalPrice={120} expiresAt={expiresAt} status="pending" />);
     // Advance timer by 5 seconds — countdown should decrease
     act(() => {
       vi.advanceTimersByTime(5_000);

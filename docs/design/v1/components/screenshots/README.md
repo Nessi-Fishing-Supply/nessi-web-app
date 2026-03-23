@@ -3,6 +3,7 @@
 Screenshots could not be captured in this session because Playwright browser tools were not available.
 
 To capture screenshots manually:
+
 1. Open the design system at: https://0m34aamgen-7200.hosted.obvious.ai/design-system.html
 2. Take full-page screenshots of each section
 3. Save them here with filenames matching section IDs:

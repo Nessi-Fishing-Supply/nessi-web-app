@@ -44,11 +44,7 @@ describe('InlineBanner', () => {
   it('calls action.onClick when the action button is clicked', () => {
     const onClick = vi.fn();
     render(
-      <InlineBanner
-        variant="error"
-        title="Payment failed"
-        action={{ label: 'Retry', onClick }}
-      />,
+      <InlineBanner variant="error" title="Payment failed" action={{ label: 'Retry', onClick }} />,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(onClick).toHaveBeenCalledTimes(1);

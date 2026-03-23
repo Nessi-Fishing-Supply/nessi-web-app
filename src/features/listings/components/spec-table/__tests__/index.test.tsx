@@ -24,9 +24,7 @@ describe('SpecTable', () => {
   });
 
   it('uses semantic dl/dt/dd markup', () => {
-    const { container } = render(
-      <SpecTable specs={[{ key: 'Weight', value: '8 oz' }]} />,
-    );
+    const { container } = render(<SpecTable specs={[{ key: 'Weight', value: '8 oz' }]} />);
     expect(container.querySelector('dl')).toBeInTheDocument();
     expect(container.querySelector('dt')).toBeInTheDocument();
     expect(container.querySelector('dd')).toBeInTheDocument();
@@ -48,9 +46,7 @@ describe('SpecTable', () => {
   });
 
   it('returns null when all spec values are empty', () => {
-    const { container } = render(
-      <SpecTable specs={[{ key: 'Brand', value: '' }]} />,
-    );
+    const { container } = render(<SpecTable specs={[{ key: 'Brand', value: '' }]} />);
     expect(container.firstChild).toBeNull();
   });
 

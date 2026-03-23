@@ -1,13 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  HiShoppingBag,
-  HiTag,
-  HiChat,
-  HiTrendingDown,
-  HiStar,
-} from 'react-icons/hi';
+import { HiShoppingBag, HiTag, HiChat, HiTrendingDown, HiStar } from 'react-icons/hi';
 import styles from './notification-row.module.scss';
 
 interface NotificationRowProps {

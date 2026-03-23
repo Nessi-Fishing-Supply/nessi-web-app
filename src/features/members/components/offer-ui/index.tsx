@@ -19,7 +19,11 @@ interface OfferUiProps {
 }
 
 function formatCurrency(value: number): string {
-  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
 }
 
 function useCountdown(expiresAt: Date): string {
@@ -85,7 +89,8 @@ export default function OfferUi({
         <div className={styles.warningHeader}>
           <HiExclamationCircle className={styles.warningIcon} aria-hidden="true" />
           <span className={styles.warningText}>
-            Minimum offer is {floorAmount !== undefined ? formatCurrency(floorAmount) : '—'} (70% of asking)
+            Minimum offer is {floorAmount !== undefined ? formatCurrency(floorAmount) : '—'} (70% of
+            asking)
           </span>
         </div>
         <div className={styles.amountRow}>

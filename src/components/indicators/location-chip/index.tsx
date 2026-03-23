@@ -8,11 +8,7 @@ interface LocationChipProps {
   className?: string;
 }
 
-const LocationChip: React.FC<LocationChipProps> = ({
-  location,
-  variant = 'inline',
-  className,
-}) => {
+const LocationChip: React.FC<LocationChipProps> = ({ location, variant = 'inline', className }) => {
   return (
     <span className={`${styles.root} ${styles[variant]} ${className ?? ''}`}>
       <HiLocationMarker className={styles.icon} aria-hidden="true" />

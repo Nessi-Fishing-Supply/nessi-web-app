@@ -35,7 +35,12 @@ describe('ShopUpgradePrompt', () => {
   it('calls onUpgrade when "Open My Shop" button is clicked', () => {
     const onUpgrade = vi.fn();
     render(
-      <ShopUpgradePrompt listingCount={5} totalSales={12} onUpgrade={onUpgrade} onDismiss={vi.fn()} />,
+      <ShopUpgradePrompt
+        listingCount={5}
+        totalSales={12}
+        onUpgrade={onUpgrade}
+        onDismiss={vi.fn()}
+      />,
     );
     fireEvent.click(screen.getByRole('button', { name: /open my shop/i }));
     expect(onUpgrade).toHaveBeenCalledOnce();
@@ -44,7 +49,12 @@ describe('ShopUpgradePrompt', () => {
   it('calls onDismiss when "Later" button is clicked', () => {
     const onDismiss = vi.fn();
     render(
-      <ShopUpgradePrompt listingCount={5} totalSales={12} onUpgrade={vi.fn()} onDismiss={onDismiss} />,
+      <ShopUpgradePrompt
+        listingCount={5}
+        totalSales={12}
+        onUpgrade={vi.fn()}
+        onDismiss={onDismiss}
+      />,
     );
     fireEvent.click(screen.getByRole('button', { name: /later/i }));
     expect(onDismiss).toHaveBeenCalledOnce();

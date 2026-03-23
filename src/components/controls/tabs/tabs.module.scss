@@ -30,7 +30,9 @@
   font-weight: var(--font-weight-500);
   color: var(--color-neutral-600);
   cursor: pointer;
-  transition: color var(--transition-basic), border-color var(--transition-basic);
+  transition:
+    color var(--transition-basic),
+    border-color var(--transition-basic);
   white-space: nowrap;
   min-height: 44px;
 

@@ -27,9 +27,7 @@ function renderStars(rating: number) {
       {Array.from({ length: full }).map((_, i) => (
         <HiStar key={`full-${i}`} className={styles.starFull} aria-hidden="true" />
       ))}
-      {half && (
-        <HiStar key="half" className={styles.starHalf} aria-hidden="true" />
-      )}
+      {half && <HiStar key="half" className={styles.starHalf} aria-hidden="true" />}
       {Array.from({ length: empty }).map((_, i) => (
         <HiStar key={`empty-${i}`} className={styles.starEmpty} aria-hidden="true" />
       ))}

@@ -15,6 +15,7 @@
 All components already exist as scaffolds. This plan modifies them and adds tests.
 
 ### Controls (`src/components/controls/`)
+
 - Modify: `tooltip/index.tsx`, `tooltip/tooltip.module.scss`
 - Modify: `avatar/index.tsx`, `avatar/avatar.module.scss`
 - Modify: `tabs/index.tsx`, `tabs/tabs.module.scss`
@@ -26,6 +27,7 @@ All components already exist as scaffolds. This plan modifies them and adds test
 - Modify: `index.ts` (barrel — already updated)
 
 ### Indicators (`src/components/indicators/`)
+
 - Modify: `date-time-display/index.tsx`, `date-time-display/date-time-display.module.scss`
 - Modify: `location-chip/index.tsx`, `location-chip/location-chip.module.scss`
 - Modify: `member-badge/index.tsx`, `member-badge/member-badge.module.scss`
@@ -42,6 +44,7 @@ All components already exist as scaffolds. This plan modifies them and adds test
 - Create: `error-state/__tests__/index.test.tsx`
 
 ### Layout (`src/components/layout/`)
+
 - Modify: `page-header/index.tsx`, `page-header/page-header.module.scss`
 - Modify: `progress-bar/index.tsx`, `progress-bar/progress-bar.module.scss`
 - Modify: `bottom-sheet/index.tsx`, `bottom-sheet/bottom-sheet.module.scss`
@@ -50,6 +53,7 @@ All components already exist as scaffolds. This plan modifies them and adds test
 - Create: `bottom-sheet/__tests__/index.test.tsx`
 
 ### Listings (`src/features/listings/components/`)
+
 - Modify: `price-display/index.tsx`, `price-display/price-display.module.scss`
 - Modify: `fee-calculator/index.tsx`, `fee-calculator/fee-calculator.module.scss`
 - Modify: `spec-table/index.tsx`, `spec-table/spec-table.module.scss`
@@ -62,16 +66,19 @@ All components already exist as scaffolds. This plan modifies them and adds test
 - Create: `category-tile/__tests__/index.test.tsx`
 
 ### Messaging (`src/features/messaging/components/`)
+
 - Modify: `message-thread/index.tsx`, `message-thread/message-thread.module.scss`
 - Modify: `offer-bubble/index.tsx`, `offer-bubble/offer-bubble.module.scss`
 - Create: `message-thread/__tests__/index.test.tsx`
 - Create: `offer-bubble/__tests__/index.test.tsx`
 
 ### Orders (`src/features/orders/components/`)
+
 - Modify: `order-timeline/index.tsx`, `order-timeline/order-timeline.module.scss`
 - Create: `order-timeline/__tests__/index.test.tsx`
 
 ### Members (`src/features/members/components/`)
+
 - Modify: `verification-badge/index.tsx`, `verification-badge/verification-badge.module.scss`
 - Modify: `trust-stat-row/index.tsx`, `trust-stat-row/trust-stat-row.module.scss`
 - Modify: `offer-ui/index.tsx`, `offer-ui/offer-ui.module.scss`
@@ -80,6 +87,7 @@ All components already exist as scaffolds. This plan modifies them and adds test
 - Create: `offer-ui/__tests__/index.test.tsx`
 
 ### Dashboard (`src/features/dashboard/components/`)
+
 - Modify: `kpi-stat-tile/index.tsx`, `kpi-stat-tile/kpi-stat-tile.module.scss`
 - Modify: `quick-action-card/index.tsx`, `quick-action-card/quick-action-card.module.scss`
 - Modify: `sparkline/index.tsx`, `sparkline/sparkline.module.scss`
@@ -90,6 +98,7 @@ All components already exist as scaffolds. This plan modifies them and adds test
 - Create: `shop-upgrade-prompt/__tests__/index.test.tsx`
 
 ### Editorial (`src/features/editorial/components/`)
+
 - Modify: `shop-highlight/index.tsx`, `shop-highlight/shop-highlight.module.scss`
 - Modify: `maker-story-block/index.tsx`, `maker-story-block/maker-story-block.module.scss`
 - Modify: `featured-listing-card/index.tsx`, `featured-listing-card/featured-listing-card.module.scss`
@@ -112,6 +121,7 @@ All components already exist as scaffolds. This plan modifies them and adds test
 ### Task 0: Add `next/image` Mock to Vitest Setup
 
 **Files:**
+
 - Modify: `vitest.setup.mts`
 
 Several components use `next/image` (avatar, category-tile, shop-highlight, maker-story-block, featured-listing-card, recently-sold-ticker, price-drop-alert). Tests will fail without a mock.
@@ -158,6 +168,7 @@ git commit -m "test: add next/image and next/link mocks to vitest setup"
 ### Task 1: Tooltip — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/controls/tooltip/index.tsx`
 - Modify: `src/components/controls/tooltip/tooltip.module.scss`
 - Create: `src/components/controls/tooltip/__tests__/index.test.tsx`
@@ -167,6 +178,7 @@ git commit -m "test: add next/image and next/link mocks to vitest setup"
 - [ ] **Step 1: Read scaffold and spec, audit against DS**
 
 Read `src/components/controls/tooltip/index.tsx` and its SCSS. Compare against spec:
+
 - Dark fill (`--color-neutral-900`), white text, 11px font, max-width 220px
 - 6px 10px padding, `--radius-200` (6px)
 - Arrow: 5px CSS border triangle
@@ -183,17 +195,28 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import Tooltip from '../index';
 
-beforeEach(() => { cleanup(); vi.resetAllMocks(); });
+beforeEach(() => {
+  cleanup();
+  vi.resetAllMocks();
+});
 
 describe('Tooltip', () => {
   it('renders children without tooltip visible by default', () => {
-    render(<Tooltip content="Help text"><button>Hover me</button></Tooltip>);
+    render(
+      <Tooltip content="Help text">
+        <button>Hover me</button>
+      </Tooltip>,
+    );
     expect(screen.getByRole('button', { name: 'Hover me' })).toBeInTheDocument();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('shows tooltip on mouse enter and hides on mouse leave', () => {
-    render(<Tooltip content="Help text"><button>Hover me</button></Tooltip>);
+    render(
+      <Tooltip content="Help text">
+        <button>Hover me</button>
+      </Tooltip>,
+    );
     fireEvent.mouseEnter(screen.getByRole('button'));
     expect(screen.getByRole('tooltip')).toHaveTextContent('Help text');
     fireEvent.mouseLeave(screen.getByRole('button'));
@@ -202,14 +225,22 @@ describe('Tooltip', () => {
 
   it('truncates content exceeding 80 characters', () => {
     const longText = 'A'.repeat(100);
-    render(<Tooltip content={longText}><span>trigger</span></Tooltip>);
+    render(
+      <Tooltip content={longText}>
+        <span>trigger</span>
+      </Tooltip>,
+    );
     fireEvent.mouseEnter(screen.getByText('trigger'));
     const tooltip = screen.getByRole('tooltip');
     expect(tooltip.textContent!.length).toBeLessThanOrEqual(83); // 80 + "..."
   });
 
   it('applies placement class for bottom', () => {
-    render(<Tooltip content="Below" placement="bottom"><span>trigger</span></Tooltip>);
+    render(
+      <Tooltip content="Below" placement="bottom">
+        <span>trigger</span>
+      </Tooltip>,
+    );
     fireEvent.mouseEnter(screen.getByText('trigger'));
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
@@ -231,6 +262,7 @@ git commit -m "feat(tooltip): audit scaffold against DS spec, add tests"
 ### Task 2: Avatar — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/controls/avatar/index.tsx`
 - Modify: `src/components/controls/avatar/avatar.module.scss`
 - Create: `src/components/controls/avatar/__tests__/index.test.tsx`
@@ -240,6 +272,7 @@ git commit -m "feat(tooltip): audit scaffold against DS spec, add tests"
 - [ ] **Step 1: Read scaffold and spec, audit against DS**
 
 Check:
+
 - 4 sizes: xs=24px/9px, sm=32px/12px, md=40px/15px, lg=48px/18px
 - Green/orange/maroon gradient with deterministic hashing from name/colorSeed
 - Photo variant with `next/image` + initials fallback
@@ -254,7 +287,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import Avatar from '../index';
 
-beforeEach(() => { cleanup(); });
+beforeEach(() => {
+  cleanup();
+});
 
 describe('Avatar', () => {
   it('renders initials from name', () => {
@@ -304,6 +339,7 @@ git commit -m "feat(avatar): audit scaffold against DS spec, add tests"
 ### Task 3: Tabs — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/controls/tabs/index.tsx`
 - Modify: `src/components/controls/tabs/tabs.module.scss`
 - Create: `src/components/controls/tabs/__tests__/index.test.tsx`
@@ -313,6 +349,7 @@ git commit -m "feat(avatar): audit scaffold against DS spec, add tests"
 - [ ] **Step 1: Read scaffold and spec, audit against DS**
 
 Check:
+
 - Bottom border 2px `--color-surface-400`
 - Active: `--color-primary-500` text + 2px green border + SemiBold (`--font-weight-600`)
 - Inactive: `--color-neutral-500` (text-2), Medium weight
@@ -329,7 +366,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import Tabs from '../index';
 
-beforeEach(() => { cleanup(); vi.resetAllMocks(); });
+beforeEach(() => {
+  cleanup();
+  vi.resetAllMocks();
+});
 
 const items = [
   { label: 'Listings', count: 12 },
@@ -388,6 +428,7 @@ git commit -m "feat(tabs): audit scaffold against DS spec, add tests"
 ### Task 4: Quantity Stepper — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/controls/quantity-stepper/index.tsx`
 - Modify: `src/components/controls/quantity-stepper/quantity-stepper.module.scss`
 - Create: `src/components/controls/quantity-stepper/__tests__/index.test.tsx`
@@ -397,6 +438,7 @@ git commit -m "feat(tabs): audit scaffold against DS spec, add tests"
 - [ ] **Step 1: Read scaffold and spec, audit against DS**
 
 Check:
+
 - Bordered container, -/count/+ buttons
 - Min default 1, max optional
 - 3 sizes: default (44px buttons), sm, xs
@@ -411,7 +453,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import QuantityStepper from '../index';
 
-beforeEach(() => { cleanup(); vi.resetAllMocks(); });
+beforeEach(() => {
+  cleanup();
+  vi.resetAllMocks();
+});
 
 describe('QuantityStepper', () => {
   it('renders current value', () => {
@@ -466,6 +511,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 5: Date Time Display — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/date-time-display/index.tsx`
 - Modify: `src/components/indicators/date-time-display/date-time-display.module.scss`
 - Create: `src/components/indicators/date-time-display/__tests__/index.test.tsx`
@@ -478,6 +524,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 6: Location Chip — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/location-chip/index.tsx`
 - Modify: `src/components/indicators/location-chip/location-chip.module.scss`
 - Create: `src/components/indicators/location-chip/__tests__/index.test.tsx`
@@ -490,6 +537,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 7: Member Badge — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/member-badge/index.tsx`
 - Modify: `src/components/indicators/member-badge/member-badge.module.scss`
 - Create: `src/components/indicators/member-badge/__tests__/index.test.tsx`
@@ -502,6 +550,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 8: Inline Banner — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/inline-banner/index.tsx`
 - Modify: `src/components/indicators/inline-banner/inline-banner.module.scss`
 - Create: `src/components/indicators/inline-banner/__tests__/index.test.tsx`
@@ -514,6 +563,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 9: Notification Row — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/notification-row/index.tsx`
 - Modify: `src/components/indicators/notification-row/notification-row.module.scss`
 - Create: `src/components/indicators/notification-row/__tests__/index.test.tsx`
@@ -526,6 +576,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 10: Settings Row — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/settings-row/index.tsx`
 - Modify: `src/components/indicators/settings-row/settings-row.module.scss`
 - Create: `src/components/indicators/settings-row/__tests__/index.test.tsx`
@@ -538,6 +589,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 11: Error State — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/indicators/error-state/index.tsx`
 - Modify: `src/components/indicators/error-state/error-state.module.scss`
 - Create: `src/components/indicators/error-state/__tests__/index.test.tsx`
@@ -554,6 +606,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 12: Page Header — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/layout/page-header/index.tsx`
 - Modify: `src/components/layout/page-header/page-header.module.scss`
 - Create: `src/components/layout/page-header/__tests__/index.test.tsx`
@@ -566,6 +619,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 13: Progress Bar — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/layout/progress-bar/index.tsx`
 - Modify: `src/components/layout/progress-bar/progress-bar.module.scss`
 - Create: `src/components/layout/progress-bar/__tests__/index.test.tsx`
@@ -578,6 +632,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 14: Bottom Sheet — Audit & Test
 
 **Files:**
+
 - Modify: `src/components/layout/bottom-sheet/index.tsx`
 - Modify: `src/components/layout/bottom-sheet/bottom-sheet.module.scss`
 - Create: `src/components/layout/bottom-sheet/__tests__/index.test.tsx`
@@ -594,6 +649,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 15: Price Display — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/listings/components/price-display/index.tsx`
 - Modify: `src/features/listings/components/price-display/price-display.module.scss`
 - Create: `src/features/listings/components/price-display/__tests__/index.test.tsx`
@@ -606,6 +662,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 16: Fee Calculator — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/listings/components/fee-calculator/index.tsx`
 - Modify: `src/features/listings/components/fee-calculator/fee-calculator.module.scss`
 - Create: `src/features/listings/components/fee-calculator/__tests__/index.test.tsx`
@@ -618,6 +675,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 17: Spec Table — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/listings/components/spec-table/index.tsx`
 - Modify: `src/features/listings/components/spec-table/spec-table.module.scss`
 - Create: `src/features/listings/components/spec-table/__tests__/index.test.tsx`
@@ -630,6 +688,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 18: Shipping Rate Card — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/listings/components/shipping-rate-card/index.tsx`
 - Modify: `src/features/listings/components/shipping-rate-card/shipping-rate-card.module.scss`
 - Create: `src/features/listings/components/shipping-rate-card/__tests__/index.test.tsx`
@@ -642,6 +701,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 19: Category Tile — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/listings/components/category-tile/index.tsx`
 - Modify: `src/features/listings/components/category-tile/category-tile.module.scss`
 - Create: `src/features/listings/components/category-tile/__tests__/index.test.tsx`
@@ -658,6 +718,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 20: Message Thread — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/messaging/components/message-thread/index.tsx`
 - Modify: `src/features/messaging/components/message-thread/message-thread.module.scss`
 - Create: `src/features/messaging/components/message-thread/__tests__/index.test.tsx`
@@ -670,6 +731,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 21: Offer Bubble — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/messaging/components/offer-bubble/index.tsx`
 - Modify: `src/features/messaging/components/offer-bubble/offer-bubble.module.scss`
 - Create: `src/features/messaging/components/offer-bubble/__tests__/index.test.tsx`
@@ -682,6 +744,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 22: Order Timeline — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/orders/components/order-timeline/index.tsx`
 - Modify: `src/features/orders/components/order-timeline/order-timeline.module.scss`
 - Create: `src/features/orders/components/order-timeline/__tests__/index.test.tsx`
@@ -698,6 +761,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 23: Verification Badge — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/members/components/verification-badge/index.tsx`
 - Modify: `src/features/members/components/verification-badge/verification-badge.module.scss`
 - Create: `src/features/members/components/verification-badge/__tests__/index.test.tsx`
@@ -710,6 +774,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 24: Trust Stat Row — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/members/components/trust-stat-row/index.tsx`
 - Modify: `src/features/members/components/trust-stat-row/trust-stat-row.module.scss`
 - Create: `src/features/members/components/trust-stat-row/__tests__/index.test.tsx`
@@ -722,6 +787,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 25: Offer UI — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/members/components/offer-ui/index.tsx`
 - Modify: `src/features/members/components/offer-ui/offer-ui.module.scss`
 - Create: `src/features/members/components/offer-ui/__tests__/index.test.tsx`
@@ -738,6 +804,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 26: KPI Stat Tile — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/dashboard/components/kpi-stat-tile/index.tsx`
 - Modify: `src/features/dashboard/components/kpi-stat-tile/kpi-stat-tile.module.scss`
 - Create: `src/features/dashboard/components/kpi-stat-tile/__tests__/index.test.tsx`
@@ -750,6 +817,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 27: Quick Action Card — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/dashboard/components/quick-action-card/index.tsx`
 - Modify: `src/features/dashboard/components/quick-action-card/quick-action-card.module.scss`
 - Create: `src/features/dashboard/components/quick-action-card/__tests__/index.test.tsx`
@@ -762,6 +830,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 28: Sparkline — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/dashboard/components/sparkline/index.tsx`
 - Modify: `src/features/dashboard/components/sparkline/sparkline.module.scss`
 - Create: `src/features/dashboard/components/sparkline/__tests__/index.test.tsx`
@@ -774,6 +843,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 29: Shop Upgrade Prompt — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/dashboard/components/shop-upgrade-prompt/index.tsx`
 - Modify: `src/features/dashboard/components/shop-upgrade-prompt/shop-upgrade-prompt.module.scss`
 - Create: `src/features/dashboard/components/shop-upgrade-prompt/__tests__/index.test.tsx`
@@ -790,6 +860,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 30: Shop Highlight — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/shop-highlight/index.tsx`
 - Modify: `src/features/editorial/components/shop-highlight/shop-highlight.module.scss`
 - Create: `src/features/editorial/components/shop-highlight/__tests__/index.test.tsx`
@@ -802,6 +873,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 31: Maker Story Block — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/maker-story-block/index.tsx`
 - Modify: `src/features/editorial/components/maker-story-block/maker-story-block.module.scss`
 - Create: `src/features/editorial/components/maker-story-block/__tests__/index.test.tsx`
@@ -814,6 +886,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 32: Featured Listing Card — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/featured-listing-card/index.tsx`
 - Modify: `src/features/editorial/components/featured-listing-card/featured-listing-card.module.scss`
 - Create: `src/features/editorial/components/featured-listing-card/__tests__/index.test.tsx`
@@ -826,6 +899,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 33: Species Browse Row — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/species-browse-row/index.tsx`
 - Modify: `src/features/editorial/components/species-browse-row/species-browse-row.module.scss`
 - Create: `src/features/editorial/components/species-browse-row/__tests__/index.test.tsx`
@@ -838,6 +912,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 34: Social Proof Strip — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/social-proof-strip/index.tsx`
 - Modify: `src/features/editorial/components/social-proof-strip/social-proof-strip.module.scss`
 - Create: `src/features/editorial/components/social-proof-strip/__tests__/index.test.tsx`
@@ -850,6 +925,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 35: Price Drop Alert — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/price-drop-alert/index.tsx`
 - Modify: `src/features/editorial/components/price-drop-alert/price-drop-alert.module.scss`
 - Create: `src/features/editorial/components/price-drop-alert/__tests__/index.test.tsx`
@@ -862,6 +938,7 @@ git commit -m "feat(quantity-stepper): audit scaffold against DS spec, add tests
 ### Task 36: Recently Sold Ticker — Audit & Test
 
 **Files:**
+
 - Modify: `src/features/editorial/components/recently-sold-ticker/index.tsx`
 - Modify: `src/features/editorial/components/recently-sold-ticker/recently-sold-ticker.module.scss`
 - Create: `src/features/editorial/components/recently-sold-ticker/__tests__/index.test.tsx`

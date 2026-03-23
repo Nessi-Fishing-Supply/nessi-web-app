@@ -27,7 +27,9 @@ export default function KpiStatTile({ label, value, trend, className }: KpiStatT
     <div className={`${styles.tile}${className ? ` ${className}` : ''}`}>
       <p className={styles.label}>{label}</p>
       <p className={styles.value}>{value}</p>
-      <div className={`${styles.trend} ${styles[`trend${trend.direction.charAt(0).toUpperCase()}${trend.direction.slice(1)}`]}`}>
+      <div
+        className={`${styles.trend} ${styles[`trend${trend.direction.charAt(0).toUpperCase()}${trend.direction.slice(1)}`]}`}
+      >
         <TrendIcon className={styles.trendIcon} aria-hidden="true" />
         <span className={styles.trendValue}>{trend.value}</span>
         <span className={styles.trendPeriod}>{trend.period}</span>

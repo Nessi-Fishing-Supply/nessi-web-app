@@ -9,13 +9,7 @@ vi.mock('next/image', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => {
+  default: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => {
     return React.createElement('a', props, children);
   },
 }));

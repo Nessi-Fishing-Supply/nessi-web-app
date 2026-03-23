@@ -30,11 +30,7 @@ export default function QuantityStepper({
   const isAtMax = max !== undefined && value >= max;
 
   return (
-    <div
-      className={`${styles.stepper} ${styles[size]}`}
-      role="group"
-      aria-label="Quantity"
-    >
+    <div className={`${styles.stepper} ${styles[size]}`} role="group" aria-label="Quantity">
       <button
         type="button"
         className={styles.btn}

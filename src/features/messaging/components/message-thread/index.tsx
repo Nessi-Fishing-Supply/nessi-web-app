@@ -44,7 +44,9 @@ export default function MessageThread({ messages, currentUserId, className }: Me
               </div>
             )}
             <div className={styles.bubbleGroup}>
-              <div className={`${styles.bubble} ${isSent ? styles.bubbleSent : styles.bubbleReceived}`}>
+              <div
+                className={`${styles.bubble} ${isSent ? styles.bubbleSent : styles.bubbleReceived}`}
+              >
                 {message.content}
               </div>
               <time className={styles.timestamp} dateTime={message.timestamp.toISOString()}>
