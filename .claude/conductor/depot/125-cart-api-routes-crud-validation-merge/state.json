@@ -3,7 +3,7 @@
   "issue": 125,
   "title": "feat(cart): #50.3 — API routes (CRUD, validation, merge)",
   "branch": "feat/125/cart-api-routes",
-  "status": "fixing",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-23T18:00:00Z", "lastActivity": "2026-03-23T18:20:00Z" }
+  "timestamps": {
+    "started": "2026-03-23T18:00:00Z",
+    "lastActivity": "2026-03-23T18:25:00Z",
+    "completedAt": "2026-03-23T18:25:00Z",
+    "pruneAfter": "2026-05-22T18:25:00Z"
+  }
 }
