@@ -40,6 +40,7 @@ import type { AutocompleteSuggestion } from '@/features/listings/types/search';
 
 // Cart
 import CartIcon from '@/features/cart/components/cart-icon';
+import { useCartMerge } from '@/features/cart/hooks/use-cart-merge';
 
 // Auth & Toast
 import { useAuth } from '@/features/auth/context';
@@ -70,6 +71,7 @@ export default function Navbar() {
   const activeContext = useContextStore.use.activeContext();
   const switchToMember = useContextStore.use.switchToMember();
   const switchToShop = useContextStore.use.switchToShop();
+  useCartMerge();
   const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');

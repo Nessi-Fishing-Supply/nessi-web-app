@@ -62,6 +62,7 @@ Server-side validation enforced in `addToCartServer` and `mergeGuestCartServer`:
 | `useMergeGuestCart()` | mutation, invalidates both keys | Merge guest cart on login            | No — calls `clearGuestCart()` on success                           |
 | `useRefreshExpiry()`  | mutation, invalidates cart key  | Reset item expiry timer              | No                                                                 |
 | `useCartBadgeCount()` | wrapper (no own key)            | Unified badge count for auth + guest | — returns DB count when auth'd, guest count when not               |
+| `useCartMerge()`      | side-effect (no own key)        | Detects login transition, merges guest cart, shows toast | — fire-and-forget, wired into Navbar |
 
 **Query key convention:** Both `['cart', userId]` and `['cart-count', userId]` are user-scoped. All mutations that modify cart contents invalidate both keys in `onSettled`.
 
@@ -80,6 +81,20 @@ The guest cart enables unauthenticated users to add items to a localStorage-back
 - **Snapshot stability** — Hook caches snapshot reference via JSON.stringify comparison to prevent infinite re-renders
 
 ## Components
+
+### CartIcon
+
+`components/cart-icon/index.tsx` — Client component (`'use client'`) that renders a linked shopping bag icon with a badge count overlay. Integrated into the navbar at `src/components/navigation/navbar/index.tsx`.
+
+**Props:** None — reads count internally via `useCartBadgeCount()`.
+
+**Behavior:**
+
+- Links to `/cart` via Next.js `<Link>`
+- Badge shows item count when > 0, hidden when count is 0
+- `aria-label` dynamically reflects count: "Cart, X items" or "Cart"
+- Badge uses accent color tokens, 44x44px minimum tap target (WCAG)
+- Visible to all users (auth, guest, member context, shop context)
 
 ### AddToCartButton
 
