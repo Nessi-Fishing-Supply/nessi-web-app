@@ -15,6 +15,7 @@ interface AddToCartButtonProps {
   priceCents: number;
   currentUserId?: string | null;
   sellerId: string;
+  fullWidth?: boolean;
 }
 
 export default function AddToCartButton({
@@ -22,6 +23,7 @@ export default function AddToCartButton({
   priceCents,
   currentUserId,
   sellerId,
+  fullWidth = true,
 }: AddToCartButtonProps) {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -102,11 +104,11 @@ export default function AddToCartButton({
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={fullWidth ? styles.wrapper : styles.wrapperAuto}>
       <Button
         style="secondary"
         outline
-        fullWidth
+        fullWidth={fullWidth}
         loading={addToCart.isPending}
         onClick={handleClick}
         ariaLabel="Add to cart"

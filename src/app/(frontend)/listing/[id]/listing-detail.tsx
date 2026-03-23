@@ -9,6 +9,7 @@ import SellerStrip from '@/features/listings/components/seller-strip';
 import ExpandableSection from '@/features/listings/components/expandable-section';
 import ConditionBadge from '@/features/listings/components/condition-badge';
 import Button from '@/components/controls/button';
+import AddToCartButton from '@/features/cart/components/add-to-cart-button';
 import { formatPrice } from '@/features/shared/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { getCategoryLabel } from '@/features/listings/constants/category';
@@ -106,6 +107,13 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
               <Button style="primary" fullWidth disabled ariaLabel="Buy Now — Coming Soon">
                 Buy Now
               </Button>
+              <AddToCartButton
+                listingId={listing.id}
+                priceCents={listing.price_cents}
+                currentUserId={currentUserId}
+                sellerId={listing.seller_id}
+                fullWidth
+              />
               <Button
                 style="secondary"
                 fullWidth
@@ -202,9 +210,12 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
       {!isSold && !isOwnListing && (
         <div className={styles.stickyBar}>
           <div className={styles.stickyPrice}>{formatPrice(listing.price_cents)}</div>
-          <Button style="primary" disabled ariaLabel="Buy Now — Coming Soon">
-            Buy Now
-          </Button>
+          <AddToCartButton
+            listingId={listing.id}
+            priceCents={listing.price_cents}
+            currentUserId={currentUserId}
+            sellerId={listing.seller_id}
+          />
         </div>
       )}
 

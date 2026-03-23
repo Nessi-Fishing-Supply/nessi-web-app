@@ -2,7 +2,7 @@
 
 ## Overview
 
-The cart provides authenticated users with a persistent shopping cart backed by the `cart_items` database table. Items are capped at 25 per user, expire after 30 days, and snapshot the listing price at the time of addition for price-change detection. Guest users will use a localStorage-based cart (future ticket) that merges into the authenticated cart on login.
+The cart provides authenticated users with a persistent shopping cart backed by the `cart_items` database table. Items are capped at 25 per user, expire after 30 days, and snapshot the listing price at the time of addition for price-change detection. Guest users use a localStorage-based cart that merges into the authenticated cart on login.
 
 ## Architecture
 
@@ -78,6 +78,47 @@ The guest cart enables unauthenticated users to add items to a localStorage-back
 - **Cross-tab sync** — `subscribe` listens to `StorageEvent` filtered by `nessi_cart` key
 - **Same-tab reactivity** — mutating functions dispatch `nessi_cart_change` custom event
 - **Snapshot stability** — Hook caches snapshot reference via JSON.stringify comparison to prevent infinite re-renders
+
+## Components
+
+### AddToCartButton
+
+`components/add-to-cart-button/index.tsx` — Client component (`'use client'`) that renders the add-to-cart action with full state management for both authenticated and guest users.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `listingId` | `string` | required | Listing to add |
+| `priceCents` | `number` | required | Current listing price (for guest cart snapshot) |
+| `currentUserId` | `string \| null` | required | Logged-in user ID (null for guests) |
+| `sellerId` | `string` | required | Listing owner — hidden when equals `currentUserId` |
+| `fullWidth` | `boolean` | `true` | Whether button fills container width |
+
+**State machine:**
+
+| State | Render |
+| --- | --- |
+| Default | "Add to Cart" secondary outline button |
+| Loading | Disabled button with spinner, `aria-busy="true"` |
+| Already in cart | "In Your Cart" muted link to `/cart` |
+| Own listing | `null` (hidden) |
+
+**Toast feedback:**
+
+| Outcome | Toast type | Message |
+| --- | --- | --- |
+| Success | `'success'` | "Added to cart" |
+| Cart full (25) | `'error'` | "Cart is full (25 items)" |
+| Error | `'error'` | Error message from mutation |
+
+**Code paths:**
+- **Authenticated:** Uses `useAddToCart()` mutation with `addedFrom: 'listing_detail'`. Checks `useCart()` data for "already in cart".
+- **Guest:** Uses `useGuestCart().add()` returning `'added' | 'full' | 'duplicate'`. Checks `useGuestCart().isInCart()` for "already in cart".
+
+**Integration points:**
+- Listing detail action buttons section (full width)
+- Listing detail sticky bottom bar (natural width beside price)
 
 ## Related Features
 
