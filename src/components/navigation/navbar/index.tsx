@@ -309,7 +309,11 @@ export default function Navbar() {
                       className={styles.switchItem}
                       onClick={() => {
                         switchToMember();
-                        router.push('/dashboard');
+                        showToast({
+                          type: 'success',
+                          message: `Now acting as ${firstName} ${lastName}`,
+                          description: 'Your context has been switched.',
+                        });
                       }}
                     >
                       <span className={styles.switchAvatar} aria-hidden="true">
@@ -330,7 +334,11 @@ export default function Navbar() {
                       className={styles.switchItem}
                       onClick={() => {
                         switchToShop(shop.id, shop.shop_name ?? undefined);
-                        router.push('/dashboard');
+                        showToast({
+                          type: 'success',
+                          message: `Now acting as ${shop.shop_name}`,
+                          description: 'Your context has been switched.',
+                        });
                       }}
                     >
                       {shop.avatar_url ? (
