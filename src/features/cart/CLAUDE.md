@@ -9,7 +9,8 @@ The cart provides authenticated users with a persistent shopping cart backed by 
 - **types/cart.ts** — Database-derived types: `CartItem`, `CartItemInsert`, `CartItemWithListing`, `GuestCartItem`, `CartValidationResult`
 - **services/cart.ts** — Client-side service functions calling API routes via `@/libs/fetch` helpers (`getCart`, `getCartCount`, `addToCart`, `removeFromCart`, `clearCart`, `validateCart`, `refreshExpiry`)
 - **services/cart-server.ts** — Server-side Supabase queries with validation logic: `getCartServer`, `getCartCountServer`, `addToCartServer`, `removeFromCartServer`, `clearCartServer`, `validateCartServer`, `mergeGuestCartServer`, `refreshExpiryServer`
-- **utils/** — Reserved for guest cart localStorage utilities (future ticket)
+- **utils/guest-cart.ts** — Pure localStorage utility functions for guest cart: `getGuestCart`, `getGuestCartCount`, `addToGuestCart` (returns `'added' | 'full' | 'duplicate'`), `removeFromGuestCart`, `clearGuestCart`, `isInGuestCart`, plus `subscribe` for `useSyncExternalStore` integration (listens to `storage` events filtered by key + custom `nessi_cart_change` event)
+- **hooks/use-guest-cart.ts** — `useGuestCart()` React hook using `useSyncExternalStore` for hydration-safe localStorage access. Returns `{ items, count, add, remove, clear, isInCart }`. SSR-safe (empty cart on server). Cross-tab sync via `storage` event, same-tab reactivity via custom event.
 
 ## Database Schema
 
@@ -46,6 +47,18 @@ Server-side validation enforced in `addToCartServer` and `mergeGuestCartServer`:
 - **Guest merge** — `mergeGuestCartServer` treats all guest data as untrusted: validates UUID format, re-fetches listings from DB, ignores guest-provided prices, skips invalid/own/duplicate items, and respects the 25-item cap.
 - **Server client** — Uses `@/libs/supabase/server` (not admin client), matching the listings service pattern.
 - **Client services** — Thin `@/libs/fetch` wrappers calling future `/api/cart/*` routes. No direct Supabase usage on client.
+
+## Guest Cart
+
+The guest cart enables unauthenticated users to add items to a localStorage-backed cart that merges into the database cart on login.
+
+- **localStorage key:** `nessi_cart` — stores `GuestCartItem[]` as JSON
+- **25-item cap** — enforced in `addToGuestCart`, returns `'full'` when at capacity
+- **Duplicate prevention** — same `listingId` cannot appear twice, returns `'duplicate'`
+- **Hydration safety** — `useGuestCart()` uses `useSyncExternalStore` with server snapshot returning empty array
+- **Cross-tab sync** — `subscribe` listens to `StorageEvent` filtered by `nessi_cart` key
+- **Same-tab reactivity** — mutating functions dispatch `nessi_cart_change` custom event
+- **Snapshot stability** — Hook caches snapshot reference via JSON.stringify comparison to prevent infinite re-renders
 
 ## Related Features
 
