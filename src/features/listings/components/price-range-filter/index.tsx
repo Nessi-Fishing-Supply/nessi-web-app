@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useDebouncedValue } from '../../hooks/use-debounced-value';
+import { useCallback, useRef, useState } from 'react';
 import styles from './price-range-filter.module.scss';
 
 interface PriceRangeFilterProps {
@@ -11,36 +10,73 @@ interface PriceRangeFilterProps {
   onChangeMax: (value: number | undefined) => void;
 }
 
-export default function PriceRangeFilter({ min, max, onChangeMin, onChangeMax }: PriceRangeFilterProps) {
-  // Display dollars, emit cents
-  const [minDollars, setMinDollars] = useState(min !== undefined ? String(min / 100) : '');
-  const [maxDollars, setMaxDollars] = useState(max !== undefined ? String(max / 100) : '');
+function centsToDollars(cents: number | undefined): string {
+  return cents !== undefined ? String(cents / 100) : '';
+}
 
-  const debouncedMin = useDebouncedValue(minDollars, 500);
-  const debouncedMax = useDebouncedValue(maxDollars, 500);
+function dollarsToCents(dollars: string): number | undefined {
+  const parsed = parseFloat(dollars);
+  return dollars && !isNaN(parsed) ? Math.round(parsed * 100) : undefined;
+}
 
-  // Sync URL → local state when URL params change externally
-  useEffect(() => {
-    setMinDollars(min !== undefined ? String(min / 100) : '');
-  }, [min]);
+export default function PriceRangeFilter({
+  min,
+  max,
+  onChangeMin,
+  onChangeMax,
+}: PriceRangeFilterProps) {
+  // Local editing state — only used while input is focused
+  const [editingMin, setEditingMin] = useState<string | null>(null);
+  const [editingMax, setEditingMax] = useState<string | null>(null);
+  const minTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const maxTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  useEffect(() => {
-    setMaxDollars(max !== undefined ? String(max / 100) : '');
-  }, [max]);
+  // Display value: editing state when focused, prop-derived when not
+  const minDisplay = editingMin !== null ? editingMin : centsToDollars(min);
+  const maxDisplay = editingMax !== null ? editingMax : centsToDollars(max);
 
-  // Emit cents to parent on debounced change
-  useEffect(() => {
-    const parsed = parseFloat(debouncedMin);
-    onChangeMin(debouncedMin && !isNaN(parsed) ? Math.round(parsed * 100) : undefined);
-  }, [debouncedMin]); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleMinChange = useCallback(
+    (value: string) => {
+      const sanitized = value.replace(/[^\d.]/g, '');
+      setEditingMin(sanitized);
+      clearTimeout(minTimerRef.current);
+      minTimerRef.current = setTimeout(() => {
+        onChangeMin(dollarsToCents(sanitized));
+      }, 500);
+    },
+    [onChangeMin],
+  );
 
-  useEffect(() => {
-    const parsed = parseFloat(debouncedMax);
-    onChangeMax(debouncedMax && !isNaN(parsed) ? Math.round(parsed * 100) : undefined);
-  }, [debouncedMax]); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleMaxChange = useCallback(
+    (value: string) => {
+      const sanitized = value.replace(/[^\d.]/g, '');
+      setEditingMax(sanitized);
+      clearTimeout(maxTimerRef.current);
+      maxTimerRef.current = setTimeout(() => {
+        onChangeMax(dollarsToCents(sanitized));
+      }, 500);
+    },
+    [onChangeMax],
+  );
 
-  const parsedMin = parseFloat(minDollars);
-  const parsedMax = parseFloat(maxDollars);
+  const handleMinBlur = useCallback(() => {
+    clearTimeout(minTimerRef.current);
+    if (editingMin !== null) {
+      onChangeMin(dollarsToCents(editingMin));
+    }
+    setEditingMin(null);
+  }, [editingMin, onChangeMin]);
+
+  const handleMaxBlur = useCallback(() => {
+    clearTimeout(maxTimerRef.current);
+    if (editingMax !== null) {
+      onChangeMax(dollarsToCents(editingMax));
+    }
+    setEditingMax(null);
+  }, [editingMax, onChangeMax]);
+
+  const parsedMin = parseFloat(minDisplay);
+  const parsedMax = parseFloat(maxDisplay);
   const isInvalid = !isNaN(parsedMin) && !isNaN(parsedMax) && parsedMin > parsedMax;
 
   return (
@@ -60,8 +96,10 @@ export default function PriceRangeFilter({ min, max, onChangeMin, onChangeMax }:
               type="text"
               inputMode="numeric"
               className={styles.input}
-              value={minDollars}
-              onChange={(e) => setMinDollars(e.target.value.replace(/[^\d.]/g, ''))}
+              value={minDisplay}
+              onChange={(e) => handleMinChange(e.target.value)}
+              onFocus={() => setEditingMin(centsToDollars(min))}
+              onBlur={handleMinBlur}
               placeholder="0"
             />
           </div>
@@ -82,8 +120,10 @@ export default function PriceRangeFilter({ min, max, onChangeMin, onChangeMax }:
               type="text"
               inputMode="numeric"
               className={styles.input}
-              value={maxDollars}
-              onChange={(e) => setMaxDollars(e.target.value.replace(/[^\d.]/g, ''))}
+              value={maxDisplay}
+              onChange={(e) => handleMaxChange(e.target.value)}
+              onFocus={() => setEditingMax(centsToDollars(max))}
+              onBlur={handleMaxBlur}
               placeholder="Any"
             />
           </div>

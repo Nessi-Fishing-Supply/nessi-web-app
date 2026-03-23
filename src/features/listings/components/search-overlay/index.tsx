@@ -29,13 +29,11 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const showSuggestions = suggestions.length > 0 && query.length >= 3;
 
   // Store triggering element and auto-focus input on open
+  // Note: state (query, activeIndex) resets automatically on remount since component returns null when !isOpen
   useEffect(() => {
     if (isOpen) {
       triggerRef.current = document.activeElement as HTMLElement;
       requestAnimationFrame(() => inputRef.current?.focus());
-    } else {
-      setQuery('');
-      setActiveIndex(-1);
     }
   }, [isOpen]);
 

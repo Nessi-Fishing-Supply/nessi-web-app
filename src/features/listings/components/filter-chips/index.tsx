@@ -1,7 +1,7 @@
 'use client';
 
 import type { SearchFilters } from '../../types/search';
-import type { ListingCategory, ListingCondition } from '../../types/listing';
+import type { ListingCategory } from '../../types/listing';
 import { getCategoryLabel } from '../../constants/category';
 import { CONDITION_TIERS } from '../../constants/condition';
 import { US_STATES } from '../../config/us-states';
@@ -40,8 +40,7 @@ export default function FilterChips({ filters, onRemoveFilter, onClearAll }: Fil
   });
 
   if (filters.price_min !== undefined || filters.price_max !== undefined) {
-    const min =
-      filters.price_min !== undefined ? `$${(filters.price_min / 100).toFixed(0)}` : '$0';
+    const min = filters.price_min !== undefined ? `$${(filters.price_min / 100).toFixed(0)}` : '$0';
     const max =
       filters.price_max !== undefined ? `$${(filters.price_max / 100).toFixed(0)}` : 'Any';
     chips.push({ key: 'price', label: `${min} – ${max}` });
