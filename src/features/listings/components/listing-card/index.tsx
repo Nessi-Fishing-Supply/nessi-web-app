@@ -4,7 +4,7 @@ import { useState } from 'react';
 import styles from './listing-card.module.scss';
 import { useRouter } from 'next/navigation';
 import ConditionBadge from '@/features/listings/components/condition-badge';
-import { formatPrice } from '@/features/listings/utils/format';
+import { formatPrice } from '@/features/shared/utils/format';
 import Favorite from '@/components/controls/favorite';
 import Reviews from '@/components/indicators/reviews';
 import { Swiper, SwiperSlide } from 'swiper/react';

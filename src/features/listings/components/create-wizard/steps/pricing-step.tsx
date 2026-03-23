@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useWizardStore } from '@/features/listings/components/create-wizard/wizard-store-context';
-import { calculateFee, calculateNet, formatPrice } from '@/features/listings/utils/format';
+import { calculateFee, calculateNet, formatPrice } from '@/features/shared/utils/format';
 
 import styles from './pricing-step.module.scss';
 

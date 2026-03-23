@@ -5,7 +5,7 @@ import { useId, useState } from 'react';
 import Button from '@/components/controls/button';
 import Modal from '@/components/layout/modal';
 import type { ListingWithPhotos } from '@/features/listings/types/listing';
-import { formatPrice } from '@/features/listings/utils/format';
+import { formatPrice } from '@/features/shared/utils/format';
 
 import styles from './mark-sold-modal.module.scss';
 

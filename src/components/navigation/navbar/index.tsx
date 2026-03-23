@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import styles from './navbar.module.scss';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -33,6 +33,10 @@ import LogoFull from '@/assets/logos/logo_full.svg';
 
 // Listings
 import { LISTING_CATEGORIES } from '@/features/listings/constants/category';
+import { useAutocomplete } from '@/features/listings/hooks/use-autocomplete';
+import Autocomplete from '@/features/listings/components/autocomplete';
+import SearchOverlay from '@/features/listings/components/search-overlay';
+import type { AutocompleteSuggestion } from '@/features/listings/types/search';
 
 // Auth & Toast
 import { useAuth } from '@/features/auth/context';
@@ -50,6 +54,11 @@ export default function Navbar() {
   );
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchActiveIndex, setSearchActiveIndex] = useState(-1);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [isSearchOverlayOpen, setSearchOverlayOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
@@ -62,6 +71,45 @@ export default function Navbar() {
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');
   const searchParams = useSearchParams();
+
+  const { data: searchSuggestions = [] } = useAutocomplete(searchQuery);
+  const hasSearchSuggestions = searchSuggestions.length > 0 && searchQuery.length >= 3;
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length < 2) return;
+
+    if (searchActiveIndex >= 0 && searchSuggestions[searchActiveIndex]) {
+      router.push(`/search?q=${encodeURIComponent(searchSuggestions[searchActiveIndex].term)}`);
+    } else {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+    setShowAutocomplete(false);
+    setSearchActiveIndex(-1);
+    searchInputRef.current?.blur();
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!hasSearchSuggestions) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSearchActiveIndex((prev) => (prev >= searchSuggestions.length - 1 ? 0 : prev + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSearchActiveIndex((prev) => (prev <= 0 ? searchSuggestions.length - 1 : prev - 1));
+    } else if (e.key === 'Escape') {
+      setShowAutocomplete(false);
+      setSearchActiveIndex(-1);
+    }
+  };
+
+  const handleSearchSelect = (suggestion: AutocompleteSuggestion) => {
+    router.push(`/search?q=${encodeURIComponent(suggestion.term)}`);
+    setSearchQuery(suggestion.term);
+    setShowAutocomplete(false);
+    setSearchActiveIndex(-1);
+  };
 
   // Detect query params and open appropriate modals/toasts
   useEffect(() => {
@@ -141,14 +189,60 @@ export default function Navbar() {
         <Link href="/" aria-label="Nessi — Home">
           <LogoFull className={styles.logo} aria-hidden="true" />
         </Link>
-        <form className={styles.form} role="search" aria-label="Site search">
+        <button
+          className={styles.mobileSearchButton}
+          type="button"
+          onClick={() => setSearchOverlayOpen(true)}
+          aria-label="Open search"
+        >
+          <HiSearch aria-hidden="true" />
+        </button>
+        <form
+          className={styles.form}
+          role="search"
+          aria-label="Site search"
+          onSubmit={handleSearchSubmit}
+        >
           <label htmlFor="site-search" className="sr-only">
             Search fishing gear
           </label>
-          <input id="site-search" type="search" placeholder="Search Fishing Gear" />
+          <input
+            ref={searchInputRef}
+            id="site-search"
+            type="search"
+            placeholder="Search Fishing Gear"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setSearchActiveIndex(-1);
+              setShowAutocomplete(true);
+            }}
+            onFocus={() => setShowAutocomplete(true)}
+            onBlur={() => {
+              setTimeout(() => setShowAutocomplete(false), 200);
+            }}
+            onKeyDown={handleSearchKeyDown}
+            aria-autocomplete="list"
+            aria-controls={
+              hasSearchSuggestions && showAutocomplete ? 'desktop-search-suggestions' : undefined
+            }
+            aria-activedescendant={
+              searchActiveIndex >= 0
+                ? `desktop-search-suggestions-option-${searchActiveIndex}`
+                : undefined
+            }
+            autoComplete="off"
+          />
           <button className={styles.searchButton} type="submit" aria-label="Submit search">
             <HiSearch aria-hidden="true" />
           </button>
+          <Autocomplete
+            suggestions={searchSuggestions}
+            isOpen={hasSearchSuggestions && showAutocomplete}
+            onSelect={handleSearchSelect}
+            activeIndex={searchActiveIndex}
+            listId="desktop-search-suggestions"
+          />
         </form>
         <button className={styles.button} type="button" aria-disabled="true">
           Sell Your Gear
@@ -303,6 +397,8 @@ export default function Navbar() {
         <h2 id="register-title">Create Your Account</h2>
         <RegisterForm onSuccess={handleRegisterSuccess} onSwitchToLogin={handleRegisterToLogin} />
       </Modal>
+
+      <SearchOverlay isOpen={isSearchOverlayOpen} onClose={() => setSearchOverlayOpen(false)} />
     </nav>
   );
 }

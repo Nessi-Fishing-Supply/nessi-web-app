@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getListingWithSellerServer } from '@/features/listings/services/listing-server';
-import { formatPrice } from '@/features/listings/utils/format';
+import { formatPrice } from '@/features/shared/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { createClient } from '@/libs/supabase/server';
 import ListingDetail from './listing-detail';

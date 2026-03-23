@@ -1,0 +1,204 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+// Desktop rail — hidden on mobile, visible at lg+
+.rail {
+  display: none;
+
+  @include breakpoint(lg) {
+    display: block;
+    width: 240px;
+    min-width: 240px;
+    position: sticky;
+    top: var(--spacing-400);
+    max-height: calc(100vh - var(--spacing-900));
+    overflow-y: auto;
+    padding-right: var(--spacing-400);
+    border-right: 1px solid var(--color-neutral-200);
+  }
+}
+
+.railTitle {
+  font-size: var(--font-size-700);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin-bottom: var(--spacing-400);
+}
+
+// Mobile trigger button — hidden at lg+
+.mobileButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-200) var(--spacing-300);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-100);
+  background-color: var(--color-white);
+  font-size: var(--font-size-600);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  cursor: pointer;
+  min-height: 44px;
+
+  > svg {
+    width: var(--spacing-400);
+    height: var(--spacing-400);
+  }
+
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  font-size: var(--font-size-200);
+  font-weight: 700;
+}
+
+// Clear all button
+.clearAll {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-200) var(--spacing-300);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-600);
+  color: var(--color-primary-500);
+  text-align: left;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Collapsible filter group
+.group {
+  border-bottom: 1px solid var(--color-neutral-200);
+
+  &[open] > .groupTitle::after {
+    transform: rotate(180deg);
+  }
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-300);
+  font-size: var(--font-size-600);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::after {
+    content: '▾';
+    font-size: var(--font-size-400);
+    color: var(--color-neutral-500);
+    transition: transform 0.2s ease;
+  }
+}
+
+.toggleGroup {
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+// Bottom sheet overlay
+.sheetOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgb(0 0 0 / 50%);
+  display: flex;
+  align-items: flex-end;
+}
+
+.sheet {
+  width: 100%;
+  max-height: 85vh;
+  background-color: var(--color-white);
+  border-radius: var(--spacing-300) var(--spacing-300) 0 0;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-400);
+  border-bottom: 1px solid var(--color-neutral-200);
+  flex-shrink: 0;
+}
+
+.sheetTitle {
+  font-size: var(--font-size-900);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.sheetClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  > svg {
+    width: var(--spacing-700);
+    height: var(--spacing-700);
+    color: var(--color-neutral-900);
+  }
+}
+
+.sheetBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-300) 0;
+}
+
+.sheetFooter {
+  flex-shrink: 0;
+  padding: var(--spacing-400);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.showResultsButton {
+  width: 100%;
+  padding: var(--spacing-300) var(--spacing-400);
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-100);
+  font-size: var(--font-size-700);
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}

@@ -6,7 +6,7 @@ import Button from '@/components/controls/button';
 import Modal from '@/components/layout/modal';
 import { useToast } from '@/components/indicators/toast/context';
 import { useUpdateListing } from '@/features/listings/hooks/use-listings';
-import { calculateFee, calculateNet, formatPrice } from '@/features/listings/utils/format';
+import { calculateFee, calculateNet, formatPrice } from '@/features/shared/utils/format';
 import type { ListingWithPhotos } from '@/features/listings/types/listing';
 
 import styles from './quick-edit-price.module.scss';

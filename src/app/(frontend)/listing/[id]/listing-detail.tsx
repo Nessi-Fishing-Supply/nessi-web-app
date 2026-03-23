@@ -9,7 +9,7 @@ import SellerStrip from '@/features/listings/components/seller-strip';
 import ExpandableSection from '@/features/listings/components/expandable-section';
 import ConditionBadge from '@/features/listings/components/condition-badge';
 import Button from '@/components/controls/button';
-import { formatPrice } from '@/features/listings/utils/format';
+import { formatPrice } from '@/features/shared/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { getCategoryLabel } from '@/features/listings/constants/category';
 import { useIncrementViewCount } from '@/features/listings/hooks/use-listings';

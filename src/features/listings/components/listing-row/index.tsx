@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import Pill from '@/components/indicators/pill';
 import { LISTING_STATUS_LABELS, LISTING_STATUS_COLORS } from '@/features/listings/constants/status';
-import { formatPrice } from '@/features/listings/utils/format';
+import { formatPrice } from '@/features/shared/utils/format';
 import type { ListingWithPhotos, ListingStatus } from '@/features/listings/types/listing';
 
 import styles from './listing-row.module.scss';

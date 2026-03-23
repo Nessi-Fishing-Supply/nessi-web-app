@@ -1,0 +1,13 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-300);
+  padding: var(--spacing-200) var(--spacing-300);
+  min-height: 44px;
+}
+
+.label {
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-900);
+}

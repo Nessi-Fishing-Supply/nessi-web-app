@@ -6,7 +6,7 @@ import { getCategoryLabel } from '@/features/listings/constants/category';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import type { WizardPhoto } from '@/features/listings/stores/wizard-photo-store';
 import type { ListingCategory, ListingCondition } from '@/features/listings/types/listing';
-import { calculateFee, calculateNet, formatPrice } from '@/features/listings/utils/format';
+import { calculateFee, calculateNet, formatPrice } from '@/features/shared/utils/format';
 
 import styles from './review-step.module.scss';
 

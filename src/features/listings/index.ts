@@ -1,5 +1,5 @@
 // Utils
-export { formatPrice, calculateFee, calculateNet } from './utils/format';
+export { formatPrice, calculateFee, calculateNet } from '@/features/shared/utils/format';
 
 // Constants
 export type { ConditionTier } from './constants/condition';
@@ -28,10 +28,16 @@ export type {
   ListingPhotoUpdate,
   UploadResult,
 } from './types/listing-photo';
+export type { SearchFilters, AutocompleteSuggestion, SearchSuggestion } from './types/search';
 
 // Services
 export { uploadListingPhoto, deleteListingPhoto } from './services/listing-photo';
 export type { ListingFilters, PaginatedListings } from './services/listing';
+export {
+  searchListings,
+  getAutocompleteSuggestions,
+  trackSearchSuggestion,
+} from './services/search';
 export {
   getListings,
   getListingById,
@@ -62,6 +68,10 @@ export {
   useIncrementViewCount,
 } from './hooks/use-listings';
 export { useListingsInfinite } from './hooks/use-listings-infinite';
+export { useSearchListingsInfinite, useTrackSearchSuggestion } from './hooks/use-search';
+export { useAutocomplete } from './hooks/use-autocomplete';
+export { useDebouncedValue } from './hooks/use-debounced-value';
+export { useSearchFilters } from './hooks/use-search-filters';
 
 // Server Services
 export {
@@ -88,6 +98,9 @@ export {
 // Config
 export { CATEGORY_MAP, VALID_CATEGORY_SLUGS, getCategoryBySlug } from './config/categories';
 export type { CategoryConfig } from './config/categories';
+export { SPECIES_LIST } from './config/species';
+export type { Species } from './config/species';
+export { US_STATES } from './config/us-states';
 
 // Components
 export { default as ListingCard } from './components/listing-card';
@@ -105,3 +118,14 @@ export { default as ListingSkeleton } from './components/listing-skeleton';
 export { default as InfiniteScroll } from './components/infinite-scroll';
 export { default as SortSelect } from './components/sort-select';
 export { default as EmptyState } from './components/empty-state';
+export { default as Autocomplete } from './components/autocomplete';
+export { default as SearchOverlay } from './components/search-overlay';
+export { default as FilterPanel } from './components/filter-panel';
+export { default as FilterChip } from './components/filter-chip';
+export { default as FilterChips } from './components/filter-chips';
+export { default as CategoryFilter } from './components/category-filter';
+export { default as PriceRangeFilter } from './components/price-range-filter';
+export { default as BooleanFilter } from './components/boolean-filter';
+export { default as StateFilter } from './components/state-filter';
+export { default as SpeciesFilter } from './components/species-filter';
+export { default as ListingTypeFilter } from './components/listing-type-filter';
