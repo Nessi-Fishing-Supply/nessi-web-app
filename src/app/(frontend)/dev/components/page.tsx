@@ -1,17 +1,16 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useSyncExternalStore } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import {
-  HiHome,
-  HiViewGrid,
-  HiInbox,
-  HiHeart,
-  HiSearch,
-  HiUser,
-  HiPlus,
-  HiCheck,
-} from 'react-icons/hi';
+import { HiInbox, HiPlus, HiCheck } from 'react-icons/hi';
+
+// Client-only mount detection without useEffect + setState
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+function useIsMounted() {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
 
 // ── Shared Controls ──────────────────────────────────────────────
 import Button from '@/components/controls/button';
@@ -210,9 +209,7 @@ export default function ComponentShowcase() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [qtyValue, setQtyValue] = useState(1);
   const [settingsToggle, setSettingsToggle] = useState(true);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useIsMounted();
 
   const tabItems: TabItem[] = useMemo(
     () => [
