@@ -1,0 +1,204 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+// Desktop rail — hidden on mobile, visible at lg+
+.rail {
+  display: none;
+
+  @include breakpoint(lg) {
+    display: block;
+    width: 240px;
+    min-width: 240px;
+    position: sticky;
+    top: var(--space-base);
+    max-height: calc(100vh - var(--space-xl));
+    overflow-y: auto;
+    padding-right: var(--space-base);
+    border-right: 1px solid var(--color-gray-100);
+  }
+}
+
+.railTitle {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: var(--space-base);
+}
+
+// Mobile trigger button — hidden at lg+
+.mobileButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-dark);
+  cursor: pointer;
+  min-height: 44px;
+
+  > svg {
+    width: var(--space-base);
+    height: var(--space-base);
+  }
+
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+}
+
+// Clear all button
+.clearAll {
+  display: block;
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  text-align: left;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Collapsible filter group
+.group {
+  border-bottom: 1px solid var(--color-gray-100);
+
+  &[open] > .groupTitle::after {
+    transform: rotate(180deg);
+  }
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-dark);
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::after {
+    content: '▾';
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    transition: transform 0.2s ease;
+  }
+}
+
+.toggleGroup {
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+// Bottom sheet overlay
+.sheetOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgb(0 0 0 / 50%);
+  display: flex;
+  align-items: flex-end;
+}
+
+.sheet {
+  width: 100%;
+  max-height: 85vh;
+  background-color: var(--color-white);
+  border-radius: var(--space-sm) var(--space-sm) 0 0;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-base);
+  border-bottom: 1px solid var(--color-gray-100);
+  flex-shrink: 0;
+}
+
+.sheetTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.sheetClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  > svg {
+    width: var(--space-lg);
+    height: var(--space-lg);
+    color: var(--color-dark);
+  }
+}
+
+.sheetBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm) 0;
+}
+
+.sheetFooter {
+  flex-shrink: 0;
+  padding: var(--space-base);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.showResultsButton {
+  width: 100%;
+  padding: var(--space-sm) var(--space-base);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
