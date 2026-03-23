@@ -1,7 +1,7 @@
 'use client';
 
 import { HiUser } from 'react-icons/hi';
-import AvatarUpload from '@/features/members/components/avatar-upload';
+import AvatarUpload from '@/components/controls/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
 import { useUpdateMember } from '@/features/members/hooks/use-member';
 import type { Member } from '@/features/members/types/member';

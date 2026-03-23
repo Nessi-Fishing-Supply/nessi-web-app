@@ -1,3 +1,4 @@
+import { del, post } from '@/libs/fetch';
 import { createClient } from '@/libs/supabase/client';
 import type {
   Shop,

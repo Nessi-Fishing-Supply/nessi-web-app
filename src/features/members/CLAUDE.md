@@ -72,7 +72,7 @@ Internal step numbering is 1-5; the buyer path skips step 4 (seller type). The p
 | `step-bio/`              | Step 5 — bio textarea (280 char max), conditionally sets `is_seller = true` for seller+free path, calls completeOnboarding |
 | `progress-indicator/`    | Dynamic circle progress bar (4 or 5 circles based on intent), highlights current step                                      |
 
-### AvatarUpload (`components/avatar-upload/`)
+### AvatarUpload (`src/components/controls/avatar-upload/`)
 
 Reusable avatar component used in Step 1. Accepts a `name` prop (not `displayName`). Shows camera icon placeholder when no image is set. On file pick it POSTs to `/api/members/avatar` and calls `onUpload(url)` with the returned public URL.
 
