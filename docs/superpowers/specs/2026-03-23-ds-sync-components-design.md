@@ -19,7 +19,8 @@ The existing `ds-sync` skill handles design tokens (colors, typography, spacing,
 | Placement | Rules-based auto-sort, interview only for ambiguous | Faster, less interview fatigue |
 | Scaffold fidelity | Visual-faithful (real tokens, variants, states) | Leverages the full design spec, not just structure |
 | Data wiring | Live data where data layer exists, typed props where it doesn't | Avoids scaffolding data layers for features that don't have DB tables yet |
-| Barrel files | No per-component index.ts. Append to existing category-level barrels only | Matches existing codebase pattern |
+| Barrel files | No per-component index.ts. Only append to existing category-level barrels (currently only `src/components/controls/index.ts` has one) | Matches existing codebase pattern |
+| Conditional classnames | Template literal string concatenation (e.g., `` `${styles.base} ${active ? styles.active : ''}` ``) | Matches existing codebase pattern — no `clsx` dependency |
 | Stitch | Remove entirely | No longer in use |
 
 ## Placement Rules
@@ -55,7 +56,7 @@ The agent auto-sorts components using these rules. Only components that don't ma
 
 ### Process
 
-1. **Detect version** — Scan `docs/design/` for existing `v*` directories. Reuse the current version (components are part of the same design system version as tokens). If no version exists, create `v1`.
+1. **Detect version** — Scan `docs/design/` for existing `v*` directories. Reuse the highest existing version (components are part of the same design system version as tokens — they write to a `components/` subdirectory within the version folder, so there are no file collisions with token extraction output). If no version exists, create `v1`. Note: if ds-sync is run again later and bumps to `v2`, component extraction should be re-run against `v2` as well.
 
 2. **Launch agent** — Dispatch the ds-sync-components agent with `url` and `version`.
 
@@ -82,9 +83,9 @@ The agent auto-sorts components using these rules. Only components that don't ma
 
 6. **Generate scaffolds** — Create component directories in target locations.
 
-7. **Update dependents** — Append to category-level barrel files, add to component showcase page, update feature CLAUDE.md files.
+7. **Update dependents** — Append to category-level barrel files where they exist (currently only `src/components/controls/index.ts`). Update feature CLAUDE.md files. Do NOT add scaffolded components to the showcase page yet — they should be added as they are finalized, not at scaffold time.
 
-8. **Transition** — Invoke writing-plans for any remaining implementation work.
+8. **Transition** — Invoke the `writing-plans` skill (from superpowers) to create a phased implementation plan for finalizing the scaffolded components.
 
 ### Key Rules
 
@@ -102,7 +103,7 @@ The agent auto-sorts components using these rules. Only components that don't ma
 **Configuration:**
 - Model: opus
 - Tools: Read, Write, Edit, Bash, Grep, Glob + Playwright (`mcp__plugin_playwright_playwright__*`)
-- Max turns: 80
+- Max turns: 100 (extraction + codebase analysis + scaffold generation for ~50 components requires significant turn budget)
 
 ### Inputs
 
@@ -137,7 +138,7 @@ For each component, derive a TypeScript props interface from the extraction:
 2. Read existing service files in `src/features/*/services/`
 3. Read existing hook files in `src/features/*/hooks/`
 4. For each component, determine:
-   - Does this component already exist in the codebase? (skip if yes, note in report)
+   - Does this component already exist in the codebase? If yes: skip scaffold generation but still include in extraction docs. Mark as "existing" in the placement report so the user sees it during the interview.
    - Does a data layer exist for its domain? (mark for live wiring)
    - What imports would be needed?
 
@@ -153,7 +154,32 @@ Sort each component to its target location using the placement rules table. Flag
 | `docs/design/{version}/components/placement.md` | Placement decisions — component, target location, rule applied, any ambiguity flags |
 | `docs/design/{version}/components/data-mapping.md` | Which components get live data wiring vs. typed props, with specific imports noted |
 | `docs/design/{version}/components/screenshots/` | Screenshots of each section |
-| `docs/design/{version}/components/metadata.json` | Component counts, categories, existing-vs-new breakdown |
+| `docs/design/{version}/components/metadata.json` | Component counts, categories, existing-vs-new breakdown (schema below) |
+
+**metadata.json schema:**
+```json
+{
+  "url": "https://...",
+  "version": "v1",
+  "timestamp": "2026-03-23T18:00:00Z",
+  "tokenVersion": "v1",
+  "componentCount": 50,
+  "categories": {
+    "atoms": 7,
+    "molecules": 20,
+    "organisms": 2,
+    "navigation": 1,
+    "trustIdentity": 4,
+    "dashboard": 5,
+    "editorial": 7,
+    "feedback": 4
+  },
+  "existing": ["button", "pill", "toast"],
+  "new": ["product-card", "seller-card", "..."],
+  "liveDataWired": ["product-card", "seller-card"],
+  "typedPropsOnly": ["kpi-stat-tile", "order-timeline", "..."]
+}
+```
 
 ### Phase 6: Generate Scaffolds
 
@@ -162,7 +188,7 @@ For each approved component, generate:
 **`index.tsx`:**
 - TypeScript props interface derived from extraction
 - Functional component with variant/state handling
-- Token-based className logic using `clsx`
+- Token-based className logic using template literal concatenation (matching existing codebase pattern, no `clsx`)
 - `next/image` for image slots (with `sizes`, `alt`, `fill` per project standards)
 - Live data imports where hook/service exists, typed props where it doesn't
 - Accessibility attributes (aria-*, role, keyboard handlers)
@@ -177,10 +203,23 @@ For each approved component, generate:
 
 ### Phase 7: Update Dependents
 
-- Append exports to category-level barrel files (e.g., `src/components/controls/index.ts`)
-- Add new components to showcase page (`src/app/(frontend)/dev/components/page.tsx`)
+- Append exports to category-level barrel files where they exist (currently only `src/components/controls/index.ts`)
+- Do NOT add scaffolded components to the showcase page — add them as they are finalized
 - Update feature `CLAUDE.md` files to reference new components
-- Create feature directories and `CLAUDE.md` for new domains (e.g., `src/features/messaging/`, `src/features/dashboard/`)
+- Create feature directories for new domains (e.g., `src/features/messaging/`, `src/features/dashboard/`) with a minimal `CLAUDE.md` containing: domain name, purpose, component list, and a note that the feature is scaffolded but not yet implemented
+- Update root `CLAUDE.md` Key Directories section and Agents table to include the new agent/skill
+
+### Phase Boundaries & Partial Completion
+
+Each phase produces durable output. If the agent runs out of turns or fails mid-run:
+
+| Completed through | State | Recovery |
+|---|---|---|
+| Phase 5 | Extraction docs exist, no scaffolds | Re-run agent with `--scaffold-only` flag, skip extraction |
+| Phase 6 (partial) | Some components scaffolded, others not | Agent checks which directories already exist and skips them |
+| Phase 7 | Scaffolds exist but barrels/docs not updated | Manual fixup or re-run Phase 7 only |
+
+The extraction documents serve as the checkpoint — they contain everything needed to generate scaffolds without re-navigating the URL.
 
 ## Stitch Removal
 
@@ -188,11 +227,12 @@ Remove all Stitch references from the codebase:
 
 | File | Change |
 |---|---|
-| `.mcp.json` | Remove the `stitch` server entry (file becomes empty `{}` or is deleted) |
-| `CLAUDE.md` | Remove MCP Servers table `stitch` row, Shell Environment `STITCH_API_KEY` section, `/ui-design "stitch:..."` examples |
+| `.mcp.json` | Remove the `stitch` server entry entirely. If no other servers remain, delete the file or leave `{ "mcpServers": {} }` |
+| `CLAUDE.md` | Remove: MCP Servers table + `stitch` row, Shell Environment `STITCH_API_KEY` section, `/ui-design "stitch:..."` examples from AI Development Fleet, Stitch reference in `/ds-sync` description |
 | `README.md` | Remove any Stitch references |
-| `.claude/skills/ui-design/SKILL.md` | Remove Stitch Build mode, Stitch Browse mode, `stitch:` argument handling, Stitch-related steps |
-| `.claude/agents/ui-designer/AGENT.md` | Remove `mcp__stitch__*` from allowedTools, remove Stitch-related instructions |
+| `.claude/skills/ui-design/SKILL.md` | Remove Stitch Build mode, Stitch Browse mode, `stitch:` argument handling, all Stitch-related steps. Update description to remove "Stitch screen references" |
+| `.claude/agents/ui-designer/AGENT.md` | Remove `mcp__stitch__*` from allowedTools, remove all Stitch-related instructions |
+| `.claude/skills/ds-sync/SKILL.md` | Update directory structure docs — remove "Scraped Stitch design system reference" comment on line 39. The `component-showcase-reference.html` file remains (it's the design system HTML, not a Stitch artifact) but its description should say "Design system reference HTML" instead |
 
 ## What This Does NOT Include
 
