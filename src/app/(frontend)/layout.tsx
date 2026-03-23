@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.className} ${dmSerif.variable}`}>
+      <body className={`${dmSans.variable} ${dmSans.className} ${dmSerif.variable}`}>
         <Providers>
           <Suspense fallback={<div>Loading...</div>}>
             <Navbar />

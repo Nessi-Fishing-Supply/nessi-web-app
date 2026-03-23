@@ -1,0 +1,65 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  background: var(--surface-overlay);
+  padding: 0 var(--spacing-400);
+  gap: var(--spacing-300);
+  position: relative;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-200);
+  color: var(--color-neutral-800);
+  padding: 0;
+
+  > svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background: var(--color-surface-300);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.title {
+  flex: 1;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-800);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  line-height: var(--line-height-100);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-900);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  flex-shrink: 0;
+  margin-left: auto;
+}

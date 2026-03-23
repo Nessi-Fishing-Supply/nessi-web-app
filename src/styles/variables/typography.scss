@@ -4,9 +4,9 @@
 /// Typography — Design System v1
 ////////////////////
 :root {
-  // Font families
-  --font-family-sans: 'DM Sans', system-ui, sans-serif;
-  --font-family-serif: 'DM Serif Display', georgia, serif;
+  // Font families (backed by next/font CSS vars from layout.tsx)
+  --font-family-sans: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  --font-family-serif: var(--font-dm-serif), 'DM Serif Display', georgia, serif;
 
   // Font sizes (fixed scale)
   --font-size-100: 9px;

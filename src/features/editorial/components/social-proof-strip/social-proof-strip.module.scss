@@ -1,0 +1,110 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.statsStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: var(--spacing-400) var(--spacing-600);
+  background-color: var(--color-primary-500);
+  border-radius: var(--radius-500);
+  flex-wrap: wrap;
+  gap: var(--spacing-300);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-50);
+  position: relative;
+  flex: 1;
+  min-width: 80px;
+}
+
+.statValue {
+  font-size: var(--font-size-800);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: var(--line-height-100);
+}
+
+.statLabel {
+  font-size: var(--font-size-200);
+  font-weight: 500;
+  letter-spacing: var(--letter-spacing-300);
+  text-transform: uppercase;
+  color: var(--color-primary-200);
+}
+
+.divider {
+  position: absolute;
+  right: 0;
+  top: 10%;
+  height: 80%;
+  width: 1px;
+  background-color: var(--color-primary-400);
+}
+
+.activityStrip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300) var(--spacing-400);
+  background-color: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+  border-radius: var(--radius-500);
+  flex-wrap: wrap;
+}
+
+.pulse {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-circle);
+  background-color: var(--color-primary-500);
+  flex-shrink: 0;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+.activityText {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-700);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.activityUser {
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.activityItem {
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.activityPrice {
+  font-weight: 700;
+  color: var(--color-primary-500);
+}
+
+.activityTime {
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+  white-space: nowrap;
+  flex-shrink: 0;
+}

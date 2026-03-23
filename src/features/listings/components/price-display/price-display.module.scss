@@ -1,0 +1,72 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-200);
+}
+
+.price {
+  font-size: var(--font-size-900);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  line-height: var(--line-height-100);
+}
+
+.priceDrop {
+  color: var(--color-error-500);
+}
+
+.originalPrice {
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  text-decoration: line-through;
+  line-height: var(--line-height-100);
+}
+
+.dropBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-50) var(--spacing-100);
+  background-color: var(--color-error-100);
+  color: var(--color-error-500);
+  font-size: var(--font-size-300);
+  font-weight: 700;
+  border-radius: var(--radius-100);
+  line-height: 1;
+}
+
+.orOffer {
+  font-size: var(--font-size-500);
+  font-weight: 400;
+  color: var(--color-neutral-500);
+}
+
+.belowAvg {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-400);
+  font-weight: 600;
+  color: var(--color-success-500);
+}
+
+.watchers {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-400);
+  font-weight: 500;
+  color: var(--color-accent-500);
+}
+
+.watcherIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}

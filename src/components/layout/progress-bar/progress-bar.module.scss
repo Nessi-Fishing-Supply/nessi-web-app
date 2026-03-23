@@ -1,0 +1,47 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  width: 100%;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+}
+
+.label {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-600);
+  font-weight: 500;
+  color: var(--color-neutral-700);
+  line-height: var(--line-height-300);
+}
+
+.percentage {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-600);
+  font-weight: 500;
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-300);
+}
+
+.track {
+  width: 100%;
+  height: 4px;
+  background: var(--color-surface-400);
+  border-radius: var(--radius-800);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--color-success-500);
+  border-radius: var(--radius-800);
+  transition: width var(--duration-300) var(--easing-out);
+  min-width: 0;
+}

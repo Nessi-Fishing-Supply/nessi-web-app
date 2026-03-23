@@ -1,0 +1,126 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  display: flex;
+  gap: var(--spacing-400);
+}
+
+.indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-circle);
+  flex-shrink: 0;
+
+  .completed & {
+    background-color: var(--color-success-500);
+    border: none;
+  }
+
+  .active & {
+    background-color: var(--color-accent-500);
+    border: none;
+    box-shadow: 0 0 0 4px var(--color-accent-100);
+  }
+
+  .pending & {
+    background-color: transparent;
+    border: 2px solid var(--color-neutral-300);
+  }
+}
+
+.checkIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-white);
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+
+  .pending & {
+    color: var(--color-neutral-400);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.line {
+  width: 2px;
+  flex: 1;
+  min-height: var(--spacing-600);
+  margin: var(--spacing-100) 0;
+
+  .completed & {
+    background-color: var(--color-success-500);
+  }
+
+  .active & {
+    background-color: var(--color-neutral-200);
+  }
+
+  .pending & {
+    background-color: var(--color-neutral-200);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  padding-bottom: var(--spacing-600);
+  padding-top: var(--spacing-50);
+
+  .step:last-child & {
+    padding-bottom: 0;
+  }
+}
+
+.label {
+  font-size: var(--font-size-600);
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-neutral-900);
+
+  .pending & {
+    color: var(--color-neutral-500);
+  }
+}
+
+.description {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  margin: 0;
+
+  .pending & {
+    color: var(--color-neutral-400);
+  }
+}
+
+.timestamp {
+  font-size: var(--font-size-300);
+  color: var(--color-neutral-500);
+}

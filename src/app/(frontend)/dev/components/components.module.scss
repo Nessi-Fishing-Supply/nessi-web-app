@@ -5,294 +5,391 @@
 @use '@/styles/variables/shadows' as *;
 @use '@/styles/mixins/breakpoints' as *;
 
-// ─── Page Layout ─────────────────────────────────────────────────
+// ─── Page Shell ─────────────────────────────────────────────────
 .page {
-  display: flex;
+  background: var(--surface-page);
+  color: var(--color-neutral-900);
+  font-family: var(--font-family-sans);
   min-height: 100vh;
-  background: #ede0cb;
 }
 
-.sidebar {
-  position: fixed;
-  top: 56px; // nav height
-  left: 0;
-  bottom: 0;
-  width: 260px;
-  overflow-y: auto;
-  padding: 24px 16px;
-  border-right: 1px solid var(--c-border);
-  background: var(--c-fill);
-  z-index: 10;
-  display: none;
+// ─── Sticky Top Nav ─────────────────────────────────────────────
+.topNav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-400);
+  height: 56px;
+  background: var(--surface-page);
+  border-bottom: 1px solid var(--color-surface-500);
 
-  @include breakpoint(lg) {
-    display: block;
+  @include breakpoint(md) {
+    padding: 0 var(--spacing-600);
   }
 }
 
-.sidebarBrand {
-  margin-bottom: 24px;
+.navBrand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
 
-  h2 {
-    font-size: 18px;
+  .navLogo {
+    font-family: var(--font-family-serif);
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--color-primary-500);
+  }
+
+  .navTitle {
+    font-size: 11px;
     font-weight: 600;
-    color: var(--c-text);
-    margin: 0 0 4px;
-  }
-
-  p {
-    font-size: 12px;
-    color: var(--c-text-2);
-    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-neutral-600);
   }
 }
 
-.sidebarGroup {
-  margin-bottom: 16px;
+.navLinks {
+  display: none;
+  gap: var(--spacing-400);
+
+  @include breakpoint(md) {
+    display: flex;
+  }
+
+  a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-neutral-700);
+    text-decoration: none;
+    transition: color 120ms ease;
+
+    &:hover {
+      color: var(--color-primary-500);
+    }
+  }
 }
 
-.sidebarLabel {
+// ─── Hero Section ───────────────────────────────────────────────
+.hero {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+
+  @include breakpoint(md) {
+    min-height: 640px;
+  }
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background: url('/images/showcase-hero.jpg') center 40% / cover no-repeat;
+  background-color: var(--color-primary-700);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 20%) 0%,
+    rgb(0 0 0 / 45%) 60%,
+    rgb(0 0 0 / 60%) 100%
+  );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  padding: 48px 48px 0;
+  color: white;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include breakpoint(md) {
+    padding: 80px 48px 0;
+  }
+}
+
+.heroLabel {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--c-text-2);
-  padding: 0 8px;
-  margin-bottom: 4px;
+  letter-spacing: 2px;
+  color: rgb(255 255 255 / 40%);
+  margin-bottom: 24px;
 }
 
-.sidebarLink {
-  display: block;
-  padding: 6px 8px;
-  font-size: 13px;
-  color: var(--c-text);
-  text-decoration: none;
-  border-radius: 6px;
-  transition: background 120ms ease;
+.heroTitle {
+  font-family: var(--font-family-serif);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0 0 24px;
+  max-width: 700px;
 
-  &:hover {
-    background: var(--c-border);
+  @include breakpoint(md) {
+    font-size: 80px;
+  }
+
+  em {
+    font-style: italic;
   }
 }
 
-// ─── Main Content ────────────────────────────────────────────────
-.main {
-  flex: 1;
-  padding: 24px 16px 80px;
+.heroDesc {
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 70%);
+  max-width: 560px;
+  margin: 0;
 
-  @include breakpoint(lg) {
-    margin-left: 260px;
-    padding: 32px 40px 80px;
+  @include breakpoint(md) {
+    font-size: 20px;
   }
 }
 
-// ─── Sections ────────────────────────────────────────────────────
+.heroMeta {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 48px;
+  max-width: 900px;
+  margin: 48px auto 0;
+  width: 100%;
+
+  @include breakpoint(sm) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.heroMetaItem {
+  color: white;
+
+  .heroMetaLabel {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(255 255 255 / 40%);
+    margin-bottom: 4px;
+  }
+
+  .heroMetaValue {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+  }
+}
+
+// ─── Content Sections ───────────────────────────────────────────
 .section {
-  margin-bottom: 64px;
+  padding: var(--spacing-800) var(--spacing-400);
+  max-width: 900px;
+  margin: 0 auto;
+
+  @include breakpoint(md) {
+    padding: var(--spacing-1000) var(--spacing-600);
+  }
 }
 
-.sectionCategory {
+.sectionNumber {
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--c-text-2);
-  margin-bottom: 4px;
+  letter-spacing: 0.1em;
+  color: var(--color-neutral-600);
+  margin-bottom: var(--spacing-200);
 }
 
 .sectionTitle {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--c-text);
-  margin: 0 0 8px;
+  font-family: var(--font-family-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-300);
+
+  @include breakpoint(md) {
+    font-size: 36px;
+  }
 }
 
 .sectionDesc {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
-  color: var(--c-text-2);
-  margin: 0 0 24px;
-  max-width: 640px;
+  color: var(--color-neutral-600);
+  margin: 0 0 var(--spacing-600);
+  max-width: 720px;
 
   code {
     font-size: 12px;
-    background: var(--c-fill);
-    border: 1px solid var(--c-border);
+    background: var(--surface-raised);
+    border: 1px solid var(--color-surface-500);
     padding: 1px 5px;
-    border-radius: 4px;
+    border-radius: var(--radius-100);
     font-family: monospace;
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--color-neutral-800);
   }
 }
 
-.subsection {
-  margin-bottom: 32px;
+// ─── Color Swatches ─────────────────────────────────────────────
+.colorSection {
+  margin-bottom: var(--spacing-600);
 }
 
-.subsectionTitle {
-  font-size: 17px;
+.colorGroupLabel {
+  font-size: 10px;
   font-weight: 600;
-  color: var(--c-text);
-  margin: 0 0 12px;
-}
-
-.subsectionDesc {
-  font-size: 13px;
-  color: var(--c-text-2);
-  margin: 0 0 16px;
-  max-width: 640px;
-}
-
-// ─── Color Swatches ──────────────────────────────────────────────
-.colorGroup {
-  margin-bottom: 24px;
-}
-
-.colorGroupTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--c-text);
-  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-neutral-600);
+  margin-bottom: var(--spacing-300);
 }
 
 .colorRow {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-200);
 }
 
 .colorSwatch {
-  width: 64px;
-  text-align: center;
+  border: 1px solid rgb(0 0 0 / 6%);
+  border-radius: var(--radius-300);
+  overflow: hidden;
 }
 
-.swatchBox {
-  width: 64px;
-  height: 48px;
-  border-radius: 8px;
-  border: 1px solid rgb(0 0 0 / 8%);
-  margin-bottom: 4px;
-}
+.swatchFill {
+  height: 64px;
 
-.swatchLabel {
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--c-text-2);
-  letter-spacing: 0.03em;
-}
-
-.swatchValue {
-  font-size: 9px;
-  color: var(--c-text-2);
-  font-family: monospace;
-}
-
-// ─── Semantic Color Cards ───────────────────────────────────────
-.semanticGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-top: 16px;
-
-  @include breakpoint(sm) {
-    grid-template-columns: repeat(2, 1fr);
+  @include breakpoint(md) {
+    height: 80px;
   }
 }
 
-.semanticCard {
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid;
-}
+.swatchInfo {
+  padding: var(--spacing-200) var(--spacing-200);
+  background: white;
 
-.semanticName {
-  font-size: 11px;
-  font-weight: 600;
-  font-family: 'DM Sans', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
+  .swatchName {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-neutral-800);
+  }
 
-.semanticSwatches {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.semanticSwatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-}
-
-.semanticLabels {
-  margin-top: 6px;
-  font-size: 9px;
-  font-family: monospace;
-}
-
-// ─── Interactive State Mapping Table ────────────────────────────
-.stateTable {
-  width: 100%;
-  font-size: 12px;
-  font-family: 'DM Sans', sans-serif;
-  border-collapse: collapse;
-  margin-top: 12px;
-
-  th {
-    padding: 8px 12px;
-    text-align: left;
+  .swatchHex {
     font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #7a6e62;
+    font-family: monospace;
+    color: var(--color-neutral-500);
+    margin-top: 1px;
+  }
+}
+
+// ─── Quote Block ────────────────────────────────────────────────
+.quoteBlock {
+  font-family: var(--font-family-serif);
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--color-neutral-800);
+  margin: var(--spacing-600) 0;
+  max-width: 720px;
+
+  @include breakpoint(md) {
+    font-size: 28px;
+  }
+}
+
+// ─── Surface Tokens ─────────────────────────────────────────────
+.surfaceRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-200);
+}
+
+.surfaceSwatch {
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: var(--radius-300);
+  overflow: hidden;
+}
+
+.surfaceFill {
+  height: 64px;
+}
+
+.surfaceInfo {
+  padding: var(--spacing-200);
+  background: white;
+
+  .surfaceName {
+    font-size: 10px;
     font-weight: 600;
-    background: #f0e8da;
+    font-family: monospace;
+    color: var(--color-neutral-700);
   }
 
-  td {
-    padding: 8px 12px;
-    border-top: 1px solid #d9ccba;
+  .surfaceDesc {
+    font-size: 10px;
+    color: var(--color-neutral-500);
+    margin-top: 1px;
   }
 }
 
-.stateRowAlt {
-  background: #faf7f2;
+// ─── Typography Section ─────────────────────────────────────────
+.typographySection {
+  background: var(--color-neutral-900);
+  color: white;
+  padding: var(--spacing-800) var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-1000) var(--spacing-600);
+  }
 }
 
-.stateCell {
-  font-weight: 500;
-}
-
-.stateToken {
-  font-family: monospace;
-  font-size: 11px;
-}
-
-.stateNotes {
-  color: #7a6e62;
-}
-
-// ─── Typography Scale ────────────────────────────────────────────
 .typeRow {
   display: flex;
-  align-items: baseline;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--c-fill);
+  align-items: center;
+  gap: var(--spacing-400);
+  padding: var(--spacing-500) 0;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+  max-width: 900px;
+  margin: 0 auto;
 
   &:last-child {
     border-bottom: none;
   }
 }
 
-.typeSize {
-  width: 48px;
+.typeMeta {
+  width: 160px;
   flex-shrink: 0;
-  font-size: 11px;
-  font-family: monospace;
-  color: var(--c-text-2);
+
+  .typeFont {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgb(255 255 255 / 50%);
+  }
+
+  .typeUse {
+    font-size: 10px;
+    color: rgb(255 255 255 / 35%);
+    margin-top: 2px;
+  }
 }
 
 .typePreview {
@@ -303,78 +400,85 @@
   text-overflow: ellipsis;
 }
 
-.typeSpec {
-  width: 200px;
-  flex-shrink: 0;
-  font-size: 11px;
-  color: var(--c-text-2);
-  display: none;
+// ─── Spacing & Radius Section ───────────────────────────────────
+.spacingRadiusGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-600);
 
   @include breakpoint(md) {
-    display: block;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-// ─── Spacing Boxes ───────────────────────────────────────────────
-.spacingRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+.spacingColumn,
+.radiusColumn {
+  h4 {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-neutral-600);
+    margin: 0 0 var(--spacing-400);
+  }
 }
 
 .spacingItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-300);
 }
 
-.spacingBox {
-  background: var(--c-green);
-  opacity: 0.6;
-  border-radius: 4px;
+.spacingDot {
+  background: var(--color-primary-500);
+  border-radius: var(--radius-800);
+  flex-shrink: 0;
 }
 
 .spacingLabel {
-  font-size: 11px;
+  font-size: 12px;
   font-family: monospace;
-  color: var(--c-text-2);
-}
-
-// ─── Radius Display ──────────────────────────────────────────────
-.radiusRow {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  color: var(--color-neutral-600);
 }
 
 .radiusItem {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-300);
 }
 
 .radiusBox {
-  width: 56px;
-  height: 56px;
-  background: var(--c-fill);
-  border: 2px solid var(--c-border);
-  margin-bottom: 4px;
+  width: 40px;
+  height: 40px;
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  flex-shrink: 0;
 }
 
 .radiusLabel {
-  font-size: 10px;
+  font-size: 12px;
   font-family: monospace;
-  color: var(--c-text-2);
+  color: var(--color-neutral-600);
 }
 
-.radiusUse {
-  font-size: 9px;
-  color: var(--c-text-2);
+.shadowSubsection {
+  margin-top: var(--spacing-600);
+
+  h4 {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-neutral-600);
+    margin: 0 0 var(--spacing-400);
+  }
 }
 
-// ─── Shadow Display ──────────────────────────────────────────────
 .shadowRow {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-400);
   flex-wrap: wrap;
 }
 
@@ -385,90 +489,589 @@
 .shadowBox {
   width: 80px;
   height: 56px;
-  background: white;
-  border-radius: 10px;
-  margin-bottom: 6px;
+  background: var(--surface-raised);
+  border-radius: var(--radius-300);
+  margin-bottom: var(--spacing-100);
 }
 
 .shadowLabel {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--c-text-2);
-}
-
-.shadowValue {
-  font-size: 9px;
-  font-family: monospace;
-  color: var(--c-text-2);
-}
-
-// ─── Component Showcase Grid ─────────────────────────────────────
-.componentRow {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-}
-
-.componentItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.componentLabel {
   font-size: 11px;
-  color: var(--c-text-2);
-  text-align: center;
+  font-family: monospace;
+  color: var(--color-neutral-600);
 }
 
-// ─── Button Grid ─────────────────────────────────────────────────
-.buttonRow {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.buttonLabel {
-  width: 100%;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--c-text-2);
-  margin-bottom: 4px;
-}
-
-// ─── Form Demo ───────────────────────────────────────────────────
-.formGrid {
+// ─── Navigation Section ─────────────────────────────────────────
+.navDemo {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
-  max-width: 480px;
+  gap: 32px;
 
   @include breakpoint(md) {
     grid-template-columns: 1fr 1fr;
-    max-width: 640px;
   }
 }
 
-.formItem {
+.navCard {
+  h4 {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #999;
+    margin: 0 0 16px;
+  }
+}
+
+.navCardInner {
+  background: var(--surface-page);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 16px rgb(0 0 0 / 10%),
+    0 2px 4px rgb(0 0 0 / 6%);
+}
+
+.topNavDemo {
+  .topNavGreen {
+    background: var(--color-primary-500);
+    padding: 12px 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topNavBrand {
+    font-family: var(--font-family-serif);
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .topNavIcons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      opacity: 0.85;
+    }
+  }
+
+  .topNavNotifDot {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 7px;
+      height: 7px;
+      background: var(--color-accent-500);
+      border-radius: 50%;
+    }
+  }
+
+  .topNavSearch {
+    background: var(--surface-page);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-neutral-500);
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-neutral-400);
+      flex-shrink: 0;
+    }
+  }
+}
+
+.bottomNavDemo {
+  .bottomNavContent {
+    padding: 16px;
+    background: var(--surface-page);
+
+    .bottomNavContentInner {
+      height: 60px;
+      background: var(--surface-sunken);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--color-neutral-500);
+    }
+  }
+
+  .bottomNavBar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 8px 12px 12px;
+    background: var(--surface-raised);
+    border-top: 1px solid var(--color-surface-500);
+  }
+
+  .bottomNavItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-neutral-500);
+    cursor: pointer;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    &.bottomNavItemActive {
+      color: var(--color-primary-500);
+    }
+  }
+
+  .bottomNavSell {
+    width: 48px;
+    height: 48px;
+    background: var(--color-accent-500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-top: -16px;
+    box-shadow: var(--shadow-sell);
+    cursor: pointer;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+// ─── Component Cards ────────────────────────────────────────────
+.componentCard {
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  border-radius: var(--radius-500);
+  padding: var(--spacing-500);
+  margin-bottom: var(--spacing-400);
+}
+
+.componentCardLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-neutral-600);
+  margin-bottom: var(--spacing-400);
+}
+
+.componentRow {
+  display: flex;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.componentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-400);
+
+  @include breakpoint(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+// ─── Commerce Section ───────────────────────────────────────────
+.commerceGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-400);
+
+  @include breakpoint(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.productCardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-300);
+}
+
+.miniProductCard {
+  background: var(--surface-raised);
+  border-radius: var(--radius-300);
+  overflow: hidden;
+  border: 1px solid var(--color-surface-500);
+
+  .miniCardImage {
+    height: 80px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: var(--spacing-200);
+
+    .miniCardEmoji {
+      font-size: 24px;
+    }
+  }
+
+  .miniCardBadge {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: var(--radius-800);
+  }
+
+  .miniCardHeart {
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+
+  .miniCardBody {
+    padding: var(--spacing-200) var(--spacing-200) var(--spacing-300);
+
+    .miniCardPrice {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-primary-500);
+    }
+
+    .miniCardTitle {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-neutral-800);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .miniCardSeller {
+      font-size: 10px;
+      color: var(--color-neutral-600);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+}
+
+.shopBadge {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--color-primary-500);
+  color: white;
+  padding: 1px 4px;
+  border-radius: var(--radius-100);
+}
+
+// ─── Seller Card Demo ───────────────────────────────────────────
+.sellerCardDemo {
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  border-radius: var(--radius-500);
+  padding: var(--spacing-400);
+}
+
+// ─── Condition Track Demo ───────────────────────────────────────
+.conditionTrack {
+  margin-top: var(--spacing-400);
+}
+
+.conditionBar {
+  height: 4px;
+  background: var(--color-surface-400);
+  border-radius: var(--radius-800);
+  position: relative;
+  margin-bottom: var(--spacing-300);
+}
+
+.conditionFill {
+  height: 100%;
+  background: var(--color-primary-500);
+  border-radius: var(--radius-800);
+}
+
+.conditionDots {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-top: -12px;
+}
+
+.conditionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-surface-400);
+
+  &.active {
+    background: var(--color-primary-500);
+  }
+}
+
+.conditionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary-500);
+  margin-top: var(--spacing-200);
+}
+
+.conditionDesc {
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  margin-top: var(--spacing-100);
+}
+
+// ─── Offer & Fee Demo ───────────────────────────────────────────
+.offerCard {
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  border-radius: var(--radius-500);
+  padding: var(--spacing-400);
+}
+
+.offerLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent-500);
+  margin-bottom: var(--spacing-100);
+}
+
+.offerAmount {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.offerMeta {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+  margin-top: var(--spacing-100);
+}
+
+.offerActions {
+  display: flex;
+  gap: var(--spacing-200);
+  margin-top: var(--spacing-400);
+}
+
+.feeRow {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-200) 0;
+  font-size: 13px;
+  color: var(--color-neutral-700);
+  border-bottom: 1px solid var(--color-surface-400);
+
+  &:last-child {
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--color-neutral-900);
+    padding-top: var(--spacing-300);
+  }
+}
+
+// ─── Editorial Section ──────────────────────────────────────────
+.editorialSection {
+  background: var(--color-neutral-900);
+  color: white;
+  padding: var(--spacing-800) var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-1000) var(--spacing-600);
+  }
+}
+
+.editorialInner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.editorialImage {
+  width: 100%;
+  border-radius: var(--radius-500);
+  margin: var(--spacing-600) 0;
+  object-fit: cover;
+  max-height: 400px;
+}
+
+.editorialQuote {
+  font-family: var(--font-family-serif);
+  font-size: 22px;
+  line-height: 1.45;
+  color: rgb(255 255 255 / 70%);
+  margin: var(--spacing-600) 0;
+  max-width: 720px;
+
+  @include breakpoint(md) {
+    font-size: 28px;
+  }
+}
+
+.editorialList {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-600) 0 0;
+}
+
+.editorialListItem {
+  display: flex;
+  gap: var(--spacing-400);
+  padding: var(--spacing-400) 0;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+
+  .editorialListNum {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(255 255 255 / 30%);
+    flex-shrink: 0;
+    width: 24px;
+  }
+
+  .editorialListText {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgb(255 255 255 / 70%);
+
+    strong {
+      color: white;
+      font-weight: 600;
+    }
+  }
+}
+
+// ─── Principles Section ─────────────────────────────────────────
+.principlesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-600);
+
+  @include breakpoint(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.principleItem {
+  h4 {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-neutral-600);
+    margin: 0 0 var(--spacing-200);
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-neutral-700);
+    margin: 0;
+  }
+}
+
+// ─── Footer CTA ─────────────────────────────────────────────────
+.footerCta {
+  background: var(--color-primary-500);
+  color: white;
+  text-align: center;
+  padding: var(--spacing-1000) var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: 120px var(--spacing-600);
+  }
+}
+
+.footerTitle {
+  font-family: var(--font-family-serif);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0 0 var(--spacing-400);
+
+  @include breakpoint(md) {
+    font-size: 48px;
+  }
+}
+
+.footerDesc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 75%);
+  max-width: 560px;
+  margin: 0 auto var(--spacing-600);
+}
+
+.footerVersion {
+  font-size: 12px;
+  color: rgb(255 255 255 / 40%);
+  padding: var(--spacing-400);
+  text-align: center;
+  background: var(--color-primary-600);
+}
+
+// ─── DS Component Showcases ─────────────────────────────────────
+.dsComponentSection {
+  margin-top: var(--spacing-600);
+}
+
+.dsComponentLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-neutral-600);
+  margin-bottom: var(--spacing-300);
+}
+
+.dsComponentWrap {
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  border-radius: var(--radius-500);
+  padding: var(--spacing-400);
+  margin-bottom: var(--spacing-400);
+}
+
+// ─── Status Banners Demo ────────────────────────────────────────
+.bannerStack {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-200);
 }
 
-.formItemFull {
-  @include breakpoint(md) {
-    grid-column: 1 / -1;
-  }
+// ─── Tabs Demo ──────────────────────────────────────────────────
+.tabsDemo {
+  margin-bottom: var(--spacing-400);
 }
 
-// ─── Toggle Row ──────────────────────────────────────────────────
+// ─── Toggle Demo ────────────────────────────────────────────────
 .toggleRow {
   display: flex;
-  gap: 24px;
+  gap: var(--spacing-400);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -476,150 +1079,141 @@
 .toggleItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.toggleLabel {
+  gap: var(--spacing-200);
   font-size: 13px;
-  color: var(--c-text);
+  color: var(--color-neutral-700);
 }
 
-// ─── Pill Row ────────────────────────────────────────────────────
-.pillRow {
+// ─── Form Demo ──────────────────────────────────────────────────
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-400);
+  max-width: 480px;
+
+  @include breakpoint(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formItem {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+// ─── Accordion Demo ─────────────────────────────────────────────
+.accordionItem {
+  border-bottom: 1px solid var(--color-surface-500);
+  padding: var(--spacing-300) 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.accordionContent {
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  line-height: 1.6;
+  padding: var(--spacing-200) 0 var(--spacing-400);
+}
+
+// ─── Button Row ─────────────────────────────────────────────────
+.buttonRow {
+  display: flex;
+  gap: var(--spacing-200);
   flex-wrap: wrap;
   align-items: center;
 }
 
-// ─── Toast Demo ──────────────────────────────────────────────────
-.toastDemo {
-  position: relative;
+// ─── Pill Row ───────────────────────────────────────────────────
+.pillRow {
+  display: flex;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-  // Override toast overlay positioning for inline demo
-  > div[role='status'],
-  > div[role='alert'] {
-    position: relative;
-    margin-bottom: 8px;
+// ─── Toast Stack Demo ───────────────────────────────────────────
+.toastStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.toastItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-300) var(--spacing-400);
+  border-radius: var(--radius-800);
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+
+  &.toastSuccess {
+    background: var(--color-primary-500);
+  }
+
+  &.toastInfo {
+    background: var(--color-primary-600);
+  }
+
+  &.toastError {
+    background: var(--color-destructive-500);
   }
 }
 
-// ─── Feature Demo ────────────────────────────────────────────────
-.featureGrid {
+// ─── Dark Surface ───────────────────────────────────────────────
+.darkSurface {
+  background: var(--color-primary-500);
+  padding: var(--spacing-400);
+  border-radius: var(--radius-500);
+  display: flex;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
+// ─── Spec Table Demo ────────────────────────────────────────────
+.specTableWrap {
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  border-radius: var(--radius-500);
+  overflow: hidden;
+}
+
+// ─── Live Components Section ────────────────────────────────────
+.liveComponentsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: var(--spacing-400);
 
   @include breakpoint(md) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
-.featureCard {
-  background: var(--c-fill);
-  border: 1px solid var(--c-border);
-  border-radius: 10px;
-  padding: 20px;
+.liveCard {
+  background: var(--surface-raised);
+  border: 1px solid var(--color-surface-500);
+  border-radius: var(--radius-500);
+  padding: var(--spacing-400);
+  overflow: hidden;
 }
 
-.featureCardTitle {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--c-text-2);
-  margin: 0 0 12px;
-}
-
-// ─── Motion Demo ─────────────────────────────────────────────────
-.motionRow {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.motionItem {
-  text-align: center;
-}
-
-.motionBox {
-  width: 80px;
-  height: 48px;
-  background: var(--c-green);
-  border-radius: 8px;
-  margin-bottom: 6px;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-.motionLabel {
+.liveCardLabel {
   font-size: 10px;
   font-weight: 600;
-  color: var(--c-text-2);
-}
-
-.motionValue {
-  font-size: 9px;
-  font-family: monospace;
-  color: var(--c-text-2);
-}
-
-// ─── Z-Index & Breakpoint Tables ─────────────────────────────────
-.tokenTable {
-  width: 100%;
-  max-width: 640px;
-  border-collapse: collapse;
-  font-size: 13px;
-
-  th {
-    text-align: left;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--c-text-2);
-    padding: 8px 12px;
-    border-bottom: 2px solid var(--c-border);
-  }
-
-  td {
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--c-fill);
-    color: var(--c-text);
-  }
-
-  td:first-child {
-    font-family: monospace;
-    font-size: 12px;
-    font-weight: 600;
-  }
-}
-
-// ─── Dev Banner ──────────────────────────────────────────────────
-.devBanner {
-  background: var(--c-green);
-  color: white;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 0.03em;
-}
-
-// ─── Dark Surface Demo ───────────────────────────────────────────
-.darkSurface {
-  background: var(--c-green);
-  padding: 16px;
-  border-radius: 10px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-// ─── Inline Edit Demo ────────────────────────────────────────────
-.inlineEditDemo {
-  max-width: 360px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-neutral-600);
+  margin-bottom: var(--spacing-300);
 }

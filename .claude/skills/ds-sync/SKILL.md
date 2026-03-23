@@ -36,7 +36,7 @@ docs/design/
 ├── v2/
 │   └── ...                  # Next sync
 ├── latest -> v2/            # Symlink to most recent
-└── component-showcase-reference.html  # Scraped Stitch design system reference
+└── component-showcase-reference.html  # Design system reference HTML
 ```
 
 ## Process

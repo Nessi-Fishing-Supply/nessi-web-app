@@ -1,0 +1,75 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  padding: var(--spacing-400);
+  background-color: var(--surface-page);
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-200);
+
+  &.sent {
+    flex-direction: row-reverse;
+  }
+
+  &.received {
+    flex-direction: row;
+  }
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-circle);
+  overflow: hidden;
+}
+
+.bubbleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-50);
+  max-width: 72%;
+
+  .sent & {
+    align-items: flex-end;
+  }
+
+  .received & {
+    align-items: flex-start;
+  }
+}
+
+.bubble {
+  padding: var(--spacing-300) var(--spacing-400);
+  font-size: var(--font-size-600);
+  line-height: var(--line-height-300);
+  overflow-wrap: break-word;
+}
+
+.bubbleReceived {
+  background-color: var(--color-white);
+  color: var(--color-neutral-900);
+  border-radius: var(--radius-500) var(--radius-500) var(--radius-500) var(--radius-100);
+  box-shadow: var(--shadow-100);
+}
+
+.bubbleSent {
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border-radius: var(--radius-500) var(--radius-500) var(--radius-100) var(--radius-500);
+}
+
+.timestamp {
+  font-size: var(--font-size-300);
+  color: var(--color-neutral-500);
+  padding: 0 var(--spacing-100);
+}
