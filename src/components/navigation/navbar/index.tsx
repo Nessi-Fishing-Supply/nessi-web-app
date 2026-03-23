@@ -19,7 +19,6 @@ import NotificationBar from '@/components/navigation/notification-bar';
 import Modal from '@/components/layout/modal';
 import LoginForm from '@/features/auth/components/login-form';
 import RegisterForm from '@/features/auth/components/registration-form';
-import ResendVerificationForm from '@/features/auth/components/resend-verification-form';
 import {
   Button,
   AppLink,
@@ -48,8 +47,6 @@ export default function Navbar() {
   );
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
-  const [isResendModalOpen, setResendModalOpen] = useState(false);
-  const [loginBanner, setLoginBanner] = useState<{ type: 'verified' } | null>(null);
 
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
@@ -66,45 +63,18 @@ export default function Navbar() {
   // Detect query params and open appropriate modals/toasts
   useEffect(() => {
     const loginQuery = searchParams?.get('login');
-    const verified = searchParams?.get('verified');
-    const authError = searchParams?.get('auth_error');
-    const passwordReset = searchParams?.get('password_reset');
 
     if (loginQuery === 'true') {
       requestAnimationFrame(() => setLoginModalOpen(true));
     }
 
-    if (verified === 'true') {
-      requestAnimationFrame(() => {
-        setLoginBanner({ type: 'verified' });
-        setLoginModalOpen(true);
-      });
-    }
-
-    if (authError === 'true') {
-      requestAnimationFrame(() => setResendModalOpen(true));
-    }
-
-    if (passwordReset === 'true') {
-      requestAnimationFrame(() =>
-        showToast({
-          type: 'success',
-          message: 'Password updated!',
-          description: 'Your password has been reset and you are now logged in.',
-        }),
-      );
-    }
-
     // Clean up query params after consuming
-    if (loginQuery || verified || authError || passwordReset) {
+    if (loginQuery) {
       const url = new URL(window.location.href);
       url.searchParams.delete('login');
-      url.searchParams.delete('verified');
-      url.searchParams.delete('auth_error');
-      url.searchParams.delete('password_reset');
       window.history.replaceState({}, '', url.pathname + url.search);
     }
-  }, [searchParams, showToast]);
+  }, [searchParams]);
 
   const handleLogout = async () => {
     try {
@@ -118,63 +88,30 @@ export default function Navbar() {
 
   const toggleLoginModal = () => {
     setLoginModalOpen((prev) => !prev);
-    setLoginBanner(null);
     if (isRegisterModalOpen) setRegisterModalOpen(false);
-    if (isResendModalOpen) setResendModalOpen(false);
   };
 
   const toggleRegisterModal = () => {
     setRegisterModalOpen((prev) => !prev);
     if (isLoginModalOpen) setLoginModalOpen(false);
-    if (isResendModalOpen) setResendModalOpen(false);
-  };
-
-  const toggleResendModal = () => {
-    setResendModalOpen((prev) => !prev);
-    if (isLoginModalOpen) setLoginModalOpen(false);
-    if (isRegisterModalOpen) setRegisterModalOpen(false);
   };
 
   const handleLoginSuccess = () => {
     setLoginModalOpen(false);
-    setLoginBanner(null);
   };
 
-  const handleRegisterSuccess = (response: { message: string; email?: string }) => {
+  const handleRegisterSuccess = () => {
     setRegisterModalOpen(false);
     showToast({
       type: 'success',
-      message: 'Account created!',
-      description: `Check your inbox at ${response.email} for a verification link.`,
-      subtitle: 'Come back and sign in once verified.',
+      message: 'Welcome to Nessi!',
+      description: 'Your account is ready.',
     });
-  };
-
-  const handleResendSuccess = (email: string) => {
-    setResendModalOpen(false);
-    showToast({
-      type: 'success',
-      message: 'Verification email sent!',
-      description: `If an account exists for ${email}, you'll receive a verification link shortly.`,
-      subtitle: 'Check your inbox and sign in once verified.',
-    });
-  };
-
-  const handleResendToLogin = () => {
-    setResendModalOpen(false);
-    setLoginModalOpen(true);
-    setLoginBanner(null);
   };
 
   const handleRegisterToLogin = () => {
     setRegisterModalOpen(false);
     setLoginModalOpen(true);
-    setLoginBanner(null);
-  };
-
-  const handleUnverifiedResend = () => {
-    setLoginModalOpen(false);
-    setResendModalOpen(true);
   };
 
   const firstName = user?.user_metadata?.firstName ?? '';
@@ -356,12 +293,7 @@ export default function Navbar() {
             Register
           </Button>
         </div>
-        <LoginForm
-          onSuccess={handleLoginSuccess}
-          onClose={toggleLoginModal}
-          onResendVerification={handleUnverifiedResend}
-          banner={loginBanner}
-        />
+        <LoginForm onSuccess={handleLoginSuccess} onClose={toggleLoginModal} />
       </Modal>
 
       {/* Register Modal */}
@@ -372,18 +304,6 @@ export default function Navbar() {
       >
         <h2 id="register-title">Create Your Account</h2>
         <RegisterForm onSuccess={handleRegisterSuccess} onSwitchToLogin={handleRegisterToLogin} />
-      </Modal>
-
-      {/* Resend Verification Modal */}
-      <Modal
-        isOpen={isResendModalOpen}
-        onClose={toggleResendModal}
-        ariaLabel="Resend verification email"
-      >
-        <ResendVerificationForm
-          onBackToLogin={handleResendToLogin}
-          onSuccess={handleResendSuccess}
-        />
       </Modal>
     </nav>
   );
