@@ -39,7 +39,11 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
 
   const photos = listing.listing_photos ?? [];
   const isSold = listing.status === 'sold';
-  const isOwnListing = currentUserId === listing.seller_id;
+  // Context-aware ownership: in shop context, only show "Edit" for that shop's listings.
+  // In member context, only show "Edit" for member-owned listings (shop_id is null).
+  const isOwnListing = isShopContext
+    ? listing.shop_id === activeContext.shopId
+    : currentUserId === listing.seller_id && !listing.shop_id;
   const conditionTier = CONDITION_TIERS.find((t) => t.value === listing.condition);
 
   function handlePhotoTap(index: number) {
