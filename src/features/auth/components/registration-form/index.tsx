@@ -53,7 +53,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onError, onSwitc
     if (onSuccess) onSuccess({ message: 'Verification successful', email: registeredEmail });
   };
 
-  const handleResend = () => resendVerification({ email: registeredEmail });
+  const handleResend = async () => {
+    await resendVerification({ email: registeredEmail });
+  };
 
   if (step === 'otp') {
     return (

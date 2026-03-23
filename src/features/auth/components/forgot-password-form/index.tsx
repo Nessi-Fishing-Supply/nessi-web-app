@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useFormState } from '@/features/shared/hooks/use-form-state';
 import { Input, Button } from '@/components/controls';
-import { forgotPassword } from '@/features/auth/services/auth';
+import { sendResetCode } from '@/features/auth/services/auth';
 import {
   AuthFormProps,
   ForgotPasswordFormData,
@@ -38,7 +38,7 @@ const ForgotPasswordForm: React.FC<AuthFormProps<ForgotPasswordFormData, AuthFor
     setError(null);
 
     try {
-      const response = await forgotPassword(data);
+      const response = await sendResetCode(data);
       setSuccess(response.message);
       if (onSuccess) onSuccess(response);
     } catch (err: any) {

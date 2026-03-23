@@ -9,6 +9,7 @@ export interface AuthFormProps<TData = any, TResponse = TData> {
 // Form data types
 export type LoginFormData = LoginData;
 export type RegisterFormData = RegisterData;
+export type ForgotPasswordFormData = { email: string };
 export type OtpVerificationData = {
   email: string;
   token: string;
