@@ -69,10 +69,8 @@ export const CATEGORY_PHOTO_GUIDANCE: Record<string, string> = {
   rods: 'Show the full rod, then close-ups of: cork/EVA grip condition, guide wraps and inserts, rod tip, and any marks on the blank.',
   reels:
     'Show the reel from both sides, then close-ups of: drag knob, bail/levelwind, spool edge, and body/foot condition.',
-  lures_hard:
-    'Show all sides of the lure. Highlight: hook points, split rings, paint chips or scratches, and eye condition.',
-  lures_soft:
-    'Show the full bag or package if available, then close-ups of: individual bait condition, any tears, and tail integrity.',
+  lures:
+    'Show all sides of the lure. For hard baits: highlight hook points, split rings, paint chips, and eye condition. For soft plastics: show individual bait condition, any tears, and tail integrity.',
   flies:
     'Show a top-down shot on a light background, then a profile view. Highlight: hackle condition, hook point, and any material loss.',
   _default:
