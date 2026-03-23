@@ -177,26 +177,6 @@ SCSS with CSS Modules for component-scoped styles. Global variables in `src/styl
 
 Required in `.env.local` (see `.env.local.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_APP_URL`.
 
-### Shell Environment (`.zshrc`)
-
-The following environment variables must be exported in your shell profile (`~/.zshrc`) for MCP servers to function:
-
-```sh
-export STITCH_API_KEY="your-stitch-api-key"
-```
-
-These are referenced via `${VAR}` interpolation in `.mcp.json` and are **not** stored in `.env.local`.
-
-## MCP Servers
-
-MCP (Model Context Protocol) servers are configured in `.mcp.json` at the project root.
-
-| Server   | Package                  | Purpose                                                                                                                                          |
-| -------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `stitch` | `@_davideast/stitch-mcp` | AI-powered UI design tool — generates screens, variants, and design systems. Integrated with `/ui-design "stitch:..."` for screen-to-code builds |
-
-**Setup:** The Stitch MCP server requires a `STITCH_API_KEY` environment variable exported in `~/.zshrc` (see Shell Environment above). The `.mcp.json` file references it via `${STITCH_API_KEY}` interpolation — the actual key is never committed to the repo.
-
 ## Observability
 
 - **Vercel Analytics** (`@vercel/analytics`) — page views, visitors, referrers. Auto-enabled on Vercel.
@@ -258,12 +238,11 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 - **`/db-migrate "{change}"`** — Generate Supabase SQL migrations with RLS policies
 - **`/write-tests "{file}"`** — Generate Vitest tests following project patterns
 - **`/debug "{problem}"`** — 7-step investigation protocol (reproduce → isolate → fix → verify)
-- **`/ui-design "{spec or path}"`** — Design new components, audit existing ones, or build from Stitch screens
+- **`/ui-design "{spec or path}"`** — Design new components, audit existing ones, or build from a spec
   - Design mode: `/ui-design "hero banner with image overlay"` — creates new component from description
   - Audit mode: `/ui-design "audit: src/features/shops/components/"` — audits existing components
-  - Stitch Build: `/ui-design "stitch: Shop Page - Elias Thorne"` — builds page/component from Stitch screen reference
-  - Stitch Browse: `/ui-design "stitch:list"` — browse all Stitch screens to pick from
 - **`/ds-sync "{url}"`** — Sync a design system URL into the codebase: extracts tokens via Playwright, diffs against current SCSS foundation, interviews about naming/migration, writes implementation spec
+- **`/ds-sync-components "{url}"`** — Extract atomic design components from a design system URL and scaffold React + SCSS files with smart placement
 
 ### Tech Expert Skills (auto-trigger on file edits)
 
@@ -278,7 +257,7 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 | Layer     | Agents                                                                                                                                 |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Conductor | plan-architect, task-executor, phase-verifier, review-orchestrator, finding-resolver, debug-investigator, pr-creator, ticket-generator |
-| Design    | ux-researcher, marketplace-audit, ui-designer, ds-sync                                                                                 |
+| Design    | ux-researcher, marketplace-audit, ui-designer, ds-sync, ds-sync-components                                                             |
 | Testing   | test-author, ui-tester, a11y-auditor                                                                                                   |
 | Debugging | browser-debug                                                                                                                          |
 
