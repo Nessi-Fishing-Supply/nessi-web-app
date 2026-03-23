@@ -5,7 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HiOutlineShoppingCart, HiOutlineX } from 'react-icons/hi';
 import { useAuth } from '@/features/auth/context';
-import { useCart, useRemoveFromCart, useClearCart, useValidateCart } from '@/features/cart/hooks/use-cart';
+import {
+  useCart,
+  useRemoveFromCart,
+  useClearCart,
+  useValidateCart,
+} from '@/features/cart/hooks/use-cart';
 import { useGuestCart } from '@/features/cart/hooks/use-guest-cart';
 import { groupCartBySeller } from '@/features/cart/utils/group-cart';
 import CartItemCard from '@/features/cart/components/cart-item-card';
@@ -14,6 +19,7 @@ import Button from '@/components/controls/button';
 import { formatPrice } from '@/features/shared/utils/format';
 import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';
 import type { SellerIdentity } from '@/features/listings/types/listing';
+import type { CartValidationResult } from '@/features/cart/types/cart';
 import styles from './cart-page.module.scss';
 
 function getShopInitials(name: string): string {
@@ -63,12 +69,16 @@ function SellerHeader({ seller }: { seller: SellerIdentity | null }) {
 export default function CartPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: removeFromCart, isPending: isRemoving, variables: removingId } = useRemoveFromCart();
+  const {
+    mutate: removeFromCart,
+    isPending: isRemoving,
+    variables: removingId,
+  } = useRemoveFromCart();
   const { mutate: clearCart, isPending: isClearing } = useClearCart();
-  const { mutate: validateCart, data: validationResult } = useValidateCart();
+  const { mutate: validateCart } = useValidateCart();
   const guestCart = useGuestCart();
 
-  const [staleBannerItems, setStaleBannerItems] = useState<NonNullable<typeof validationResult>['removed']>([]);
+  const [staleBannerItems, setStaleBannerItems] = useState<CartValidationResult['removed']>([]);
   const [showStaleBanner, setShowStaleBanner] = useState(false);
 
   useEffect(() => {
@@ -113,7 +123,9 @@ export default function CartPage() {
             <div className={styles.skeletonSummary} />
           </div>
         </div>
-        <span className="sr-only" role="status" aria-live="polite">Loading your cart</span>
+        <span className="sr-only" role="status" aria-live="polite">
+          Loading your cart
+        </span>
       </div>
     );
   }
@@ -170,7 +182,9 @@ export default function CartPage() {
           ))}
         </div>
         <div className={styles.guestSubtotal}>
-          <span>Subtotal ({guestItems.length} {guestItems.length === 1 ? 'item' : 'items'})</span>
+          <span>
+            Subtotal ({guestItems.length} {guestItems.length === 1 ? 'item' : 'items'})
+          </span>
           <span>{formatPrice(guestSubtotal)}</span>
         </div>
       </div>
@@ -205,13 +219,21 @@ export default function CartPage() {
         <div className={styles.staleBanner} role="status" aria-live="polite">
           <div className={styles.staleBannerContent}>
             <p>
-              <strong>{staleBannerItems.length} {staleBannerItems.length === 1 ? 'item was' : 'items were'} removed</strong>
-              {' '}because {staleBannerItems.length === 1 ? 'it is' : 'they are'} no longer available.
+              <strong>
+                {staleBannerItems.length}{' '}
+                {staleBannerItems.length === 1 ? 'item was' : 'items were'} removed
+              </strong>{' '}
+              because {staleBannerItems.length === 1 ? 'it is' : 'they are'} no longer available.
             </p>
             <ul className={styles.staleBannerReasons}>
               {staleBannerItems.map((removed, i) => (
                 <li key={i}>
-                  {removed.item.listing.title} — {removed.reason === 'sold' ? 'Sold' : removed.reason === 'deactivated' ? 'Deactivated by seller' : 'No longer available'}
+                  {removed.item.listing.title} —{' '}
+                  {removed.reason === 'sold'
+                    ? 'Sold'
+                    : removed.reason === 'deactivated'
+                      ? 'Deactivated by seller'
+                      : 'No longer available'}
                 </li>
               ))}
             </ul>
