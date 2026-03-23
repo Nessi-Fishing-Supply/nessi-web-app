@@ -3,19 +3,19 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--spacing-700);
   max-width: 720px;
-  padding: var(--space-lg) var(--space-base);
+  padding: var(--spacing-700) var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-xl) var(--space-lg);
+    padding: var(--spacing-800) var(--spacing-700);
   }
 }
 
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .label {
@@ -38,7 +38,7 @@
 .input {
   width: 100%;
   min-height: 44px;
-  padding: var(--space-xs) var(--space-base);
+  padding: var(--spacing-200) var(--spacing-400);
   font-size: var(--font-size-base);
   color: var(--color-neutral-900);
   background: var(--color-white);
@@ -48,7 +48,7 @@
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
-  padding-right: var(--space-2xl);
+  padding-right: var(--spacing-900);
 
   &::placeholder {
     color: var(--color-neutral-500);
@@ -66,7 +66,7 @@
 
 .textarea {
   width: 100%;
-  padding: var(--space-xs) var(--space-base);
+  padding: var(--spacing-200) var(--spacing-400);
   font-size: var(--font-size-base);
   font-family: inherit;
   color: var(--color-neutral-900);
@@ -113,7 +113,7 @@
 
 .availabilityIcon {
   position: absolute;
-  right: var(--space-base);
+  right: var(--spacing-400);
   display: flex;
   align-items: center;
   font-size: var(--font-size-lg);
@@ -141,7 +141,7 @@
 }
 
 .avatarNote {
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
   background: var(--color-neutral-100);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-neutral-300);
@@ -155,9 +155,9 @@
 }
 
 .footer {
-  padding-top: var(--space-xs);
+  padding-top: var(--spacing-200);
 
   @include breakpoint(md) {
-    padding-top: var(--space-sm);
+    padding-top: var(--spacing-300);
   }
 }

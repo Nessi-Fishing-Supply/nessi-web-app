@@ -3,9 +3,9 @@
 .displayValue {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   min-height: 44px;
-  padding: var(--space-2xs) var(--space-xs);
+  padding: var(--spacing-100) var(--spacing-200);
   background: none;
   border: none;
   border-radius: var(--radius-sm);
@@ -57,13 +57,13 @@
 .editContainer {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   width: 100%;
 }
 
 .input {
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
   color: var(--color-neutral-900);
@@ -107,7 +107,7 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .actionBtn {
@@ -116,7 +116,7 @@
   justify-content: center;
   min-width: 44px;
   min-height: 44px;
-  padding: var(--space-xs);
+  padding: var(--spacing-200);
   background-color: var(--color-primary-500);
   border: none;
   border-radius: var(--radius-sm);
@@ -169,7 +169,7 @@
 
 .compactInput {
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
   color: var(--color-neutral-900);

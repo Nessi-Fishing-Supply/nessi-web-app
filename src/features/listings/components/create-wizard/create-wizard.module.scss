@@ -13,8 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-base);
+  gap: var(--spacing-200);
+  padding: var(--spacing-300) var(--spacing-400);
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-neutral-200);
   position: sticky;
@@ -22,7 +22,7 @@
   z-index: 10;
 
   @include breakpoint(md) {
-    padding: var(--space-sm) var(--space-lg);
+    padding: var(--spacing-300) var(--spacing-700);
   }
 }
 
@@ -31,7 +31,7 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  padding: var(--space-2xs) 0;
+  padding: var(--spacing-100) 0;
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-neutral-600);
@@ -64,7 +64,7 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  padding: var(--space-2xs) 0;
+  padding: var(--spacing-100) 0;
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-neutral-600);
@@ -90,15 +90,15 @@
 // Step content area — fills available space, padded above fixed footer
 .stepContainer {
   flex: 1;
-  padding: var(--space-md) var(--space-base);
+  padding: var(--spacing-600) var(--spacing-400);
 
   // Reserve space for fixed footer (48px button + padding)
-  padding-bottom: calc(48px + var(--space-lg) + var(--space-md));
+  padding-bottom: calc(48px + var(--spacing-700) + var(--spacing-600));
   overflow-y: auto;
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-lg);
-    padding-bottom: calc(48px + var(--space-xl));
+    padding: var(--spacing-700) var(--spacing-700);
+    padding-bottom: calc(48px + var(--spacing-800));
     max-width: 680px;
     margin: 0 auto;
     width: 100%;
@@ -154,7 +154,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
   background-color: var(--color-white);
   border-top: 1px solid var(--color-neutral-200);
   z-index: 10;
@@ -167,9 +167,9 @@
 
   @include breakpoint(md) {
     position: static;
-    padding: var(--space-sm) var(--space-lg);
+    padding: var(--spacing-300) var(--spacing-700);
     max-width: 680px;
-    margin: 0 auto var(--space-md);
+    margin: 0 auto var(--spacing-600);
     border-top: none;
     border-radius: var(--radius-md);
 
@@ -183,12 +183,12 @@
 .reviewActions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   width: 100%;
 
   @include breakpoint(md) {
     flex-direction: row-reverse;
-    gap: var(--space-sm);
+    gap: var(--spacing-300);
     width: auto;
   }
 }
@@ -209,7 +209,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--spacing-600);
   text-align: center;
 }
 

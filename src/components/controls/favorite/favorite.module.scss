@@ -5,8 +5,8 @@
   border: none;
   background-color: var(--color-white);
   border-radius: var(--radius-sm);
-  width: var(--space-md);
-  height: var(--space-md);
+  width: var(--spacing-600);
+  height: var(--spacing-600);
   transition: var(--transition-basic);
   cursor: pointer;
 
@@ -21,8 +21,8 @@
 
   > svg {
     color: var(--color-neutral-900);
-    width: var(--space-base);
-    height: var(--space-base);
+    width: var(--spacing-400);
+    height: var(--spacing-400);
 
     &.filled {
       color: var(--color-primary-500);

@@ -17,13 +17,13 @@
     min-height: 100vh;
     background: var(--color-surface-100);
     border-right: 1px solid var(--color-surface-300);
-    padding: var(--space-md) var(--space-xs);
+    padding: var(--spacing-600) var(--spacing-200);
     flex-shrink: 0;
   }
 
   @include breakpoint(lg) {
     width: 240px;
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--spacing-600) var(--spacing-300);
   }
 
   /* ── List reset ── */
@@ -33,7 +33,7 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2xs);
+    gap: var(--spacing-100);
   }
 
   /* ── Nav items ── */
@@ -50,8 +50,8 @@
     a {
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
-      padding: var(--space-sm);
+      gap: var(--spacing-300);
+      padding: var(--spacing-300);
       color: var(--color-neutral-700) !important;
       text-decoration: none;
       font-size: var(--font-size-sm);
@@ -66,7 +66,7 @@
 
       @include breakpoint(lg) {
         justify-content: flex-start;
-        padding: var(--space-sm) var(--space-base);
+        padding: var(--spacing-300) var(--spacing-400);
       }
 
       &:hover {
@@ -84,8 +84,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: var(--space-md);
-      height: var(--space-md);
+      width: var(--spacing-600);
+      height: var(--spacing-600);
       flex-shrink: 0;
       color: var(--color-primary-500);
 

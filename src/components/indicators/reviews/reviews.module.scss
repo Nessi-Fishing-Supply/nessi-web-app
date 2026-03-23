@@ -1,15 +1,15 @@
 .reviews {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 
   .stars {
     display: flex;
-    gap: var(--space-3xs);
+    gap: var(--spacing-50);
 
     > svg {
-      width: var(--space-sm);
-      height: var(--space-sm);
+      width: var(--spacing-300);
+      height: var(--spacing-300);
       color: var(--color-primary-500);
     }
   }

@@ -3,10 +3,10 @@
 .page {
   max-width: 800px;
   margin: 0 auto;
-  padding: var(--space-md) var(--space-sm);
+  padding: var(--spacing-600) var(--spacing-300);
 
   @include breakpoint(md) {
-    padding: var(--space-xl) var(--space-md);
+    padding: var(--spacing-800) var(--spacing-600);
   }
 }
 
@@ -15,7 +15,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--spacing-700);
 }
 
 .avatarContainer {
@@ -24,7 +24,7 @@
   height: 120px;
   border-radius: var(--radius-2xl);
   overflow: hidden;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--spacing-300);
   background-color: var(--color-neutral-300);
 
   @include breakpoint(md) {
@@ -51,7 +51,7 @@
 
 .displayName {
   font-size: var(--font-size-xl);
-  margin-bottom: var(--space-3xs);
+  margin-bottom: var(--spacing-50);
 
   @include breakpoint(md) {
     font-size: var(--font-size-2xl);
@@ -61,7 +61,7 @@
 .handle {
   color: var(--color-neutral-500);
   font-size: var(--font-size-sm);
-  margin-bottom: var(--space-3xs);
+  margin-bottom: var(--spacing-50);
 }
 
 .memberSince {
@@ -70,19 +70,19 @@
 }
 
 .preferences {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--spacing-700);
 
   > h2 {
     font-size: var(--font-size-md);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--spacing-300);
   }
 }
 
 .pills {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-xs);
+  gap: var(--spacing-200);
+  margin-bottom: var(--spacing-200);
 }
 
 .homeState {
@@ -92,14 +92,14 @@
 
 .stats {
   display: flex;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
-  padding: var(--space-md);
+  gap: var(--spacing-600);
+  margin-bottom: var(--spacing-700);
+  padding: var(--spacing-600);
   background-color: var(--color-neutral-200);
   border-radius: var(--radius-md);
 
   @include breakpoint(md) {
-    gap: var(--space-lg);
+    gap: var(--spacing-700);
   }
 }
 
@@ -126,14 +126,14 @@
 .listings {
   > h2 {
     font-size: var(--font-size-md);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--spacing-300);
   }
 }
 
 .listingGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   @include breakpoint(md) {
     grid-template-columns: repeat(2, 1fr);
@@ -148,5 +148,5 @@
   color: var(--color-neutral-500);
   font-size: var(--font-size-sm);
   text-align: center;
-  padding: var(--space-xl) 0;
+  padding: var(--spacing-800) 0;
 }

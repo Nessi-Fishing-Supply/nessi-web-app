@@ -1,11 +1,11 @@
 .banner {
   border-radius: var(--radius-md);
-  padding: var(--space-xs) var(--space-sm);
-  margin-top: var(--space-sm);
-  margin-bottom: var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
+  margin-top: var(--spacing-300);
+  margin-bottom: var(--spacing-300);
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .bannerError {
@@ -64,5 +64,5 @@
 .unverifiedBody {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }

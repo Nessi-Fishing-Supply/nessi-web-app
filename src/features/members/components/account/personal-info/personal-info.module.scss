@@ -16,13 +16,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-lg) var(--space-base) var(--space-base);
+  padding: var(--spacing-700) var(--spacing-400) var(--spacing-400);
   background: var(--color-white);
   border-bottom: 1px solid var(--color-neutral-200);
   text-align: center;
 
   @include breakpoint(md) {
-    padding: var(--space-xl) var(--space-md) var(--space-lg);
+    padding: var(--spacing-800) var(--spacing-600) var(--spacing-700);
   }
 }
 
@@ -33,7 +33,7 @@
 .avatarSection {
   position: relative;
   z-index: 1;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--spacing-300);
 }
 
 .identityBlock {
@@ -42,7 +42,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .displayName {
@@ -66,21 +66,21 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-base);
+  gap: var(--spacing-300);
+  padding: var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-md);
+    padding: var(--spacing-600);
   }
 }
 
 .sectionDivider {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding-bottom: var(--space-xs);
+  gap: var(--spacing-200);
+  padding-bottom: var(--spacing-200);
   border-bottom: 1px solid var(--color-neutral-200);
-  margin-bottom: var(--space-2xs);
+  margin-bottom: var(--spacing-100);
 }
 
 .headingIcon {
@@ -103,11 +103,11 @@
 .nameRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   @include breakpoint(sm) {
     flex-direction: row;
-    gap: var(--space-md);
+    gap: var(--spacing-600);
 
     > * {
       flex: 1;
@@ -118,7 +118,7 @@
 .fieldRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .fieldLabel {
@@ -139,7 +139,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .availabilityIcon {

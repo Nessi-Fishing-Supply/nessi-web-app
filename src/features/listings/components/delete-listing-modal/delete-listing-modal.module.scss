@@ -1,7 +1,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 }
 
 .title {
@@ -27,5 +27,5 @@
 .actions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }

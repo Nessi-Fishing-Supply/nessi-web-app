@@ -4,8 +4,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-xs) var(--space-base);
+  gap: var(--spacing-300);
+  padding: var(--spacing-200) var(--spacing-400);
   background-color: var(--color-accent-300);
   color: var(--color-neutral-900);
 }
@@ -19,7 +19,7 @@
 .link {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
   color: var(--color-primary-700);
   font-weight: 700;
   text-decoration: underline;
@@ -40,7 +40,7 @@
   justify-content: center;
   min-width: 44px;
   min-height: 44px;
-  padding: var(--space-xs);
+  padding: var(--spacing-200);
   background: none;
   border: none;
   cursor: pointer;

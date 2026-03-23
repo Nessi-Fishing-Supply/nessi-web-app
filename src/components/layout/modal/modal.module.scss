@@ -11,7 +11,7 @@
 .modalContent {
   position: relative;
   background: var(--color-white);
-  padding: var(--space-md);
+  padding: var(--spacing-600);
   border-radius: var(--radius-lg);
   max-width: 384px;
   width: 100%;
@@ -20,10 +20,10 @@
 
 .closeButton {
   position: absolute;
-  top: var(--space-sm);
-  right: var(--space-sm);
-  width: var(--space-lg);
-  height: var(--space-lg);
+  top: var(--spacing-300);
+  right: var(--spacing-300);
+  width: var(--spacing-700);
+  height: var(--spacing-700);
   min-width: 44px;
   min-height: 44px;
   color: var(--color-neutral-600);
@@ -47,7 +47,7 @@
   }
 
   > svg {
-    width: var(--space-md);
-    height: var(--space-md);
+    width: var(--spacing-600);
+    height: var(--spacing-600);
   }
 }

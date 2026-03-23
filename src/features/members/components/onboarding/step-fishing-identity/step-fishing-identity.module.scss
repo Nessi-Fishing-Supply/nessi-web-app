@@ -4,15 +4,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  padding: var(--space-base);
+  padding: var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-2xl);
+    padding: var(--spacing-700) var(--spacing-900);
   }
 }
 
 .header {
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--spacing-300);
 }
 
 .back {
@@ -40,7 +40,7 @@
 
 .stepHeader {
   text-align: center;
-  padding: 0 var(--space-base);
+  padding: 0 var(--spacing-400);
 }
 
 .stepTitle {
@@ -58,21 +58,21 @@
 .stepSubtitle {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
-  margin: var(--space-2xs) 0 0;
+  margin: var(--spacing-100) 0 0;
   line-height: 1.5;
 }
 
 .sections {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--spacing-600);
   flex: 1;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 }
 
 .sectionLabel {
@@ -85,7 +85,7 @@
 .select {
   width: 100%;
   min-height: 44px;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
   border: 1px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
   background: var(--color-white);
@@ -111,12 +111,12 @@
 .footer {
   position: sticky;
   bottom: 0;
-  padding: var(--space-base) 0 0;
+  padding: var(--spacing-400) 0 0;
   background: linear-gradient(to top, var(--color-white) 80%, transparent);
 
   @include breakpoint(md) {
     position: static;
-    padding-top: var(--space-lg);
+    padding-top: var(--spacing-700);
     background: var(--color-white);
   }
 }

@@ -3,13 +3,13 @@
 .step {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--spacing-800);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 }
 
 .heading {
@@ -25,7 +25,7 @@
 }
 
 .counter {
-  margin-top: var(--space-2xs);
+  margin-top: var(--spacing-100);
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
   text-align: right;

@@ -5,8 +5,8 @@
   border-width: 2px;
   border-style: solid;
   border-radius: var(--radius-md);
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
+  gap: var(--spacing-200);
+  padding: var(--spacing-300) var(--spacing-600);
   font-size: var(--font-size-base);
   background: none;
   box-shadow: none;
@@ -45,7 +45,7 @@
 
   // Set margin bottom {
   &.marginBottom {
-    margin-bottom: var(--space-base);
+    margin-bottom: var(--spacing-400);
   }
 
   // Base Outline styles

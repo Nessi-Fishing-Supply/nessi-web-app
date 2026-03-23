@@ -1,7 +1,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 }
 
 .title {
@@ -27,7 +27,7 @@
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .label {
@@ -55,7 +55,7 @@
 }
 
 .currencyPrefix {
-  padding: 0 var(--space-xs);
+  padding: 0 var(--spacing-200);
   font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-neutral-500);
@@ -67,7 +67,7 @@
 .priceInput {
   flex: 1;
   border: none;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
   font-size: var(--font-size-base);
   min-height: 44px;
   outline: none;
@@ -76,5 +76,5 @@
 .actions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }

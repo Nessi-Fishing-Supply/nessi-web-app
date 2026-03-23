@@ -13,15 +13,15 @@
   cursor: pointer;
 
   svg {
-    width: var(--space-lg);
-    height: var(--space-lg);
+    width: var(--spacing-700);
+    height: var(--spacing-700);
   }
 }
 
 .menu {
   display: block;
   position: absolute;
-  top: var(--space-2xl);
+  top: var(--spacing-900);
   background-color: var(--color-white);
   border-radius: var(--radius-md);
   min-width: 200px;
@@ -38,10 +38,10 @@
 
 .dropdownItem {
   cursor: pointer;
-  padding: var(--space-sm) var(--space-base) 0 var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400) 0 var(--spacing-400);
 
   &:last-child {
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--spacing-300);
   }
 }
 
@@ -49,7 +49,7 @@
   border-top: solid 1px var(--color-neutral-200);
 
   > p {
-    padding: var(--space-sm) var(--space-base) 0 var(--space-base);
+    padding: var(--spacing-300) var(--spacing-400) 0 var(--spacing-400);
     text-transform: uppercase;
     font-weight: 700;
     font-size: var(--font-size-sm);
@@ -59,7 +59,7 @@
 
 .dropdownDivider {
   border-top: solid 1px var(--color-neutral-200);
-  margin: var(--space-xs) 0;
+  margin: var(--spacing-200) 0;
   list-style: none;
 }
 
@@ -67,5 +67,5 @@
   cursor: default;
   color: var(--color-neutral-900);
   margin: 0;
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
 }

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--spacing-600);
 }
 
 .emailText {
@@ -25,7 +25,7 @@
 .digitGroup {
   display: flex;
   flex-direction: row;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .digitInput {
@@ -71,7 +71,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .resendButton {
@@ -104,7 +104,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   font-size: var(--font-size-sm);
   color: var(--color-neutral-600);
 }

@@ -8,38 +8,38 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
-  padding-top: var(--space-xs);
+  gap: var(--spacing-400);
+  padding-top: var(--spacing-200);
 }
 
 .pillGrid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 
   @include breakpoint(md) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);
+    gap: var(--spacing-600);
   }
 }
 
 .detailsRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 
   @include breakpoint(sm) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);
+    gap: var(--spacing-600);
   }
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .sectionLabel {
@@ -50,13 +50,13 @@
   letter-spacing: 0.06em;
   line-height: 1.6;
   margin: 0;
-  padding-bottom: var(--space-2xs);
+  padding-bottom: var(--spacing-100);
 }
 
 .select {
   width: 100%;
   min-height: 44px;
-  padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-700) var(--spacing-200) var(--spacing-300);
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   background: var(--color-white);
@@ -67,7 +67,7 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234d4d4d' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right var(--space-sm) center;
+  background-position: right var(--spacing-300) center;
   transition: var(--transition-smooth);
 
   &:hover {

@@ -3,15 +3,15 @@
 .row {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--spacing-300);
+  padding: var(--spacing-300);
   background-color: var(--color-white);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-neutral-200);
 
   @include breakpoint(md) {
-    gap: var(--space-base);
-    padding: var(--space-sm) var(--space-base);
+    gap: var(--spacing-400);
+    padding: var(--spacing-300) var(--spacing-400);
   }
 }
 
@@ -41,7 +41,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .thumbnailLink {
@@ -97,7 +97,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .stat {
@@ -127,13 +127,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
   flex-shrink: 0;
 
   @include breakpoint(md) {
     flex-direction: row;
     align-items: center;
-    gap: var(--space-sm);
+    gap: var(--spacing-300);
   }
 }
 

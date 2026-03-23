@@ -19,8 +19,8 @@
 .tierRow {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--spacing-300);
+  padding: var(--spacing-300);
   min-height: 44px;
   border-bottom: 1px solid var(--color-neutral-200);
   cursor: pointer;
@@ -39,7 +39,7 @@
 .tierRowSelected {
   border-left: 4px solid var(--color-primary-500);
   background-color: rgb(30 74 64 / 8%);
-  padding-left: calc(var(--space-sm) - 4px);
+  padding-left: calc(var(--spacing-300) - 4px);
 
   &:hover {
     background-color: rgb(30 74 64 / 8%);
@@ -101,7 +101,7 @@
 }
 
 .tierDescription {
-  margin-top: var(--space-3xs);
+  margin-top: var(--spacing-50);
   font-size: var(--font-size-xs);
   color: var(--color-neutral-600);
   line-height: 1.5;
@@ -109,14 +109,14 @@
 
 // Accordion section
 .accordion {
-  margin-top: var(--space-sm);
+  margin-top: var(--spacing-300);
 }
 
 .accordionToggle {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm);
+  gap: var(--spacing-200);
+  padding: var(--spacing-300);
   width: 100%;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-300);
@@ -164,7 +164,7 @@
 }
 
 .accordionContent {
-  padding: var(--space-sm);
+  padding: var(--spacing-300);
   font-size: var(--font-size-sm);
   color: var(--color-neutral-600);
   line-height: 1.6;

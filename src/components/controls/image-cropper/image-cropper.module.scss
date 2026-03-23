@@ -3,7 +3,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
   width: 100%;
 }
 
@@ -23,8 +23,8 @@
 .controls {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: 0 var(--space-xs);
+  gap: var(--spacing-300);
+  padding: 0 var(--spacing-200);
 }
 
 .zoomLabel {
@@ -68,6 +68,6 @@
 
 .actions {
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
   justify-content: flex-end;
 }

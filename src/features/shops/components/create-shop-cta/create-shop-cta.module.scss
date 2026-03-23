@@ -4,15 +4,15 @@
   background: var(--color-neutral-200);
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
-  padding: var(--space-md) var(--space-base);
+  padding: var(--spacing-600) var(--spacing-400);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--spacing-700) var(--spacing-600);
   }
 }
 
@@ -35,5 +35,5 @@
 }
 
 .ctaLink {
-  margin-top: var(--space-xs);
+  margin-top: var(--spacing-200);
 }

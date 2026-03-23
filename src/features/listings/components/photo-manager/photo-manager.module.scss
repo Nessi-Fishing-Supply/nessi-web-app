@@ -9,11 +9,11 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 
   @include breakpoint(md) {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--space-sm);
+    gap: var(--spacing-300);
   }
 }
 
@@ -23,8 +23,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xs);
-  padding: var(--space-md);
+  gap: var(--spacing-200);
+  padding: var(--spacing-600);
   border: 2px dashed var(--color-neutral-400);
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -136,8 +136,8 @@
 // Cover badge (top-left)
 .coverBadge {
   position: absolute;
-  top: var(--space-2xs);
-  left: var(--space-2xs);
+  top: var(--spacing-100);
+  left: var(--spacing-100);
   z-index: 2;
 }
 
@@ -184,7 +184,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
   aspect-ratio: 1;
   border: 2px dashed var(--color-neutral-400);
   border-radius: var(--radius-sm);
@@ -213,22 +213,22 @@
 
 // Minimum photos indicator
 .minPhotosHint {
-  margin-top: var(--space-xs);
+  margin-top: var(--spacing-200);
   font-size: var(--font-size-xs);
   color: var(--color-neutral-500);
 }
 
 // Mobile bottom sheet for photo source selection
 .bottomSheet {
-  padding: var(--space-base);
+  padding: var(--spacing-400);
 }
 
 .bottomSheetOption {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
   width: 100%;
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   background: none;
@@ -239,7 +239,7 @@
   min-height: 44px;
 
   & + & {
-    margin-top: var(--space-xs);
+    margin-top: var(--spacing-200);
   }
 
   &:hover {
@@ -263,7 +263,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: var(--space-2xs);
+  padding: var(--spacing-100);
   background-color: var(--color-error-500);
   color: var(--color-white);
   font-size: 10px;

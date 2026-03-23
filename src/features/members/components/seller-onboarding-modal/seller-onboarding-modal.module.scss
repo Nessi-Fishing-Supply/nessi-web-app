@@ -3,7 +3,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 }
 
 .heading {
@@ -12,7 +12,7 @@
   color: var(--color-neutral-900);
   margin: 0;
   letter-spacing: -0.02em;
-  padding-right: var(--space-lg);
+  padding-right: var(--spacing-700);
 
   @include breakpoint(md) {
     font-size: var(--font-size-3xl);
@@ -22,7 +22,7 @@
 .body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 }
 
 .bodyText {
@@ -35,8 +35,8 @@
 .termsRow {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-xs);
-  padding: var(--space-xs) 0;
+  gap: var(--spacing-200);
+  padding: var(--spacing-200) 0;
 }
 
 .checkbox {
@@ -56,7 +56,7 @@
 }
 
 .backRow {
-  margin-bottom: var(--space-2xs);
+  margin-bottom: var(--spacing-100);
 }
 
 .back {
@@ -85,11 +85,11 @@
 .cards {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   @include breakpoint(md) {
     flex-direction: row;
-    gap: var(--space-md);
+    gap: var(--spacing-600);
   }
 }
 
@@ -97,8 +97,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-lg) var(--space-base);
+  gap: var(--spacing-200);
+  padding: var(--spacing-700) var(--spacing-400);
   border: 2px solid var(--color-neutral-300);
   border-radius: var(--radius-lg);
   background: var(--color-white);
@@ -147,5 +147,5 @@
 }
 
 .footer {
-  padding-top: var(--space-xs);
+  padding-top: var(--spacing-200);
 }

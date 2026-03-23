@@ -21,11 +21,11 @@
 }
 
 .progressWrapper {
-  padding: var(--space-md) var(--space-lg) 0;
+  padding: var(--spacing-600) var(--spacing-700) 0;
   background: var(--color-white);
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-2xl) 0;
+    padding: var(--spacing-700) var(--spacing-900) 0;
   }
 }
 

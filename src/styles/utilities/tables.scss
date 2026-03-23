@@ -1,7 +1,7 @@
 @use '@/styles/mixins/breakpoints' as *;
 
 table {
-  margin: var(--space-md) 0;
+  margin: var(--spacing-600) 0;
   overflow: auto;
   display: block;
 
@@ -13,8 +13,8 @@ table {
   thead {
     th {
       position: relative;
-      padding-left: var(--space-sm);
-      padding-bottom: var(--space-sm);
+      padding-left: var(--spacing-300);
+      padding-bottom: var(--spacing-300);
       text-align: left;
 
       &::after {
@@ -42,7 +42,7 @@ table {
         height: 100%;
         vertical-align: top;
         font-size: var(--font-size-sm, 0.875rem);
-        padding: var(--space-md) var(--space-sm);
+        padding: var(--spacing-600) var(--spacing-300);
         border: inherit;
 
         p {

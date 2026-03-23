@@ -3,13 +3,13 @@
 .step {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--spacing-800);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 }
 
 .heading {
@@ -24,7 +24,7 @@
   font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-neutral-800);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--spacing-200);
 }
 
 .fieldGroup {
@@ -60,7 +60,7 @@
 }
 
 .currencyPrefix {
-  padding: var(--space-sm) var(--space-xs) var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-200) var(--spacing-300) var(--spacing-400);
   font-size: var(--font-size-2xl);
   font-weight: 600;
   color: var(--color-neutral-500);
@@ -72,7 +72,7 @@
   flex: 1;
   border: none;
   outline: none;
-  padding: var(--space-sm) var(--space-base) var(--space-sm) var(--space-2xs);
+  padding: var(--spacing-300) var(--spacing-400) var(--spacing-300) var(--spacing-100);
   font-size: var(--font-size-2xl);
   font-weight: 600;
   color: var(--color-neutral-900);
@@ -86,7 +86,7 @@
 }
 
 .errorText {
-  margin-top: var(--space-2xs);
+  margin-top: var(--spacing-100);
   font-size: var(--font-size-sm);
   color: var(--color-error-500);
 }
@@ -96,8 +96,8 @@
 .feeCard {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-base);
+  gap: var(--spacing-200);
+  padding: var(--spacing-400);
   background-color: var(--color-neutral-100);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-neutral-200);
@@ -110,7 +110,7 @@
 }
 
 .feeRowNet {
-  padding-top: var(--space-xs);
+  padding-top: var(--spacing-200);
   border-top: 1px solid var(--color-neutral-300);
 }
 
@@ -135,9 +135,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2xs);
-  padding-top: var(--space-xs);
-  margin-top: var(--space-2xs);
+  gap: var(--spacing-100);
+  padding-top: var(--spacing-200);
+  margin-top: var(--spacing-100);
   border-top: 1px solid var(--color-neutral-200);
 }
 
@@ -165,7 +165,7 @@
 .shippingToggle {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   @include breakpoint(sm) {
     flex-direction: row;
@@ -177,8 +177,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-2xs);
-  padding: var(--space-base);
+  gap: var(--spacing-100);
+  padding: var(--spacing-400);
   background-color: var(--color-white);
   border: 2px solid var(--color-neutral-300);
   border-radius: var(--radius-md);

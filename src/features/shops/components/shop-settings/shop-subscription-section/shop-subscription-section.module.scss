@@ -4,10 +4,10 @@
   background: var(--color-white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-base) var(--space-md);
+    padding: var(--spacing-400) var(--spacing-600);
   }
 }
 
@@ -16,11 +16,11 @@
   font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-xs);
+  margin: 0 0 var(--spacing-200);
 }
 
 .description {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
-  margin: 0 0 var(--space-base);
+  margin: 0 0 var(--spacing-400);
 }

@@ -3,14 +3,14 @@
 .photosStep {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .title {
@@ -26,7 +26,7 @@
   justify-content: center;
   background: none;
   border: none;
-  padding: var(--space-2xs);
+  padding: var(--spacing-100);
   color: var(--color-neutral-500);
   cursor: pointer;
   border-radius: var(--radius-full);
@@ -76,7 +76,7 @@
   font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--spacing-300);
 }
 
 .guidanceList {
@@ -85,13 +85,13 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .guidanceTip {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-700);
-  padding-left: var(--space-sm);
+  padding-left: var(--spacing-300);
   position: relative;
 
   &::before {

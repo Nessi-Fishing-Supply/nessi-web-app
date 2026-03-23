@@ -2,11 +2,11 @@
 
 .container {
   display: flex;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: var(--space-xs);
+  padding-bottom: var(--spacing-200);
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
@@ -24,7 +24,7 @@
   scroll-snap-align: start;
   flex-shrink: 0;
   min-height: 44px;
-  padding: var(--space-xs) var(--space-base);
+  padding: var(--spacing-200) var(--spacing-400);
   border-radius: var(--radius-2xl);
   border: 1px solid var(--color-neutral-300);
   background: var(--color-white);

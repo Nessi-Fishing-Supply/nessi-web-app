@@ -3,13 +3,13 @@
   align-items: center;
   width: 100%;
   background-color: var(--color-surface-100);
-  padding: var(--space-lg);
-  gap: var(--space-md);
+  padding: var(--spacing-700);
+  gap: var(--spacing-600);
 }
 
 .logo {
   fill: var(--color-accent-500);
-  height: var(--space-lg);
+  height: var(--spacing-700);
 }
 
 .button {
@@ -18,8 +18,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--space-xs);
+  padding: var(--spacing-300) var(--spacing-600);
+  border-radius: var(--spacing-200);
   border: none;
   font-weight: 600;
 }
@@ -30,9 +30,9 @@
 
   input {
     width: 100%;
-    border-radius: var(--space-xs);
+    border-radius: var(--spacing-200);
     border: 2px solid var(--color-primary-500);
-    padding: var(--space-xs);
+    padding: var(--spacing-200);
     background-color: transparent;
 
     &::placeholder {
@@ -43,7 +43,7 @@
 
 .searchButton {
   position: absolute;
-  right: var(--space-2xs);
+  right: var(--spacing-100);
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -55,8 +55,8 @@
   margin: none;
 
   > svg {
-    width: var(--space-md);
-    height: var(--space-md);
+    width: var(--spacing-600);
+    height: var(--spacing-600);
     color: var(--color-primary-500);
   }
 }
@@ -74,14 +74,14 @@
 }
 
 .icon {
-  width: var(--space-lg);
-  height: var(--space-lg);
+  width: var(--spacing-700);
+  height: var(--spacing-700);
   color: var(--color-neutral-900);
 }
 
 .navAvatar {
-  width: var(--space-lg);
-  height: var(--space-lg);
+  width: var(--spacing-700);
+  height: var(--spacing-700);
   border-radius: 50%;
   object-fit: cover;
 }
@@ -90,8 +90,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--space-lg);
-  height: var(--space-lg);
+  width: var(--spacing-700);
+  height: var(--spacing-700);
   border-radius: 50%;
   background-color: var(--color-primary-500);
   color: var(--color-white);
@@ -107,8 +107,8 @@
   align-items: center;
   justify-content: center;
   border-top: 1px solid var(--color-surface-300);
-  padding: var(--space-base) var(--space-xl);
-  gap: var(--space-sm);
+  padding: var(--spacing-400) var(--spacing-800);
+  gap: var(--spacing-300);
 }
 
 .categoryLink {
@@ -116,7 +116,7 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0 var(--space-xs);
+  padding: 0 var(--spacing-200);
   color: var(--color-primary);
   font-size: var(--font-size-sm);
   font-weight: bold;
@@ -124,7 +124,7 @@
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  border-radius: var(--space-2xs);
+  border-radius: var(--spacing-100);
   transition: color 0.15s ease;
 
   &:hover {
@@ -141,9 +141,9 @@
 .switchItem {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
   width: 100%;
-  padding: var(--space-xs) 0;
+  padding: var(--spacing-200) 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -180,8 +180,8 @@
 }
 
 .switchIcon {
-  width: var(--space-base);
-  height: var(--space-base);
+  width: var(--spacing-400);
+  height: var(--spacing-400);
   margin-left: auto;
   color: var(--color-neutral-500);
 }

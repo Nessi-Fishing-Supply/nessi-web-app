@@ -1,7 +1,7 @@
 .link {
   display: flex;
   align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
   text-decoration: none;
   transition: all 0.25s ease;
 
@@ -48,6 +48,6 @@
 }
 
 .icon {
-  width: var(--space-base);
-  height: var(--space-base);
+  width: var(--spacing-400);
+  height: var(--spacing-400);
 }

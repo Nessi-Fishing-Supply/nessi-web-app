@@ -30,15 +30,15 @@
 
 .page {
   max-width: 720px;
-  padding: var(--space-md) var(--space-sm);
+  padding: var(--spacing-600) var(--spacing-300);
 
   @include breakpoint(md) {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--spacing-700) var(--spacing-600);
   }
 }
 
 .header {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--spacing-700);
 }
 
 .title {
@@ -48,14 +48,14 @@
 .contextHint {
   color: var(--color-neutral-500);
   font-size: var(--font-size-sm);
-  margin-top: var(--space-3xs);
+  margin-top: var(--spacing-50);
 }
 
 .ctaGrid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
-  margin-bottom: var(--space-lg);
+  gap: var(--spacing-400);
+  margin-bottom: var(--spacing-700);
 
   @include breakpoint(md) {
     flex-direction: row;
@@ -65,8 +65,8 @@
 .sellerSection {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-lg);
+  gap: var(--spacing-200);
+  margin-bottom: var(--spacing-700);
 }
 
 .sellerHeading {
@@ -78,5 +78,5 @@
 .shopPlaceholder {
   font-size: var(--font-size-base);
   color: var(--color-neutral-600);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--spacing-700);
 }

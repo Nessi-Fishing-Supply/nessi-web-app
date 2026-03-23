@@ -14,16 +14,16 @@
 .hero {
   position: relative;
   width: 100%;
-  padding: var(--space-lg) var(--space-base);
+  padding: var(--spacing-700) var(--spacing-400);
   background: var(--color-surface-100);
   border-bottom: 3px solid var(--color-accent-500);
 
   @include breakpoint(md) {
-    padding: var(--space-xl) var(--space-lg);
+    padding: var(--spacing-800) var(--spacing-700);
   }
 
   @include breakpoint(lg) {
-    padding: var(--space-xl) var(--space-2xl);
+    padding: var(--spacing-800) var(--spacing-900);
   }
 }
 
@@ -31,13 +31,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-md);
+  gap: var(--spacing-600);
 }
 
 .heroText {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .heroTitle {
@@ -62,11 +62,11 @@
 .viewProfile {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3xs);
+  gap: var(--spacing-50);
   color: var(--color-primary-600);
   font-size: var(--font-size-sm);
   text-decoration: none;
-  margin-top: var(--space-xs);
+  margin-top: var(--spacing-200);
 
   &:hover {
     text-decoration: underline;
@@ -209,23 +209,23 @@
 /* ── Two-column layout ── */
 .layout {
   width: 100%;
-  padding: var(--space-base);
+  padding: var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-md);
+    padding: var(--spacing-600);
   }
 
   @include breakpoint(lg) {
     display: grid;
     grid-template-columns: 380px 1fr;
-    gap: var(--space-md);
-    padding: var(--space-lg) var(--space-lg);
+    gap: var(--spacing-600);
+    padding: var(--spacing-700) var(--spacing-700);
   }
 
   @include breakpoint(xl) {
     grid-template-columns: 420px 1fr;
-    gap: var(--space-lg);
-    padding: var(--space-lg) var(--space-2xl);
+    gap: var(--spacing-700);
+    padding: var(--spacing-700) var(--spacing-900);
   }
 }
 
@@ -233,12 +233,12 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
-  margin-bottom: var(--space-md);
+  gap: var(--spacing-400);
+  margin-bottom: var(--spacing-600);
 
   @include breakpoint(lg) {
     position: sticky;
-    top: var(--space-md);
+    top: var(--spacing-600);
     margin-bottom: 0;
     align-self: start;
   }
@@ -260,13 +260,13 @@
 .sidebarFooter {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .footerActions {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   button:first-child {
     width: 50%;
@@ -276,7 +276,7 @@
 .deleteLink {
   background: none;
   border: none;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--spacing-200) var(--spacing-300);
   font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--color-error-700);
@@ -312,7 +312,7 @@
 }
 
 .dangerPanelOpen .dangerPanelInner {
-  padding: var(--space-base);
+  padding: var(--spacing-400);
   background: var(--color-error-100);
   border: 1px solid var(--color-error-200);
   border-radius: var(--radius-md);
@@ -321,7 +321,7 @@
 .dangerText {
   color: var(--color-neutral-700);
   font-size: var(--font-size-sm);
-  margin: 0 0 var(--space-base);
+  margin: 0 0 var(--spacing-400);
   line-height: 1.6;
 }
 
@@ -329,7 +329,7 @@
 .main {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--spacing-600);
   min-width: 0;
   max-width: 720px;
 }
@@ -337,10 +337,10 @@
 .sections {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 
   @include breakpoint(md) {
-    gap: var(--space-md);
+    gap: var(--spacing-600);
   }
 }
 
@@ -354,13 +354,13 @@
     font-size: var(--font-size-lg);
     font-weight: 800;
     color: var(--color-destructive-500);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--spacing-300);
   }
 
   > p {
     color: var(--color-neutral-600);
     font-size: var(--font-size-sm);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--spacing-600);
     line-height: 1.6;
   }
 }
@@ -368,11 +368,11 @@
 .deleteActions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 
   @include breakpoint(sm) {
     flex-direction: row;
-    gap: var(--space-sm);
+    gap: var(--spacing-300);
     justify-content: flex-end;
   }
 }
@@ -381,23 +381,23 @@
   > p {
     color: var(--color-neutral-600);
     font-size: var(--font-size-sm);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--spacing-300);
   }
 }
 
 .shopWarningHeading {
   color: var(--color-warning-700);
   font-size: var(--font-size-lg);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--spacing-300);
 }
 
 .shopList {
   list-style: none;
   padding: 0;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--spacing-600);
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
 }
 
 .shopLink {

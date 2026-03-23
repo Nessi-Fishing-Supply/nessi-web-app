@@ -4,10 +4,10 @@
   background: var(--color-white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-base) var(--space-md);
+    padding: var(--spacing-400) var(--spacing-600);
   }
 }
 
@@ -16,13 +16,13 @@
   font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--spacing-300);
 }
 
 .description {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
-  margin: 0 0 var(--space-base);
+  margin: 0 0 var(--spacing-400);
 }
 
 .emptyText {
@@ -34,18 +34,18 @@
 .selectRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   @include breakpoint(sm) {
     flex-direction: row;
     align-items: flex-end;
-    gap: var(--space-base);
+    gap: var(--spacing-400);
   }
 }
 
 .select {
   min-height: 44px;
-  padding: var(--space-xs) var(--space-base);
+  padding: var(--spacing-200) var(--spacing-400);
   font-size: var(--font-size-base);
   border: 1.5px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
@@ -63,7 +63,7 @@
 .modalContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   h2 {
     font-family: var(--font-family-primary);
@@ -82,21 +82,21 @@
 
 .modalActions {
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
   justify-content: flex-end;
-  padding-top: var(--space-xs);
+  padding-top: var(--spacing-200);
 }
 
 .confirmHint {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--spacing-300);
 }
 
 .confirmInput {
   width: 100%;
   min-height: 44px;
-  padding: var(--space-xs) var(--space-base);
+  padding: var(--spacing-200) var(--spacing-400);
   font-size: var(--font-size-base);
   border: 1.5px solid var(--color-neutral-400);
   border-radius: var(--radius-md);

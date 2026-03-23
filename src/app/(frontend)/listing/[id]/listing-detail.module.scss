@@ -7,7 +7,7 @@
   padding-bottom: 72px;
 
   @include breakpoint(lg) {
-    padding-bottom: var(--space-xl);
+    padding-bottom: var(--spacing-800);
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
@@ -21,8 +21,8 @@
 
   @include breakpoint(lg) {
     flex-direction: row;
-    gap: var(--space-xl);
-    padding: var(--space-md) var(--space-base);
+    gap: var(--spacing-800);
+    padding: var(--spacing-600) var(--spacing-400);
   }
 }
 
@@ -36,12 +36,12 @@
 
 // Details column — right side, sticky on desktop
 .detailsColumn {
-  padding: var(--space-base);
+  padding: var(--spacing-400);
 
   @include breakpoint(lg) {
     flex: 1;
     position: sticky;
-    top: var(--space-md);
+    top: var(--spacing-600);
     align-self: flex-start;
     padding: 0;
   }
@@ -51,15 +51,15 @@
 .conditionRow {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-xs);
+  gap: var(--spacing-200);
+  margin-bottom: var(--spacing-200);
 }
 
 .quantityBadge {
   font-size: var(--font-size-xs);
   color: var(--color-neutral-600);
   background-color: var(--color-neutral-100);
-  padding: var(--space-3xs) var(--space-xs);
+  padding: var(--spacing-50) var(--spacing-200);
   border-radius: var(--radius-sm);
   font-weight: 500;
 }
@@ -69,7 +69,7 @@
   font-size: var(--font-size-lg);
   font-weight: 600;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-xs);
+  margin: 0 0 var(--spacing-200);
   line-height: 1.3;
 
   @include breakpoint(md) {
@@ -79,7 +79,7 @@
 
 // Price
 .priceRow {
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--spacing-300);
 }
 
 .price {
@@ -96,9 +96,9 @@
 .shippingRow {
   display: flex;
   align-items: center;
-  gap: var(--space-2xs);
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-md);
+  gap: var(--spacing-100);
+  margin-bottom: var(--spacing-600);
+  padding-bottom: var(--spacing-600);
   border-bottom: 1px solid var(--color-neutral-200);
 }
 
@@ -121,12 +121,12 @@
 
 // Sold banner
 .soldBanner {
-  padding: var(--space-md);
+  padding: var(--spacing-600);
   background-color: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   text-align: center;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--spacing-600);
 }
 
 .soldText {
@@ -139,8 +139,8 @@
 .actionButtons {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-600);
 }
 
 .messageLink {
@@ -151,27 +151,27 @@
   cursor: not-allowed;
   background: none;
   border: none;
-  padding: var(--space-xs) 0;
+  padding: var(--spacing-200) 0;
 }
 
 // Seller section
 .sellerSection {
-  padding-top: var(--space-sm);
+  padding-top: var(--spacing-300);
 }
 
 // Below-fold content
 .belowFold {
-  padding: 0 var(--space-base);
+  padding: 0 var(--spacing-400);
 
   @include breakpoint(lg) {
-    padding: 0 var(--space-base);
+    padding: 0 var(--spacing-400);
     max-width: 58%;
   }
 }
 
 // Content sections with visual separation
 .contentSection {
-  padding: var(--space-md) 0;
+  padding: var(--spacing-600) 0;
   border-bottom: 1px solid var(--color-neutral-200);
 }
 
@@ -179,7 +179,7 @@
   font-size: var(--font-size-md);
   font-weight: 700;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--spacing-300);
 
   @include breakpoint(md) {
     font-size: var(--font-size-lg);
@@ -206,7 +206,7 @@
 
 .specRow {
   display: flex;
-  padding: var(--space-xs) 0;
+  padding: var(--spacing-200) 0;
   border-bottom: 1px solid var(--color-neutral-100);
   font-size: var(--font-size-sm);
 
@@ -228,13 +228,13 @@
 
 // Report
 .reportRow {
-  padding: var(--space-md) var(--space-base);
+  padding: var(--spacing-600) var(--spacing-400);
 }
 
 .reportLink {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
   color: var(--color-neutral-500);
   font-size: var(--font-size-xs);
   cursor: pointer;
@@ -264,8 +264,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-sm);
-  padding: var(--space-xs) var(--space-base);
+  gap: var(--spacing-300);
+  padding: var(--spacing-200) var(--spacing-400);
   background-color: var(--color-white);
   border-top: 1px solid var(--color-neutral-200);
   box-shadow: var(--shadow-lg);

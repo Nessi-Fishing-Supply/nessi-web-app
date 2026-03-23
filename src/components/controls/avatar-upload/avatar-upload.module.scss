@@ -38,7 +38,7 @@
 
   &:focus-visible {
     outline: 3px solid var(--color-accent-500);
-    outline-offset: var(--space-2xs);
+    outline-offset: var(--spacing-100);
   }
 
   &:disabled {
@@ -61,20 +61,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
   background: linear-gradient(135deg, var(--color-primary-700) 0%, var(--color-primary-500) 100%);
   border-radius: 50%;
 }
 
 .placeholderIcon {
-  width: var(--space-lg);
-  height: var(--space-lg);
+  width: var(--spacing-700);
+  height: var(--spacing-700);
   color: var(--color-surface-300);
   opacity: 0.7;
 
   @include breakpoint(md) {
-    width: var(--space-xl);
-    height: var(--space-xl);
+    width: var(--spacing-800);
+    height: var(--spacing-800);
   }
 }
 
@@ -98,8 +98,8 @@
 }
 
 .spinner {
-  width: var(--space-md);
-  height: var(--space-md);
+  width: var(--spacing-600);
+  height: var(--spacing-600);
   border: 3px solid rgb(255 255 255 / 35%);
   border-top-color: var(--color-white);
   border-radius: 50%;
@@ -108,10 +108,10 @@
 
 .cameraIcon {
   position: absolute;
-  bottom: var(--space-2xs);
-  right: var(--space-2xs);
-  width: var(--space-xl);
-  height: var(--space-xl);
+  bottom: var(--spacing-100);
+  right: var(--spacing-100);
+  width: var(--spacing-800);
+  height: var(--spacing-800);
   border-radius: 50%;
   background: var(--color-accent-500);
   color: var(--color-white);

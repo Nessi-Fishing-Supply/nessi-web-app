@@ -8,16 +8,16 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--spacing-200);
   width: 100%;
-  padding: var(--space-base);
+  padding: var(--spacing-400);
   background: var(--color-white);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-neutral-200);
   box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
 
   @include breakpoint(md) {
-    padding: var(--space-md);
+    padding: var(--spacing-600);
     border-radius: var(--radius-lg);
   }
 }
@@ -26,7 +26,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 }
 
 .label {
@@ -50,14 +50,14 @@
 
 .track {
   width: 100%;
-  height: var(--space-sm);
+  height: var(--spacing-300);
   background-color: var(--color-neutral-200);
   border-radius: var(--radius-2xl);
   overflow: hidden;
   position: relative;
 
   @include breakpoint(md) {
-    height: var(--space-base);
+    height: var(--spacing-400);
   }
 }
 
@@ -78,20 +78,20 @@
 .milestones {
   display: flex;
   justify-content: space-between;
-  padding: 0 var(--space-2xs);
+  padding: 0 var(--spacing-100);
 }
 
 .milestone {
-  width: var(--space-xs);
-  height: var(--space-xs);
+  width: var(--spacing-200);
+  height: var(--spacing-200);
   border-radius: 50%;
   background-color: var(--color-neutral-300);
   transition: var(--transition-basic);
   border: 2px solid var(--color-white);
 
   @include breakpoint(md) {
-    width: var(--space-sm);
-    height: var(--space-sm);
+    width: var(--spacing-300);
+    height: var(--spacing-300);
   }
 }
 

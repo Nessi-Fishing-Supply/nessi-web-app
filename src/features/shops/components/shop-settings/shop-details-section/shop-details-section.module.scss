@@ -4,10 +4,10 @@
   background: var(--color-white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-sm) var(--space-base);
+  padding: var(--spacing-300) var(--spacing-400);
 
   @include breakpoint(md) {
-    padding: var(--space-base) var(--space-md);
+    padding: var(--spacing-400) var(--spacing-600);
   }
 }
 
@@ -16,18 +16,18 @@
   font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--spacing-300);
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-base);
+  gap: var(--spacing-400);
 
   @include breakpoint(md) {
     flex-direction: row;
     align-items: flex-start;
-    gap: var(--space-lg);
+    gap: var(--spacing-700);
   }
 }
 
@@ -43,14 +43,14 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
   flex: 1;
 }
 
 .fieldRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .fieldLabel {
@@ -63,7 +63,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--spacing-100);
 }
 
 .availabilityIcon {
@@ -96,7 +96,7 @@
 .modalContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
 
   h2 {
     font-family: var(--font-family-primary);
@@ -115,7 +115,7 @@
 
 .modalActions {
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--spacing-300);
   justify-content: flex-end;
-  padding-top: var(--space-xs);
+  padding-top: var(--spacing-200);
 }
