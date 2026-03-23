@@ -20,13 +20,13 @@
 }
 
 .requiredIndicator {
-  color: var(--color-error);
+  color: var(--color-error-500);
 }
 
 .customCheckbox {
   width: var(--space-base);
   height: var(--space-base);
-  border: 1px solid var(--color-dark);
+  border: 1px solid var(--color-neutral-900);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -36,8 +36,8 @@
 }
 
 .customCheckbox.checked {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
 }
 
 .checkIcon {
@@ -49,5 +49,5 @@
 .errorText {
   margin-top: var(--space-2xs);
   font-size: var(--font-size-sm);
-  color: var(--color-error);
+  color: var(--color-error-500);
 }

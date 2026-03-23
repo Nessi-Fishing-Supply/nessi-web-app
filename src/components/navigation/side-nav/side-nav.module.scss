@@ -15,8 +15,8 @@
     flex-direction: column;
     width: 64px;
     min-height: 100vh;
-    background: var(--color-cream);
-    border-right: 1px solid var(--color-off-white);
+    background: var(--color-surface-100);
+    border-right: 1px solid var(--color-surface-300);
     padding: var(--space-md) var(--space-xs);
     flex-shrink: 0;
   }
@@ -42,7 +42,7 @@
     transition: var(--transition-color);
 
     &:hover {
-      background: var(--color-light);
+      background: var(--color-surface-100);
     }
 
     /* Target the anchor/link inside each li —
@@ -52,7 +52,7 @@
       align-items: center;
       gap: var(--space-sm);
       padding: var(--space-sm);
-      color: var(--color-gray-700) !important;
+      color: var(--color-neutral-700) !important;
       text-decoration: none;
       font-size: var(--font-size-sm);
       font-weight: 500;
@@ -70,11 +70,11 @@
       }
 
       &:hover {
-        color: var(--color-primary) !important;
+        color: var(--color-primary-500) !important;
       }
 
       &:focus-visible {
-        outline: 2px solid var(--color-primary);
+        outline: 2px solid var(--color-primary-500);
         outline-offset: 2px;
       }
     }
@@ -87,7 +87,7 @@
       width: var(--space-md);
       height: var(--space-md);
       flex-shrink: 0;
-      color: var(--color-primary);
+      color: var(--color-primary-500);
 
       svg {
         width: 100%;

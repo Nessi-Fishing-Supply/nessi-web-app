@@ -27,22 +27,22 @@
 }
 
 .completed {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   color: var(--color-white);
   box-shadow: 0 2px 8px rgb(30 74 64 / 25%);
 }
 
 .current {
-  background-color: var(--color-secondary);
+  background-color: var(--color-accent-500);
   color: var(--color-white);
   box-shadow: 0 2px 8px rgb(226 119 57 / 30%);
   transform: scale(1.1);
 }
 
 .future {
-  background-color: var(--color-gray-100);
+  background-color: var(--color-neutral-200);
   border: none;
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
 }
 
 .line {
@@ -62,9 +62,9 @@
 }
 
 .lineCompleted {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
 }
 
 .linePending {
-  background-color: var(--color-gray-200);
+  background-color: var(--color-neutral-300);
 }

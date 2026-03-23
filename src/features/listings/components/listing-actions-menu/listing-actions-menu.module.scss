@@ -4,7 +4,7 @@
   margin: 0 0 var(--space-sm);
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -30,25 +30,25 @@
   border-radius: var(--radius-sm);
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   cursor: pointer;
   text-align: left;
 
   &:hover {
-    background-color: var(--color-gray-50);
+    background-color: var(--color-neutral-100);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: -2px;
     border-radius: var(--radius-sm);
   }
 }
 
 .actionDanger {
-  color: var(--color-error);
+  color: var(--color-error-500);
 
   &:hover {
-    background-color: color-mix(in srgb, var(--color-error) 5%, transparent);
+    background-color: color-mix(in srgb, var(--color-error-500) 5%, transparent);
   }
 }

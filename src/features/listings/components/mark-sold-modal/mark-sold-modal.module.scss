@@ -8,20 +8,20 @@
   margin: 0;
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .listingTitle {
   margin: 0;
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .listedPrice {
   margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 .fieldGroup {
@@ -33,24 +33,24 @@
 .label {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .optional {
   font-weight: 400;
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
 }
 
 .priceInputWrapper {
   display: flex;
   align-items: center;
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-neutral-400);
   border-radius: var(--radius-sm);
   overflow: hidden;
 
   &:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 15%, transparent);
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary-500) 15%, transparent);
   }
 }
 
@@ -58,9 +58,9 @@
   padding: 0 var(--space-xs);
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-gray-400);
-  background-color: var(--color-gray-50);
-  border-right: 1px solid var(--color-gray-300);
+  color: var(--color-neutral-500);
+  background-color: var(--color-neutral-100);
+  border-right: 1px solid var(--color-neutral-400);
   line-height: 44px;
 }
 

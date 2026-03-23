@@ -8,13 +8,13 @@
 
 // Form feedback messages
 .errorMessage {
-  color: var(--color-error);
+  color: var(--color-error-500);
   font-size: var(--font-size-sm, 0.875rem);
   margin: 0;
 }
 
 .successMessage {
-  color: var(--color-success);
+  color: var(--color-success-500);
   font-size: var(--font-size-sm, 0.875rem);
   margin: 0;
 }

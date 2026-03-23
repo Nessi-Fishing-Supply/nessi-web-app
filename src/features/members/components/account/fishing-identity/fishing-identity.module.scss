@@ -45,7 +45,7 @@
 .sectionLabel {
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.6;
@@ -57,10 +57,10 @@
   width: 100%;
   min-height: 44px;
   padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-sm);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   background: var(--color-white);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
   cursor: pointer;
@@ -71,12 +71,12 @@
   transition: var(--transition-smooth);
 
   &:hover {
-    border-color: var(--color-primary--light);
+    border-color: var(--color-primary-400);
     box-shadow: var(--shadow-xs);
   }
 
   &:focus-visible {
     outline: none;
-    border-color: var(--color-primary);
+    border-color: var(--color-primary-500);
   }
 }

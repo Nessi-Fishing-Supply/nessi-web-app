@@ -13,7 +13,7 @@
   padding: var(--space-base);
   background: var(--color-white);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-gray-100);
+  border: 1px solid var(--color-neutral-200);
   box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
 
   @include breakpoint(md) {
@@ -32,7 +32,7 @@
 .label {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -40,7 +40,7 @@
 .percentage {
   font-size: var(--font-size-lg);
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   letter-spacing: -0.02em;
 
   @include breakpoint(md) {
@@ -51,7 +51,7 @@
 .track {
   width: 100%;
   height: var(--space-sm);
-  background-color: var(--color-gray-100);
+  background-color: var(--color-neutral-200);
   border-radius: var(--radius-2xl);
   overflow: hidden;
   position: relative;
@@ -66,10 +66,10 @@
   border-radius: var(--radius-2xl);
   background: linear-gradient(
     90deg,
-    var(--color-primary--dark) 0%,
-    var(--color-primary) 35%,
-    var(--color-primary--light) 65%,
-    var(--color-secondary) 100%
+    var(--color-primary-700) 0%,
+    var(--color-primary-500) 35%,
+    var(--color-primary-400) 65%,
+    var(--color-accent-500) 100%
   );
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
   animation: progress-fill 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
@@ -85,7 +85,7 @@
   width: var(--space-xs);
   height: var(--space-xs);
   border-radius: 50%;
-  background-color: var(--color-gray-200);
+  background-color: var(--color-neutral-300);
   transition: var(--transition-basic);
   border: 2px solid var(--color-white);
 
@@ -96,6 +96,6 @@
 }
 
 .milestoneReached {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary--light);
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-400);
 }

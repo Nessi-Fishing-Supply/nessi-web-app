@@ -16,7 +16,7 @@
 .title {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
   margin: 0;
 }
 
@@ -27,7 +27,7 @@
   background: none;
   border: none;
   padding: var(--space-2xs);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   cursor: pointer;
   border-radius: var(--radius-full);
   min-height: 44px;
@@ -40,18 +40,18 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
 
 .minPhotosHint {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   margin: 0;
 }
 
@@ -61,21 +61,21 @@
   justify-content: center;
   width: 100%;
   min-height: 160px;
-  border: 2px dashed var(--color-gray-200);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
-  background: var(--color-gray-50);
+  background: var(--color-neutral-100);
 }
 
 .loadingText {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   margin: 0;
 }
 
 .guidanceTitle {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
   margin: 0 0 var(--space-sm);
 }
 
@@ -90,7 +90,7 @@
 
 .guidanceTip {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-700);
+  color: var(--color-neutral-700);
   padding-left: var(--space-sm);
   position: relative;
 
@@ -98,6 +98,6 @@
     content: '•';
     position: absolute;
     left: 0;
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 }

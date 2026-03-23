@@ -14,17 +14,17 @@
   width: 100%;
   background: none;
   border: none;
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 1px solid var(--color-neutral-300);
   cursor: pointer;
   text-align: left;
   transition: var(--transition-color);
 
   &:hover .accordionTitle {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
@@ -32,7 +32,7 @@
 .accordionTitle {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   transition: color ease 0.2s;
 
   @include breakpoint(md) {
@@ -43,7 +43,7 @@
 .accordionChevron {
   flex-shrink: 0;
   font-size: var(--font-size-md);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   transition: transform 0.25s ease;
 }
 
@@ -96,7 +96,7 @@
   cursor: pointer;
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   text-decoration: underline;
   min-height: 44px;
   display: inline-flex;
@@ -108,7 +108,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 

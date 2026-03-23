@@ -62,7 +62,7 @@
 
     &::after {
       font-size: var(--font-size-xs);
-      color: var(--color-dark);
+      color: var(--color-neutral-900);
       margin-top: 1px;
     }
   }
@@ -101,7 +101,7 @@
     .swiper-pagination-bullet {
       width: var(--space-2xs);
       height: var(--space-2xs);
-      background: var(--color-gray-500);
+      background: var(--color-neutral-500);
       margin: 0 !important;
       opacity: 1;
 
@@ -201,7 +201,7 @@
 
     &::after {
       font-size: var(--font-size-xs);
-      color: var(--color-dark);
+      color: var(--color-neutral-900);
       margin-top: 1px;
     }
 
@@ -257,7 +257,7 @@
     .swiper-pagination-bullet {
       width: var(--space-2xs);
       height: var(--space-2xs);
-      background: var(--color-gray-500);
+      background: var(--color-neutral-500);
       margin: 0 !important;
       opacity: 1;
 

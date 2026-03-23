@@ -13,7 +13,7 @@
 }
 
 .description {
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-base);
   max-width: 480px;
@@ -26,7 +26,7 @@
   }
 
   > p {
-    color: var(--color-gray-600);
+    color: var(--color-neutral-600);
     font-size: var(--font-size-sm);
     margin-bottom: var(--space-sm);
   }
@@ -34,7 +34,7 @@
 
 .confirmHint {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   margin: 0 0 var(--space-xs);
 }
 
@@ -43,13 +43,13 @@
   min-height: 44px;
   padding: var(--space-xs) var(--space-base);
   font-size: var(--font-size-base);
-  border: 1.5px solid var(--color-gray-300);
+  border: 1.5px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-md);
   outline: none;
 
   &:focus-visible {
-    border-color: var(--color-primary);
+    border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px rgb(var(--color-primary-rgb, 0 122 255) / 15%);
   }
 }

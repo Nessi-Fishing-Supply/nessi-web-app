@@ -1,5 +1,5 @@
 .container {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   width: 100%;
   display: flex;
   align-items: center;
@@ -9,7 +9,7 @@
 }
 
 .text {
-  color: var(--color-light);
+  color: var(--color-surface-100);
   font-size: 12px;
   text-transform: capitalize;
   text-align: center;
@@ -20,7 +20,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-xxs);
-  color: var(--color-off-white);
+  color: var(--color-surface-300);
   font-weight: 600;
   font-size: 14px;
   text-decoration: none;
@@ -42,7 +42,7 @@
 .dismissButton {
   background: none;
   border: none;
-  color: var(--color-light);
+  color: var(--color-surface-100);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -54,7 +54,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-light);
+    outline: 2px solid var(--color-surface-100);
     outline-offset: 2px;
   }
 }

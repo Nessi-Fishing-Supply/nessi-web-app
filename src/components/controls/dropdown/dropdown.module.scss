@@ -46,26 +46,26 @@
 }
 
 .dropdownTitle {
-  border-top: solid 1px var(--color-gray-100);
+  border-top: solid 1px var(--color-neutral-200);
 
   > p {
     padding: var(--space-sm) var(--space-base) 0 var(--space-base);
     text-transform: uppercase;
     font-weight: 700;
     font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
+    color: var(--color-neutral-600);
   }
 }
 
 .dropdownDivider {
-  border-top: solid 1px var(--color-gray-100);
+  border-top: solid 1px var(--color-neutral-200);
   margin: var(--space-xs) 0;
   list-style: none;
 }
 
 .dropdownItemNoClick {
   cursor: default;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   margin: 0;
   padding: var(--space-sm) var(--space-base);
 }

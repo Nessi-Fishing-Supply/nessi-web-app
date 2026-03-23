@@ -7,18 +7,18 @@
 
 .emailText {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   text-align: center;
 }
 
 .emailAddress {
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .instructions {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   text-align: center;
 }
 
@@ -34,36 +34,36 @@
   text-align: center;
   font-size: var(--font-size-xl);
   font-family: var(--font-family-primary);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   background: transparent;
-  border: 2px solid var(--color-gray-300);
+  border: 2px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
   outline: none;
   transition: var(--transition-color);
 
   &:focus {
-    border-color: var(--color-primary);
-    outline: 2px solid var(--color-primary);
+    border-color: var(--color-primary-500);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 0;
   }
 
   &:hover:not(:focus) {
-    border-color: var(--color-primary--light);
+    border-color: var(--color-primary-400);
   }
 }
 
 .digitInputError {
-  border-color: var(--color-error);
+  border-color: var(--color-error-500);
 
   &:focus {
-    border-color: var(--color-error);
-    outline-color: var(--color-error);
+    border-color: var(--color-error-500);
+    outline-color: var(--color-error-500);
   }
 }
 
 .error {
   font-size: var(--font-size-sm);
-  color: var(--color-error);
+  color: var(--color-error-500);
   text-align: center;
 }
 
@@ -79,17 +79,17 @@
   border: none;
   padding: 0;
   font-size: var(--font-size-sm);
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   text-decoration: underline;
   cursor: pointer;
   transition: var(--transition-color);
 
   &:hover:not(:disabled) {
-    color: var(--color-primary--dark);
+    color: var(--color-primary-700);
   }
 
   &:disabled {
-    color: var(--color-gray-400);
+    color: var(--color-neutral-500);
     text-decoration: none;
     cursor: not-allowed;
   }
@@ -97,7 +97,7 @@
 
 .cooldownText {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 .spinner {
@@ -106,5 +106,5 @@
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--font-size-sm);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
 }

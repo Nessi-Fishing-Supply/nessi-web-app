@@ -18,7 +18,7 @@
 
   &:hover,
   &:focus-visible {
-    background-color: var(--color-gray-50);
+    background-color: var(--color-neutral-100);
 
     .editIcon {
       opacity: 1;
@@ -26,7 +26,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
@@ -37,14 +37,14 @@
 }
 
 .placeholder {
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
 }
 
 .editIcon {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   font-size: var(--font-size-sm);
   opacity: 0;
   transition: var(--transition-basic);
@@ -66,9 +66,9 @@
   padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   background-color: var(--color-white);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-neutral-400);
   border-radius: var(--radius-sm);
   transition: var(--transition-basic);
   box-sizing: border-box;
@@ -76,7 +76,7 @@
 
   &:focus {
     outline: none;
-    border-color: var(--color-primary);
+    border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px rgb(30 74 64 / 15%);
   }
 
@@ -94,7 +94,7 @@
 
 .charCounter {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   text-align: right;
   line-height: 1;
 }
@@ -117,7 +117,7 @@
   min-width: 44px;
   min-height: 44px;
   padding: var(--space-xs);
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   border: none;
   border-radius: var(--radius-sm);
   color: var(--color-white);
@@ -126,11 +126,11 @@
   transition: var(--transition-basic);
 
   &:hover:not(:disabled) {
-    background-color: var(--color-primary--dark);
+    background-color: var(--color-primary-700);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
@@ -141,15 +141,15 @@
 }
 
 .cancelBtn {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-700);
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-700);
 
   &:hover:not(:disabled) {
-    background-color: var(--color-gray-200);
+    background-color: var(--color-neutral-300);
   }
 
   &:focus-visible {
-    outline-color: var(--color-gray-600);
+    outline-color: var(--color-neutral-600);
   }
 }
 
@@ -172,21 +172,21 @@
   padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   background-color: var(--color-white);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   transition: var(--transition-basic);
   box-sizing: border-box;
   min-height: 44px;
 
   &::placeholder {
-    color: var(--color-gray-400);
+    color: var(--color-neutral-500);
   }
 
   &:focus {
     outline: none;
-    border-color: var(--color-primary);
+    border-color: var(--color-primary-500);
     background-color: var(--color-white);
   }
 

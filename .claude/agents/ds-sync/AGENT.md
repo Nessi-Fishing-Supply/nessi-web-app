@@ -34,6 +34,7 @@ docs/design-specs/
 │   │   ├── colors.png
 │   │   ├── typography.png
 │   │   ├── buttons.png
+│   │   ├── showcase-current.png  # Component showcase page screenshot
 │   │   └── ...
 │   └── metadata.json          # { url, timestamp, version, tokenCount }
 ├── v2/
@@ -145,7 +146,19 @@ Write `{baseDir}/{version}/metadata.json`:
 }
 ```
 
-### Phase 6: Update Symlink
+### Phase 6: Screenshot Component Showcase
+
+If the dev server is running at `http://localhost:3000`:
+
+1. Navigate to `http://localhost:3000/dev/components` using Playwright `browser_navigate`
+2. Take a full-page screenshot using `browser_take_screenshot` with `fullPage: true`
+3. Save to `{baseDir}/{version}/screenshots/showcase-current.png`
+
+This screenshot captures the current state of ALL working Nessi components on a single page. It serves as a visual baseline for comparing before/after design token changes.
+
+If the dev server is not running, skip this phase and note it in the metadata.
+
+### Phase 7: Update Symlink
 
 Create or update `{baseDir}/latest` symlink pointing to the new version directory.
 

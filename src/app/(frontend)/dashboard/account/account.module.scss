@@ -7,7 +7,7 @@
 .page {
   width: 100%;
   min-height: 100vh;
-  background: var(--color-cream);
+  background: var(--color-surface-100);
 }
 
 /* ── Clean hero with orange accent line ── */
@@ -15,8 +15,8 @@
   position: relative;
   width: 100%;
   padding: var(--space-lg) var(--space-base);
-  background: var(--color-cream);
-  border-bottom: 3px solid var(--color-secondary);
+  background: var(--color-surface-100);
+  border-bottom: 3px solid var(--color-accent-500);
 
   @include breakpoint(md) {
     padding: var(--space-xl) var(--space-lg);
@@ -43,7 +43,7 @@
 .heroTitle {
   font-size: var(--font-size-xl);
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   margin: 0;
   letter-spacing: -0.02em;
 
@@ -55,7 +55,7 @@
 .heroSubtitle {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   margin: 0;
 }
 
@@ -76,7 +76,7 @@
 .heroIcon {
   display: inline-flex;
   align-items: center;
-  color: var(--color-off-white);
+  color: var(--color-surface-300);
   font-size: var(--font-size-3xl);
 
   @include breakpoint(md) {
@@ -245,9 +245,9 @@
 }
 
 .profileCard {
-  background: var(--color-cream);
+  background: var(--color-surface-100);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-100);
+  border: 1px solid var(--color-neutral-200);
   overflow: hidden;
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
 }
@@ -285,7 +285,7 @@
   min-height: 44px;
 
   &:hover {
-    color: var(--color-error-900);
+    color: var(--color-error-700);
     text-decoration: underline;
   }
 
@@ -313,13 +313,13 @@
 
 .dangerPanelOpen .dangerPanelInner {
   padding: var(--space-base);
-  background: var(--color-error-50);
+  background: var(--color-error-100);
   border: 1px solid var(--color-error-200);
   border-radius: var(--radius-md);
 }
 
 .dangerText {
-  color: var(--color-gray-700);
+  color: var(--color-neutral-700);
   font-size: var(--font-size-sm);
   margin: 0 0 var(--space-base);
   line-height: 1.6;
@@ -353,12 +353,12 @@
   > h2 {
     font-size: var(--font-size-lg);
     font-weight: 800;
-    color: var(--color-tertiary);
+    color: var(--color-destructive-500);
     margin-bottom: var(--space-sm);
   }
 
   > p {
-    color: var(--color-gray-600);
+    color: var(--color-neutral-600);
     font-size: var(--font-size-sm);
     margin-bottom: var(--space-md);
     line-height: 1.6;
@@ -379,7 +379,7 @@
 
 .shopWarning {
   > p {
-    color: var(--color-gray-600);
+    color: var(--color-neutral-600);
     font-size: var(--font-size-sm);
     margin-bottom: var(--space-sm);
   }

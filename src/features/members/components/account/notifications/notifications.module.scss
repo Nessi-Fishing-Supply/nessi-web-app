@@ -20,7 +20,7 @@
   justify-content: space-between;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-xs);
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-md);
 
   &:last-child {
@@ -38,11 +38,11 @@
 .labelText {
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .description {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   line-height: 1.4;
 }

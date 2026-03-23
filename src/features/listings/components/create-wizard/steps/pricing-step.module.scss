@@ -15,7 +15,7 @@
 .heading {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
   margin: 0;
 }
 
@@ -23,7 +23,7 @@
   display: block;
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-gray-800);
+  color: var(--color-neutral-800);
   margin-bottom: var(--space-xs);
 }
 
@@ -38,23 +38,23 @@
   display: flex;
   align-items: center;
   gap: 0;
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
   background-color: var(--color-white);
   overflow: hidden;
   transition: border-color 0.15s ease;
 
   &:focus-within {
-    border-color: var(--color-primary);
-    outline: 2px solid var(--color-primary);
+    border-color: var(--color-primary-500);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
   &.inputError {
-    border-color: var(--color-error);
+    border-color: var(--color-error-500);
 
     &:focus-within {
-      outline-color: var(--color-error);
+      outline-color: var(--color-error-500);
     }
   }
 }
@@ -63,7 +63,7 @@
   padding: var(--space-sm) var(--space-xs) var(--space-sm) var(--space-base);
   font-size: var(--font-size-2xl);
   font-weight: 600;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   line-height: 1;
   user-select: none;
 }
@@ -75,20 +75,20 @@
   padding: var(--space-sm) var(--space-base) var(--space-sm) var(--space-2xs);
   font-size: var(--font-size-2xl);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
   background: transparent;
   min-width: 0;
   line-height: 1;
 
   &::placeholder {
-    color: var(--color-gray-300);
+    color: var(--color-neutral-400);
   }
 }
 
 .errorText {
   margin-top: var(--space-2xs);
   font-size: var(--font-size-sm);
-  color: var(--color-error);
+  color: var(--color-error-500);
 }
 
 // Fee calculator card
@@ -98,9 +98,9 @@
   flex-direction: column;
   gap: var(--space-xs);
   padding: var(--space-base);
-  background-color: var(--color-gray-50);
+  background-color: var(--color-neutral-100);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-gray-100);
+  border: 1px solid var(--color-neutral-200);
 }
 
 .feeRow {
@@ -111,24 +111,24 @@
 
 .feeRowNet {
   padding-top: var(--space-xs);
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 1px solid var(--color-neutral-300);
 }
 
 .feeLabel {
   font-size: var(--font-size-base);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
 }
 
 .feeValue {
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-gray-800);
+  color: var(--color-neutral-800);
 }
 
 .feeValueNet {
   font-size: var(--font-size-md);
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
 }
 
 .feeComparison {
@@ -138,13 +138,13 @@
   gap: var(--space-2xs);
   padding-top: var(--space-xs);
   margin-top: var(--space-2xs);
-  border-top: 1px solid var(--color-gray-100);
+  border-top: 1px solid var(--color-neutral-200);
 }
 
 .feeComparisonLabel {
   font-size: var(--font-size-xs);
   font-weight: 600;
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   width: 100%;
@@ -152,12 +152,12 @@
 
 .feeComparisonItem {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
 }
 
 .feeComparisonDot {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-300);
+  color: var(--color-neutral-400);
 }
 
 // Shipping toggle
@@ -180,7 +180,7 @@
   gap: var(--space-2xs);
   padding: var(--space-base);
   background-color: var(--color-white);
-  border: 2px solid var(--color-gray-200);
+  border: 2px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   cursor: pointer;
   text-align: left;
@@ -190,28 +190,28 @@
   min-height: 44px;
 
   &:hover {
-    border-color: var(--color-primary--light);
+    border-color: var(--color-primary-400);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
   &.shippingOptionSelected {
-    border-color: var(--color-primary);
-    background-color: var(--color-light);
+    border-color: var(--color-primary-500);
+    background-color: var(--color-surface-100);
   }
 }
 
 .shippingOptionTitle {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
 }
 
 .shippingOptionDescription {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   line-height: 1.4;
 }

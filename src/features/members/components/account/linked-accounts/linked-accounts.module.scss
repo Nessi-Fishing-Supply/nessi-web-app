@@ -15,7 +15,7 @@
   transition: var(--transition-color);
 
   &:hover {
-    background: var(--color-gray-50);
+    background: var(--color-neutral-100);
   }
 }
 
@@ -32,9 +32,9 @@
   width: var(--space-2xl);
   height: var(--space-2xl);
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-off-white) 100%);
+  background: linear-gradient(135deg, var(--color-neutral-100) 0%, var(--color-surface-300) 100%);
   font-size: var(--font-size-xl);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   box-shadow: var(--shadow-xs);
 }
 
@@ -47,11 +47,11 @@
 .name {
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .status {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   font-style: italic;
 }

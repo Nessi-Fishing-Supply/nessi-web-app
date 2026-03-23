@@ -7,7 +7,7 @@
   padding: var(--space-sm);
   background-color: var(--color-white);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-gray-100);
+  border: 1px solid var(--color-neutral-200);
 
   @include breakpoint(md) {
     gap: var(--space-base);
@@ -22,7 +22,7 @@
   height: 60px;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background-color: var(--color-gray-50);
+  background-color: var(--color-neutral-100);
 
   @include breakpoint(md) {
     width: 80px;
@@ -33,7 +33,7 @@
 .thumbnailEmpty {
   width: 100%;
   height: 100%;
-  background-color: var(--color-gray-100);
+  background-color: var(--color-neutral-200);
 }
 
 .info {
@@ -49,7 +49,7 @@
   border-radius: var(--radius-sm);
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
@@ -58,7 +58,7 @@
   margin: 0;
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,7 +71,7 @@
 .titleLink {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
@@ -79,11 +79,11 @@
   display: block;
 
   &:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
@@ -102,13 +102,13 @@
 
 .stat {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 .draftLink {
   font-size: var(--font-size-xs);
   font-weight: 500;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   text-decoration: none;
 
   &:hover,
@@ -117,7 +117,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
@@ -140,7 +140,7 @@
 .price {
   font-size: var(--font-size-base);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   background: none;
   border: none;
   padding: 0;
@@ -157,11 +157,11 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
@@ -179,16 +179,16 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: var(--font-size-xl);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   letter-spacing: 1px;
 
   &:hover {
-    background-color: var(--color-gray-50);
-    color: var(--color-dark);
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-900);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }

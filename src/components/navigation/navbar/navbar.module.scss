@@ -2,19 +2,19 @@
   display: flex;
   align-items: center;
   width: 100%;
-  background-color: var(--color-light);
+  background-color: var(--color-surface-100);
   padding: var(--space-lg);
   gap: var(--space-md);
 }
 
 .logo {
-  fill: var(--color-secondary);
+  fill: var(--color-accent-500);
   height: var(--space-lg);
 }
 
 .button {
-  background-color: var(--color-secondary);
-  color: var(--color-dark);
+  background-color: var(--color-accent-500);
+  color: var(--color-neutral-900);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,12 +31,12 @@
   input {
     width: 100%;
     border-radius: var(--space-xs);
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--color-primary-500);
     padding: var(--space-xs);
     background-color: transparent;
 
     &::placeholder {
-      color: var(--color-primary);
+      color: var(--color-primary-500);
     }
   }
 }
@@ -57,7 +57,7 @@
   > svg {
     width: var(--space-md);
     height: var(--space-md);
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 }
 
@@ -66,7 +66,7 @@
   font-weight: 700;
   letter-spacing: 0.14px;
   text-transform: capitalize;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   background: none;
   border: none;
   padding: 0;
@@ -76,7 +76,7 @@
 .icon {
   width: var(--space-lg);
   height: var(--space-lg);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .navAvatar {
@@ -93,7 +93,7 @@
   width: var(--space-lg);
   height: var(--space-lg);
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   color: var(--color-white);
   font-size: var(--font-size-xs);
   font-weight: 700;
@@ -102,11 +102,11 @@
 
 .categories {
   width: 100%;
-  background-color: var(--color-light);
+  background-color: var(--color-surface-100);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid var(--color-off-white);
+  border-top: 1px solid var(--color-surface-300);
   padding: var(--space-base) var(--space-xl);
   gap: var(--space-sm);
 }
@@ -148,11 +148,11 @@
   border: none;
   cursor: pointer;
   font-size: var(--font-size-sm);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   text-align: left;
 
   &:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 }
 
@@ -164,7 +164,7 @@
   height: 24px;
   min-width: 24px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   color: var(--color-white);
   font-size: var(--font-size-2xs);
   font-weight: 700;
@@ -183,7 +183,7 @@
   width: var(--space-base);
   height: var(--space-base);
   margin-left: auto;
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
 }
 
 // Modal Styles

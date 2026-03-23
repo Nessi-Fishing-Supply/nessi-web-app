@@ -29,7 +29,7 @@
   gap: var(--space-2xs);
   padding: var(--space-sm);
   min-height: 80px;
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   background-color: var(--color-white);
   cursor: pointer;
@@ -38,44 +38,44 @@
     background-color var(--transition-color);
 
   &:hover {
-    border-color: var(--color-gray-400);
-    background-color: var(--color-gray-50);
+    border-color: var(--color-neutral-500);
+    background-color: var(--color-neutral-100);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
 
 .tileSelected {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-500);
   border-width: 2px;
-  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  background-color: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
 
   &:hover {
-    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    background-color: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
   }
 }
 
 .icon {
   font-size: var(--font-size-xl);
-  color: var(--color-gray-700);
+  color: var(--color-neutral-700);
 
   .tileSelected & {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 }
 
 .label {
   font-size: var(--font-size-xs);
   font-weight: 500;
-  color: var(--color-gray-700);
+  color: var(--color-neutral-700);
   text-align: center;
   line-height: 1.2;
 
   .tileSelected & {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
     font-weight: 600;
   }
 }

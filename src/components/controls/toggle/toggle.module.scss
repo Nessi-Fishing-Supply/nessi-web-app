@@ -13,13 +13,13 @@
   padding: 0;
   border: none;
   border-radius: var(--radius-2xl);
-  background: var(--color-gray-300);
+  background: var(--color-neutral-400);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease-out;
 
   &:focus-visible {
-    outline: 3px solid var(--color-primary);
+    outline: 3px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
@@ -30,7 +30,7 @@
 }
 
 .trackOn {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary--light) 100%);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-400) 100%);
 }
 
 .thumb {

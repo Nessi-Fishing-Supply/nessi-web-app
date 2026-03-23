@@ -11,25 +11,25 @@
 }
 
 .primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
 }
 
 .secondary {
-  background-color: var(--color-secondary);
+  background-color: var(--color-accent-500);
 }
 
 .error {
-  background-color: var(--color-error);
+  background-color: var(--color-error-500);
 }
 
 .success {
-  background-color: var(--color-success);
+  background-color: var(--color-success-500);
 }
 
 .warning {
-  background-color: var(--color-warning);
+  background-color: var(--color-warning-500);
 }
 
 .default {
-  background-color: var(--color-gray-500);
+  background-color: var(--color-neutral-500);
 }

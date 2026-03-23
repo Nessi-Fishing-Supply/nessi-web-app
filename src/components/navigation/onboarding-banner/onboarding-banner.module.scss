@@ -6,8 +6,8 @@
   justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-xs) var(--space-base);
-  background-color: var(--color-secondary--light);
-  color: var(--color-dark);
+  background-color: var(--color-accent-300);
+  color: var(--color-neutral-900);
 }
 
 .text {
@@ -20,12 +20,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2xs);
-  color: var(--color-primary--dark);
+  color: var(--color-primary-700);
   font-weight: 700;
   text-decoration: underline;
 
   &:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
   }
 
   > svg {
@@ -44,7 +44,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   flex-shrink: 0;
 
   > svg {
@@ -53,11 +53,11 @@
   }
 
   &:hover {
-    color: var(--color-gray-700);
+    color: var(--color-neutral-700);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }

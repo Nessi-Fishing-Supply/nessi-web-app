@@ -10,12 +10,12 @@
     > svg {
       width: var(--space-sm);
       height: var(--space-sm);
-      color: var(--color-primary);
+      color: var(--color-primary-500);
     }
   }
 
   .text {
     font-size: var(--font-size-xs);
-    color: var(--color-dark);
+    color: var(--color-neutral-900);
   }
 }

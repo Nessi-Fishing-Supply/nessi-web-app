@@ -25,30 +25,30 @@
   justify-content: center;
   gap: var(--space-xs);
   padding: var(--space-md);
-  border: 2px dashed var(--color-gray-300);
+  border: 2px dashed var(--color-neutral-400);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition:
     border-color var(--transition-color),
     background-color var(--transition-color);
   min-height: 120px;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 
   &:hover,
   &.dragOver {
-    border-color: var(--color-primary);
+    border-color: var(--color-primary-500);
     background-color: rgb(0 0 0 / 2%);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
 
 .dropZoneIcon {
   font-size: var(--font-size-2xl);
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
 }
 
 .dropZoneText {
@@ -58,7 +58,7 @@
 
 .dropZoneHint {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   text-align: center;
 }
 
@@ -68,7 +68,7 @@
   aspect-ratio: 1;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background-color: var(--color-gray-50);
+  background-color: var(--color-neutral-100);
 }
 
 .thumbnailError {
@@ -98,7 +98,7 @@
 
 .progressFill {
   height: 100%;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-500);
   transition: width var(--transition-basic);
 }
 
@@ -128,7 +128,7 @@
   box-shadow: var(--shadow-sm);
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
@@ -173,7 +173,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: -2px;
   }
 }
@@ -186,23 +186,23 @@
   justify-content: center;
   gap: var(--space-2xs);
   aspect-ratio: 1;
-  border: 2px dashed var(--color-gray-300);
+  border: 2px dashed var(--color-neutral-400);
   border-radius: var(--radius-sm);
   cursor: pointer;
   background: none;
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   font-size: var(--font-size-xs);
   transition:
     border-color var(--transition-color),
     color var(--transition-color);
 
   &:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    border-color: var(--color-primary-500);
+    color: var(--color-primary-500);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
@@ -215,7 +215,7 @@
 .minPhotosHint {
   margin-top: var(--space-xs);
   font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 // Mobile bottom sheet for photo source selection
@@ -229,12 +229,12 @@
   gap: var(--space-sm);
   width: 100%;
   padding: var(--space-sm) var(--space-base);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   background: none;
   cursor: pointer;
   font-size: var(--font-size-base);
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   transition: background-color var(--transition-color);
   min-height: 44px;
 
@@ -243,18 +243,18 @@
   }
 
   &:hover {
-    background-color: var(--color-gray-50);
+    background-color: var(--color-neutral-100);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
 
 .bottomSheetIcon {
   font-size: var(--font-size-lg);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 // Error message below thumbnail after 3 failed retries

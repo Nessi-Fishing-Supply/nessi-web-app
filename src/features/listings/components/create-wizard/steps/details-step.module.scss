@@ -15,7 +15,7 @@
 .heading {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
   margin: 0;
 }
 
@@ -27,6 +27,6 @@
 .counter {
   margin-top: var(--space-2xs);
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   text-align: right;
 }

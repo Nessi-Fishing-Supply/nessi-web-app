@@ -19,7 +19,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   font-size: var(--font-size-sm);
   cursor: pointer;
   min-height: 44px;
@@ -27,12 +27,12 @@
   align-items: center;
 
   &:hover {
-    color: var(--color-primary--dark);
+    color: var(--color-primary-700);
     text-decoration: underline;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
@@ -46,7 +46,7 @@
 .stepTitle {
   font-size: var(--font-size-xl);
   font-weight: 800;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   margin: 0;
   letter-spacing: -0.02em;
 
@@ -57,7 +57,7 @@
 
 .stepSubtitle {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   margin: var(--space-2xs) 0 0;
   line-height: 1.5;
 }
@@ -81,7 +81,7 @@
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-lg) var(--space-base);
-  border: 2px solid var(--color-gray-200);
+  border: 2px solid var(--color-neutral-300);
   border-radius: var(--radius-lg);
   background: var(--color-white);
   cursor: pointer;
@@ -93,24 +93,24 @@
   flex: 1;
 
   &:hover {
-    border-color: var(--color-gray-400);
+    border-color: var(--color-neutral-500);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
 
 .cardSelected {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary);
-  background: var(--color-primary--lightest, var(--color-gray-50));
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 1px var(--color-primary-500);
+  background: var(--color-primary-400est, var(--color-neutral-100));
 }
 
 .cardIcon {
   font-size: var(--font-size-3xl);
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,18 +119,18 @@
 .cardTitle {
   font-size: var(--font-size-base);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .cardDescription {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   line-height: 1.4;
 }
 
 .cardNote {
   font-size: var(--font-size-xs);
-  color: var(--color-secondary);
+  color: var(--color-accent-500);
   font-weight: 600;
   margin-top: var(--space-2xs);
 }

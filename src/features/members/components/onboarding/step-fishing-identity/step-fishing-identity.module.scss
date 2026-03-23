@@ -19,7 +19,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
   font-size: var(--font-size-sm);
   cursor: pointer;
   min-height: 44px;
@@ -27,12 +27,12 @@
   align-items: center;
 
   &:hover {
-    color: var(--color-primary--dark);
+    color: var(--color-primary-700);
     text-decoration: underline;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
@@ -46,7 +46,7 @@
 .stepTitle {
   font-size: var(--font-size-xl);
   font-weight: 800;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   margin: 0;
   letter-spacing: -0.02em;
 
@@ -57,7 +57,7 @@
 
 .stepSubtitle {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   margin: var(--space-2xs) 0 0;
   line-height: 1.5;
 }
@@ -78,7 +78,7 @@
 .sectionLabel {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-gray-800);
+  color: var(--color-neutral-800);
   margin: 0;
 }
 
@@ -86,21 +86,21 @@
   width: 100%;
   min-height: 44px;
   padding: var(--space-xs) var(--space-sm);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
   background: var(--color-white);
-  color: var(--color-gray-800);
+  color: var(--color-neutral-800);
   font-size: var(--font-size-base);
   cursor: pointer;
   appearance: auto;
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
   &:hover {
-    border-color: var(--color-gray-500);
+    border-color: var(--color-neutral-500);
   }
 
   @include breakpoint(md) {

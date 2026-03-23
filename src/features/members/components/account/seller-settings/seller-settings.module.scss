@@ -24,12 +24,12 @@
 .labelText {
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 .description {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   line-height: 1.4;
 }
 
@@ -38,13 +38,13 @@
   align-items: flex-start;
   gap: var(--space-xs);
   font-size: var(--font-size-sm);
-  color: var(--color-secondary--dark);
+  color: var(--color-accent-600);
   margin-top: var(--space-sm);
   padding: var(--space-sm);
   max-width: 320px;
   background: linear-gradient(135deg, rgb(226 119 57 / 6%) 0%, rgb(226 119 57 / 12%) 100%);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-secondary);
+  border-left: 3px solid var(--color-accent-500);
   line-height: 1.5;
 }
 
@@ -56,7 +56,7 @@
   max-width: 320px;
   background: linear-gradient(135deg, rgb(220 38 38 / 6%) 0%, rgb(220 38 38 / 12%) 100%);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-error);
+  border-left: 3px solid var(--color-error-500);
   line-height: 1.5;
 
   p {

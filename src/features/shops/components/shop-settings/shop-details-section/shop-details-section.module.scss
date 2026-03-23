@@ -15,7 +15,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-md);
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: var(--color-neutral-900);
   margin: 0 0 var(--space-sm);
 }
 
@@ -56,7 +56,7 @@
 .fieldLabel {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 .fieldValue {
@@ -74,22 +74,22 @@
 }
 
 .iconSuccess {
-  color: var(--color-success);
+  color: var(--color-success-500);
 }
 
 .iconError {
-  color: var(--color-error);
+  color: var(--color-error-500);
 }
 
 .errorText {
   font-size: var(--font-size-sm);
-  color: var(--color-error);
+  color: var(--color-error-500);
   margin: 0;
 }
 
 .slugPreview {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   margin: 0;
 }
 
@@ -102,13 +102,13 @@
     font-family: var(--font-family-primary);
     font-size: var(--font-size-md);
     font-weight: 600;
-    color: var(--color-gray-900);
+    color: var(--color-neutral-900);
     margin: 0;
   }
 
   p {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-700);
+    color: var(--color-neutral-700);
     margin: 0;
   }
 }

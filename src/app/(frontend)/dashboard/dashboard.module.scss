@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: var(--color-cream);
+  background: var(--color-surface-100);
 
   @include breakpoint(md) {
     flex-direction: row;
@@ -46,7 +46,7 @@
 }
 
 .contextHint {
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   font-size: var(--font-size-sm);
   margin-top: var(--space-3xs);
 }
@@ -77,6 +77,6 @@
 
 .shopPlaceholder {
   font-size: var(--font-size-base);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   margin-bottom: var(--space-lg);
 }

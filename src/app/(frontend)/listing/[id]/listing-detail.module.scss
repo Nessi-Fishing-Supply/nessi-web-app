@@ -57,8 +57,8 @@
 
 .quantityBadge {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-600);
-  background-color: var(--color-gray-50);
+  color: var(--color-neutral-600);
+  background-color: var(--color-neutral-100);
   padding: var(--space-3xs) var(--space-xs);
   border-radius: var(--radius-sm);
   font-weight: 500;
@@ -68,7 +68,7 @@
 .title {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   margin: 0 0 var(--space-xs);
   line-height: 1.3;
 
@@ -85,7 +85,7 @@
 .price {
   font-size: var(--font-size-2xl);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 
   @include breakpoint(md) {
     font-size: var(--font-size-3xl);
@@ -99,31 +99,31 @@
   gap: var(--space-2xs);
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .shippingIcon {
   flex-shrink: 0;
   font-size: var(--font-size-md);
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
 }
 
 .shippingLabel {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
 }
 
 .shippingFree {
   font-size: var(--font-size-sm);
-  color: var(--color-success);
+  color: var(--color-success-500);
   font-weight: 600;
 }
 
 // Sold banner
 .soldBanner {
   padding: var(--space-md);
-  background-color: var(--color-gray-50);
-  border: 1px solid var(--color-gray-200);
+  background-color: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
   text-align: center;
   margin-bottom: var(--space-md);
@@ -131,7 +131,7 @@
 
 .soldText {
   font-weight: 600;
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   font-size: var(--font-size-base);
 }
 
@@ -147,7 +147,7 @@
   text-align: center;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   cursor: not-allowed;
   background: none;
   border: none;
@@ -172,13 +172,13 @@
 // Content sections with visual separation
 .contentSection {
   padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .sectionTitle {
   font-size: var(--font-size-md);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   margin: 0 0 var(--space-sm);
 
   @include breakpoint(md) {
@@ -188,7 +188,7 @@
 
 .descriptionText {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-700);
+  color: var(--color-neutral-700);
   line-height: 1.6;
   margin: 0;
   white-space: pre-line;
@@ -207,7 +207,7 @@
 .specRow {
   display: flex;
   padding: var(--space-xs) 0;
-  border-bottom: 1px solid var(--color-gray-50);
+  border-bottom: 1px solid var(--color-neutral-100);
   font-size: var(--font-size-sm);
 
   &:last-child {
@@ -217,13 +217,13 @@
 
 .specLabel {
   flex: 0 0 140px;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-500);
   font-weight: 500;
 }
 
 .specValue {
   flex: 1;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
 }
 
 // Report
@@ -235,7 +235,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2xs);
-  color: var(--color-gray-400);
+  color: var(--color-neutral-500);
   font-size: var(--font-size-xs);
   cursor: pointer;
   background: none;
@@ -244,12 +244,12 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--color-gray-600);
+    color: var(--color-neutral-600);
     text-decoration: underline;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 }
@@ -267,7 +267,7 @@
   gap: var(--space-sm);
   padding: var(--space-xs) var(--space-base);
   background-color: var(--color-white);
-  border-top: 1px solid var(--color-gray-100);
+  border-top: 1px solid var(--color-neutral-200);
   box-shadow: var(--shadow-lg);
 
   @include breakpoint(lg) {
@@ -278,6 +278,6 @@
 .stickyPrice {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-dark);
+  color: var(--color-neutral-900);
   white-space: nowrap;
 }

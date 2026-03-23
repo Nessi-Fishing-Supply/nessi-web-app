@@ -26,7 +26,7 @@
   height: var(--space-lg);
   min-width: 44px;
   min-height: 44px;
-  color: var(--color-gray-600);
+  color: var(--color-neutral-600);
   background: transparent;
   display: flex;
   align-items: center;
@@ -37,12 +37,12 @@
   border-radius: var(--radius-sm);
 
   &:hover {
-    color: var(--color-dark);
-    background-color: var(--color-gray-100);
+    color: var(--color-neutral-900);
+    background-color: var(--color-neutral-200);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 

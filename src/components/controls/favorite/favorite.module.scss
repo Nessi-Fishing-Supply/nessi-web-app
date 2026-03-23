@@ -15,17 +15,17 @@
     transform: scale(1.1);
 
     > svg {
-      color: var(--color-primary);
+      color: var(--color-primary-500);
     }
   }
 
   > svg {
-    color: var(--color-dark);
+    color: var(--color-neutral-900);
     width: var(--space-base);
     height: var(--space-base);
 
     &.filled {
-      color: var(--color-primary);
+      color: var(--color-primary-500);
     }
   }
 }

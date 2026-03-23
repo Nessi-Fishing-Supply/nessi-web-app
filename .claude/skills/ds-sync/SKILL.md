@@ -11,6 +11,17 @@ Sync an external design system into the codebase. Extracts every token from a UR
 
 All output is versioned under `docs/design/` — extraction, diff, spec, plan, and screenshots live together per version, similar to how conductor tracks work.
 
+## Component Showcase
+
+A live component showcase page exists at `/dev/components` (dev-only, hidden in production). This page renders **every working Nessi component** on a single page — foundation tokens, controls, indicators, layout, and feature components.
+
+**When to use it:**
+- After applying design token changes, visit `/dev/components` to visually verify every component still looks correct
+- During the ds-sync interview, reference the showcase to see how token changes affect real components
+- The ds-sync agent automatically screenshots this page before and after token changes for visual diff
+
+**When adding new components:** Update `src/app/(frontend)/dev/components/page.tsx` to include the new component with representative props and states.
+
 ## Directory Structure
 
 ```
@@ -24,7 +35,8 @@ docs/design/
 │   └── metadata.json        # URL, timestamp, token counts
 ├── v2/
 │   └── ...                  # Next sync
-└── latest -> v2/            # Symlink to most recent
+├── latest -> v2/            # Symlink to most recent
+└── component-showcase-reference.html  # Scraped Stitch design system reference
 ```
 
 ## Process
@@ -113,7 +125,22 @@ Once all sections are approved, write the spec to `docs/design/{version}/spec.md
 
 Commit the spec.
 
-### 6. Transition
+### 6. Visual Verification via Component Showcase
+
+After all sections are approved in the spec but **before** implementation begins:
+
+1. Ensure the dev server is running (`pnpm dev`)
+2. Navigate to `http://localhost:3000/dev/components` using Playwright
+3. Take a full-page screenshot and save to `docs/design/{version}/screenshots/showcase-before.png`
+4. Present the screenshot to the user: "Here's how all components currently look. After implementation, we'll screenshot again to verify nothing broke."
+
+After implementation is complete (post-plan execution):
+
+1. Take another full-page screenshot: `docs/design/{version}/screenshots/showcase-after.png`
+2. Present both screenshots side-by-side for visual diff
+3. Flag any components that look visually broken or misaligned
+
+### 7. Transition
 
 Invoke the **writing-plans** skill to create a phased implementation plan. Save the plan to `docs/design/{version}/plan.md`.
 
@@ -126,3 +153,5 @@ Invoke the **writing-plans** skill to create a phased implementation plan. Save 
 - If the codebase has tokens not in the design system, ask whether to keep or remove them.
 - All output goes in `docs/design/{version}/`, not scattered across the project.
 - Screenshots go in `docs/design/{version}/screenshots/`, never the project root.
+- Always screenshot the component showcase (`/dev/components`) before and after token implementation for visual regression verification.
+- When new components are added to the codebase, update the showcase page (`src/app/(frontend)/dev/components/page.tsx`) to include them.
