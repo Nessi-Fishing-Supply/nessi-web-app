@@ -6,18 +6,18 @@ export default function NotFound() {
       style={{
         maxWidth: '600px',
         margin: '0 auto',
-        padding: 'var(--space-3xl) var(--space-sm)',
+        padding: 'var(--spacing-1000) var(--spacing-300)',
         textAlign: 'center',
       }}
     >
-      <h1 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 'var(--space-sm)' }}>
+      <h1 style={{ fontSize: 'var(--font-size-1100)', marginBottom: 'var(--spacing-300)' }}>
         Shop Not Found
       </h1>
       <p
         style={{
-          color: 'var(--color-gray-600)',
-          fontSize: 'var(--font-size-base)',
-          marginBottom: 'var(--space-md)',
+          color: 'var(--color-neutral-600)',
+          fontSize: 'var(--font-size-700)',
+          marginBottom: 'var(--spacing-600)',
         }}
       >
         The shop you&apos;re looking for doesn&apos;t exist or has been removed.
@@ -26,7 +26,7 @@ export default function NotFound() {
         href="/"
         style={{
           color: 'var(--color-primary-600)',
-          fontSize: 'var(--font-size-base)',
+          fontSize: 'var(--font-size-700)',
           textDecoration: 'none',
         }}
       >
