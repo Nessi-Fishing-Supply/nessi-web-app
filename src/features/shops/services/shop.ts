@@ -121,25 +121,11 @@ export async function updateShop(id: string, data: ShopUpdate): Promise<Shop> {
 }
 
 export async function deleteShop(id: string): Promise<void> {
-  const response = await fetch(`/api/shops/${id}`, { method: 'DELETE' });
-
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.error || 'Failed to delete shop');
-  }
+  await del(`/api/shops/${id}`);
 }
 
 export async function updateShopSlug(shopId: string, slug: string): Promise<void> {
-  const response = await fetch('/api/shops/slug', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ shopId, slug }),
-  });
-
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.error || 'Failed to update shop slug');
-  }
+  await post('/api/shops/slug', { shopId, slug });
 }
 
 export async function getShopMembers(shopId: string): Promise<ShopMember[]> {

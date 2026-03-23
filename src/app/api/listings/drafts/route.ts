@@ -86,7 +86,8 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
     }
 
-    const { id } = await req.json();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
 
     if (!id) {
       return NextResponse.json({ error: 'Missing listing id' }, { status: 400, headers: AUTH_CACHE_HEADERS });
