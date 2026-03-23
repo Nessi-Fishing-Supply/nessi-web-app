@@ -97,6 +97,13 @@ export default function BottomSheet({
     [onClose],
   );
 
+  const portalTarget =
+    typeof document !== 'undefined'
+      ? (document.getElementById('modal-root') ?? document.body)
+      : null;
+
+  if (!portalTarget) return null;
+
   return ReactDOM.createPortal(
     <div
       className={`${styles.scrim} ${isOpen ? styles.scrimVisible : ''}`}
@@ -127,6 +134,6 @@ export default function BottomSheet({
         )}
       </div>
     </div>,
-    document.getElementById('modal-root') as HTMLElement,
+    portalTarget,
   );
 }
