@@ -70,10 +70,7 @@ export function useSearchFilters() {
 
   const filters = parseFilters(searchParams);
 
-  const setFilter = (
-    key: string,
-    value: string | string[] | number | boolean | undefined,
-  ) => {
+  const setFilter = (key: string, value: string | string[] | number | boolean | undefined) => {
     const next = new URLSearchParams(searchParams.toString());
 
     if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {

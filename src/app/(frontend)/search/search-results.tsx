@@ -2,7 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 import { useSearchFilters } from '@/features/listings/hooks/use-search-filters';
-import { useSearchListingsInfinite, useTrackSearchSuggestion } from '@/features/listings/hooks/use-search';
+import {
+  useSearchListingsInfinite,
+  useTrackSearchSuggestion,
+} from '@/features/listings/hooks/use-search';
 import FilterPanel from '@/features/listings/components/filter-panel';
 import FilterChips from '@/features/listings/components/filter-chips';
 import ListingCard from '@/features/listings/components/listing-card';
@@ -90,7 +93,9 @@ export default function SearchResults() {
             <EmptyState
               message={filters.q ? `No results for "${filters.q}"` : 'No results found'}
               description={
-                filters.q ? 'Try a different search term.' : 'Try different keywords or browse a category.'
+                filters.q
+                  ? 'Try a different search term.'
+                  : 'Try different keywords or browse a category.'
               }
               ctaLabel="Browse all listings"
               ctaHref="/"

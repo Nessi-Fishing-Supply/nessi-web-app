@@ -41,9 +41,7 @@ export default function SpeciesFilter({ selected, onChange, counts }: SpeciesFil
               />
               <span className={styles.checkbox} aria-hidden="true" />
               <span className={styles.label}>{species.label}</span>
-              {counts !== undefined && (
-                <span className={styles.count}>({count ?? 0})</span>
-              )}
+              {counts !== undefined && <span className={styles.count}>({count ?? 0})</span>}
             </label>
           );
         })}

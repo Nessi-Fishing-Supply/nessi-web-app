@@ -12,7 +12,8 @@ function buildSearchQueryString(filters: SearchFilters): string {
   if (filters.price_min !== undefined) params.set('price_min', String(filters.price_min));
   if (filters.price_max !== undefined) params.set('price_max', String(filters.price_max));
   if (filters.location_state) params.set('location_state', filters.location_state);
-  if (filters.free_shipping !== undefined) params.set('free_shipping', String(filters.free_shipping));
+  if (filters.free_shipping !== undefined)
+    params.set('free_shipping', String(filters.free_shipping));
   if (filters.species?.length) params.set('species', filters.species.join(','));
   if (filters.listing_type?.length) params.set('listing_type', filters.listing_type.join(','));
   if (filters.sort) params.set('sort', filters.sort);

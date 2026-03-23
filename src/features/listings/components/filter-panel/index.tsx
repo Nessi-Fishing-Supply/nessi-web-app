@@ -166,16 +166,10 @@ export default function FilterPanel({
 
   const mobileSheet = (
     <>
-      <button
-        className={styles.mobileButton}
-        onClick={() => setSheetOpen(true)}
-        type="button"
-      >
+      <button className={styles.mobileButton} onClick={() => setSheetOpen(true)} type="button">
         <HiAdjustments aria-hidden="true" />
         Filters
-        {activeFilterCount > 0 && (
-          <span className={styles.badge}>{activeFilterCount}</span>
-        )}
+        {activeFilterCount > 0 && <span className={styles.badge}>{activeFilterCount}</span>}
       </button>
 
       {isSheetOpen &&

@@ -23,7 +23,10 @@ export async function GET(req: Request) {
     // searchParams.get('listing_type')
 
     if (q !== null && q.length < 2) {
-      return NextResponse.json({ error: 'Search query must be at least 2 characters' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Search query must be at least 2 characters' },
+        { status: 400 },
+      );
     }
 
     const offset = (page - 1) * limit;
@@ -60,10 +63,7 @@ export async function GET(req: Request) {
       return query;
     };
 
-    const applySorting = (
-      base: ReturnType<typeof supabase.from>,
-      usedFts: boolean,
-    ) => {
+    const applySorting = (base: ReturnType<typeof supabase.from>, usedFts: boolean) => {
       if (sort === 'price_asc') {
         return base.order('price_cents', { ascending: true });
       } else if (sort === 'price_desc') {
@@ -102,9 +102,7 @@ export async function GET(req: Request) {
 
       if ((ftsCount ?? 0) > 0) {
         // FTS has results — fetch them
-        let dataQuery = applyFilters(
-          supabase.from('listings').select('*, listing_photos(*)'),
-        )
+        let dataQuery = applyFilters(supabase.from('listings').select('*, listing_photos(*)'))
           .textSearch('search_vector', q, { type: 'websearch' })
           .range(offset, offset + limit - 1);
 
@@ -173,9 +171,10 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: 'Failed to fetch listings' }, { status: 500 });
       }
 
-      let dataQuery = applyFilters(
-        supabase.from('listings').select('*, listing_photos(*)'),
-      ).range(offset, offset + limit - 1);
+      let dataQuery = applyFilters(supabase.from('listings').select('*, listing_photos(*)')).range(
+        offset,
+        offset + limit - 1,
+      );
 
       dataQuery = applySorting(dataQuery, usedFts);
       dataQuery = dataQuery.order('position', {

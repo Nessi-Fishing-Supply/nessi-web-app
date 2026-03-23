@@ -35,9 +35,10 @@ export async function GET(req: Request) {
         .limit(3),
     ]);
 
-    const suggestionItems: AutocompleteSuggestion[] = (suggestionsResult.data ?? []).map(
-      (row) => ({ term: row.term, type: 'suggestion' as const }),
-    );
+    const suggestionItems: AutocompleteSuggestion[] = (suggestionsResult.data ?? []).map((row) => ({
+      term: row.term,
+      type: 'suggestion' as const,
+    }));
 
     const listingItems: AutocompleteSuggestion[] = (listingsResult.data ?? []).map((row) => ({
       term: row.title,
