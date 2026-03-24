@@ -38,7 +38,15 @@ export type ShopUpdate = Omit<
   | 'is_verified'
 >;
 
-export type ShopMember = Database['public']['Tables']['shop_members']['Row'];
+export type ShopMemberRow = Database['public']['Tables']['shop_members']['Row'];
+
+export type ShopMember = ShopMemberRow & {
+  members: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
+};
 
 export type ShopMemberInsert = Omit<
   Database['public']['Tables']['shop_members']['Insert'],

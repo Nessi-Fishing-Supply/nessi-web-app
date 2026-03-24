@@ -88,11 +88,16 @@ export default function OwnershipTransferSection({ shop }: OwnershipTransferSect
             onChange={(e) => setSelectedMemberId(e.target.value)}
           >
             <option value="">Select a member…</option>
-            {transferableCandidates.map((m) => (
-              <option key={m.member_id} value={m.member_id}>
-                {m.member_id} ({m.role})
-              </option>
-            ))}
+            {transferableCandidates.map((m) => {
+              const name = m.members
+                ? `${m.members.first_name ?? ''} ${m.members.last_name ?? ''}`.trim()
+                : '';
+              return (
+                <option key={m.member_id} value={m.member_id}>
+                  {name || m.member_id} ({m.role})
+                </option>
+              );
+            })}
           </select>
 
           <Button
