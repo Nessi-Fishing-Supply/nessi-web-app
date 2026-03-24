@@ -65,6 +65,9 @@ Closes #{issue}
 ## Testing
 {What verification was performed — build status, lint status, test results}
 
+## Journey Diagrams
+{List journey files updated, or "No journey changes — feature does not affect user-facing flows"}
+
 ## Notes
 {Implementation decisions, trade-offs, anything a reviewer should know}
 

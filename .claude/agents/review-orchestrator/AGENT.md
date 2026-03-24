@@ -113,6 +113,24 @@ Flag as:
 - **[W] Warning** — `next/image` missing `sizes` prop, missing `priority` on likely LCP image, using deprecated `objectFit` prop instead of `style={{ objectFit }}`
 - **[W] Warning** — Upload route missing MIME validation, size limit, or Sharp processing
 
+### 8. Journey Diagram Audit
+
+If the changeset modifies API routes (`src/app/api/`), auth flows, listing states, cart logic, shop membership, or context switching, check whether the corresponding journey diagram in `docs/diagrams/journeys/` was updated.
+
+Cross-reference the changed files against this mapping:
+- `src/app/api/auth/` or `src/features/auth/` → `journeys/auth.md`
+- `src/app/api/listings/` or `src/features/listings/` → `journeys/seller.md`, `journeys/buyer.md`
+- `src/app/api/cart/` or `src/features/cart/` → `journeys/buyer.md`, `journeys/guest.md`
+- `src/app/api/shops/` or `src/features/shops/` → `journeys/shop-owner.md`, `journeys/shop-member.md`
+- `src/features/context/` → `journeys/context.md`
+- `src/features/members/` → `journeys/account.md`, `journeys/onboarding.md`
+- `src/app/api/recently-viewed/` or `src/features/recently-viewed/` → `journeys/buyer.md`, `journeys/guest.md`
+
+Flag as:
+- **[W] Warning** — User-facing flow changed but corresponding journey diagram not updated
+- **[W] Warning** — New API route added but not reflected in any journey diagram
+- **[I] Info** — Coverage tracker in `journeys/README.md` not updated for new flows
+
 ## Output
 
 Return:

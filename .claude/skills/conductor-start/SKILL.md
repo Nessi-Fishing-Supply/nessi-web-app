@@ -164,13 +164,28 @@ After review passes and before PR creation, update project documentation:
 
 4. **Diagrams** — If the changes introduce a new user journey, data flow, or significant architectural component, generate a Mermaid diagram via `/diagram` and save to `docs/diagrams/`. Update existing diagrams if the changes modify documented flows.
 
-5. **API documentation** — If new API routes were created or modified (`src/app/api/`), ensure the route's purpose, request/response format, and auth requirements are documented in the feature's CLAUDE.md.
+5. **Journey Diagrams** — If the changes affect any user-facing flow, update the relevant journey diagram(s) in `docs/diagrams/journeys/`. This is **mandatory** (not optional) when the feature:
+   - Adds, removes, or modifies an API route
+   - Changes auth, onboarding, or account flows
+   - Modifies listing states/transitions
+   - Affects cart, search, or recently viewed behavior
+   - Changes shop roles, membership, or context switching
+   - Introduces a new user persona or flow branch
+
+   Steps:
+   a. Identify which journey file(s) are affected (guest, auth, onboarding, buyer, seller, shop-owner, shop-member, account, context)
+   b. Update the Mermaid flowcharts to reflect the new/changed flow
+   c. Update the Coverage Tracker in `docs/diagrams/journeys/README.md` — check the "Built" box for new flows
+   d. If the feature creates an entirely new persona or flow category, create a new journey file and add it to the README index
+
+6. **API documentation** — If new API routes were created or modified (`src/app/api/`), ensure the route's purpose, request/response format, and auth requirements are documented in the feature's CLAUDE.md.
 
 Rules for this step:
 - Only update docs that are actually affected by the changes — don't touch unrelated docs
 - Documentation updates are committed as part of the final phase, not as a separate PR
 - If no documentation changes are needed (e.g., a pure bug fix with no architectural impact), skip this step and note "No doc updates needed" in the PR body
-- Diagrams are optional unless the feature introduces a new user-facing flow
+- Architecture diagrams (docs/diagrams/) are optional unless the feature introduces a new data flow or system component
+- Journey diagrams (docs/diagrams/journeys/) are mandatory when user-facing flows change — see item 5 above
 
 ### Step 7: PR Creation
 
