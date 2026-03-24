@@ -194,10 +194,7 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
         onClose={() => setIsEmailModalOpen(false)}
         ariaLabel="Change email address"
       >
-        <ChangeEmailForm
-          currentEmail={currentEmail}
-          onSuccess={handleEmailChangeSuccess}
-        />
+        <ChangeEmailForm currentEmail={currentEmail} onSuccess={handleEmailChangeSuccess} />
       </Modal>
     </section>
   );
