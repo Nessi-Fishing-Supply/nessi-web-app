@@ -45,6 +45,7 @@ import type { ListingCategory } from '@/features/listings/types/listing';
 // Cart
 import CartIcon from '@/features/cart/components/cart-icon';
 import { useCartMerge } from '@/features/cart/hooks/use-cart-merge';
+import { useRecentlyViewedMerge } from '@/features/recently-viewed/hooks/use-recently-viewed-merge';
 
 // Auth & Toast
 import { useAuth } from '@/features/auth/context';
@@ -78,6 +79,7 @@ export default function Navbar() {
   const switchToMember = useContextStore.use.switchToMember();
   const switchToShop = useContextStore.use.switchToShop();
   useCartMerge();
+  useRecentlyViewedMerge();
   const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');

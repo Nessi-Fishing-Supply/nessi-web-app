@@ -13,3 +13,16 @@ export {
 
 // Hooks
 export { useRecentlyViewed } from './hooks/use-recently-viewed';
+export {
+  useRecentlyViewedQuery,
+  useClearRecentlyViewed,
+  useMergeGuestViews,
+} from './hooks/use-recently-viewed-query';
+export { useRecentlyViewedMerge } from './hooks/use-recently-viewed-merge';
+
+// Services
+export {
+  getRecentlyViewedFromServer,
+  clearRecentlyViewedOnServer,
+  mergeGuestViewsOnServer,
+} from './services/recently-viewed';
