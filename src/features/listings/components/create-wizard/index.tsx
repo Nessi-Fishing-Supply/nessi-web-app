@@ -318,6 +318,7 @@ export default function CreateWizard({ initialDraft }: CreateWizardProps) {
         type: 'success',
         message: 'Listing published!',
         description: 'Your listing is now live on Nessi.',
+        subtitle: 'Share it with friends to get more views!',
       });
     } catch {
       showToast({

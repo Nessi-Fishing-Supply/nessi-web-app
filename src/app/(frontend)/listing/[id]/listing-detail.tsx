@@ -8,6 +8,7 @@ import PhotoLightbox from '@/features/listings/components/photo-lightbox';
 import SellerStrip from '@/features/listings/components/seller-strip';
 import ExpandableSection from '@/features/listings/components/expandable-section';
 import ConditionBadge from '@/features/listings/components/condition-badge';
+import ShareButton from '@/features/listings/components/share-button';
 import Button from '@/components/controls/button';
 import AddToCartButton from '@/features/cart/components/add-to-cart-button';
 import { formatPrice } from '@/features/shared/utils/format';
@@ -79,6 +80,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
             {listing.quantity > 1 && (
               <span className={styles.quantityBadge}>{listing.quantity} available</span>
             )}
+            <ShareButton listingId={listing.id} listingTitle={listing.title} />
           </div>
 
           {/* Title */}
