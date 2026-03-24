@@ -1,8 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { HiUser } from 'react-icons/hi';
 import AvatarUpload from '@/components/controls/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
+import Modal from '@/components/layout/modal';
+import ChangeEmailForm from '@/features/auth/components/change-email-form';
+import { useAuth } from '@/features/auth/context';
 import { useUpdateMember } from '@/features/members/hooks/use-member';
 import type { Member } from '@/features/members/types/member';
 import { useToast } from '@/components/indicators/toast/context';
@@ -17,7 +21,21 @@ interface PersonalInfoProps {
 
 export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
   const { showToast } = useToast();
+  const { user } = useAuth();
   const updateMember = useUpdateMember();
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+
+  const currentEmail = user?.email ?? '';
+
+  const handleEmailChangeSuccess = () => {
+    setIsEmailModalOpen(false);
+    showToast({
+      message: 'Email updated',
+      description: 'Your email address has been changed.',
+      type: 'success',
+      duration: 3000,
+    });
+  };
 
   const fullName = formatMemberName(member.first_name ?? '', member.last_name ?? '');
 
@@ -155,7 +173,32 @@ export default function PersonalInfo({ member, userId }: PersonalInfoProps) {
             />
           </div>
         </div>
+
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>Email</span>
+          <div className={styles.emailRow}>
+            <span className={styles.emailValue}>{currentEmail}</span>
+            <button
+              type="button"
+              className={styles.changeLink}
+              onClick={() => setIsEmailModalOpen(true)}
+            >
+              Change
+            </button>
+          </div>
+        </div>
       </div>
+
+      <Modal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        ariaLabel="Change email address"
+      >
+        <ChangeEmailForm
+          currentEmail={currentEmail}
+          onSuccess={handleEmailChangeSuccess}
+        />
+      </Modal>
     </section>
   );
 }

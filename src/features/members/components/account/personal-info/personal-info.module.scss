@@ -162,3 +162,46 @@
   color: var(--color-error-500);
   margin: 0;
 }
+
+/* ── Email row with change link ── */
+.emailRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
+.emailValue {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-800);
+  overflow-wrap: break-word;
+  word-break: break-all;
+  min-width: 0;
+}
+
+.changeLink {
+  background: none;
+  border: none;
+  padding: var(--spacing-100) var(--spacing-200);
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-primary-500);
+  font-size: var(--font-size-400);
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary-700);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
