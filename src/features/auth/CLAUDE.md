@@ -88,7 +88,8 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 
 - **login-form** -- Email/password login. Props: `onSuccess`, `onError`, `onClose`. On success, calls `onSuccess` to close the modal. No `banner` or `onResendVerification` props. Unverified email error shows an inline resend button. "Reset your password" link points to `/auth/reset-password`.
 - **registration-form** -- Two-step component: form → OTP. After registration API succeeds, transitions inline to the OTP verification step. `onSuccess` fires after OTP verification (not after form submit). Props: `onSuccess`, `onError`, `onSwitchToLogin`. Shows friendly duplicate email error with Sign in link.
-- **otp-input** -- Shared 6-digit OTP code input component. Used by `registration-form` (step 2) and `/auth/reset-password` (step 2). Props: `email`, `type`, `onSuccess`, `onResend`. Features: auto-advance on digit entry, paste support, auto-submit on last digit, 60-second resend cooldown, `autocomplete="one-time-code"` for mobile auto-fill, accessible with `aria-label` per input.
+- **otp-input** -- Shared 6-digit OTP code input component. Used by `registration-form` (step 2), `change-email-form` (step 2), and `/auth/reset-password` (step 2). Props: `email`, `type`, `onSuccess`, `onResend`. Features: auto-advance on digit entry, paste support, auto-submit on last digit, 60-second resend cooldown, `autocomplete="one-time-code"` for mobile auto-fill, accessible with `aria-label` per input.
+- **change-email-form** -- Two-step component: email input → OTP. Step 1 validates with `changeEmailSchema`, checks same-as-current client-side, calls `checkEmailAvailable` for duplicate detection, then `changeEmail`. Step 2 uses shared `OtpInput` with `type="email_change"`. Props: `currentEmail`, `onSuccess`. Used by `PersonalInfo` component in account settings via a modal.
 
 ## Test Coverage
 
