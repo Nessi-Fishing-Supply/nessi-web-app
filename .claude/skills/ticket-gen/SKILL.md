@@ -1,6 +1,6 @@
 ---
 name: ticket-gen
-description: Break a feature or task into execution-ready GitHub issues for the conductor to pick up
+description: Create tickets, write GitHub issues, break down features into tasks, generate backlog items, plan work items for the conductor kanban board — any request to produce issues or tickets MUST use this skill
 user-invocable: true
 argument-hint: "[feature description]"
 ---
@@ -130,6 +130,23 @@ Each issue gets:
 - Labels (type, priority, area, `conductor`)
 - Project fields set: Status (Todo), Priority, Area, Executor (Conductor)
 - Dependency links in body and as GitHub issue references
+- **Positioned in the kanban column** based on priority — the conductor pulls tickets from the top of the Todo column, so higher-priority tickets must be placed higher. After adding to the board and setting fields, position each ticket using the GraphQL API:
+
+```bash
+# Position ticket in the kanban column order
+# To place at the top (highest priority):
+gh api graphql -f query='mutation { updateProjectV2ItemPosition(input: { projectId: "PVT_kwDOCuq3-M4BSHz8", itemId: "'"$ITEM_ID"'" }) { clientMutationId } }'
+
+# To place after a specific item (e.g., after the last item in its priority group):
+gh api graphql -f query='mutation { updateProjectV2ItemPosition(input: { projectId: "PVT_kwDOCuq3-M4BSHz8", itemId: "'"$ITEM_ID"'", afterId: "'"$AFTER_ITEM_ID"'" }) { clientMutationId } }'
+```
+
+**Priority placement guidelines:**
+- P1 tickets → top of the column (before P2/P3 items)
+- P2 tickets → middle of the column (after P1, before P3)
+- P3 tickets → bottom of the column
+- Within a priority tier, place tickets in dependency order (blockers before dependents)
+- To find the last item in a priority group, query `gh project item-list 2 --owner Nessi-Fishing-Supply --format json` and find the item ID of the last ticket at the target priority level
 
 ## Rules
 
@@ -139,3 +156,5 @@ Each issue gets:
 - Bias toward safe, bounded execution
 - Remove ambiguity before creating — clarity > completeness
 - Always get user confirmation before creating GitHub issues
+- **CRITICAL: Every issue MUST be added to the Nessi Kanban board** (project #2, owner Nessi-Fishing-Supply). Never create a GitHub issue without also running `gh project item-add` and setting all project fields (Status, Priority, Area, Executor). An issue that exists only in GitHub Issues but not on the kanban board is a bug — the kanban board is the source of truth.
+- **NEVER use `gh issue create` without the kanban follow-up commands** shown in Step 3. If you are creating issues outside this skill, you are doing it wrong — use `/ticket-gen` instead.

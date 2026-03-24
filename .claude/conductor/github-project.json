@@ -11,6 +11,7 @@
     "status": {
       "id": "PVTSSF_lADOCuq3-M4BSHz8zg_v78E",
       "options": {
+        "pre_launch": "ea8a21f9",
         "todo": "f75ad846",
         "in_progress": "47fc9ee4",
         "blocked": "ead5882a",
