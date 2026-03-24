@@ -413,9 +413,9 @@ describe('verifyEmailChange', () => {
     };
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
 
-    await expect(
-      verifyEmailChange({ email: 'new@example.com', token: '000000' }),
-    ).rejects.toThrow('Invalid token');
+    await expect(verifyEmailChange({ email: 'new@example.com', token: '000000' })).rejects.toThrow(
+      'Invalid token',
+    );
   });
 });
 
