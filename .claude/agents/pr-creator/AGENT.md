@@ -81,13 +81,22 @@ EOF
 
 ### 4. Update Kanban
 
-Move the GitHub issue to **Ready for Review** on the kanban board. Read project IDs from `.claude/conductor/github-project.json`, then:
-```bash
-# Find the project item ID for this issue
-ITEM_ID=$(gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id')
+Move the GitHub issue to **Ready for Review** on the kanban board. Read project IDs from `.claude/conductor/github-project.json`.
 
-# Move to Ready for Review
-gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id $ITEM_ID --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id dab8b15c
+**IMPORTANT: Run each command as a SEPARATE Bash call — never chain with `$()` substitution (it triggers a security prompt that blocks autonomous execution).**
+
+a. First, find the project item ID:
+```bash
+gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id'
+```
+Capture the output as ITEM_ID. If empty/null, add the issue to the board first:
+```bash
+gh project item-add 2 --owner Nessi-Fishing-Supply --url https://github.com/Nessi-Fishing-Supply/Nessi-Web-App/issues/{issue} --format json | jq -r '.id'
+```
+
+b. Then move to Ready for Review (substitute the ITEM_ID value from step a):
+```bash
+gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id dab8b15c
 ```
 
 ## Output

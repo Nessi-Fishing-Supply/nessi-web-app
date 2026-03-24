@@ -85,40 +85,54 @@ Ask the user to confirm before creating. Once confirmed:
 1. Read project config from `.claude/conductor/github-project.json` for repo, project, and field IDs
 2. Create each issue and add to the project board:
 
+**IMPORTANT: Run each command as a SEPARATE Bash call — never chain with `$()` substitution (it triggers a security prompt that blocks autonomous execution).**
+
+a. Create the issue (use a HEREDOC for the body):
 ```bash
-# Create the issue
-ISSUE_URL=$(gh issue create --repo Nessi-Fishing-Supply/Nessi-Web-App \
+gh issue create --repo Nessi-Fishing-Supply/Nessi-Web-App \
   --title "{title}" \
   --label "{type},{priority},{area},conductor" \
   --body "$(cat <<'EOF'
 {ticket body in canonical format}
 EOF
-)")
+)"
+```
+Capture the returned URL as ISSUE_URL.
 
-# Add to project board
-ITEM_ID=$(gh project item-add 2 --owner Nessi-Fishing-Supply --url $ISSUE_URL --format json | jq -r '.id')
+b. Add to project board:
+```bash
+gh project item-add 2 --owner Nessi-Fishing-Supply --url {ISSUE_URL} --format json | jq -r '.id'
+```
+Capture the output as ITEM_ID.
 
-# Set Status → Todo
+c. Set Status → Todo:
+```bash
 gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 \
-  --id $ITEM_ID \
+  --id {ITEM_ID} \
   --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E \
   --single-select-option-id f75ad846
+```
 
-# Set Priority (map from ticket metadata)
+d. Set Priority (map from ticket metadata):
+```bash
 gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 \
-  --id $ITEM_ID \
+  --id {ITEM_ID} \
   --field-id PVTSSF_lADOCuq3-M4BSHz8zg_xN3Y \
   --single-select-option-id {priority_option_id}
+```
 
-# Set Area (map from ticket metadata)
+e. Set Area (map from ticket metadata):
+```bash
 gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 \
-  --id $ITEM_ID \
+  --id {ITEM_ID} \
   --field-id PVTSSF_lADOCuq3-M4BSHz8zg_xOAk \
   --single-select-option-id {area_option_id}
+```
 
-# Set Executor → Conductor
+f. Set Executor → Conductor:
+```bash
 gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 \
-  --id $ITEM_ID \
+  --id {ITEM_ID} \
   --field-id PVTSSF_lADOCuq3-M4BSHz8zg_xOGc \
   --single-select-option-id 1482d955
 ```
@@ -132,13 +146,15 @@ Each issue gets:
 - Dependency links in body and as GitHub issue references
 - **Positioned in the kanban column** based on priority — the conductor pulls tickets from the top of the Todo column, so higher-priority tickets must be placed higher. After adding to the board and setting fields, position each ticket using the GraphQL API:
 
+g. Position ticket in the kanban column order (substitute the ITEM_ID value).
+To place at the top (highest priority):
 ```bash
-# Position ticket in the kanban column order
-# To place at the top (highest priority):
-gh api graphql -f query='mutation { updateProjectV2ItemPosition(input: { projectId: "PVT_kwDOCuq3-M4BSHz8", itemId: "'"$ITEM_ID"'" }) { clientMutationId } }'
+gh api graphql -f query='mutation { updateProjectV2ItemPosition(input: { projectId: "PVT_kwDOCuq3-M4BSHz8", itemId: "{ITEM_ID}" }) { clientMutationId } }'
+```
 
-# To place after a specific item (e.g., after the last item in its priority group):
-gh api graphql -f query='mutation { updateProjectV2ItemPosition(input: { projectId: "PVT_kwDOCuq3-M4BSHz8", itemId: "'"$ITEM_ID"'", afterId: "'"$AFTER_ITEM_ID"'" }) { clientMutationId } }'
+To place after a specific item (e.g., after the last item in its priority group):
+```bash
+gh api graphql -f query='mutation { updateProjectV2ItemPosition(input: { projectId: "PVT_kwDOCuq3-M4BSHz8", itemId: "{ITEM_ID}", afterId: "{AFTER_ITEM_ID}" }) { clientMutationId } }'
 ```
 
 **Priority placement guidelines:**

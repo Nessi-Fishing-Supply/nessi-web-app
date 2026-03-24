@@ -38,14 +38,22 @@ Parse the issue number from the argument: `{{ issue }}`
    }
    ```
 6. Write `active.json` pointing to this track
-7. Move the GitHub issue to **In Progress** on the kanban board:
+7. Move the GitHub issue to **In Progress** on the kanban board.
+   **IMPORTANT: Run each command as a SEPARATE Bash call — never chain with `$()` substitution.**
+
+   a. First, find the project item ID:
    ```bash
-   # Find the project item ID for this issue
-   ITEM_ID=$(gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id')
-   # If not on board yet, add it first
-   # ITEM_ID=$(gh project item-add 2 --owner Nessi-Fishing-Supply --url {ISSUE_URL} --format json | jq -r '.id')
-   # Move to In Progress
-   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id $ITEM_ID --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id 47fc9ee4
+   gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id'
+   ```
+   Capture the output as ITEM_ID. If empty/null, add the issue to the board first:
+   ```bash
+   gh project item-add 2 --owner Nessi-Fishing-Supply --url https://github.com/Nessi-Fishing-Supply/Nessi-Web-App/issues/{issue} --format json | jq -r '.id'
+   ```
+   Capture that output as ITEM_ID.
+
+   b. Then move to In Progress (use the ITEM_ID value from the previous step):
+   ```bash
+   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id 47fc9ee4
    ```
 8. Create and checkout the feature branch
 
@@ -203,9 +211,9 @@ Rules for this step:
 ### Blocked Escalation
 
 1. Update `state.json` → `status: "blocked"`, persist to disk
-2. Move GitHub issue to **Blocked** column:
+2. Move GitHub issue to **Blocked** column (use the ITEM_ID obtained earlier — if not available, fetch it with a separate `gh project item-list` call first):
    ```bash
-   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id $ITEM_ID --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id ead5882a
+   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id ead5882a
    ```
 3. Leave a comment on the issue with: what task failed, error details from all attempts, debug findings, suggested next steps:
    ```bash
