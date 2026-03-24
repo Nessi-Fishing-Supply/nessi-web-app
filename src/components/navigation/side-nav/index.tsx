@@ -12,6 +12,7 @@ import {
 import AppLink from '@/components/controls/app-link';
 import useContextStore from '@/features/context/stores/context-store';
 import { useAuth } from '@/features/auth/context';
+import { useMember } from '@/features/members/hooks/use-member';
 import { useShopsByMember } from '@/features/shops/hooks/use-shops';
 
 const SideNav = () => {
@@ -23,8 +24,10 @@ const SideNav = () => {
 
   const activeContext = useContextStore.use.activeContext();
   const { user } = useAuth();
+  const { data: member } = useMember(user?.id ?? '', !!user);
   const { data: shops, isLoading: shopsLoading } = useShopsByMember(user?.id ?? '', !!user);
   const hasShops = shopsLoading || (shops?.length ?? 0) > 0;
+  const isSeller = member?.is_seller ?? false;
 
   const isShopContext = mounted && activeContext.type === 'shop';
 
@@ -56,11 +59,13 @@ const SideNav = () => {
                 Account
               </AppLink>
             </li>
-            <li>
-              <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
-                Listings
-              </AppLink>
-            </li>
+            {isSeller && (
+              <li>
+                <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
+                  Listings
+                </AppLink>
+              </li>
+            )}
             {!hasShops && (
               <li>
                 <AppLink href="/dashboard/shop/create" icon={<HiOutlinePlusCircle />}>

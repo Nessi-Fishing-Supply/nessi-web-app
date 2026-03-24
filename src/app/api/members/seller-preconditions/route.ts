@@ -20,6 +20,7 @@ export async function GET() {
       .from('listings')
       .select('*', { count: 'exact', head: true })
       .eq('seller_id', user.id)
+      .is('shop_id', null)
       .eq('status', 'active')
       .is('deleted_at', null);
 

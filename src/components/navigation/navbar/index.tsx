@@ -290,11 +290,13 @@ export default function Navbar() {
                 Account
               </AppLink>
             </DropdownItem>
-            <DropdownItem>
-              <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
-                Listings
-              </AppLink>
-            </DropdownItem>
+            {member?.is_seller && (
+              <DropdownItem>
+                <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
+                  Listings
+                </AppLink>
+              </DropdownItem>
+            )}
             <DropdownItem>
               <Button onClick={handleLogout} fullWidth>
                 Log Out
