@@ -172,16 +172,23 @@
   align-items: center;
   gap: var(--spacing-300);
   width: 100%;
-  padding: var(--spacing-100) 0;
+  padding: var(--spacing-200) var(--spacing-300);
+  margin: 0 calc(-1 * var(--spacing-300));
+  width: calc(100% + var(--spacing-300) * 2);
   background: none;
   border: none;
+  border-radius: var(--radius-200);
   cursor: pointer;
   font-size: var(--font-size-400);
   color: var(--color-neutral-900);
   text-align: left;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover {
-    color: var(--color-primary-500);
+    background-color: var(--color-neutral-100);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
   }
 }
 
