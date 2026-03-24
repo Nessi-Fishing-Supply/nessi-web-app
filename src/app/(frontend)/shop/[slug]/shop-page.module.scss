@@ -10,6 +10,19 @@
   }
 }
 
+.heroBanner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  border-radius: var(--radius-300);
+  overflow: hidden;
+  margin-bottom: var(--spacing-600);
+
+  @include breakpoint(md) {
+    margin-bottom: var(--spacing-700);
+  }
+}
+
 .header {
   display: flex;
   flex-direction: column;
@@ -138,19 +151,11 @@
 
 .listingGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 300px));
   gap: var(--spacing-300);
 
-  @include breakpoint(sm) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   @include breakpoint(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @include breakpoint(lg) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 300px));
   }
 }
 

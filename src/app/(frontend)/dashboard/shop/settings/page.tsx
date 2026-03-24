@@ -11,6 +11,8 @@ import ShopSubscriptionSection from '@/features/shops/components/shop-settings/s
 import OwnershipTransferSection from '@/features/shops/components/shop-settings/ownership-transfer-section';
 import ShopDeletionSection from '@/features/shops/components/shop-settings/shop-deletion-section';
 import Button from '@/components/controls/button';
+import Link from 'next/link';
+import { HiExternalLink } from 'react-icons/hi';
 import styles from './shop-settings.module.scss';
 
 export default function ShopSettings() {
@@ -51,6 +53,11 @@ export default function ShopSettings() {
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Shop Settings</h1>
+      {shop?.slug && (
+        <Link href={`/shop/${shop.slug}`} className={styles.viewShop}>
+          View public shop page <HiExternalLink aria-hidden="true" />
+        </Link>
+      )}
 
       <div className={styles.sections}>
         {shop && <ShopDetailsSection shop={shop} />}

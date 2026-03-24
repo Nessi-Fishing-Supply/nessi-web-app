@@ -11,7 +11,21 @@
 
 .title {
   font-size: var(--font-size-1000);
-  margin-bottom: var(--spacing-300);
+  margin-bottom: var(--spacing-100);
+}
+
+.viewShop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-50);
+  color: var(--color-primary-600);
+  font-size: var(--font-size-500);
+  text-decoration: none;
+  margin-bottom: var(--spacing-400);
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .sections {

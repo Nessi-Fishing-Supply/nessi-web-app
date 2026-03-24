@@ -12,6 +12,7 @@ import {
   HiOutlineUserCircle,
   HiSearch,
   HiSwitchHorizontal,
+  HiCheckCircle,
 } from 'react-icons/hi';
 
 // Components
@@ -183,8 +184,6 @@ export default function Navbar() {
 
   const showOnboardingBanner = isAuthenticated && !!member && !member.onboarding_completed_at;
 
-  // Filter shops available for switching (exclude current shop context)
-  const switchableShops = shops?.filter((shop) => shop.id !== activeShopId) ?? [];
   const hasShops = (shops?.length ?? 0) > 0;
 
   return (
@@ -303,67 +302,96 @@ export default function Navbar() {
             </DropdownItem>
             {mounted && hasShops && (
               <>
-                <DropdownDivider />
                 <DropdownTitle>
-                  <p>Switch context</p>
+                  <p>Profiles</p>
                 </DropdownTitle>
-                {isShopContext && (
+                <div className={styles.profilesList}>
                   <DropdownItem>
                     <button
                       type="button"
                       className={styles.switchItem}
                       onClick={() => {
-                        switchToMember();
-                        showToast({
-                          type: 'success',
-                          message: `Now acting as ${firstName} ${lastName}`,
-                          description: 'Your context has been switched.',
-                        });
+                        if (isShopContext) {
+                          switchToMember();
+                          showToast({
+                            type: 'success',
+                            message: `Now acting as ${firstName} ${lastName}`,
+                            description: 'Your context has been switched.',
+                          });
+                        }
                       }}
+                      aria-current={!isShopContext ? 'true' : undefined}
                     >
-                      <span className={styles.switchAvatar} aria-hidden="true">
-                        {(firstName?.[0] ?? '').toUpperCase()}
-                        {(lastName?.[0] ?? '').toUpperCase()}
-                      </span>
-                      <span>
-                        {firstName} {lastName}
-                      </span>
-                      <HiSwitchHorizontal className={styles.switchIcon} aria-hidden="true" />
-                    </button>
-                  </DropdownItem>
-                )}
-                {switchableShops.map((shop) => (
-                  <DropdownItem key={shop.id}>
-                    <button
-                      type="button"
-                      className={styles.switchItem}
-                      onClick={() => {
-                        switchToShop(shop.id, shop.shop_name ?? undefined);
-                        showToast({
-                          type: 'success',
-                          message: `Now acting as ${shop.shop_name}`,
-                          description: 'Your context has been switched.',
-                        });
-                      }}
-                    >
-                      {shop.avatar_url ? (
+                      {member?.avatar_url ? (
                         <Image
-                          src={shop.avatar_url}
+                          src={member.avatar_url}
                           alt=""
-                          width={24}
-                          height={24}
+                          width={32}
+                          height={32}
                           className={styles.switchAvatarImage}
                         />
                       ) : (
                         <span className={styles.switchAvatar} aria-hidden="true">
-                          {(shop.shop_name?.[0] ?? '').toUpperCase()}
+                          {(firstName?.[0] ?? '').toUpperCase()}
+                          {(lastName?.[0] ?? '').toUpperCase()}
                         </span>
                       )}
-                      <span>{shop.shop_name}</span>
-                      <HiSwitchHorizontal className={styles.switchIcon} aria-hidden="true" />
+                      <span>
+                        {firstName} {lastName}
+                      </span>
+                      {!isShopContext ? (
+                        <HiCheckCircle className={styles.activeIcon} aria-label="Active profile" />
+                      ) : (
+                        <HiSwitchHorizontal className={styles.switchIcon} aria-hidden="true" />
+                      )}
                     </button>
                   </DropdownItem>
-                ))}
+                  {shops?.map((shop) => {
+                    const isActive = activeShopId === shop.id;
+                    return (
+                      <DropdownItem key={shop.id}>
+                        <button
+                          type="button"
+                          className={styles.switchItem}
+                          onClick={() => {
+                            if (!isActive) {
+                              switchToShop(shop.id, shop.shop_name ?? undefined);
+                              showToast({
+                                type: 'success',
+                                message: `Now acting as ${shop.shop_name}`,
+                                description: 'Your context has been switched.',
+                              });
+                            }
+                          }}
+                          aria-current={isActive ? 'true' : undefined}
+                        >
+                          {shop.avatar_url ? (
+                            <Image
+                              src={shop.avatar_url}
+                              alt=""
+                              width={32}
+                              height={32}
+                              className={styles.switchAvatarImage}
+                            />
+                          ) : (
+                            <span className={styles.switchAvatar} aria-hidden="true">
+                              {(shop.shop_name?.[0] ?? '').toUpperCase()}
+                            </span>
+                          )}
+                          <span>{shop.shop_name}</span>
+                          {isActive ? (
+                            <HiCheckCircle
+                              className={styles.activeIcon}
+                              aria-label="Active profile"
+                            />
+                          ) : (
+                            <HiSwitchHorizontal className={styles.switchIcon} aria-hidden="true" />
+                          )}
+                        </button>
+                      </DropdownItem>
+                    );
+                  })}
+                </div>
               </>
             )}
           </Dropdown>

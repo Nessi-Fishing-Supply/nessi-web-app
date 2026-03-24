@@ -51,7 +51,10 @@ function MemberRow({
       <div className={styles.memberInfo}>
         <HiUsers className={styles.memberIcon} aria-hidden="true" />
         <span className={styles.memberId}>
-          {member.member_id}
+          {member.members
+            ? `${member.members.first_name ?? ''} ${member.members.last_name ?? ''}`.trim() ||
+              member.member_id
+            : member.member_id}
           {isCurrentUser && (
             <span className={styles.youBadge} aria-label="(you)">
               {' '}
@@ -73,7 +76,7 @@ function MemberRow({
           onClick={() => onRemove(member)}
           loading={isThisPending}
           disabled={isPending}
-          ariaLabel={`Remove member ${member.member_id}`}
+          ariaLabel={`Remove member ${member.members ? `${member.members.first_name ?? ''} ${member.members.last_name ?? ''}`.trim() : member.member_id}`}
           icon={<HiUserRemove aria-hidden="true" />}
           iconPosition="left"
         >

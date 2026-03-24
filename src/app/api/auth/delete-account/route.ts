@@ -11,7 +11,7 @@ function parseStoragePath(bucketName: string, publicUrl: string): string | null 
 }
 
 interface StoragePaths {
-  avatarPaths: string[];
+  profileAssetPaths: string[];
   listingImagePaths: string[];
 }
 
@@ -23,11 +23,11 @@ async function collectStoragePaths(
   admin: ReturnType<typeof createAdminClient>,
   userId: string,
 ): Promise<StoragePaths> {
-  const avatarPaths: string[] = [];
+  const profileAssetPaths: string[] = [];
   const listingImagePaths: string[] = [];
 
   // Member avatar
-  avatarPaths.push(`${userId}.webp`);
+  profileAssetPaths.push(`members/${userId}/avatar.webp`);
 
   // Member listing photos (stored under {user_id}/{listing_id}/{file}.webp)
   const { data: listingFolders } = await admin.storage.from('listing-images').list(userId);
@@ -59,13 +59,13 @@ async function collectStoragePaths(
   if (shops && shops.length > 0) {
     for (const shop of shops) {
       // Shop avatar
-      avatarPaths.push(`shop-${shop.id}.webp`);
+      profileAssetPaths.push(`shops/${shop.id}/avatar.webp`);
 
       // Hero banner
       if (shop.hero_banner_url) {
-        const heroPath = parseStoragePath('avatars', shop.hero_banner_url);
+        const heroPath = parseStoragePath('profile-assets', shop.hero_banner_url);
         if (heroPath) {
-          avatarPaths.push(heroPath);
+          profileAssetPaths.push(heroPath);
         }
       }
 
@@ -96,7 +96,7 @@ async function collectStoragePaths(
     }
   }
 
-  return { avatarPaths, listingImagePaths };
+  return { profileAssetPaths, listingImagePaths };
 }
 
 /**
@@ -108,8 +108,8 @@ async function cleanupStorage(
   admin: ReturnType<typeof createAdminClient>,
   paths: StoragePaths,
 ): Promise<void> {
-  if (paths.avatarPaths.length > 0) {
-    await admin.storage.from('avatars').remove(paths.avatarPaths);
+  if (paths.profileAssetPaths.length > 0) {
+    await admin.storage.from('profile-assets').remove(paths.profileAssetPaths);
   }
 
   if (paths.listingImagePaths.length > 0) {
@@ -148,7 +148,7 @@ export async function DELETE() {
     }
 
     // Collect storage paths BEFORE any deletions (non-blocking)
-    let storagePaths: StoragePaths = { avatarPaths: [], listingImagePaths: [] };
+    let storagePaths: StoragePaths = { profileAssetPaths: [], listingImagePaths: [] };
     try {
       storagePaths = await collectStoragePaths(admin, user.id);
     } catch (collectError) {

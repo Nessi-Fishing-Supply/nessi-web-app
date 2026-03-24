@@ -28,7 +28,9 @@ export async function generateMetadata({
     openGraph: {
       title: shop.shop_name,
       description,
-      ...(shop.avatar_url && { images: [{ url: shop.avatar_url }] }),
+      ...((shop.hero_banner_url || shop.avatar_url) && {
+        images: [{ url: shop.hero_banner_url ?? shop.avatar_url! }],
+      }),
     },
   };
 }
@@ -52,7 +54,18 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <div className={styles.page}>
-      {/* TODO: Premium shops will display hero_banner_url here */}
+      {shop.hero_banner_url && (
+        <div className={styles.heroBanner}>
+          <Image
+            src={shop.hero_banner_url}
+            alt={`${shop.shop_name} banner`}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 1000px"
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
+      )}
 
       <div className={styles.header}>
         <div className={styles.avatarContainer}>

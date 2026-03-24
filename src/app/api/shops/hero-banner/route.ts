@@ -75,12 +75,12 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const resized = await sharp(buffer)
-      .resize(200, 200, { fit: 'cover' })
-      .webp({ quality: 80 })
+      .resize(1200, 400, { fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 85 })
       .toBuffer();
 
     const admin = createAdminClient();
-    const fileName = `shops/${shopId}/avatar.webp`;
+    const fileName = `shops/${shopId}/hero-banner.webp`;
 
     const { error: uploadError } = await admin.storage
       .from('profile-assets')
@@ -99,6 +99,18 @@ export async function POST(req: Request) {
     const {
       data: { publicUrl },
     } = admin.storage.from('profile-assets').getPublicUrl(fileName);
+
+    const { error: updateError } = await supabase
+      .from('shops')
+      .update({ hero_banner_url: publicUrl })
+      .eq('id', shopId);
+
+    if (updateError) {
+      return NextResponse.json(
+        { error: updateError.message },
+        { status: 500, headers: AUTH_CACHE_HEADERS },
+      );
+    }
 
     return NextResponse.json({ url: publicUrl }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {

@@ -124,13 +124,16 @@ export async function updateShopSlug(shopId: string, slug: string): Promise<void
 
 export async function getShopMembers(shopId: string): Promise<ShopMember[]> {
   const supabase = createClient();
-  const { data, error } = await supabase.from('shop_members').select('*').eq('shop_id', shopId);
+  const { data, error } = await supabase
+    .from('shop_members')
+    .select('*, members(first_name, last_name, avatar_url)')
+    .eq('shop_id', shopId);
 
   if (error) {
     throw new Error(`Failed to fetch shop members: ${error.message}`);
   }
 
-  return data;
+  return data as unknown as ShopMember[];
 }
 
 export async function addShopMember(

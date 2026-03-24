@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import AvatarUpload from '@/components/controls/avatar-upload';
 import InlineEdit from '@/components/controls/inline-edit';
+import HeroBannerUpload from '@/features/shops/components/hero-banner-upload';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
 import {
@@ -120,6 +121,16 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
     });
   };
 
+  const handleHeroBannerUpload = async (url: string) => {
+    await updateShop.mutateAsync({ id: shop.id, data: { hero_banner_url: url } });
+    showToast({
+      message: 'Saved',
+      description: 'Your shop banner has been updated.',
+      type: 'success',
+      duration: 2000,
+    });
+  };
+
   return (
     <>
       <section className={styles.card}>
@@ -132,6 +143,24 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
               onUpload={handleAvatarUpload}
               uploadUrl="/api/shops/avatar"
               extraFormData={{ shopId: shop.id }}
+              disabled={updateShop.isPending}
+            />
+          </div>
+
+          <div className={styles.bannerSection}>
+            <span className={styles.fieldLabel}>Shop Banner</span>
+            <HeroBannerUpload
+              shopId={shop.id}
+              heroBannerUrl={shop.hero_banner_url ?? null}
+              onUpload={handleHeroBannerUpload}
+              onError={() =>
+                showToast({
+                  message: 'Upload failed',
+                  description: 'Failed to upload banner. Please try again.',
+                  type: 'error',
+                  duration: 4000,
+                })
+              }
               disabled={updateShop.isPending}
             />
           </div>

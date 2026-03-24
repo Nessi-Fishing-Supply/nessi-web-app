@@ -50,10 +50,10 @@ export async function POST(req: Request) {
       .webp({ quality: 80 })
       .toBuffer();
 
-    const fileName = `${user.id}.webp`;
+    const fileName = `members/${user.id}/avatar.webp`;
 
     const { error: uploadError } = await supabase.storage
-      .from('avatars')
+      .from('profile-assets')
       .upload(fileName, resized, {
         contentType: 'image/webp',
         upsert: true,
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     const {
       data: { publicUrl },
-    } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    } = supabase.storage.from('profile-assets').getPublicUrl(fileName);
 
     return NextResponse.json({ url: publicUrl }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {

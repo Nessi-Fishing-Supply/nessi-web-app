@@ -11,6 +11,8 @@ import {
 } from 'react-icons/hi';
 import AppLink from '@/components/controls/app-link';
 import useContextStore from '@/features/context/stores/context-store';
+import { useAuth } from '@/features/auth/context';
+import { useShopsByMember } from '@/features/shops/hooks/use-shops';
 
 const SideNav = () => {
   const mounted = useSyncExternalStore(
@@ -20,6 +22,9 @@ const SideNav = () => {
   );
 
   const activeContext = useContextStore.use.activeContext();
+  const { user } = useAuth();
+  const { data: shops, isLoading: shopsLoading } = useShopsByMember(user?.id ?? '', !!user);
+  const hasShops = shopsLoading || (shops?.length ?? 0) > 0;
 
   const isShopContext = mounted && activeContext.type === 'shop';
 
@@ -56,11 +61,13 @@ const SideNav = () => {
                 Listings
               </AppLink>
             </li>
-            <li>
-              <AppLink href="/dashboard/shop/create" icon={<HiOutlinePlusCircle />}>
-                Create a Shop
-              </AppLink>
-            </li>
+            {!hasShops && (
+              <li>
+                <AppLink href="/dashboard/shop/create" icon={<HiOutlinePlusCircle />}>
+                  Create a Shop
+                </AppLink>
+              </li>
+            )}
           </>
         )}
       </ul>

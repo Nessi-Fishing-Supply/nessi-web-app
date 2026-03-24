@@ -47,16 +47,17 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
 
   // Storage cleanup — best-effort, non-blocking
   try {
-    // Shop avatar
-    await admin.storage.from('avatars').remove([`shop-${shopId}.webp`]);
+    // Shop avatar and hero banner
+    const shopPaths = [`shops/${shopId}/avatar.webp`];
 
-    // Hero banner
     if (shop.hero_banner_url) {
-      const heroPath = parseStoragePath('avatars', shop.hero_banner_url);
+      const heroPath = parseStoragePath('profile-assets', shop.hero_banner_url);
       if (heroPath) {
-        await admin.storage.from('avatars').remove([heroPath]);
+        shopPaths.push(heroPath);
       }
     }
+
+    await admin.storage.from('profile-assets').remove(shopPaths);
 
     // Shop listing photos
     const { data: shopListings } = await admin.from('listings').select('id').eq('shop_id', shopId);

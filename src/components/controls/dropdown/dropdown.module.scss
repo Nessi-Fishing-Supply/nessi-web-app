@@ -26,7 +26,7 @@
   border-radius: var(--radius-300);
   min-width: 200px;
   box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
-  z-index: 1;
+  z-index: 1000;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -47,6 +47,7 @@
 
 .dropdownTitle {
   border-top: solid 1px var(--color-neutral-200);
+  margin-top: var(--spacing-200);
 
   > p {
     padding: var(--spacing-300) var(--spacing-400) 0 var(--spacing-400);

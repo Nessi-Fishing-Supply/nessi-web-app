@@ -45,12 +45,14 @@ Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Ro
 
 Two Supabase Storage buckets (both public):
 
-| Bucket           | Path Pattern                        | API Route                              | Purpose                              |
-| ---------------- | ----------------------------------- | -------------------------------------- | ------------------------------------ |
-| `listing-images` | `listings/{listing_id}/{uuid}.webp` | `src/app/api/listings/upload/route.ts` | Listing photos (max 1200x1200 WebP)  |
-| `avatars`        | `{user_id}.webp`                    | `src/app/api/members/avatar/route.ts`  | User avatar (200x200 WebP via Sharp) |
+| Bucket           | Path Pattern                        | API Route                                | Purpose                                |
+| ---------------- | ----------------------------------- | ---------------------------------------- | -------------------------------------- |
+| `listing-images` | `listings/{listing_id}/{uuid}.webp` | `src/app/api/listings/upload/route.ts`   | Listing photos (max 1200x1200 WebP)    |
+| `profile-assets` | `members/{user_id}/avatar.webp`     | `src/app/api/members/avatar/route.ts`    | Member avatar (200x200 WebP via Sharp) |
+| `profile-assets` | `shops/{shop_id}/avatar.webp`       | `src/app/api/shops/avatar/route.ts`      | Shop avatar (200x200 WebP via Sharp)   |
+| `profile-assets` | `shops/{shop_id}/hero-banner.webp`  | `src/app/api/shops/hero-banner/route.ts` | Shop hero banner (max 1200x400 WebP)   |
 
-RLS policies enforce per-user access on both buckets. 5MB limit, JPEG/PNG/WebP/GIF only.
+RLS policies enforce per-user access. Member assets use user JWT (RLS checks `members/{uid}/*`). Shop assets use admin client in API routes (ownership verified in handler). 5MB limit, JPEG/PNG/WebP/GIF only.
 
 ### Image Handling Standards
 
@@ -89,9 +91,9 @@ Account deletion is gated and handled at the application layer before the auth u
 DELETE /api/auth/delete-account
   → Shop ownership check (409 if member owns active shops — must transfer or delete shops first)
   → Storage cleanup:
-    → Deletes avatar from `avatars` bucket
+    → Deletes member avatar from `profile-assets` bucket (`members/{userId}/avatar.webp`)
     → Deletes listing photos from `listing-images` bucket
-    → Deletes shop avatars and hero banners from `avatars` bucket
+    → Deletes shop avatars and hero banners from `profile-assets` bucket (`shops/{shopId}/*`)
     → Deletes shop listing photos from `listing-images` bucket
   → Slug cleanup: deletes member's slug from `slugs` table
   → auth.admin.deleteUser()

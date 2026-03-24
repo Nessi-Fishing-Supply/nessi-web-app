@@ -11,7 +11,7 @@ import StartSellingCta from '@/features/members/components/start-selling-cta';
 import SellerOnboardingModal from '@/features/members/components/seller-onboarding-modal';
 import CreateShopCta from '@/features/shops/components/create-shop-cta';
 import useContextStore from '@/features/context/stores/context-store';
-import { useShop } from '@/features/shops/hooks/use-shops';
+import { useShop, useShopsByMember } from '@/features/shops/hooks/use-shops';
 import styles from './dashboard.module.scss';
 
 export default function Dashboard() {
@@ -30,6 +30,8 @@ export default function Dashboard() {
   const activeContext = useContextStore.use.activeContext();
   const shopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: shop } = useShop(shopId, activeContext.type === 'shop');
+  const { data: memberShops, isLoading: shopsLoading } = useShopsByMember(user?.id ?? '', !!user);
+  const hasShops = shopsLoading || (memberShops?.length ?? 0) > 0;
 
   const handleModalComplete = (path: 'free' | 'shop') => {
     setIsSellerModalOpen(false);
@@ -67,7 +69,7 @@ export default function Dashboard() {
             {!memberLoading && member?.is_seller === false && (
               <StartSellingCta onStartSelling={() => setIsSellerModalOpen(true)} />
             )}
-            <CreateShopCta />
+            {!hasShops && <CreateShopCta />}
           </div>
 
           {!memberLoading && member?.is_seller === true && (

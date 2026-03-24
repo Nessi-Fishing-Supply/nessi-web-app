@@ -56,13 +56,14 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Components
 
-| Component                  | Location                                               | Purpose                                                                                           |
-| -------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| `ShopCreationForm`         | `components/shop-creation-form/`                       | Multi-field form with slug auto-generation, availability check, and context switching on submit   |
-| `ShopDetailsSection`       | `components/shop-settings/shop-details-section/`       | Inline-edit section for shop name, slug, description, and avatar (uses InlineEdit + AvatarUpload) |
-| `ShopSubscriptionSection`  | `components/shop-settings/shop-subscription-section/`  | Stripe subscription placeholder (Coming Soon)                                                     |
-| `OwnershipTransferSection` | `components/shop-settings/ownership-transfer-section/` | Two-step confirmation modal for transferring shop ownership                                       |
-| `ShopDeletionSection`      | `components/shop-settings/shop-deletion-section/`      | Danger zone with type-to-confirm deletion modal                                                   |
+| Component                  | Location                                               | Purpose                                                                                                    |
+| -------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `ShopCreationForm`         | `components/shop-creation-form/`                       | Multi-field form with slug auto-generation, availability check, and context switching on submit            |
+| `ShopDetailsSection`       | `components/shop-settings/shop-details-section/`       | Inline-edit section for shop name, slug, description, and avatar (uses InlineEdit + AvatarUpload)          |
+| `ShopSubscriptionSection`  | `components/shop-settings/shop-subscription-section/`  | Stripe subscription placeholder (Coming Soon)                                                              |
+| `OwnershipTransferSection` | `components/shop-settings/ownership-transfer-section/` | Two-step confirmation modal for transferring shop ownership                                                |
+| `ShopDeletionSection`      | `components/shop-settings/shop-deletion-section/`      | Danger zone with type-to-confirm deletion modal                                                            |
+| `HeroBannerUpload`         | `components/hero-banner-upload/`                       | Hero banner image picker with crop UI (uses ImageCropper + Modal); uploads via POST /api/shops/hero-banner |
 
 ## Pages
 
@@ -80,8 +81,21 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Accepts `file` (image) + `shopId` in `multipart/form-data`
 - Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
 - Processes with `sharp`: resizes to 200x200, converts to WebP at 80% quality
-- Stores at `avatars/shop-{shopId}.webp` in the `avatars` bucket
-- Returns `{ avatarUrl: string }`
+- Uses admin client for storage upload (bypasses RLS; ownership verified in handler)
+- Stores at `shops/{shopId}/avatar.webp` in the `profile-assets` bucket
+- Returns `{ url: string }`
+
+## Hero Banner Upload API
+
+`POST /api/shops/hero-banner`
+
+- Requires authenticated session + shop owner verification
+- Accepts `file` (image) + `shopId` in `multipart/form-data`
+- Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
+- Processes with `sharp`: resizes to max 1200x400 (fit inside, no upscale), converts to WebP at 85% quality
+- Uses admin client for storage upload (bypasses RLS; ownership verified in handler)
+- Stores at `shops/{shopId}/hero-banner.webp` in the `profile-assets` bucket
+- Returns `{ url: string }`
 
 ## Shop Deletion API
 
@@ -90,8 +104,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Requires authenticated session + shop owner verification (`owner_id === user.id`)
 - Returns 401 (no session), 403 (not owner), 404 (not found or already soft-deleted)
 - Performs best-effort storage cleanup before soft delete:
-  - Removes shop avatar at `avatars/shop-{shopId}.webp`
-  - Parses `hero_banner_url` (if non-null) and removes from `avatars` bucket
+  - Removes shop assets at `shops/{shopId}/avatar.webp` and hero banner from `profile-assets` bucket
   - Queries shop-owned products → `product_images`, removes files from `listing-images` bucket
 - Storage cleanup failures are caught and logged but do not block the soft delete
 - Soft-deletes the shop row (`deleted_at = now()`) using the admin client
@@ -104,6 +117,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - `InlineEdit` from `@/components/controls/inline-edit`
 - `Modal` from `@/components/layout/modal`
 - `AvatarUpload` from `@/components/controls/avatar-upload` — accepts configurable `uploadUrl` and `extraFormData` props
+- `ImageCropper` from `@/components/controls/image-cropper` — used by `HeroBannerUpload` to let users crop the banner before upload
 - `Button` from `@/components/controls/button`
 - Toast context from `@/components/indicators/toast/context`
 
