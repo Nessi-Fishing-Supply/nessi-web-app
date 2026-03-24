@@ -84,7 +84,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         member_id: isShopContext ? null : user.id,
         shop_id: shopId,
         status: 'draft',
-        title: source.title,
+        title: `Copy of ${source.title}`,
         description: source.description,
         category: source.category,
         condition: source.condition,
