@@ -3,7 +3,7 @@
   "issue": 157,
   "title": "feat(auth): email change — service functions, validation schema, and OTP type extension",
   "branch": "feat/157/email-change-service-validation-otp",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -13,7 +13,12 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "pass" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-23T12:00:00Z", "lastActivity": "2026-03-23T12:10:00Z" }
+  "timestamps": {
+    "started": "2026-03-23T12:00:00Z",
+    "lastActivity": "2026-03-23T12:15:00Z",
+    "completedAt": "2026-03-23T12:15:00Z",
+    "pruneAfter": "2026-05-22T12:15:00Z"
+  }
 }
