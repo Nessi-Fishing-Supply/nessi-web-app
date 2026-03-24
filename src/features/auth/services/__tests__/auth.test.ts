@@ -12,6 +12,7 @@ import {
   changeEmail,
   verifyEmailChange,
   resendEmailChangeCode,
+  checkEmailAvailable,
 } from '../auth';
 
 const TIMEOUT_MESSAGE = 'Something went wrong. Check your connection and try again.';
@@ -451,5 +452,74 @@ describe('resendEmailChangeCode', () => {
     await expect(resendEmailChangeCode({ newEmail: 'new@example.com' })).rejects.toThrow(
       'Rate limit exceeded',
     );
+  });
+});
+
+describe('checkEmailAvailable', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('returns available true when API responds with 200', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ available: true }), { status: 200 }),
+    );
+
+    const result = await checkEmailAvailable({ email: 'new@example.com' });
+    expect(result).toEqual({ available: true });
+  });
+
+  it('passes AbortController signal to fetch', async () => {
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({ available: true }), { status: 200 }));
+
+    await checkEmailAvailable({ email: 'new@example.com' });
+
+    expect(fetchSpy).toHaveBeenCalledOnce();
+    const callArgs = fetchSpy.mock.calls[0][1];
+    expect(callArgs?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it('throws DUPLICATE_EMAIL when API responds with 409', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ available: false, error: 'DUPLICATE_EMAIL' }), { status: 409 }),
+    );
+
+    await expect(checkEmailAvailable({ email: 'taken@example.com' })).rejects.toThrow(
+      'DUPLICATE_EMAIL',
+    );
+  });
+
+  it('throws the server error message on other error responses', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ error: 'Invalid email format' }), { status: 400 }),
+    );
+
+    await expect(checkEmailAvailable({ email: 'bad' })).rejects.toThrow('Invalid email format');
+  });
+
+  it('throws timeout message when fetch is aborted after AUTH_TIMEOUT_MS', async () => {
+    vi.spyOn(global, 'fetch').mockImplementationOnce(
+      (_url, options) =>
+        new Promise<Response>((_resolve, reject) => {
+          const sig = options?.signal as AbortSignal | undefined;
+          if (sig) {
+            sig.addEventListener('abort', () => {
+              const err = new Error('The operation was aborted.');
+              err.name = 'AbortError';
+              reject(err);
+            });
+          }
+        }),
+    );
+
+    const result = checkEmailAvailable({ email: 'test@example.com' });
+    vi.advanceTimersByTime(AUTH_TIMEOUT_MS + 1);
+    await expect(result).rejects.toThrow(TIMEOUT_MESSAGE);
   });
 });
