@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { loginSchema, registerSchema, resetPasswordSchema } from './auth';
+import { loginSchema, registerSchema, resetPasswordSchema, changeEmailSchema } from './auth';
 
 describe('loginSchema', () => {
   it('validates correct input', async () => {
@@ -75,5 +75,21 @@ describe('resetPasswordSchema', () => {
     await expect(
       resetPasswordSchema.validate({ password: 'weak', confirmPassword: 'weak' }),
     ).rejects.toThrow();
+  });
+});
+
+describe('changeEmailSchema', () => {
+  it('validates correct email input', async () => {
+    await expect(changeEmailSchema.validate({ email: 'new@example.com' })).resolves.toBeDefined();
+  });
+
+  it('rejects invalid email format', async () => {
+    await expect(changeEmailSchema.validate({ email: 'not-an-email' })).rejects.toThrow(
+      'Invalid email',
+    );
+  });
+
+  it('rejects missing email', async () => {
+    await expect(changeEmailSchema.validate({ email: '' })).rejects.toThrow();
   });
 });
