@@ -1,6 +1,6 @@
 import { del, post } from '@/libs/fetch';
 import { createClient } from '@/libs/supabase/client';
-import type { Shop, ShopMember, ShopMemberRole, ShopUpdate } from '@/features/shops/types/shop';
+import type { Shop, ShopMember, ShopUpdate } from '@/features/shops/types/shop';
 
 export async function getShop(id: string): Promise<Shop | null> {
   const supabase = createClient();
@@ -139,12 +139,12 @@ export async function getShopMembers(shopId: string): Promise<ShopMember[]> {
 export async function addShopMember(
   shopId: string,
   memberId: string,
-  role: ShopMemberRole,
+  roleId: string,
 ): Promise<ShopMember> {
   const response = await fetch(`/api/shops/${shopId}/members`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ memberId, role }),
+    body: JSON.stringify({ memberId, roleId }),
   });
 
   if (!response.ok) {

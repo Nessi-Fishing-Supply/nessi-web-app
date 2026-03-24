@@ -54,3 +54,13 @@ export type ShopMemberInsert = Omit<
 >;
 
 export type ShopMemberRole = 'owner' | 'manager' | 'staff';
+
+/**
+ * Deterministic UUIDs for system roles in the shop_roles table.
+ * These match the seeded values in migration 20260324100000.
+ */
+export const SYSTEM_ROLE_IDS = {
+  OWNER: '11111111-1111-1111-1111-111111111101',
+  MANAGER: '11111111-1111-1111-1111-111111111102',
+  CONTRIBUTOR: '11111111-1111-1111-1111-111111111103',
+} as const;

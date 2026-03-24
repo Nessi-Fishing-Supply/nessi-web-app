@@ -1,6 +1,7 @@
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
+import { SYSTEM_ROLE_IDS } from '@/features/shops/types/shop';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -72,17 +73,17 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     );
   }
 
-  // Atomically update ownership: shops.owner_id, new owner role → 'owner', current owner role → 'manager'
+  // Atomically update ownership: shops.owner_id, new owner role_id → Owner, current owner role_id → Manager
   const [shopUpdate, newOwnerRoleUpdate, currentOwnerRoleUpdate] = await Promise.all([
     admin.from('shops').update({ owner_id: newOwnerId }).eq('id', shopId),
     admin
       .from('shop_members')
-      .update({ role: 'owner' })
+      .update({ role_id: SYSTEM_ROLE_IDS.OWNER })
       .eq('shop_id', shopId)
       .eq('member_id', newOwnerId),
     admin
       .from('shop_members')
-      .update({ role: 'manager' })
+      .update({ role_id: SYSTEM_ROLE_IDS.MANAGER })
       .eq('shop_id', shopId)
       .eq('member_id', user.id),
   ]);

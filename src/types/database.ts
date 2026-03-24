@@ -367,21 +367,21 @@ export type Database = {
           created_at: string
           id: string
           member_id: string
-          role: string
+          role_id: string
           shop_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           member_id: string
-          role: string
+          role_id: string
           shop_id: string
         }
         Update: {
           created_at?: string
           id?: string
           member_id?: string
-          role?: string
+          role_id?: string
           shop_id?: string
         }
         Relationships: [
@@ -393,7 +393,55 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "shop_members_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "shop_roles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "shop_members_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shop_roles: {
+        Row: {
+          created_at: string
+          id: string
+          is_system: boolean
+          name: string
+          permissions: Json
+          shop_id: string | null
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          is_system?: boolean
+          name: string
+          permissions: Json
+          shop_id?: string | null
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          name?: string
+          permissions?: Json
+          shop_id?: string | null
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_roles_shop_id_fkey"
             columns: ["shop_id"]
             isOneToOne: false
             referencedRelation: "shops"

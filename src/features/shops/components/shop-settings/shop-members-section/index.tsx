@@ -7,6 +7,7 @@ import { useShopMembers, useRemoveShopMember } from '@/features/shops/hooks/use-
 import { useToast } from '@/components/indicators/toast/context';
 import Button from '@/components/controls/button';
 import type { Shop, ShopMember } from '@/features/shops/types/shop';
+import { SYSTEM_ROLE_IDS } from '@/features/shops/types/shop';
 import styles from './shop-members-section.module.scss';
 
 interface ShopMembersSectionProps {
@@ -14,15 +15,13 @@ interface ShopMembersSectionProps {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  owner: 'Owner',
-  manager: 'Manager',
-  staff: 'Staff',
-  admin: 'Admin',
-  contributor: 'Contributor',
+  [SYSTEM_ROLE_IDS.OWNER]: 'Owner',
+  [SYSTEM_ROLE_IDS.MANAGER]: 'Manager',
+  [SYSTEM_ROLE_IDS.CONTRIBUTOR]: 'Contributor',
 };
 
-function getRoleLabel(role: string): string {
-  return ROLE_LABELS[role] ?? role;
+function getRoleLabel(roleId: string): string {
+  return ROLE_LABELS[roleId] ?? 'Member';
 }
 
 interface MemberRowProps {
@@ -43,7 +42,7 @@ function MemberRow({
   pendingMemberId,
 }: MemberRowProps) {
   const isThisPending = isPending && pendingMemberId === member.member_id;
-  const isOwnerRole = member.role === 'owner';
+  const isOwnerRole = member.role_id === SYSTEM_ROLE_IDS.OWNER;
   const canRemove = isOwner && !isOwnerRole && !isCurrentUser;
 
   return (
@@ -63,10 +62,10 @@ function MemberRow({
           )}
         </span>
         <span
-          className={`${styles.memberRole} ${styles[`role-${member.role}`] ?? ''}`}
-          aria-label={`Role: ${getRoleLabel(member.role)}`}
+          className={`${styles.memberRole} ${styles[`role-${getRoleLabel(member.role_id).toLowerCase()}`] ?? ''}`}
+          aria-label={`Role: ${getRoleLabel(member.role_id)}`}
         >
-          {getRoleLabel(member.role)}
+          {getRoleLabel(member.role_id)}
         </span>
       </div>
 

@@ -38,14 +38,22 @@ Parse the issue number from the argument: `{{ issue }}`
    }
    ```
 6. Write `active.json` pointing to this track
-7. Move the GitHub issue to **In Progress** on the kanban board:
+7. Move the GitHub issue to **In Progress** on the kanban board.
+   **IMPORTANT: Run each command as a SEPARATE Bash call — never chain with `$()` substitution.**
+
+   a. First, find the project item ID:
    ```bash
-   # Find the project item ID for this issue
-   ITEM_ID=$(gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id')
-   # If not on board yet, add it first
-   # ITEM_ID=$(gh project item-add 2 --owner Nessi-Fishing-Supply --url {ISSUE_URL} --format json | jq -r '.id')
-   # Move to In Progress
-   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id $ITEM_ID --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id 47fc9ee4
+   gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id'
+   ```
+   Capture the output as ITEM_ID. If empty/null, add the issue to the board first:
+   ```bash
+   gh project item-add 2 --owner Nessi-Fishing-Supply --url https://github.com/Nessi-Fishing-Supply/Nessi-Web-App/issues/{issue} --format json | jq -r '.id'
+   ```
+   Capture that output as ITEM_ID.
+
+   b. Then move to In Progress (use the ITEM_ID value from the previous step):
+   ```bash
+   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id 47fc9ee4
    ```
 8. Create and checkout the feature branch
 
@@ -113,6 +121,7 @@ Display the plan summary:
       - Launch **phase-verifier** agent to run `pnpm build`
       - If verification fails: attempt fix, re-verify once, escalate to blocked if still failing
       - If passes: update health in `state.json`, persist
+      - **Format all changed files before committing:** `pnpm prettier --write $(git diff --name-only HEAD)` — this prevents CI `format:check` failures, especially on markdown files (CLAUDE.md, plan.md) that Prettier reformats
       - Stage conductor state alongside source changes: `git add .claude/conductor/` (tracks state, plan, learnings)
       - Commit phase: `{type}({scope}): #{issue} {phase description}` with task summaries in body
       - Append any learnings to `learnings.md`
@@ -203,9 +212,9 @@ Rules for this step:
 ### Blocked Escalation
 
 1. Update `state.json` → `status: "blocked"`, persist to disk
-2. Move GitHub issue to **Blocked** column:
+2. Move GitHub issue to **Blocked** column (use the ITEM_ID obtained earlier — if not available, fetch it with a separate `gh project item-list` call first):
    ```bash
-   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id $ITEM_ID --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id ead5882a
+   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id ead5882a
    ```
 3. Leave a comment on the issue with: what task failed, error details from all attempts, debug findings, suggested next steps:
    ```bash
@@ -228,6 +237,7 @@ Rules for this step:
 - **EVERY state transition MUST be persisted to `state.json` on disk immediately.** This is the crash recovery mechanism.
 - **EVERY `git commit` MUST include `.claude/conductor/` alongside source changes.** Never commit source files without also staging conductor state. Use `git add .claude/conductor/ <source files>` in every commit command. This includes phase commits, review commits, fix commits, and the final depot-move commit.
 - **The depot move + active.json clear MUST be committed and pushed as part of the branch.** Do this BEFORE launching the pr-creator agent, not after. If the depot move isn't in the branch, it won't be in the PR merge and the track will be stranded in `tracks/` forever.
+- **EVERY `git commit` MUST be preceded by `pnpm prettier --write` on all changed files.** Run `pnpm prettier --write $(git diff --name-only HEAD)` before staging. This prevents CI `format:check` failures — especially on markdown files (CLAUDE.md, plan.md) that Prettier reformats tables and line lengths.
 - **Append-only**: `review-log.md` is never overwritten, only appended to.
 - **Agent isolation**: Only launch agents for their designated purpose. task-executor writes code. pr-creator does git operations. phase-verifier only reports.
 - Always read `state.json` fresh before making decisions — never rely on in-memory state from earlier in the conversation.
