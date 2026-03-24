@@ -1,12 +1,14 @@
 'use client';
 
-import { useCallback, useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
+import { useAuth } from '@/features/auth/context';
 import {
   getRecentlyViewed,
   addRecentlyViewed,
   clearRecentlyViewed,
   subscribe,
 } from '@/features/recently-viewed/utils/recently-viewed';
+import { useRecentlyViewedQuery, useClearRecentlyViewed } from './use-recently-viewed-query';
 import type { RecentlyViewedItem } from '@/features/recently-viewed/types/recently-viewed';
 
 const EMPTY_ITEMS: RecentlyViewedItem[] = [];
@@ -29,15 +31,41 @@ function getServerSnapshot(): RecentlyViewedItem[] {
 }
 
 export function useRecentlyViewed() {
-  const items = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const { user, isLoading: authLoading } = useAuth();
 
-  const add = useCallback((listingId: string) => {
-    return addRecentlyViewed(listingId);
-  }, []);
+  // Always call hooks unconditionally (rules of hooks)
+  const { data: dbItems } = useRecentlyViewedQuery();
+  const { mutate: clearDb } = useClearRecentlyViewed();
+  const guestItems = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  const clear = useCallback(() => {
-    return clearRecentlyViewed();
-  }, []);
+  // Map DB items to RecentlyViewedItem shape for backward compat
+  const authItems = useMemo<RecentlyViewedItem[]>(() => {
+    if (!dbItems) return EMPTY_ITEMS;
+    return dbItems.map((item) => ({
+      listingId: item.listingId,
+      viewedAt: item.viewedAt,
+    }));
+  }, [dbItems]);
 
-  return { items, add, clear };
+  // Authenticated path
+  if (user) {
+    return {
+      items: authItems,
+      // DB persistence happens in POST /api/listings/[id]/view, not here
+      add: () => {},
+      clear: () => clearDb(),
+    };
+  }
+
+  // Loading state — return empty to prevent flash
+  if (authLoading) {
+    return { items: EMPTY_ITEMS, add: () => {}, clear: () => {} };
+  }
+
+  // Guest path — existing localStorage implementation
+  return {
+    items: guestItems,
+    add: (listingId: string) => addRecentlyViewed(listingId),
+    clear: () => clearRecentlyViewed(),
+  };
 }
