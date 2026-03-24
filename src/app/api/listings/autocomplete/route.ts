@@ -12,8 +12,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const rawQ = searchParams.get('q');
 
-    if (!rawQ || rawQ.trim().length < 3) {
-      return NextResponse.json({ error: 'Query must be at least 3 characters' }, { status: 400 });
+    if (!rawQ || rawQ.trim().length < 2) {
+      return NextResponse.json({ error: 'Query must be at least 2 characters' }, { status: 400 });
     }
 
     const q = rawQ.trim();

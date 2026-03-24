@@ -9,7 +9,7 @@ export function useAutocomplete(query: string) {
   return useQuery<AutocompleteSuggestion[]>({
     queryKey: ['autocomplete', debouncedQuery],
     queryFn: () => getAutocompleteSuggestions(debouncedQuery),
-    enabled: debouncedQuery.length >= 3,
+    enabled: debouncedQuery.length >= 2,
     staleTime: 30 * 1000,
   });
 }

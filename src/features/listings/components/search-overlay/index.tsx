@@ -26,7 +26,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const { data: suggestions = [] } = useAutocomplete(query);
-  const showSuggestions = suggestions.length > 0 && query.length >= 3;
+  const showSuggestions = suggestions.length > 0 && query.length >= 2;
 
   // Store triggering element and auto-focus input on open
   // Note: state (query, activeIndex) resets automatically on remount since component returns null when !isOpen

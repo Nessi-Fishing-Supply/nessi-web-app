@@ -79,7 +79,7 @@ export default function Navbar() {
   const searchParams = useSearchParams();
 
   const { data: searchSuggestions = [] } = useAutocomplete(searchQuery);
-  const hasSearchSuggestions = searchSuggestions.length > 0 && searchQuery.length >= 3;
+  const hasSearchSuggestions = searchSuggestions.length > 0 && searchQuery.length >= 2;
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
