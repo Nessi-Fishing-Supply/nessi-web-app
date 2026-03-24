@@ -11,6 +11,7 @@ interface HeroBannerUploadProps {
   shopId: string;
   heroBannerUrl: string | null;
   onUpload: (url: string) => void;
+  onError?: () => void;
   disabled?: boolean;
 }
 
@@ -18,6 +19,7 @@ export default function HeroBannerUpload({
   shopId,
   heroBannerUrl,
   onUpload,
+  onError,
   disabled,
 }: HeroBannerUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
@@ -60,6 +62,8 @@ export default function HeroBannerUpload({
 
       const data = await response.json();
       onUpload(data.url);
+    } catch {
+      onError?.();
     } finally {
       setIsUploading(false);
       handleCancelCrop();

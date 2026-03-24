@@ -153,6 +153,14 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
               shopId={shop.id}
               heroBannerUrl={shop.hero_banner_url ?? null}
               onUpload={handleHeroBannerUpload}
+              onError={() =>
+                showToast({
+                  message: 'Upload failed',
+                  description: 'Failed to upload banner. Please try again.',
+                  type: 'error',
+                  duration: 4000,
+                })
+              }
               disabled={updateShop.isPending}
             />
           </div>
