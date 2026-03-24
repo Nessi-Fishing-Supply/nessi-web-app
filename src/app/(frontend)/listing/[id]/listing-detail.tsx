@@ -16,6 +16,7 @@ import { formatPrice } from '@/features/shared/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { getCategoryLabel } from '@/features/listings/constants/category';
 import { useIncrementViewCount, useDuplicateListing } from '@/features/listings/hooks/use-listings';
+import { addRecentlyViewed } from '@/features/recently-viewed';
 import { useToast } from '@/components/indicators/toast/context';
 import useContextStore from '@/features/context/stores/context-store';
 import type { ListingWithPhotos, SellerIdentity } from '@/features/listings/types/listing';
@@ -38,6 +39,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
 
   useEffect(() => {
     incrementView(listing.id);
+    addRecentlyViewed(listing.id);
   }, [listing.id, incrementView]);
 
   const activeContext = useContextStore.use.activeContext();
