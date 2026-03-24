@@ -34,37 +34,106 @@
   @include breakpoint(md) {
     display: block;
   }
+}
+
+.searchPill {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--color-neutral-800);
+  border-radius: var(--radius-700);
+  background-color: var(--color-white);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: var(--color-primary-500);
+  }
 
   input {
-    width: 100%;
-    border-radius: var(--spacing-200);
-    border: 2px solid var(--color-primary-500);
-    padding: var(--spacing-200);
-    background-color: transparent;
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: var(--spacing-200) var(--spacing-300);
+    font-size: var(--font-size-600);
+    background: transparent;
+    color: var(--color-neutral-900);
+    min-width: 0;
 
     &::placeholder {
-      color: var(--color-primary-500);
+      color: var(--color-neutral-500);
+    }
+
+    // Remove native clear button
+    &::-webkit-search-cancel-button {
+      display: none;
     }
   }
 }
 
-.searchButton {
-  position: absolute;
-  right: var(--spacing-100);
-  top: 50%;
-  transform: translateY(-50%);
+.searchPillIcon {
+  display: flex;
+  align-items: center;
+  padding-left: var(--spacing-300);
+  color: var(--color-neutral-500);
+
+  > svg {
+    width: var(--spacing-500);
+    height: var(--spacing-500);
+  }
+}
+
+.clearButton {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
   background: none;
   border: none;
-  padding: none;
-  margin: none;
+  cursor: pointer;
+  color: var(--color-neutral-400);
+  padding: 0;
 
   > svg {
-    width: var(--spacing-600);
-    height: var(--spacing-600);
-    color: var(--color-primary-500);
+    width: var(--spacing-400);
+    height: var(--spacing-400);
+  }
+
+  &:hover {
+    color: var(--color-neutral-700);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.searchSubmit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-accent-500);
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-200) var(--spacing-400);
+  color: var(--color-white);
+  border-radius: 0 var(--radius-700) var(--radius-700) 0;
+  min-height: 44px;
+
+  > svg {
+    width: var(--spacing-500);
+    height: var(--spacing-500);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
   }
 }
 
