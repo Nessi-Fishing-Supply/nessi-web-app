@@ -63,6 +63,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `ShopSubscriptionSection`  | `components/shop-settings/shop-subscription-section/`  | Stripe subscription placeholder (Coming Soon)                                                     |
 | `OwnershipTransferSection` | `components/shop-settings/ownership-transfer-section/` | Two-step confirmation modal for transferring shop ownership                                       |
 | `ShopDeletionSection`      | `components/shop-settings/shop-deletion-section/`      | Danger zone with type-to-confirm deletion modal                                                   |
+| `HeroBannerUpload`         | `components/hero-banner-upload/`                       | Hero banner image picker with crop UI (uses ImageCropper + Modal); uploads via POST /api/shops/hero-banner |
 
 ## Pages
 
@@ -82,6 +83,17 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Processes with `sharp`: resizes to 200x200, converts to WebP at 80% quality
 - Stores at `avatars/shop-{shopId}.webp` in the `avatars` bucket
 - Returns `{ avatarUrl: string }`
+
+## Hero Banner Upload API
+
+`POST /api/shops/hero-banner`
+
+- Requires authenticated session + shop owner verification
+- Accepts `file` (image) + `shopId` in `multipart/form-data`
+- Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
+- Processes with `sharp`: resizes to max 1200x400 (fit inside, no upscale), converts to WebP at 85% quality
+- Stores at `avatars/shop-hero-{shopId}.webp` in the `avatars` bucket
+- Returns `{ heroBannerUrl: string }`
 
 ## Shop Deletion API
 
@@ -104,6 +116,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - `InlineEdit` from `@/components/controls/inline-edit`
 - `Modal` from `@/components/layout/modal`
 - `AvatarUpload` from `@/components/controls/avatar-upload` — accepts configurable `uploadUrl` and `extraFormData` props
+- `ImageCropper` from `@/components/controls/image-cropper` — used by `HeroBannerUpload` to let users crop the banner before upload
 - `Button` from `@/components/controls/button`
 - Toast context from `@/components/indicators/toast/context`
 
