@@ -95,7 +95,13 @@ export default function OwnershipTransferSection({ shop }: OwnershipTransferSect
                 : '';
               return (
                 <option key={m.member_id} value={m.member_id}>
-                  {name || m.member_id} ({m.role_id === SYSTEM_ROLE_IDS.OWNER ? 'Owner' : m.role_id === SYSTEM_ROLE_IDS.MANAGER ? 'Manager' : 'Contributor'})
+                  {name || m.member_id} (
+                  {m.role_id === SYSTEM_ROLE_IDS.OWNER
+                    ? 'Owner'
+                    : m.role_id === SYSTEM_ROLE_IDS.MANAGER
+                      ? 'Manager'
+                      : 'Contributor'}
+                  )
                 </option>
               );
             })}
