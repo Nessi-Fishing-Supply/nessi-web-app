@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { HiOutlineX, HiAdjustments } from 'react-icons/hi';
 import type { SearchFilters } from '../../types/search';
 import type { ListingCategory, ListingCondition } from '../../types/listing';
 import CategoryFilter from '../category-filter';
@@ -20,6 +19,9 @@ interface FilterPanelProps {
   onClearAll: () => void;
   activeFilterCount: number;
   resultCount: number | undefined;
+  isOpen: boolean;
+  isMobileOpen: boolean;
+  onMobileClose: () => void;
 }
 
 const FOCUSABLE_SELECTOR =
@@ -31,45 +33,47 @@ export default function FilterPanel({
   onClearAll,
   activeFilterCount,
   resultCount,
+  isOpen,
+  isMobileOpen,
+  onMobileClose,
 }: FilterPanelProps) {
-  const [isSheetOpen, setSheetOpen] = useState(false);
-  const sheetRef = useRef<HTMLDivElement>(null);
+  const mobileRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  // Store trigger element and lock scroll on open
+  // Store trigger element and lock scroll on mobile open
   useEffect(() => {
-    if (isSheetOpen) {
+    if (isMobileOpen) {
       triggerRef.current = document.activeElement as HTMLElement;
       document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => sheetRef.current?.focus());
+      requestAnimationFrame(() => mobileRef.current?.focus());
     } else {
       document.body.style.overflow = '';
     }
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isSheetOpen]);
+  }, [isMobileOpen]);
 
-  // Restore focus when sheet closes
+  // Restore focus when mobile closes
   useEffect(() => {
-    if (!isSheetOpen && triggerRef.current) {
+    if (!isMobileOpen && triggerRef.current) {
       triggerRef.current.focus();
       triggerRef.current = null;
     }
-  }, [isSheetOpen]);
+  }, [isMobileOpen]);
 
-  // Escape key + focus trap
+  // Escape key + focus trap for mobile
   useEffect(() => {
-    if (!isSheetOpen) return;
+    if (!isMobileOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setSheetOpen(false);
+        onMobileClose();
         return;
       }
 
-      if (event.key === 'Tab' && sheetRef.current) {
-        const focusable = sheetRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
+      if (event.key === 'Tab' && mobileRef.current) {
+        const focusable = mobileRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
         if (focusable.length === 0) return;
 
         const first = focusable[0] as HTMLElement;
@@ -87,7 +91,7 @@ export default function FilterPanel({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isSheetOpen]);
+  }, [isMobileOpen, onMobileClose]);
 
   const filterContent = (
     <>
@@ -157,65 +161,42 @@ export default function FilterPanel({
     </>
   );
 
-  const desktopRail = (
-    <aside className={styles.rail} role="region" aria-label="Filters">
-      <h2 className={styles.railTitle}>Filters</h2>
-      {filterContent}
-    </aside>
-  );
-
-  const mobileSheet = (
+  return (
     <>
-      <button className={styles.mobileButton} onClick={() => setSheetOpen(true)} type="button">
-        <HiAdjustments aria-hidden="true" />
-        Filters
-        {activeFilterCount > 0 && <span className={styles.badge}>{activeFilterCount}</span>}
-      </button>
+      {/* Desktop sidebar — visibility controlled by parent via isOpen */}
+      {isOpen && (
+        <aside className={styles.sidebar} role="region" aria-label="Filters">
+          <h2 className={styles.sidebarTitle}>Filters</h2>
+          {filterContent}
+        </aside>
+      )}
 
-      {isSheetOpen &&
+      {/* Mobile full-screen filter panel */}
+      {isMobileOpen &&
         ReactDOM.createPortal(
-          <div className={styles.sheetOverlay} onClick={() => setSheetOpen(false)}>
-            <div
-              className={styles.sheet}
-              ref={sheetRef}
-              tabIndex={-1}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Filters"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={styles.sheetHeader}>
-                <h2 className={styles.sheetTitle}>Filters</h2>
-                <button
-                  className={styles.sheetClose}
-                  onClick={() => setSheetOpen(false)}
-                  aria-label="Close filters"
-                  type="button"
-                >
-                  <HiOutlineX aria-hidden="true" />
-                </button>
-              </div>
-              <div className={styles.sheetBody}>{filterContent}</div>
-              <div className={styles.sheetFooter}>
-                <button
-                  className={styles.showResultsButton}
-                  onClick={() => setSheetOpen(false)}
-                  type="button"
-                >
-                  Show {resultCount !== undefined ? `${resultCount} ` : ''}results
-                </button>
-              </div>
+          <div
+            className={styles.mobileOverlay}
+            ref={mobileRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Filters"
+          >
+            <div className={styles.mobileHeader}>
+              <h2 className={styles.mobileTitle}>Filters</h2>
+              <button className={styles.resetButton} onClick={onClearAll} type="button">
+                Reset
+              </button>
+            </div>
+            <div className={styles.mobileBody}>{filterContent}</div>
+            <div className={styles.mobileFooter}>
+              <button className={styles.showResultsButton} onClick={onMobileClose} type="button">
+                Show {resultCount !== undefined ? `${resultCount} ` : ''}results
+              </button>
             </div>
           </div>,
           document.getElementById('modal-root') as HTMLElement,
         )}
-    </>
-  );
-
-  return (
-    <>
-      {desktopRail}
-      {mobileSheet}
     </>
   );
 }

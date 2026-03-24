@@ -52,7 +52,7 @@ function countActiveFilters(params: URLSearchParams): number {
   let count = 0;
 
   for (const [key, value] of params.entries()) {
-    if (key === 'q' || key === 'page' || key === 'limit') continue;
+    if (key === 'q' || key === 'page' || key === 'limit' || key === 'sort') continue;
     if (ARRAY_PARAMS.has(key)) {
       count += value.split(',').filter(Boolean).length;
     } else {
@@ -124,7 +124,7 @@ export function useSearchFilters() {
 
   const hasActiveFilters = (() => {
     for (const key of searchParams.keys()) {
-      if (key !== 'q' && key !== 'page' && key !== 'limit') return true;
+      if (key !== 'q' && key !== 'page' && key !== 'limit' && key !== 'sort') return true;
     }
     return false;
   })();

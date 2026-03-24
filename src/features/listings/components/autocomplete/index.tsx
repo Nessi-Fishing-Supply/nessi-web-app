@@ -1,5 +1,6 @@
 'use client';
 
+import { HiSearch } from 'react-icons/hi';
 import type { AutocompleteSuggestion } from '../../types/search';
 import styles from './autocomplete.module.scss';
 
@@ -34,7 +35,8 @@ export default function Autocomplete({
             onSelect(suggestion);
           }}
         >
-          {suggestion.term}
+          <HiSearch className={styles.icon} aria-hidden="true" />
+          <span>{suggestion.term}</span>
         </li>
       ))}
     </ul>

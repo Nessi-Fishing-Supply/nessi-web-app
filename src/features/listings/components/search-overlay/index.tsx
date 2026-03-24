@@ -5,8 +5,12 @@ import ReactDOM from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { HiSearch, HiOutlineX } from 'react-icons/hi';
 import { useAutocomplete } from '../../hooks/use-autocomplete';
+import { useRecentSearches } from '../../hooks/use-recent-searches';
 import Autocomplete from '../autocomplete';
+import RecentSearches from '../recent-searches';
+import SearchQuickCategories from '../search-quick-categories';
 import type { AutocompleteSuggestion } from '../../types/search';
+import type { ListingCategory } from '../../types/listing';
 import styles from './search-overlay.module.scss';
 
 interface SearchOverlayProps {
@@ -26,7 +30,10 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const { data: suggestions = [] } = useAutocomplete(query);
-  const showSuggestions = suggestions.length > 0 && query.length >= 3;
+  const showSuggestions = suggestions.length > 0 && query.length >= 2;
+
+  const { recentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } =
+    useRecentSearches();
 
   // Store triggering element and auto-focus input on open
   // Note: state (query, activeIndex) resets automatically on remount since component returns null when !isOpen
@@ -90,10 +97,26 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
   const navigateToSearch = useCallback(
     (term: string) => {
+      addRecentSearch(term);
       router.push(`/search?q=${encodeURIComponent(term.trim())}`);
       onClose();
     },
+    [router, onClose, addRecentSearch],
+  );
+
+  const handleCategorySelect = useCallback(
+    (category: ListingCategory) => {
+      router.push(`/search?category=${category}`);
+      onClose();
+    },
     [router, onClose],
+  );
+
+  const handleRecentSearchSelect = useCallback(
+    (term: string) => {
+      navigateToSearch(term);
+    },
+    [navigateToSearch],
   );
 
   const handleSelect = useCallback(
@@ -194,6 +217,17 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             activeIndex={activeIndex}
             listId="search-overlay-suggestions"
           />
+          {query.length < 2 && (
+            <div className={styles.onFocusContent}>
+              <RecentSearches
+                searches={recentSearches}
+                onSelect={handleRecentSearchSelect}
+                onRemove={removeRecentSearch}
+                onClearAll={clearRecentSearches}
+              />
+              <SearchQuickCategories onSelect={handleCategorySelect} />
+            </div>
+          )}
         </form>
       </div>
     </div>,

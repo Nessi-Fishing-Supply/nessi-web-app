@@ -130,3 +130,9 @@
     outline-offset: 2px;
   }
 }
+
+.onFocusContent {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: var(--spacing-300);
+}

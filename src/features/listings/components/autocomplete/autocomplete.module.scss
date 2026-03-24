@@ -2,18 +2,29 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--color-neutral-200);
 }
 
 .item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
   padding: var(--spacing-300) var(--spacing-400);
   cursor: pointer;
   font-size: var(--font-size-600);
   color: var(--color-neutral-800);
+  border-radius: var(--radius-200);
+  margin: 0 var(--spacing-200);
 
   &:hover,
   &.active {
     background-color: var(--color-neutral-100);
     color: var(--color-primary-500);
   }
+}
+
+.icon {
+  width: var(--spacing-400);
+  height: var(--spacing-400);
+  color: var(--color-neutral-400);
+  flex-shrink: 0;
 }

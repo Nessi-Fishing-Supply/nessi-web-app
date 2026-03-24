@@ -13,6 +13,7 @@ import {
   HiSearch,
   HiSwitchHorizontal,
   HiCheckCircle,
+  HiOutlineX,
 } from 'react-icons/hi';
 
 // Components
@@ -35,9 +36,11 @@ import LogoFull from '@/assets/logos/logo_full.svg';
 // Listings
 import { LISTING_CATEGORIES } from '@/features/listings/constants/category';
 import { useAutocomplete } from '@/features/listings/hooks/use-autocomplete';
-import Autocomplete from '@/features/listings/components/autocomplete';
+import DesktopSearchDropdown from '@/features/listings/components/desktop-search-dropdown';
 import SearchOverlay from '@/features/listings/components/search-overlay';
+import { useRecentSearches } from '@/features/listings/hooks/use-recent-searches';
 import type { AutocompleteSuggestion } from '@/features/listings/types/search';
+import type { ListingCategory } from '@/features/listings/types/listing';
 
 // Cart
 import CartIcon from '@/features/cart/components/cart-icon';
@@ -61,9 +64,11 @@ export default function Navbar() {
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActiveIndex, setSearchActiveIndex] = useState(-1);
-  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [isSearchOverlayOpen, setSearchOverlayOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { recentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } =
+    useRecentSearches();
 
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
@@ -79,18 +84,20 @@ export default function Navbar() {
   const searchParams = useSearchParams();
 
   const { data: searchSuggestions = [] } = useAutocomplete(searchQuery);
-  const hasSearchSuggestions = searchSuggestions.length > 0 && searchQuery.length >= 3;
+  const hasSearchSuggestions = searchSuggestions.length > 0 && searchQuery.length >= 2;
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim().length < 2) return;
 
-    if (searchActiveIndex >= 0 && searchSuggestions[searchActiveIndex]) {
-      router.push(`/search?q=${encodeURIComponent(searchSuggestions[searchActiveIndex].term)}`);
-    } else {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-    setShowAutocomplete(false);
+    const term =
+      searchActiveIndex >= 0 && searchSuggestions[searchActiveIndex]
+        ? searchSuggestions[searchActiveIndex].term
+        : searchQuery.trim();
+
+    addRecentSearch(term);
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+    setShowDropdown(false);
     setSearchActiveIndex(-1);
     searchInputRef.current?.blur();
   };
@@ -105,16 +112,30 @@ export default function Navbar() {
       e.preventDefault();
       setSearchActiveIndex((prev) => (prev <= 0 ? searchSuggestions.length - 1 : prev - 1));
     } else if (e.key === 'Escape') {
-      setShowAutocomplete(false);
+      setShowDropdown(false);
       setSearchActiveIndex(-1);
     }
   };
 
   const handleSearchSelect = (suggestion: AutocompleteSuggestion) => {
+    addRecentSearch(suggestion.term);
     router.push(`/search?q=${encodeURIComponent(suggestion.term)}`);
     setSearchQuery(suggestion.term);
-    setShowAutocomplete(false);
+    setShowDropdown(false);
     setSearchActiveIndex(-1);
+  };
+
+  const handleCategorySelect = (category: ListingCategory) => {
+    router.push(`/search?category=${category}`);
+    setShowDropdown(false);
+    searchInputRef.current?.blur();
+  };
+
+  const handleRecentSearchSelect = (term: string) => {
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+    setSearchQuery(term);
+    setShowDropdown(false);
+    searchInputRef.current?.blur();
   };
 
   // Detect query params and open appropriate modals/toasts
@@ -210,42 +231,68 @@ export default function Navbar() {
           <label htmlFor="site-search" className="sr-only">
             Search fishing gear
           </label>
-          <input
-            ref={searchInputRef}
-            id="site-search"
-            type="search"
-            placeholder="Search Fishing Gear"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setSearchActiveIndex(-1);
-              setShowAutocomplete(true);
-            }}
-            onFocus={() => setShowAutocomplete(true)}
-            onBlur={() => {
-              setTimeout(() => setShowAutocomplete(false), 200);
-            }}
-            onKeyDown={handleSearchKeyDown}
-            aria-autocomplete="list"
-            aria-controls={
-              hasSearchSuggestions && showAutocomplete ? 'desktop-search-suggestions' : undefined
-            }
-            aria-activedescendant={
-              searchActiveIndex >= 0
-                ? `desktop-search-suggestions-option-${searchActiveIndex}`
-                : undefined
-            }
-            autoComplete="off"
-          />
-          <button className={styles.searchButton} type="submit" aria-label="Submit search">
-            <HiSearch aria-hidden="true" />
-          </button>
-          <Autocomplete
+          <div className={styles.searchPill}>
+            <span className={styles.searchPillIcon}>
+              <HiSearch aria-hidden="true" />
+            </span>
+            <input
+              ref={searchInputRef}
+              id="site-search"
+              type="search"
+              role="combobox"
+              placeholder="Search fishing gear..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchActiveIndex(-1);
+                setShowDropdown(true);
+              }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => {
+                setTimeout(() => setShowDropdown(false), 200);
+              }}
+              onKeyDown={handleSearchKeyDown}
+              aria-autocomplete="list"
+              aria-expanded={showDropdown}
+              aria-controls={showDropdown ? 'desktop-search-suggestions' : undefined}
+              aria-activedescendant={
+                searchActiveIndex >= 0
+                  ? `desktop-search-suggestions-option-${searchActiveIndex}`
+                  : undefined
+              }
+              autoComplete="off"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className={styles.clearButton}
+                onClick={() => {
+                  setSearchQuery('');
+                  setSearchActiveIndex(-1);
+                  searchInputRef.current?.focus();
+                }}
+                aria-label="Clear search"
+              >
+                <HiOutlineX aria-hidden="true" />
+              </button>
+            )}
+            <button className={styles.searchSubmit} type="submit" aria-label="Submit search">
+              <HiSearch aria-hidden="true" />
+            </button>
+          </div>
+          <DesktopSearchDropdown
+            isOpen={showDropdown}
+            query={searchQuery}
             suggestions={searchSuggestions}
-            isOpen={hasSearchSuggestions && showAutocomplete}
-            onSelect={handleSearchSelect}
+            showSuggestions={hasSearchSuggestions}
             activeIndex={searchActiveIndex}
             listId="desktop-search-suggestions"
+            recentSearches={recentSearches}
+            onSelectSuggestion={handleSearchSelect}
+            onSelectRecentSearch={handleRecentSearchSelect}
+            onRemoveRecentSearch={removeRecentSearch}
+            onClearRecentSearches={clearRecentSearches}
+            onSelectCategory={handleCategorySelect}
           />
         </form>
         <button className={styles.button} type="button" aria-disabled="true">

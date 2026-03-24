@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { HiAdjustments } from 'react-icons/hi';
 import { useSearchFilters } from '@/features/listings/hooks/use-search-filters';
 import {
   useSearchListingsInfinite,
@@ -21,6 +22,9 @@ export default function SearchResults() {
     useSearchFilters();
   const trackSuggestion = useTrackSearchSuggestion();
   const hasTracked = useRef(false);
+
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const sort = filters.sort || (filters.q ? 'relevance' : 'newest');
 
@@ -48,9 +52,48 @@ export default function SearchResults() {
     setFilter('sort', value);
   };
 
+  const handleFilterToggle = () => {
+    // Desktop: toggle sidebar. Mobile: open full-screen panel.
+    if (window.innerWidth >= 1000) {
+      setFiltersOpen((prev) => !prev);
+    } else {
+      setMobileFiltersOpen(true);
+    }
+  };
+
   return (
     <main className={styles.container}>
-      <div className={styles.layout}>
+      {/* Top filter bar */}
+      <div className={styles.filterBar}>
+        <button
+          type="button"
+          className={`${styles.filterToggle}${filtersOpen || mobileFiltersOpen ? ` ${styles.filterToggleActive}` : ''}`}
+          onClick={handleFilterToggle}
+          aria-expanded={filtersOpen}
+          aria-controls="filter-sidebar"
+        >
+          <HiAdjustments aria-hidden="true" />
+          <span className={styles.filterToggleLabel}>
+            {filtersOpen ? 'Hide filters' : 'Show filters'}
+          </span>
+          {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
+        </button>
+
+        {hasActiveFilters && (
+          <FilterChips
+            filters={filters}
+            onRemoveFilter={removeFilter}
+            onClearAll={clearAllFilters}
+          />
+        )}
+
+        <div className={styles.sortWrapper}>
+          <SortSelect value={sort} onChange={handleSortChange} showRelevance={!!filters.q} />
+        </div>
+      </div>
+
+      {/* Main layout with optional sidebar */}
+      <div className={`${styles.layout}${filtersOpen ? ` ${styles.sidebarOpen}` : ''}`}>
         <FilterPanel
           filters={filters}
           onFilterChange={(key, value) =>
@@ -59,6 +102,9 @@ export default function SearchResults() {
           onClearAll={clearAllFilters}
           activeFilterCount={activeFilterCount}
           resultCount={total}
+          isOpen={filtersOpen}
+          isMobileOpen={mobileFiltersOpen}
+          onMobileClose={() => setMobileFiltersOpen(false)}
         />
         <div className={styles.content}>
           <div className={styles.header}>
@@ -67,16 +113,7 @@ export default function SearchResults() {
                 ? `${total} result${total !== 1 ? 's' : ''} for "${filters.q}"`
                 : 'Search Results'}
             </h1>
-            <SortSelect value={sort} onChange={handleSortChange} showRelevance={!!filters.q} />
           </div>
-
-          {hasActiveFilters && (
-            <FilterChips
-              filters={filters}
-              onRemoveFilter={removeFilter}
-              onClearAll={clearAllFilters}
-            />
-          )}
 
           {isLoading ? (
             <ListingGrid>

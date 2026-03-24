@@ -1,13 +1,13 @@
 @use '@/styles/mixins/breakpoints' as *;
 
-// Desktop rail — hidden on mobile, visible at lg+
-.rail {
+// Desktop sidebar — hidden by default, shown when isOpen=true (parent-controlled)
+.sidebar {
   display: none;
 
   @include breakpoint(lg) {
     display: block;
-    width: 240px;
-    min-width: 240px;
+    width: 260px;
+    min-width: 260px;
     position: sticky;
     top: var(--spacing-400);
     max-height: calc(100vh - var(--spacing-900));
@@ -17,49 +17,11 @@
   }
 }
 
-.railTitle {
-  font-size: var(--font-size-700);
+.sidebarTitle {
+  font-size: var(--font-size-900);
   font-weight: 700;
   color: var(--color-neutral-900);
-  margin-bottom: var(--spacing-400);
-}
-
-// Mobile trigger button — hidden at lg+
-.mobileButton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-200);
-  padding: var(--spacing-200) var(--spacing-300);
-  border: 2px solid var(--color-neutral-300);
-  border-radius: var(--radius-100);
-  background-color: var(--color-white);
-  font-size: var(--font-size-600);
-  font-weight: 600;
-  color: var(--color-neutral-900);
-  cursor: pointer;
-  min-height: 44px;
-
-  > svg {
-    width: var(--spacing-400);
-    height: var(--spacing-400);
-  }
-
-  @include breakpoint(lg) {
-    display: none;
-  }
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background-color: var(--color-primary-500);
-  color: var(--color-white);
-  font-size: var(--font-size-200);
-  font-weight: 700;
+  margin: 0 0 var(--spacing-400);
 }
 
 // Clear all button
@@ -117,27 +79,18 @@
   border-bottom: 1px solid var(--color-neutral-200);
 }
 
-// Bottom sheet overlay
-.sheetOverlay {
+// Mobile full-screen overlay
+.mobileOverlay {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background-color: rgb(0 0 0 / 50%);
-  display: flex;
-  align-items: flex-end;
-}
-
-.sheet {
-  width: 100%;
-  max-height: 85vh;
   background-color: var(--color-white);
-  border-radius: var(--spacing-300) var(--spacing-300) 0 0;
   display: flex;
   flex-direction: column;
   outline: none;
 }
 
-.sheetHeader {
+.mobileHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -146,36 +99,39 @@
   flex-shrink: 0;
 }
 
-.sheetTitle {
+.mobileTitle {
   font-size: var(--font-size-900);
   font-weight: 700;
   color: var(--color-neutral-900);
 }
 
-.sheetClose {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
+.resetButton {
   background: none;
-  border: none;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-700);
+  padding: var(--spacing-200) var(--spacing-400);
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-700);
   cursor: pointer;
+  min-height: 44px;
 
-  > svg {
-    width: var(--spacing-700);
-    height: var(--spacing-700);
-    color: var(--color-neutral-900);
+  &:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
   }
 }
 
-.sheetBody {
+.mobileBody {
   flex: 1;
   overflow-y: auto;
   padding: var(--spacing-300) 0;
 }
 
-.sheetFooter {
+.mobileFooter {
   flex-shrink: 0;
   padding: var(--spacing-400);
   border-top: 1px solid var(--color-neutral-200);
