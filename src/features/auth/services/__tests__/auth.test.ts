@@ -9,6 +9,9 @@ import {
   getUserProfile,
   verifyOtp,
   sendResetCode,
+  changeEmail,
+  verifyEmailChange,
+  resendEmailChangeCode,
 } from '../auth';
 
 const TIMEOUT_MESSAGE = 'Something went wrong. Check your connection and try again.';
@@ -250,6 +253,19 @@ describe('verifyOtp', () => {
     });
   });
 
+  it('calls supabase.auth.verifyOtp with correct params for email_change', async () => {
+    const verifyOtpMock = vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
+    const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await verifyOtp({ email: 'new@b.com', token: '111111', type: 'email_change' });
+    expect(verifyOtpMock).toHaveBeenCalledWith({
+      email: 'new@b.com',
+      token: '111111',
+      type: 'email_change',
+    });
+  });
+
   it('calls supabase.auth.verifyOtp with correct params for recovery', async () => {
     const verifyOtpMock = vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
     const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
@@ -315,5 +331,125 @@ describe('sendResetCode', () => {
     };
     vi.mocked(createClient).mockReturnValue(mockSupabase as any);
     await expect(sendResetCode({ email: 'a@b.com' })).rejects.toThrow('Rate limit exceeded');
+  });
+});
+
+describe('changeEmail', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('calls updateUser with new email and returns success message', async () => {
+    const updateUserMock = vi.fn().mockResolvedValue({ data: { user: {} }, error: null });
+    const mockSupabase = { auth: { updateUser: updateUserMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = await changeEmail({ newEmail: 'new@example.com' });
+    expect(updateUserMock).toHaveBeenCalledWith({ email: 'new@example.com' });
+    expect(result).toEqual({ message: 'Verification code sent to your new email.' });
+  });
+
+  it('throws when updateUser returns an error', async () => {
+    const mockSupabase = {
+      auth: {
+        updateUser: vi
+          .fn()
+          .mockResolvedValue({ data: { user: null }, error: { message: 'Email already in use' } }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await expect(changeEmail({ newEmail: 'taken@example.com' })).rejects.toThrow(
+      'Email already in use',
+    );
+  });
+
+  it('times out after AUTH_TIMEOUT_MS', async () => {
+    const neverResolves = new Promise<never>(() => {});
+    const mockSupabase = { auth: { updateUser: vi.fn().mockReturnValue(neverResolves) } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = changeEmail({ newEmail: 'new@example.com' });
+    vi.advanceTimersByTime(AUTH_TIMEOUT_MS + 1);
+    await expect(result).rejects.toThrow(TIMEOUT_MESSAGE);
+  });
+});
+
+describe('verifyEmailChange', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('delegates to verifyOtp with type email_change', async () => {
+    const verifyOtpMock = vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
+    const mockSupabase = { auth: { verifyOtp: verifyOtpMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = await verifyEmailChange({ email: 'new@example.com', token: '123456' });
+    expect(verifyOtpMock).toHaveBeenCalledWith({
+      email: 'new@example.com',
+      token: '123456',
+      type: 'email_change',
+    });
+    expect(result).toEqual({ user: { id: 'u1' } });
+  });
+
+  it('throws when verifyOtp returns an error', async () => {
+    const mockSupabase = {
+      auth: {
+        verifyOtp: vi.fn().mockResolvedValue({
+          data: { user: null },
+          error: { message: 'Invalid token' },
+        }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await expect(verifyEmailChange({ email: 'new@example.com', token: '000000' })).rejects.toThrow(
+      'Invalid token',
+    );
+  });
+});
+
+describe('resendEmailChangeCode', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('calls updateUser with email and returns success message', async () => {
+    const updateUserMock = vi.fn().mockResolvedValue({ data: { user: {} }, error: null });
+    const mockSupabase = { auth: { updateUser: updateUserMock } };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    const result = await resendEmailChangeCode({ newEmail: 'new@example.com' });
+    expect(updateUserMock).toHaveBeenCalledWith({ email: 'new@example.com' });
+    expect(result).toEqual({ message: 'Verification code sent to your new email.' });
+  });
+
+  it('throws when updateUser returns an error', async () => {
+    const mockSupabase = {
+      auth: {
+        updateUser: vi
+          .fn()
+          .mockResolvedValue({ data: { user: null }, error: { message: 'Rate limit exceeded' } }),
+      },
+    };
+    vi.mocked(createClient).mockReturnValue(mockSupabase as any);
+
+    await expect(resendEmailChangeCode({ newEmail: 'new@example.com' })).rejects.toThrow(
+      'Rate limit exceeded',
+    );
   });
 });

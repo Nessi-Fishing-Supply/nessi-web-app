@@ -105,7 +105,7 @@ export const resetPassword = async (data: { newPassword: string; confirmNewPassw
 export const verifyOtp = async (data: {
   email: string;
   token: string;
-  type: 'signup' | 'recovery';
+  type: 'signup' | 'recovery' | 'email_change';
 }) => {
   const supabase = createClient();
   const { data: authData, error } = await withTimeout(
@@ -133,4 +133,30 @@ export const resendVerification = async (data: { email: string }) => {
 
   if (error) throw new Error(error.message);
   return { message: 'Verification email sent!' };
+};
+
+export const changeEmail = async (data: { newEmail: string }) => {
+  const supabase = createClient();
+  const { error } = await withTimeout(
+    supabase.auth.updateUser({ email: data.newEmail }),
+    AUTH_TIMEOUT_MS,
+  );
+
+  if (error) throw new Error(error.message);
+  return { message: 'Verification code sent to your new email.' };
+};
+
+export const verifyEmailChange = async (data: { email: string; token: string }) => {
+  return verifyOtp({ email: data.email, token: data.token, type: 'email_change' });
+};
+
+export const resendEmailChangeCode = async (data: { newEmail: string }) => {
+  const supabase = createClient();
+  const { error } = await withTimeout(
+    supabase.auth.updateUser({ email: data.newEmail }),
+    AUTH_TIMEOUT_MS,
+  );
+
+  if (error) throw new Error(error.message);
+  return { message: 'Verification code sent to your new email.' };
 };

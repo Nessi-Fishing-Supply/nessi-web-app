@@ -13,7 +13,7 @@ export type ForgotPasswordFormData = { email: string };
 export type OtpVerificationData = {
   email: string;
   token: string;
-  type: 'signup' | 'recovery';
+  type: 'signup' | 'recovery' | 'email_change';
 };
 
 // Form response types

@@ -19,6 +19,11 @@ export interface ResetPasswordData {
   confirmNewPassword: string;
 }
 
+// Email change form data
+export interface ChangeEmailData {
+  newEmail: string;
+}
+
 // Standard API response format
 export interface AuthResponse {
   message: string;

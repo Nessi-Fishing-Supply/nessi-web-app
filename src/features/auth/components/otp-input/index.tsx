@@ -6,7 +6,7 @@ import styles from './otp-input.module.scss';
 
 interface OtpInputProps {
   email: string;
-  type: 'signup' | 'recovery';
+  type: 'signup' | 'recovery' | 'email_change';
   onSuccess: () => void;
   onResend: () => Promise<void>;
 }

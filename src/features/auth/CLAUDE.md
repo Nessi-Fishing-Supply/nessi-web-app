@@ -7,10 +7,10 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 ## Architecture
 
 - **context.tsx** -- `AuthProvider` and `useAuth()` hook wrapping Supabase session state (client-side). Exposes `{ user, isAuthenticated, isLoading }`.
-- **services/auth.ts** -- Client-side auth API functions with 8-second timeout protection: `login`, `register`, `logout`, `getUserProfile`, `forgotPassword`, `resetPassword`, `verifyOtp`, `resendOtp`. Also exports `withTimeout` helper and `AUTH_TIMEOUT_MS` constant.
-- **types/auth.ts** -- Auth data interfaces: `RegisterData`, `LoginData`, `ResetPasswordData`, `AuthResponse`
+- **services/auth.ts** -- Client-side auth API functions with 8-second timeout protection: `login`, `register`, `logout`, `getUserProfile`, `forgotPassword`, `resetPassword`, `verifyOtp`, `resendOtp`, `changeEmail`, `verifyEmailChange`, `resendEmailChangeCode`. Also exports `withTimeout` helper and `AUTH_TIMEOUT_MS` constant.
+- **types/auth.ts** -- Auth data interfaces: `RegisterData`, `LoginData`, `ResetPasswordData`, `ChangeEmailData`, `AuthResponse`
 - **types/forms.ts** -- Form prop interfaces and form data types: `AuthFormProps<TData, TResponse>`, `LoginFormData`, `RegisterFormData`, `AuthFormResponse`
-- **validations/auth.ts** -- Yup schemas for client-side form validation: `loginSchema`, `registerSchema`, `resetPasswordSchema`
+- **validations/auth.ts** -- Yup schemas for client-side form validation: `loginSchema`, `registerSchema`, `resetPasswordSchema`, `changeEmailSchema`
 - **validations/server.ts** -- Pure-function validation for register API route (server-side, no Yup dependency): `validateRegisterInput()`
 
 ## Session Flow
@@ -91,8 +91,8 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 
 ## Test Coverage
 
-- **services/**tests**/auth.test.ts** -- 21 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`
-- **validations/auth.test.ts** -- 17 tests: `loginSchema`, `registerSchema`, `resetPasswordSchema` (valid/invalid inputs, password complexity)
+- **services/**tests**/auth.test.ts** -- 30 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`, `verifyOtp` (signup, recovery, email_change, error, timeout), `sendResetCode`, `changeEmail` (success, error, timeout), `verifyEmailChange` (success, error), `resendEmailChangeCode` (success, error)
+- **validations/auth.test.ts** -- 20 tests: `loginSchema`, `registerSchema`, `resetPasswordSchema`, `changeEmailSchema` (valid/invalid inputs, password complexity, email format)
 - **validations/server.test.ts** -- 11 tests: `validateRegisterInput` (valid input, missing fields, invalid email, weak passwords, unaccepted terms, null/undefined handling)
 - **components/registration-form/**tests**/index.test.tsx** -- 6 tests: friendly duplicate email message, Sign in button, `onSwitchToLogin` callback, non-duplicate error passthrough
 - **api/auth/register/**tests**/route.test.ts** -- 2 tests: 409 DUPLICATE_EMAIL, 400 for other errors

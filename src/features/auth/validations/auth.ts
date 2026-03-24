@@ -21,6 +21,10 @@ export const registerSchema = Yup.object().shape({
   terms: Yup.boolean().oneOf([true], 'Terms must be accepted').required(),
 });
 
+export const changeEmailSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Email is required'),
+});
+
 export const resetPasswordSchema = Yup.object().shape({
   password: passwordSchema,
   confirmPassword: Yup.string()
