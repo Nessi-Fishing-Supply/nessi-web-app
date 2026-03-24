@@ -305,6 +305,7 @@ export default function Navbar() {
                 <DropdownTitle>
                   <p>Profiles</p>
                 </DropdownTitle>
+                <div className={styles.profilesList}>
                 <DropdownItem>
                   <button
                     type="button"
@@ -393,6 +394,7 @@ export default function Navbar() {
                     </DropdownItem>
                   );
                 })}
+                </div>
               </>
             )}
           </Dropdown>

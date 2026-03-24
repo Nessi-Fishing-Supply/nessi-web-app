@@ -167,6 +167,12 @@
 }
 
 // Context Switch Styles
+.profilesList {
+  > li {
+    padding-top: 0;
+  }
+}
+
 .switchItem {
   display: flex;
   align-items: center;
