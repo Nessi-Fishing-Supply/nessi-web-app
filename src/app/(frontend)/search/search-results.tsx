@@ -59,6 +59,9 @@ export default function SearchResults() {
           onClearAll={clearAllFilters}
           activeFilterCount={activeFilterCount}
           resultCount={total}
+          isOpen={false}
+          isMobileOpen={false}
+          onMobileClose={() => {}}
         />
         <div className={styles.content}>
           <div className={styles.header}>
