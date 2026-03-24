@@ -150,6 +150,31 @@ export const verifyEmailChange = async (data: { email: string; token: string }) 
   return verifyOtp({ email: data.email, token: data.token, type: 'email_change' });
 };
 
+export const checkEmailAvailable = async (data: { email: string }) => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
+
+  try {
+    const res = await fetch('/api/auth/check-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal: controller.signal,
+    });
+
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Email check failed');
+    return json;
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('Something went wrong. Check your connection and try again.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export const resendEmailChangeCode = async (data: { newEmail: string }) => {
   const supabase = createClient();
   const { error } = await withTimeout(
