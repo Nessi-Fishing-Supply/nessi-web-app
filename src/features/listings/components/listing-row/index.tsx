@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { HiOutlineCamera } from 'react-icons/hi';
 
 import Pill from '@/components/indicators/pill';
 import { LISTING_STATUS_LABELS, LISTING_STATUS_COLORS } from '@/features/listings/constants/status';
@@ -45,7 +46,9 @@ export default function ListingRow({ listing, onActionsClick, onPriceClick }: Li
                 style={{ objectFit: 'cover' }}
               />
             ) : (
-              <div className={styles.thumbnailEmpty} aria-hidden="true" />
+              <div className={styles.thumbnailEmpty} aria-hidden="true">
+                <HiOutlineCamera size={24} color="var(--color-neutral-400)" />
+              </div>
             )}
           </div>
         </Link>
@@ -60,7 +63,9 @@ export default function ListingRow({ listing, onActionsClick, onPriceClick }: Li
               style={{ objectFit: 'cover' }}
             />
           ) : (
-            <div className={styles.thumbnailEmpty} aria-hidden="true" />
+            <div className={styles.thumbnailEmpty} aria-hidden="true">
+              <HiOutlineCamera size={24} color="var(--color-neutral-400)" />
+            </div>
           )}
         </div>
       )}

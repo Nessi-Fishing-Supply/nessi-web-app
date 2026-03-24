@@ -15,6 +15,7 @@ interface ListingActionsMenuProps {
   onMarkSold: () => void;
   onDeactivate: () => void;
   onActivate: () => void;
+  onDuplicate: () => void;
   onDelete: () => void;
 }
 
@@ -31,6 +32,7 @@ export default function ListingActionsMenu({
   onMarkSold,
   onDeactivate,
   onActivate,
+  onDuplicate,
   onDelete,
 }: ListingActionsMenuProps) {
   const router = useRouter();
@@ -63,6 +65,10 @@ export default function ListingActionsMenu({
   }
 
   actions.push({ label: 'Edit', onClick: handleEdit });
+
+  if (status === 'active' || status === 'sold' || status === 'archived') {
+    actions.push({ label: 'Duplicate', onClick: () => handleAction(onDuplicate) });
+  }
 
   if (status === 'active') {
     actions.push({ label: 'Mark as Sold', onClick: () => handleAction(onMarkSold) });

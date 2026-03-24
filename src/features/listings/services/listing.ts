@@ -74,6 +74,9 @@ export const updateListingStatus = async (
     ...(sold_price_cents !== undefined ? { sold_price_cents } : {}),
   });
 
+export const duplicateListing = async (sourceId: string): Promise<ListingWithPhotos> =>
+  post<ListingWithPhotos>(`${BASE_URL}/${sourceId}/duplicate`);
+
 export const incrementViewCount = async (id: string): Promise<{ success: boolean }> =>
   post<{ success: boolean }>(`${BASE_URL}/${id}/view`);
 

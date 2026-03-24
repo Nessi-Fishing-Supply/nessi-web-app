@@ -7,6 +7,7 @@ import {
   getDrafts,
   createListing,
   createDraft,
+  duplicateListing,
   updateListing,
   deleteListing,
   deleteDraft,
@@ -62,6 +63,16 @@ export function useCreateDraft() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createDraft,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['listings'] });
+    },
+  });
+}
+
+export function useDuplicateListing() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (sourceId: string) => duplicateListing(sourceId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['listings'] });
     },

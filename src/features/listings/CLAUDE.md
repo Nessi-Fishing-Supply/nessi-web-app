@@ -149,6 +149,8 @@ All listing API routes live in `src/app/api/listings/`:
 
 `DELETE /api/listings/drafts` — Authenticated + ownership. Hard-deletes a draft (only `status: 'draft'`).
 
+`POST /api/listings/[id]/duplicate` — Authenticated + ownership. Creates a new draft by copying fields from any non-deleted listing (active, sold, archived, or draft). Copies: title, description, category, condition, price_cents, shipping_paid_by, shipping_price_cents, weight_oz, brand, model, quantity, location_city, location_state. Does NOT copy: photos, cover_photo_url, published_at, sold_at, counts, search_vector. Uses `X-Nessi-Context` header for member/shop identity on the new draft. Returns 201 with the new `ListingWithPhotos` (empty photos array).
+
 ## Hooks
 
 | Hook                                 | Query Key                                      | Purpose                                                                           |
@@ -160,6 +162,7 @@ All listing API routes live in `src/app/api/listings/`:
 | `useListingPhotos(listingId)`        | `['listings', listingId, 'photos']`            | Fetch ordered photos for a listing                                                |
 | `useCreateListing()`                 | mutation, invalidates `['listings']`           | Create a new listing                                                              |
 | `useCreateDraft()`                   | mutation, invalidates `['listings']`           | Create an empty draft                                                             |
+| `useDuplicateListing()`              | mutation, invalidates `['listings']`           | Duplicate an existing listing as a new draft (copies all fields except photos)    |
 | `useUpdateListing()`                 | mutation, invalidates `['listings']`           | Update listing fields                                                             |
 | `useDeleteListing()`                 | mutation, invalidates `['listings']`           | Soft-delete a listing                                                             |
 | `useDeleteDraft()`                   | mutation, invalidates `['listings']`           | Hard-delete a draft                                                               |
@@ -253,6 +256,7 @@ The listing creation wizard at `/dashboard/listings/new` is a 5-step flow plus r
 - **URL-as-truth for search filters** — All search filter state lives in URL search params (`?q=...&category=reels,rods&condition=good`). `useSearchFilters` reads params with `useSearchParams()` and updates with `router.replace()`. Sharing a URL preserves the exact filter state. Filter components are standalone controlled components (no react-hook-form).
 - **Search FTS + trigram fallback** — Primary search uses PostgreSQL `textSearch()` on the `search_vector` tsvector column. When FTS returns 0 results, falls back to `ilike` on title/brand for typo tolerance (e.g., "Shimamo" → matches "Shimano").
 - **Autocomplete** — Three sources: `search_suggestions` table (by popularity), listing title prefix matches, and category name matches. Debounced 200ms on client, min 3 chars. Max 8 suggestions, keyboard navigable.
+- **Duplicate-as-draft** — Sellers can duplicate any owned listing (active, sold, archived) as a new draft via `POST /api/listings/[id]/duplicate`. All listing data is copied except photos, counts, timestamps, and search_vector. The new draft opens in the create wizard at Step 1 (photos) because `draftPhotos.length < 2`. Available from the dashboard three-dot menu and the listing detail page owner view.
 
 ## Related Features
 

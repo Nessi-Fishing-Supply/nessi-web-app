@@ -8,6 +8,7 @@ import { useToast } from '@/components/indicators/toast/context';
 import { useAuth } from '@/features/auth/context';
 import {
   useSellerListings,
+  useDuplicateListing,
   useUpdateListingStatus,
   useDeleteListing,
 } from '@/features/listings/hooks/use-listings';
@@ -45,6 +46,7 @@ export default function ListingsDashboard() {
   const [targetListing, setTargetListing] = useState<ListingWithPhotos | null>(null);
 
   const { data: allListings = [], isLoading } = useSellerListings();
+  const duplicateListing = useDuplicateListing();
   const updateStatus = useUpdateListingStatus();
   const deleteListing = useDeleteListing();
 
@@ -67,6 +69,26 @@ export default function ListingsDashboard() {
   function closeModal() {
     setOpenModal(null);
     setTargetListing(null);
+  }
+
+  function handleDuplicate() {
+    if (!targetListing) return;
+    duplicateListing.mutate(targetListing.id, {
+      onSuccess: (newDraft) => {
+        showToast({
+          type: 'success',
+          message: 'Listing duplicated as draft',
+          description: 'Add photos to publish.',
+        });
+        router.push(`/dashboard/listings/new?draftId=${newDraft.id}`);
+      },
+      onError: () =>
+        showToast({
+          type: 'error',
+          message: 'Failed to duplicate',
+          description: 'Please try again.',
+        }),
+    });
   }
 
   function handleDeactivate() {
@@ -217,6 +239,7 @@ export default function ListingsDashboard() {
           onMarkSold={() => setOpenModal('mark-sold')}
           onDeactivate={handleDeactivate}
           onActivate={handleActivate}
+          onDuplicate={handleDuplicate}
           onDelete={() => setOpenModal('delete')}
         />
       )}

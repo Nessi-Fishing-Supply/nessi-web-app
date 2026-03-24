@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "issue": 164,
+  "title": "Duplicate listing as draft — clone an existing listing for quick relisting",
+  "branch": "feat/164/duplicate-listing-as-draft",
+  "status": "pr_open",
+  "phase": {
+    "current": 3,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3", "2.1", "2.2", "2.3", "3.1", "3.2", "3.3"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": {
+    "started": "2026-03-24T00:00:00Z",
+    "lastActivity": "2026-03-24T00:25:00Z"
+  },
+  "completedAt": "2026-03-24T00:25:00Z",
+  "pruneAfter": "2026-05-23T00:25:00Z"
+}

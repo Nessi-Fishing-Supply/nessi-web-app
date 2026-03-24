@@ -9,12 +9,14 @@ import SellerStrip from '@/features/listings/components/seller-strip';
 import ExpandableSection from '@/features/listings/components/expandable-section';
 import ConditionBadge from '@/features/listings/components/condition-badge';
 import ShareButton from '@/features/listings/components/share-button';
+import { useRouter } from 'next/navigation';
 import Button from '@/components/controls/button';
 import AddToCartButton from '@/features/cart/components/add-to-cart-button';
 import { formatPrice } from '@/features/shared/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { getCategoryLabel } from '@/features/listings/constants/category';
-import { useIncrementViewCount } from '@/features/listings/hooks/use-listings';
+import { useIncrementViewCount, useDuplicateListing } from '@/features/listings/hooks/use-listings';
+import { useToast } from '@/components/indicators/toast/context';
 import useContextStore from '@/features/context/stores/context-store';
 import type { ListingWithPhotos, SellerIdentity } from '@/features/listings/types/listing';
 import styles from './listing-detail.module.scss';
@@ -26,10 +28,13 @@ type Props = {
 };
 
 export default function ListingDetail({ listing, seller, currentUserId }: Props) {
+  const router = useRouter();
+  const { showToast } = useToast();
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const { mutate: incrementView } = useIncrementViewCount();
+  const duplicateMutation = useDuplicateListing();
 
   useEffect(() => {
     incrementView(listing.id);
@@ -50,6 +55,25 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
     !isShopContext && currentUserId === listing.seller_id && !!listing.shop_id;
   const ownShopName = isOwnShopListing && seller?.type === 'shop' ? seller.shop_name : null;
   const conditionTier = CONDITION_TIERS.find((t) => t.value === listing.condition);
+
+  function handleDuplicate() {
+    duplicateMutation.mutate(listing.id, {
+      onSuccess: (newDraft) => {
+        showToast({
+          type: 'success',
+          message: 'Listing duplicated as draft',
+          description: 'Add photos to publish.',
+        });
+        router.push(`/dashboard/listings/new?draftId=${newDraft.id}`);
+      },
+      onError: () =>
+        showToast({
+          type: 'error',
+          message: 'Failed to duplicate',
+          description: 'Please try again.',
+        }),
+    });
+  }
 
   function handlePhotoTap(index: number) {
     setLightboxIndex(index);
@@ -105,9 +129,25 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
 
           {/* Action buttons */}
           {isSold ? (
-            <div className={styles.soldBanner}>
-              <span className={styles.soldText}>This listing has sold</span>
-            </div>
+            <>
+              <div className={styles.soldBanner}>
+                <span className={styles.soldText}>This listing has sold</span>
+              </div>
+              {isOwnListing && (
+                <div className={styles.actionButtons}>
+                  <Button
+                    style="secondary"
+                    outline
+                    fullWidth
+                    onClick={handleDuplicate}
+                    disabled={duplicateMutation.isPending}
+                    loading={duplicateMutation.isPending}
+                  >
+                    {duplicateMutation.isPending ? 'Duplicating...' : 'Duplicate as Draft'}
+                  </Button>
+                </div>
+              )}
+            </>
           ) : isOwnListing ? (
             <div className={styles.actionButtons}>
               <Link href={`/dashboard/listings/${listing.id}/edit`}>
@@ -115,6 +155,16 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
                   Edit listing
                 </Button>
               </Link>
+              <Button
+                style="secondary"
+                outline
+                fullWidth
+                onClick={handleDuplicate}
+                disabled={duplicateMutation.isPending}
+                loading={duplicateMutation.isPending}
+              >
+                {duplicateMutation.isPending ? 'Duplicating...' : 'Duplicate as Draft'}
+              </Button>
             </div>
           ) : isOwnShopListing ? (
             <>
