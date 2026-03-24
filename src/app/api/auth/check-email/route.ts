@@ -13,7 +13,10 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const body = await req.json();
@@ -44,9 +47,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const emailTaken = data.users.some(
-      (u) => u.email?.toLowerCase() === email.toLowerCase(),
-    );
+    const emailTaken = data.users.some((u) => u.email?.toLowerCase() === email.toLowerCase());
 
     if (emailTaken) {
       return NextResponse.json(
