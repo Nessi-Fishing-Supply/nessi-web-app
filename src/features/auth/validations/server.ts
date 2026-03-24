@@ -6,7 +6,7 @@ interface RegisterInput {
   terms: boolean;
 }
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 8;
 
 export function validateRegisterInput(input: RegisterInput): string | null {

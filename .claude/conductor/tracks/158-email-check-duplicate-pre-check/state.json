@@ -3,7 +3,7 @@
   "issue": 158,
   "title": "feat(auth): email change — API route for duplicate email pre-check",
   "branch": "feat/158/email-check-duplicate-pre-check",
-  "status": "reviewing",
+  "status": "fixing",
   "phase": {
     "current": 2,
     "total": 2,
@@ -13,7 +13,7 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "pass" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-24T12:00:00Z", "lastActivity": "2026-03-24T12:12:00Z" }
+  "timestamps": { "started": "2026-03-24T12:00:00Z", "lastActivity": "2026-03-24T12:15:00Z" }
 }

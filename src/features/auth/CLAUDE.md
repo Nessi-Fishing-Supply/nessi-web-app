@@ -7,11 +7,11 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 ## Architecture
 
 - **context.tsx** -- `AuthProvider` and `useAuth()` hook wrapping Supabase session state (client-side). Exposes `{ user, isAuthenticated, isLoading }`.
-- **services/auth.ts** -- Client-side auth API functions with 8-second timeout protection: `login`, `register`, `logout`, `getUserProfile`, `forgotPassword`, `resetPassword`, `verifyOtp`, `resendOtp`, `changeEmail`, `verifyEmailChange`, `resendEmailChangeCode`. Also exports `withTimeout` helper and `AUTH_TIMEOUT_MS` constant.
+- **services/auth.ts** -- Client-side auth API functions with 8-second timeout protection: `login`, `register`, `logout`, `getUserProfile`, `forgotPassword`, `resetPassword`, `verifyOtp`, `resendOtp`, `changeEmail`, `verifyEmailChange`, `resendEmailChangeCode`, `checkEmailAvailable`. Also exports `withTimeout` helper and `AUTH_TIMEOUT_MS` constant.
 - **types/auth.ts** -- Auth data interfaces: `RegisterData`, `LoginData`, `ResetPasswordData`, `ChangeEmailData`, `AuthResponse`
 - **types/forms.ts** -- Form prop interfaces and form data types: `AuthFormProps<TData, TResponse>`, `LoginFormData`, `RegisterFormData`, `AuthFormResponse`
 - **validations/auth.ts** -- Yup schemas for client-side form validation: `loginSchema`, `registerSchema`, `resetPasswordSchema`, `changeEmailSchema`
-- **validations/server.ts** -- Pure-function validation for register API route (server-side, no Yup dependency): `validateRegisterInput()`
+- **validations/server.ts** -- Pure-function validation for register API route (server-side, no Yup dependency): `validateRegisterInput()`. Exports `EMAIL_REGEX` for shared email format validation.
 
 ## Session Flow
 
@@ -26,6 +26,7 @@ Authentication feature using Supabase Auth with cookie-based sessions via `@supa
 ## API Routes
 
 - **`/api/auth/register`** (POST) -- Server-side registration. Validates via `validateRegisterInput()`, creates user with admin client (bypasses RLS), returns `409 DUPLICATE_EMAIL` for existing accounts, sets `Cache-Control: private, no-store`. No `emailRedirectTo` is set — verification is OTP-based.
+- **`/api/auth/check-email`** (POST) -- Checks if an email address is already registered. Requires authenticated session (server client). Uses admin client's `auth.admin.listUsers()` with pagination to find matches. Returns `{ available: true }` (200) or `{ available: false, error: 'DUPLICATE_EMAIL' }` (409). Sets `Cache-Control: private, no-store`. Used by the email change flow to pre-check before initiating the change.
 - **`/api/auth/callback`** (GET) -- Simplified for backwards compatibility. Recovery tokens redirect to `/auth/reset-password`. Signup verification is no longer handled here (OTP replaces it). Sanitizes redirect paths to prevent open redirects.
 - **`/api/auth/delete-account`** (DELETE) -- Permanently deletes the authenticated member's account. Requires an authenticated session (server client). Before deletion: checks for active shops owned by the member and releases the member's slug from the `slugs` table. After cleanup, calls `deleteUser()` via admin client.
 
@@ -91,8 +92,9 @@ All auth service functions except `logout` and `getUserProfile` apply an 8-secon
 
 ## Test Coverage
 
-- **services/**tests**/auth.test.ts** -- 30 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`, `verifyOtp` (signup, recovery, email_change, error, timeout), `sendResetCode`, `changeEmail` (success, error, timeout), `verifyEmailChange` (success, error), `resendEmailChangeCode` (success, error)
+- **services/**tests**/auth.test.ts** -- 35 tests: `withTimeout`, `register` (abort signal, timeout, 409 duplicate, server errors), `login` (timeout, success, Supabase errors), `logout`, `getUserProfile`, `verifyOtp` (signup, recovery, email_change, error, timeout), `sendResetCode`, `changeEmail` (success, error, timeout), `verifyEmailChange` (success, error), `resendEmailChangeCode` (success, error), `checkEmailAvailable` (success, abort signal, 409 duplicate, error responses, timeout)
 - **validations/auth.test.ts** -- 20 tests: `loginSchema`, `registerSchema`, `resetPasswordSchema`, `changeEmailSchema` (valid/invalid inputs, password complexity, email format)
 - **validations/server.test.ts** -- 11 tests: `validateRegisterInput` (valid input, missing fields, invalid email, weak passwords, unaccepted terms, null/undefined handling)
 - **components/registration-form/**tests**/index.test.tsx** -- 6 tests: friendly duplicate email message, Sign in button, `onSwitchToLogin` callback, non-duplicate error passthrough
 - **api/auth/register/**tests**/route.test.ts** -- 2 tests: 409 DUPLICATE_EMAIL, 400 for other errors
+- **api/auth/check-email/**tests**/route.test.ts** -- 8 tests: 401 unauthenticated, 400 missing email, 400 empty email, 400 invalid format, 409 duplicate, 409 case-insensitive, 200 available, 500 unexpected error

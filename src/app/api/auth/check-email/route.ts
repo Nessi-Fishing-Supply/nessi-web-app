@@ -1,9 +1,8 @@
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
+import { EMAIL_REGEX } from '@/features/auth/validations/server';
 import { NextResponse } from 'next/server';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
   try {
@@ -37,17 +36,32 @@ export async function POST(req: Request) {
     }
 
     const admin = createAdminClient();
-    const { data, error: listError } = await admin.auth.admin.listUsers();
+    const normalizedEmail = email.toLowerCase();
+    let page = 1;
+    let emailTaken = false;
 
-    if (listError) {
-      console.error('List users error:', listError);
-      return NextResponse.json(
-        { error: 'An unexpected error occurred' },
-        { status: 500, headers: AUTH_CACHE_HEADERS },
-      );
+    while (true) {
+      const { data, error: listError } = await admin.auth.admin.listUsers({
+        page,
+        perPage: 1000,
+      });
+
+      if (listError) {
+        console.error('List users error:', listError);
+        return NextResponse.json(
+          { error: 'An unexpected error occurred' },
+          { status: 500, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+
+      if (data.users.some((u) => u.email?.toLowerCase() === normalizedEmail)) {
+        emailTaken = true;
+        break;
+      }
+
+      if (data.users.length < 1000) break;
+      page++;
     }
-
-    const emailTaken = data.users.some((u) => u.email?.toLowerCase() === email.toLowerCase());
 
     if (emailTaken) {
       return NextResponse.json(
