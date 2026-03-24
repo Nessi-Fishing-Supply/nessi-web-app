@@ -1,4 +1,4 @@
-import type { Database } from '@/types/database';
+import type { Database, Json } from '@/types/database';
 
 export type Shop = Database['public']['Tables']['shops']['Row'];
 
@@ -46,21 +46,14 @@ export type ShopMember = ShopMemberRow & {
     last_name: string | null;
     avatar_url: string | null;
   } | null;
+  shop_roles: {
+    name: string;
+    slug: string;
+    permissions: Json;
+  } | null;
 };
 
 export type ShopMemberInsert = Omit<
   Database['public']['Tables']['shop_members']['Insert'],
   'id' | 'created_at'
 >;
-
-export type ShopMemberRole = 'owner' | 'manager' | 'staff';
-
-/**
- * Deterministic UUIDs for system roles in the shop_roles table.
- * These match the seeded values in migration 20260324100000.
- */
-export const SYSTEM_ROLE_IDS = {
-  OWNER: '11111111-1111-1111-1111-111111111101',
-  MANAGER: '11111111-1111-1111-1111-111111111102',
-  CONTRIBUTOR: '11111111-1111-1111-1111-111111111103',
-} as const;

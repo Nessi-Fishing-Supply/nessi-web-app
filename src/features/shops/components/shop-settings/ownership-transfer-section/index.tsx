@@ -7,7 +7,7 @@ import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
 import type { Shop } from '@/features/shops/types/shop';
-import { SYSTEM_ROLE_IDS } from '@/features/shops/types/shop';
+import { SYSTEM_ROLE_IDS } from '@/features/shops/constants/roles';
 import styles from './ownership-transfer-section.module.scss';
 
 interface OwnershipTransferSectionProps {

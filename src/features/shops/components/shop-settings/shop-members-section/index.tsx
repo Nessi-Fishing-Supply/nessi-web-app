@@ -7,7 +7,7 @@ import { useShopMembers, useRemoveShopMember } from '@/features/shops/hooks/use-
 import { useToast } from '@/components/indicators/toast/context';
 import Button from '@/components/controls/button';
 import type { Shop, ShopMember } from '@/features/shops/types/shop';
-import { SYSTEM_ROLE_IDS } from '@/features/shops/types/shop';
+import { SYSTEM_ROLE_IDS } from '@/features/shops/constants/roles';
 import styles from './shop-members-section.module.scss';
 
 interface ShopMembersSectionProps {
