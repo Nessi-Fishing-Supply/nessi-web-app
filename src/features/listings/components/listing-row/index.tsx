@@ -47,7 +47,7 @@ export default function ListingRow({ listing, onActionsClick, onPriceClick }: Li
               />
             ) : (
               <div className={styles.thumbnailEmpty} aria-hidden="true">
-                <HiOutlineCamera className={styles.thumbnailIcon} />
+                <HiOutlineCamera size={24} color="var(--color-neutral-400)" />
               </div>
             )}
           </div>
