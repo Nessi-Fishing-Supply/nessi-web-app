@@ -6,7 +6,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Architecture
 
-- **types/shop.ts** — Database-derived types: `Shop` (from shops Row), `ShopInsert` (Insert minus system fields), `ShopUpdate` (Update minus system fields), `ShopMember` (from shop_members Row), `ShopMemberInsert`, `ShopMemberRole` union
+- **types/shop.ts** — Database-derived types: `Shop` (from shops Row), `ShopInsert` (Insert minus system fields), `ShopUpdate` (Update minus system fields), `ShopMember` (from shop_members Row), `ShopMemberInsert`, `ShopMemberRole` union, `SYSTEM_ROLE_IDS` constants
 - **services/shop.ts** — Direct Supabase queries via browser client (RLS handles authorization)
 - **services/shop-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public shop page)
 - **hooks/use-shops.ts** — Tanstack Query hooks for data fetching and mutations
@@ -130,3 +130,17 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **Slug uniqueness** — Shop slugs are checked for uniqueness against the shared `slugs` table (not just the shops table), since slugs are a cross-entity namespace shared with member slugs. The `generateSlug` utility in `src/features/shared/utils/slug.ts` handles auto-generating a slug from a display name.
 - **Avatar upload via API route** — Unlike standard shop CRUD (direct Supabase), avatar uploads go through `POST /api/shops/avatar` for server-side image processing with `sharp`.
 - **Server-side deletion with storage cleanup** — Shop deletion uses `DELETE /api/shops/[id]` (server-side API route with admin client) to clean up storage objects before soft-deleting. The `deleteShop()` service function calls this API route via `fetch`. This parallels the account deletion pattern in `src/app/api/auth/delete-account/route.ts`.
+
+## Shop Roles
+
+Shop member roles are stored in the `shop_roles` table with a FK from `shop_members.role_id`. Three system roles are seeded with deterministic UUIDs:
+
+| Role        | UUID                                   | Permissions                                                                       |
+| ----------- | -------------------------------------- | --------------------------------------------------------------------------------- |
+| Owner       | `11111111-1111-1111-1111-111111111101` | Full access to all 6 domains                                                      |
+| Manager     | `11111111-1111-1111-1111-111111111102` | Full on listings/pricing/orders/messaging, view on shop_settings, none on members |
+| Contributor | `11111111-1111-1111-1111-111111111103` | Full on listings only                                                             |
+
+Use `SYSTEM_ROLE_IDS` from `types/shop.ts` to reference these UUIDs in application code — never hardcode the UUID strings directly.
+
+System roles have `shop_id IS NULL` and `is_system = true`. Future custom roles will have a `shop_id` FK to a specific shop. RLS allows all authenticated users to read system roles; custom roles are only visible to members of that shop.

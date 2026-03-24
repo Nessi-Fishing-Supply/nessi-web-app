@@ -14,7 +14,7 @@ import {
   removeShopMember,
   transferOwnership,
 } from '@/features/shops/services/shop';
-import type { ShopUpdate, ShopMemberRole } from '@/features/shops/types/shop';
+import type { ShopUpdate } from '@/features/shops/types/shop';
 
 export function useShop(id: string, enabled = true) {
   return useQuery({
@@ -117,12 +117,12 @@ export function useAddShopMember() {
     mutationFn: ({
       shopId,
       memberId,
-      role,
+      roleId,
     }: {
       shopId: string;
       memberId: string;
-      role: ShopMemberRole;
-    }) => addShopMember(shopId, memberId, role),
+      roleId: string;
+    }) => addShopMember(shopId, memberId, roleId),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['shops', variables.shopId, 'members'] });
     },

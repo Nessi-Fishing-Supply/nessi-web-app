@@ -1,6 +1,7 @@
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
+import { SYSTEM_ROLE_IDS } from '@/features/shops/types/shop';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
@@ -86,11 +87,11 @@ export async function POST(request: Request) {
     );
   }
 
-  // Step 3: Insert the shop_member row with role 'owner'
+  // Step 3: Insert the shop_member row with Owner system role
   const { error: memberError } = await admin.from('shop_members').insert({
     shop_id: shop.id,
     member_id: ownerId,
-    role: 'owner',
+    role_id: SYSTEM_ROLE_IDS.OWNER,
   });
 
   if (memberError) {

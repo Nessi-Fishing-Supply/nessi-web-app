@@ -27,7 +27,20 @@
       "Bash(pnpm lint:*)",
       "Bash(pnpm typecheck:*)",
       "Bash(pnpm format:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(mkdir -p:*)",
+      "Bash(cat > */.claude/conductor/*)",
+      "Bash(cat > .claude/conductor/*)",
+      "Edit(.claude/conductor/tracks/**)",
+      "Write(.claude/conductor/tracks/**)",
+      "Edit(.claude/conductor/depot/**)",
+      "Write(.claude/conductor/depot/**)",
+      "Edit(.claude/conductor/active.json)",
+      "Write(.claude/conductor/active.json)",
+      "Bash(cp */.claude/conductor/*)",
+      "Bash(mv */.claude/conductor/*)",
+      "Bash(rm -rf */.claude/conductor/tracks/*)",
+      "Bash(rm -rf */.claude/conductor/depot/*)"
     ]
   },
   "enabledPlugins": {

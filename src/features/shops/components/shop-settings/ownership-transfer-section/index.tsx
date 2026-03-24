@@ -7,6 +7,7 @@ import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
 import type { Shop } from '@/features/shops/types/shop';
+import { SYSTEM_ROLE_IDS } from '@/features/shops/types/shop';
 import styles from './ownership-transfer-section.module.scss';
 
 interface OwnershipTransferSectionProps {
@@ -94,7 +95,13 @@ export default function OwnershipTransferSection({ shop }: OwnershipTransferSect
                 : '';
               return (
                 <option key={m.member_id} value={m.member_id}>
-                  {name || m.member_id} ({m.role})
+                  {name || m.member_id} (
+                  {m.role_id === SYSTEM_ROLE_IDS.OWNER
+                    ? 'Owner'
+                    : m.role_id === SYSTEM_ROLE_IDS.MANAGER
+                      ? 'Manager'
+                      : 'Contributor'}
+                  )
                 </option>
               );
             })}

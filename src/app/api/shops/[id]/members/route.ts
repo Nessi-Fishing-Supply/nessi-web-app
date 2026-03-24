@@ -19,7 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const body = await request.json();
-  const { memberId, role } = body as { memberId: string; role: string };
+  const { memberId, roleId } = body as { memberId: string; roleId: string };
 
   const admin = createAdminClient();
 
@@ -31,7 +31,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const { data, error } = await admin
     .from('shop_members')
-    .insert({ shop_id: shopId, member_id: memberId, role })
+    .insert({ shop_id: shopId, member_id: memberId, role_id: roleId })
     .select()
     .single();
 
