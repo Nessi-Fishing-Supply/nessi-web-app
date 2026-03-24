@@ -3,7 +3,7 @@
   "issue": 159,
   "title": "feat(auth): email change — ChangeEmailForm component and PersonalInfo integration",
   "branch": "feat/159/email-change-form-personalinfo",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,7 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-24T00:00:00Z", "lastActivity": "2026-03-24T00:04:00Z" }
+  "timestamps": { "started": "2026-03-24T00:00:00Z", "lastActivity": "2026-03-24T00:05:00Z" },
+  "completedAt": "2026-03-24T00:05:00Z",
+  "pruneAfter": "2026-05-23T00:05:00Z"
 }
