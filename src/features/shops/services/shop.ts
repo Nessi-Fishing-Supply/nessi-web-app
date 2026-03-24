@@ -126,7 +126,7 @@ export async function getShopMembers(shopId: string): Promise<ShopMember[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from('shop_members')
-    .select('*, members(first_name, last_name, avatar_url)')
+    .select('*, members(first_name, last_name, avatar_url), shop_roles(name, slug, permissions)')
     .eq('shop_id', shopId);
 
   if (error) {
