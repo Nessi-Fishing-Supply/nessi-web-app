@@ -6,7 +6,10 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Architecture
 
-- **types/shop.ts** — Database-derived types: `Shop` (from shops Row), `ShopInsert` (Insert minus system fields), `ShopUpdate` (Update minus system fields), `ShopMember` (from shop_members Row), `ShopMemberInsert`, `ShopMemberRole` union, `SYSTEM_ROLE_IDS` constants
+- **types/shop.ts** — Database-derived types: `Shop` (from shops Row), `ShopInsert` (Insert minus system fields), `ShopUpdate` (Update minus system fields), `ShopMember` (from shop_members Row with joined `shop_roles` data), `ShopMemberInsert`
+- **types/permissions.ts** — Permission model types: `ShopPermissionFeature` (6 feature domains), `ShopPermissionLevel` (`'full' | 'view' | 'none'`), `ShopPermissions` (Record mapping features to levels), `ShopRole` (typed `shop_roles` row with `ShopPermissions` instead of generic `Json`)
+- **constants/roles.ts** — System role constants: `SYSTEM_ROLE_IDS` (deterministic UUIDs), `SYSTEM_ROLE_SLUGS`, `DEFAULT_ROLE_ID` (Contributor)
+- **utils/check-permission.ts** — Pure permission utility functions: `checkPermission` (returns level, defaults to `'none'`), `hasAccess` (true for `'full'` or `'view'`), `hasFullAccess` (true only for `'full'`)
 - **services/shop.ts** — Direct Supabase queries via browser client (RLS handles authorization)
 - **services/shop-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public shop page)
 - **hooks/use-shops.ts** — Tanstack Query hooks for data fetching and mutations
@@ -14,21 +17,21 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Service Functions
 
-| Function                                | Purpose                                                                                               |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `getShop(id)`                           | Fetch shop by ID, returns `Shop \| null`                                                              |
-| `getShopBySlug(slug)`                   | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                |
-| `getShopsByOwner(memberId)`             | Fetch all shops owned by a member, returns `Shop[]`                                                   |
-| `getShopsByMember(memberId)`            | Fetch all shops a member belongs to (any role), returns `Shop[]`                                      |
-| `createShop(data)`                      | Insert a new shop row, returns created `Shop`                                                         |
-| `updateShop(id, data)`                  | Update allowed shop fields, returns updated `Shop`                                                    |
-| `deleteShop(id)`                        | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`          |
-| `updateShopSlug(shopId, slug)`          | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void` |
-| `getShopMembers(shopId)`                | Fetch all members of a shop with their roles, returns `ShopMember[]`                                  |
-| `addShopMember(shopId, memberId, role)` | Add a member to a shop with a given role, returns created `ShopMember`                                |
-| `removeShopMember(shopId, memberId)`    | Remove a member from a shop                                                                           |
-| `transferOwnership(shopId, newOwnerId)` | Transfer shop ownership to another member, updates owner_id                                           |
-| `checkShopSlugAvailable(slug)`          | Slug uniqueness check against shared slugs table, returns `boolean`                                   |
+| Function                                  | Purpose                                                                                                     |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `getShop(id)`                             | Fetch shop by ID, returns `Shop \| null`                                                                    |
+| `getShopBySlug(slug)`                     | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                      |
+| `getShopsByOwner(memberId)`               | Fetch all shops owned by a member, returns `Shop[]`                                                         |
+| `getShopsByMember(memberId)`              | Fetch all shops a member belongs to (any role), returns `Shop[]`                                            |
+| `createShop(data)`                        | Insert a new shop row, returns created `Shop`                                                               |
+| `updateShop(id, data)`                    | Update allowed shop fields, returns updated `Shop`                                                          |
+| `deleteShop(id)`                          | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                |
+| `updateShopSlug(shopId, slug)`            | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`       |
+| `getShopMembers(shopId)`                  | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]` |
+| `addShopMember(shopId, memberId, roleId)` | Add a member to a shop with a role UUID, returns created `ShopMember`                                       |
+| `removeShopMember(shopId, memberId)`      | Remove a member from a shop                                                                                 |
+| `transferOwnership(shopId, newOwnerId)`   | Transfer shop ownership to another member, updates owner_id                                                 |
+| `checkShopSlugAvailable(slug)`            | Slug uniqueness check against shared slugs table, returns `boolean`                                         |
 
 ### Server-side Service Functions (`services/shop-server.ts`)
 
@@ -141,6 +144,6 @@ Shop member roles are stored in the `shop_roles` table with a FK from `shop_memb
 | Manager     | `11111111-1111-1111-1111-111111111102` | Full on listings/pricing/orders/messaging, view on shop_settings, none on members |
 | Contributor | `11111111-1111-1111-1111-111111111103` | Full on listings only                                                             |
 
-Use `SYSTEM_ROLE_IDS` from `types/shop.ts` to reference these UUIDs in application code — never hardcode the UUID strings directly.
+Use `SYSTEM_ROLE_IDS` from `constants/roles.ts` to reference these UUIDs in application code — never hardcode the UUID strings directly. Use `checkPermission`, `hasAccess`, and `hasFullAccess` from `utils/check-permission.ts` to check a member's effective permission level for a feature — never hardcode permission logic for specific roles.
 
 System roles have `shop_id IS NULL` and `is_system = true`. Future custom roles will have a `shop_id` FK to a specific shop. RLS allows all authenticated users to read system roles; custom roles are only visible to members of that shop.
