@@ -17,9 +17,11 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **validations/invite.ts** — `validateInviteInput({ email, roleId })` — validates email format, role validity, prevents Owner role invites
 - **services/shop.ts** — Direct Supabase queries via browser client (RLS handles authorization)
 - **services/shop-invites.ts** — Client-side service functions for invite CRUD (`getShopInvites`, `createShopInvite`, `resendShopInvite`, `revokeShopInvite`, `acceptShopInvite`) using `get`/`post`/`del` from `@/libs/fetch`
+- **services/shop-ownership-transfer.ts** — Client-side service functions for ownership transfer flow (`initiateOwnershipTransfer`, `getOwnershipTransfer`, `cancelOwnershipTransfer`, `getOwnershipTransferByToken`, `acceptOwnershipTransfer`). Shop-scoped functions use `get`/`post`/`del` from `@/libs/fetch`; token-based functions use raw `fetch` (no `X-Nessi-Context`)
 - **services/shop-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public shop page)
 - **hooks/use-shops.ts** — Tanstack Query hooks for data fetching and mutations
 - **hooks/use-shop-invites.ts** — Tanstack Query hooks for invite operations (`useShopInvites`, `useCreateInvite`, `useResendInvite`, `useRevokeInvite`)
+- **hooks/use-ownership-transfer.ts** — Tanstack Query hooks for ownership transfer operations (`useOwnershipTransfer`, `useOwnershipTransferByToken`, `useInitiateOwnershipTransfer`, `useCancelOwnershipTransfer`, `useAcceptOwnershipTransfer`)
 - **validations/shop.ts** — Zod schemas: `createShopSchema` (name, slug, description) and `updateShopSchema` (partial, all fields optional)
 
 ## Service Functions
@@ -38,7 +40,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `getShopMembers(shopId)`                      | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]`                                                              |
 | `addShopMember(shopId, memberId, roleId)`     | Add a member to a shop with a role UUID, returns created `ShopMember`                                                                                                    |
 | `removeShopMember(shopId, memberId)`          | Remove a member from a shop                                                                                                                                              |
-| `transferOwnership(shopId, newOwnerId)`       | Transfer shop ownership to another member, updates owner_id                                                                                                              |
+| `transferOwnership(shopId, newOwnerId)`       | Initiate ownership transfer request (creates pending record, sends email). Legacy wrapper — prefer `initiateOwnershipTransfer()` from `shop-ownership-transfer.ts`       |
 | `checkShopSlugAvailable(slug)`                | Slug uniqueness check against shared slugs table, returns `boolean`                                                                                                      |
 | `updateMemberRole(shopId, memberId, roleId)`  | Update a shop member's role via `PATCH /api/shops/{shopId}/members/{memberId}/role`, returns `{ success, roleName }`                                                     |
 | `getShopRoles(shopId)`                        | Fetch all roles for a shop (system + custom) via `GET /api/shops/{shopId}/roles`, returns `ShopRole[]`                                                                   |
@@ -48,6 +50,16 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `revokeShopInvite(shopId, inviteId)`          | Revoke invite via `DELETE /api/shops/{shopId}/invites/{inviteId}`, returns `{ success: true }`                                                                           |
 | `acceptShopInvite(token)`                     | Accept an invite via `POST /api/invites/{token}/accept` (raw fetch, no auth header — uses cookie session), returns `{ success: true, shopId: string, shopName: string }` |
 
+### Ownership Transfer Service Functions (`services/shop-ownership-transfer.ts`)
+
+| Function                                        | Purpose                                                                                                                                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `initiateOwnershipTransfer(shopId, newOwnerId)` | Initiate transfer via `POST /api/shops/{shopId}/ownership`, returns `{ success: true }`. Returns 409 if pending transfer exists                                          |
+| `getOwnershipTransfer(shopId)`                  | Fetch pending transfer via `GET /api/shops/{shopId}/ownership-transfer`, returns `OwnershipTransfer \| null`                                                             |
+| `cancelOwnershipTransfer(shopId)`               | Cancel pending transfer via `DELETE /api/shops/{shopId}/ownership-transfer`, returns `{ success: true }`                                                                 |
+| `getOwnershipTransferByToken(token)`            | Fetch transfer details via `GET /api/shops/ownership-transfer/{token}` (raw fetch, no `X-Nessi-Context`), returns `OwnershipTransferWithDetails`                         |
+| `acceptOwnershipTransfer(token)`                | Accept transfer via `POST /api/shops/ownership-transfer/{token}/accept` (raw fetch, no `X-Nessi-Context`), returns `{ success: true, shopId: string, shopName: string }` |
+
 ### Server-side Service Functions (`services/shop-server.ts`)
 
 | Function                    | Purpose                                                                        |
@@ -56,29 +68,34 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Hooks
 
-| Hook                         | Query Key                                                                      | Purpose                                                                        |
-| ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| `useShop(id)`                | `['shops', id]`                                                                | Fetch shop by ID                                                               |
-| `useShopBySlug(slug)`        | `['shops', 'slug', slug]`                                                      | Fetch shop by slug                                                             |
-| `useShopsByOwner(memberId)`  | `['shops', 'owner', memberId]`                                                 | Fetch all shops owned by a member                                              |
-| `useShopsByMember(memberId)` | `['shops', 'member', memberId]`                                                | Fetch all shops a member belongs to                                            |
-| `useShopMembers(shopId)`     | `['shops', shopId, 'members']`                                                 | Fetch all members of a shop                                                    |
-| `useShopPermissions(shopId)` | `['shops', shopId, 'my-permissions']`                                          | Current user's permissions and role for a shop (hooks/use-shop-permissions.ts) |
-| `useShopSlugCheck(slug)`     | `['shops', 'slug-check', slug]`                                                | Slug availability check (enabled when slug is non-empty)                       |
-| `useCreateShop()`            | mutation, invalidates `['shops']`                                              | Create a new shop                                                              |
-| `useUpdateShop()`            | mutation, invalidates `['shops']`                                              | Update shop fields                                                             |
-| `useDeleteShop()`            | mutation, invalidates `['shops']`                                              | Delete a shop via API route with storage cleanup                               |
-| `useUpdateShopSlug()`        | mutation, invalidates `['shops']`                                              | Update a shop's slug via `POST /api/shops/slug`                                |
-| `useAddShopMember()`         | mutation, invalidates `['shops', shopId, 'members']`                           | Add a member to a shop                                                         |
-| `useUpdateMemberRole()`      | mutation, invalidates `['shops', shopId, 'members']`                           | Update a member's role with optimistic cache update and rollback on error      |
-| `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']`                           | Remove a member from a shop                                                    |
-| `useTransferOwnership()`     | mutation, invalidates `['shops']`                                              | Transfer shop ownership to another member                                      |
-| `useShopRoles(shopId)`       | `['shops', shopId, 'roles']`                                                   | Fetch all roles for a shop                                                     |
-| `useShopInvites(shopId)`     | `['shops', shopId, 'invites']`                                                 | Fetch all invites for a shop with inviter names                                |
-| `useCreateInvite()`          | mutation, invalidates `['shops', shopId, 'invites']`                           | Create a shop invite and send email                                            |
-| `useResendInvite()`          | mutation, invalidates `['shops', shopId, 'invites']`                           | Resend invite email with new token and reset expiry                            |
-| `useRevokeInvite()`          | mutation, invalidates `['shops', shopId, 'invites']`                           | Revoke a pending invite                                                        |
-| `useAcceptInvite()`          | mutation, invalidates `['shops', 'member', userId]` and `['shops']` on success | Accept an invite by token — used on the public invite page                     |
+| Hook                                 | Query Key                                                                      | Purpose                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `useShop(id)`                        | `['shops', id]`                                                                | Fetch shop by ID                                                                        |
+| `useShopBySlug(slug)`                | `['shops', 'slug', slug]`                                                      | Fetch shop by slug                                                                      |
+| `useShopsByOwner(memberId)`          | `['shops', 'owner', memberId]`                                                 | Fetch all shops owned by a member                                                       |
+| `useShopsByMember(memberId)`         | `['shops', 'member', memberId]`                                                | Fetch all shops a member belongs to                                                     |
+| `useShopMembers(shopId)`             | `['shops', shopId, 'members']`                                                 | Fetch all members of a shop                                                             |
+| `useShopPermissions(shopId)`         | `['shops', shopId, 'my-permissions']`                                          | Current user's permissions and role for a shop (hooks/use-shop-permissions.ts)          |
+| `useShopSlugCheck(slug)`             | `['shops', 'slug-check', slug]`                                                | Slug availability check (enabled when slug is non-empty)                                |
+| `useCreateShop()`                    | mutation, invalidates `['shops']`                                              | Create a new shop                                                                       |
+| `useUpdateShop()`                    | mutation, invalidates `['shops']`                                              | Update shop fields                                                                      |
+| `useDeleteShop()`                    | mutation, invalidates `['shops']`                                              | Delete a shop via API route with storage cleanup                                        |
+| `useUpdateShopSlug()`                | mutation, invalidates `['shops']`                                              | Update a shop's slug via `POST /api/shops/slug`                                         |
+| `useAddShopMember()`                 | mutation, invalidates `['shops', shopId, 'members']`                           | Add a member to a shop                                                                  |
+| `useUpdateMemberRole()`              | mutation, invalidates `['shops', shopId, 'members']`                           | Update a member's role with optimistic cache update and rollback on error               |
+| `useRemoveShopMember()`              | mutation, invalidates `['shops', shopId, 'members']`                           | Remove a member from a shop                                                             |
+| `useTransferOwnership()`             | mutation, invalidates `['shops']`                                              | Legacy — initiates ownership transfer request (prefer `useInitiateOwnershipTransfer()`) |
+| `useShopRoles(shopId)`               | `['shops', shopId, 'roles']`                                                   | Fetch all roles for a shop                                                              |
+| `useShopInvites(shopId)`             | `['shops', shopId, 'invites']`                                                 | Fetch all invites for a shop with inviter names                                         |
+| `useCreateInvite()`                  | mutation, invalidates `['shops', shopId, 'invites']`                           | Create a shop invite and send email                                                     |
+| `useResendInvite()`                  | mutation, invalidates `['shops', shopId, 'invites']`                           | Resend invite email with new token and reset expiry                                     |
+| `useRevokeInvite()`                  | mutation, invalidates `['shops', shopId, 'invites']`                           | Revoke a pending invite                                                                 |
+| `useAcceptInvite()`                  | mutation, invalidates `['shops', 'member', userId]` and `['shops']` on success | Accept an invite by token — used on the public invite page                              |
+| `useOwnershipTransfer(shopId)`       | `['shops', shopId, 'ownership-transfer']`                                      | Fetch pending ownership transfer for a shop                                             |
+| `useOwnershipTransferByToken(token)` | `['shops', 'ownership-transfer', token]`                                       | Fetch transfer details by token (transferee view)                                       |
+| `useInitiateOwnershipTransfer()`     | mutation, invalidates `['shops', shopId, 'ownership-transfer']`                | Initiate an ownership transfer request                                                  |
+| `useCancelOwnershipTransfer()`       | mutation, invalidates `['shops', shopId, 'ownership-transfer']`                | Cancel a pending ownership transfer                                                     |
+| `useAcceptOwnershipTransfer()`       | mutation, invalidates `['shops']`                                              | Accept an ownership transfer by token                                                   |
 
 ## Components
 
@@ -210,6 +227,58 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Returns 400 for invalid roleId, assigning Owner role, or changing Owner's role
 - Returns 403 for non-Owner callers
 - Returns 401 for unauthenticated requests
+
+## Ownership Transfer API
+
+### Database
+
+`shop_ownership_transfers` table stores transfer requests. Schema: `id` (uuid PK), `shop_id` (FK to shops ON DELETE CASCADE), `from_member_id` (FK to members ON DELETE CASCADE), `to_member_id` (FK to members ON DELETE CASCADE), `token` (uuid UNIQUE), `status` (text: 'pending', 'accepted', 'cancelled'), `created_at` (timestamptz), `expires_at` (timestamptz). Partial unique index on `(shop_id) WHERE status = 'pending'` enforces one pending transfer per shop. RLS: authenticated users can SELECT where they are from/to member.
+
+### Flow
+
+1. **Initiate**: Owner calls `POST /api/shops/{id}/ownership` with `{ newOwnerId }` → creates pending record, sends email with acceptance link to `{APP_URL}/shop/transfer/{token}`. Returns 409 if pending transfer already exists.
+2. **View**: Any shop member can check for pending transfer via `GET /api/shops/{id}/ownership-transfer` → returns transfer record or 404.
+3. **Cancel**: Owner cancels via `DELETE /api/shops/{id}/ownership-transfer` → sets status to 'cancelled'.
+4. **Accept**: Transferee accepts via `POST /api/shops/ownership-transfer/{token}/accept` → atomic ownership swap: `shops.owner_id` updated, new owner promoted to Owner role, old owner demoted to Manager.
+5. **Expiry**: Transfers expire after 7 days, checked at query time (`expires_at > now()`). No background job.
+
+### Endpoints
+
+`POST /api/shops/[id]/ownership` — Initiate transfer (refactored from instant swap)
+
+- Requires `requireShopPermission(request, 'members', 'full', { expectedShopId })` — Owner-only
+- Accepts `{ newOwnerId }`, validates new owner is a shop member
+- Returns 409 if pending transfer already exists
+- Sends ownership transfer email via Resend (failure logged, does not block response)
+- Returns 200 `{ success: true }`
+
+`GET /api/shops/[id]/ownership-transfer` — Fetch pending transfer
+
+- Requires `requireShopPermission(request, 'members', 'view', { expectedShopId })`
+- Returns pending, non-expired transfer or 404
+
+`DELETE /api/shops/[id]/ownership-transfer` — Cancel pending transfer
+
+- Requires `requireShopPermission(request, 'members', 'full', { expectedShopId })` — Owner-only
+- Sets status to 'cancelled', returns 404 if none pending
+
+`GET /api/shops/ownership-transfer/[token]` — Fetch transfer by token
+
+- Auth via server Supabase client only — no `X-Nessi-Context` required
+- Returns `OwnershipTransferWithDetails` (shop name, member names, expiry)
+- Returns 401 (unauthenticated), 403 (wrong user), 410 (expired), 404 (invalid/non-pending)
+
+`POST /api/shops/ownership-transfer/[token]/accept` — Accept transfer
+
+- Auth via server Supabase client only — no `X-Nessi-Context` required
+- Validates: token exists (404), pending (404), not expired (410), user is `to_member_id` (403)
+- Performs atomic swap: `shops.owner_id`, new owner → Owner role, old owner → Manager role
+- Returns 200 `{ success: true, shopId, shopName }`
+- Uses `SYSTEM_ROLE_IDS` constants for role assignment
+
+### Email Template
+
+`src/features/email/templates/ownership-transfer.ts` — `ownershipTransferRequest({ shopName, ownerName, token })` returns `EmailTemplate`. CTA links to `{APP_URL}/shop/transfer/{token}`. Includes 7-day expiry notice and safe-to-ignore disclaimer.
 
 ## Shared Components Reused
 
