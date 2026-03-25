@@ -20,13 +20,16 @@ import {
 } from '@/features/shops/hooks/use-shops';
 import useContextStore from '@/features/context/stores/context-store';
 import { useShopRoles } from '@/features/shops/hooks/use-shop-roles';
+import { useShopInvites } from '@/features/shops/hooks/use-shop-invites';
 import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
 import RoleSelect from '@/features/shops/components/role-select';
+import InviteMemberModal from '@/features/shops/components/invite-member-modal';
 import type { Shop, ShopMember } from '@/features/shops/types/shop';
 import type { ShopRole } from '@/features/shops/types/permissions';
 import { SYSTEM_ROLE_IDS } from '@/features/shops/constants/roles';
+import { MAX_MEMBERS_PER_SHOP } from '@/features/shops/constants/limits';
 import styles from './shop-members-section.module.scss';
 
 interface ShopMembersSectionProps {
@@ -227,13 +230,21 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
   const updateMemberRole = useUpdateMemberRole();
   const transferOwnership = useTransferOwnership();
 
+  const { data: invites = [] } = useShopInvites(shop.id);
+
   const [modalAction, setModalAction] = useState<ModalAction | null>(null);
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
   const [confirmName, setConfirmName] = useState('');
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const isOwner = !!user && shop.owner_id === user.id;
   const isPending =
     removeShopMember.isPending || updateMemberRole.isPending || transferOwnership.isPending;
+
+  const pendingInviteCount = invites.filter((inv) => inv.status === 'pending').length;
+  const memberCount = members?.length ?? 0;
+  const totalCount = memberCount + pendingInviteCount;
+  const isAtCap = totalCount >= MAX_MEMBERS_PER_SHOP;
 
   const handleAction = (action: ModalAction) => {
     setModalAction(action);
@@ -378,7 +389,9 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
       <div className={styles.sectionHeader}>
         <div>
           <h2 id="shop-members-heading" className={styles.heading}>
-            Members
+            {!isLoading && !isError
+              ? `Members (${memberCount}/${MAX_MEMBERS_PER_SHOP})`
+              : 'Members'}
           </h2>
           <p className={styles.description}>
             People who have access to this shop. Only the owner can manage roles and remove members.
@@ -387,13 +400,8 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
         {isOwner && (
           <Button
             style="secondary"
-            onClick={() => {
-              showToast({
-                type: 'success',
-                message: 'Coming soon',
-                description: 'Member invitations will be available in a future update.',
-              });
-            }}
+            onClick={() => setIsInviteModalOpen(true)}
+            disabled={isAtCap}
             icon={<HiUserAdd aria-hidden="true" />}
             iconPosition="left"
             ariaLabel="Invite member"
@@ -555,6 +563,22 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
           </div>
         )}
       </Modal>
+
+      {/* Invite Member Modal */}
+      <InviteMemberModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        shopId={shop.id}
+        roles={roles}
+        onSuccess={() => {
+          setIsInviteModalOpen(false);
+          showToast({
+            type: 'success',
+            message: 'Invitation sent',
+            description: 'The invitation email has been sent successfully.',
+          });
+        }}
+      />
 
       {/* Leave Shop — requires typing full confirmation phrase */}
       <Modal
