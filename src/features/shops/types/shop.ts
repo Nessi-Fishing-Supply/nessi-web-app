@@ -18,6 +18,14 @@ export type OwnershipTransferWithDetails = {
   createdAt: string | null;
 };
 
+export type TransferAcceptData = {
+  token: string;
+  shopName: string;
+  fromMemberName: string;
+  expiresAt: string;
+  status: 'pending' | 'expired';
+};
+
 export type Shop = Database['public']['Tables']['shops']['Row'];
 
 export type ShopInsert = Omit<

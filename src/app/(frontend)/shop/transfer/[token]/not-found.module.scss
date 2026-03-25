@@ -1,0 +1,54 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--spacing-700) var(--spacing-page-sm);
+}
+
+.card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-500);
+  background: var(--color-white);
+  border-radius: var(--radius-500);
+  box-shadow: var(--shadow-300);
+  border: 1px solid var(--color-neutral-200);
+  padding: var(--spacing-700) var(--spacing-600);
+  text-align: center;
+
+  @include breakpoint(md) {
+    max-width: 480px;
+    padding: var(--spacing-800) var(--spacing-700);
+  }
+}
+
+.title {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-1100);
+  font-weight: var(--font-weight-400);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.description {
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-300);
+  margin: 0;
+}
+
+.link {
+  font-size: var(--font-size-600);
+  color: var(--color-brand-600);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
