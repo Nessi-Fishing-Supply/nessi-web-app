@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context';
 import useContextStore from '@/features/context/stores/context-store';
 import { useShop } from '@/features/shops/hooks/use-shops';
@@ -18,18 +16,11 @@ import styles from './shop-settings.module.scss';
 export default function ShopSettings() {
   const { user, isLoading: authLoading } = useAuth();
   const activeContext = useContextStore.use.activeContext();
-  const router = useRouter();
 
   const isShopContext = activeContext.type === 'shop';
   const shopId = isShopContext ? activeContext.shopId : '';
 
   const { data: shop, isLoading: shopLoading, isError, refetch } = useShop(shopId, isShopContext);
-
-  useEffect(() => {
-    if (!authLoading && !isShopContext) {
-      router.push('/dashboard');
-    }
-  }, [authLoading, isShopContext, router]);
 
   if (authLoading || shopLoading) {
     return (
