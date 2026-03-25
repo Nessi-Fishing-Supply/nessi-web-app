@@ -16,6 +16,7 @@ import FishingIdentity from '@/features/members/components/account/fishing-ident
 import Notifications from '@/features/members/components/account/notifications';
 import LinkedAccounts from '@/features/members/components/account/linked-accounts';
 import SellerSettings from '@/features/members/components/account/seller-settings';
+import AddressList from '@/features/addresses/components/address-list';
 import type { Member } from '@/features/members/types/member';
 import styles from './account.module.scss';
 
@@ -158,6 +159,9 @@ export default function Account() {
             </div>
             <div className={styles.sectionItem}>
               {member && <Notifications member={member as Member} userId={userId} />}
+            </div>
+            <div className={styles.sectionItem}>
+              <AddressList />
             </div>
             <div className={styles.sectionItem}>
               {member && <SellerSettings member={member as Member} />}
