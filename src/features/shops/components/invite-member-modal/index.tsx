@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
 import RoleSelect from '@/features/shops/components/role-select';
@@ -32,15 +32,17 @@ export default function InviteMemberModal({
 
   const createInvite = useCreateInvite();
 
-  // Reset form state when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setEmail('');
-      setRoleId(DEFAULT_ROLE_ID);
-      setFieldError(null);
-      setApiError(null);
-    }
-  }, [isOpen]);
+  const resetForm = () => {
+    setEmail('');
+    setRoleId(DEFAULT_ROLE_ID);
+    setFieldError(null);
+    setApiError(null);
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
 
   const handleSubmit = () => {
     setApiError(null);
@@ -57,6 +59,7 @@ export default function InviteMemberModal({
       { shopId, email, roleId },
       {
         onSuccess: () => {
+          resetForm();
           onSuccess();
         },
         onError: (error) => {
@@ -72,7 +75,7 @@ export default function InviteMemberModal({
   const errorMessage = fieldError ?? apiError;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Invite a member to this shop">
+    <Modal isOpen={isOpen} onClose={handleClose} ariaLabel="Invite a member to this shop">
       <div className={styles.content}>
         <h2 className={styles.title}>Invite a member</h2>
         <p className={styles.description}>
@@ -96,7 +99,7 @@ export default function InviteMemberModal({
             autoComplete="email"
             aria-required="true"
             aria-describedby={hasError && fieldError ? 'invite-email-error' : undefined}
-            aria-invalid={!!(fieldError) || undefined}
+            aria-invalid={!!fieldError || undefined}
             disabled={createInvite.isPending}
           />
           {fieldError && (
@@ -123,17 +126,13 @@ export default function InviteMemberModal({
         </div>
 
         {apiError && (
-          <p
-            className={styles.errorMessage}
-            role="alert"
-            aria-live="assertive"
-          >
+          <p className={styles.errorMessage} role="alert" aria-live="assertive">
             {errorMessage}
           </p>
         )}
 
         <div className={styles.actions}>
-          <Button style="secondary" onClick={onClose} disabled={createInvite.isPending}>
+          <Button style="secondary" onClick={handleClose} disabled={createInvite.isPending}>
             Cancel
           </Button>
           <Button

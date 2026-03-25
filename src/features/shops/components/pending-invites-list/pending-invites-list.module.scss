@@ -114,6 +114,20 @@
 
 .confirmActions {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: var(--spacing-200);
+
+  button {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    justify-content: flex-end;
+
+    button {
+      width: auto;
+    }
+  }
 }

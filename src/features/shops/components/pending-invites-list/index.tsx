@@ -158,7 +158,9 @@ export default function PendingInvitesList({
                       style="secondary"
                       onClick={() => handleResend(invite)}
                       disabled={!isActionable || resendInvite.isPending}
-                      loading={resendInvite.isPending && resendInvite.variables?.inviteId === invite.id}
+                      loading={
+                        resendInvite.isPending && resendInvite.variables?.inviteId === invite.id
+                      }
                       ariaLabel={`Resend invitation to ${invite.email}`}
                     >
                       Resend
@@ -166,7 +168,11 @@ export default function PendingInvitesList({
                     <Button
                       style="danger"
                       onClick={() => setRevokeTarget(invite)}
-                      disabled={invite.status === 'revoked' || invite.status === 'accepted' || revokeInvite.isPending}
+                      disabled={
+                        invite.status === 'revoked' ||
+                        invite.status === 'accepted' ||
+                        revokeInvite.isPending
+                      }
                       ariaLabel={`Revoke invitation to ${invite.email}`}
                     >
                       Revoke
@@ -196,11 +202,7 @@ export default function PendingInvitesList({
               <Button style="secondary" onClick={() => setRevokeTarget(null)}>
                 Cancel
               </Button>
-              <Button
-                style="danger"
-                onClick={handleRevoke}
-                loading={revokeInvite.isPending}
-              >
+              <Button style="danger" onClick={handleRevoke} loading={revokeInvite.isPending}>
                 Revoke Invitation
               </Button>
             </div>

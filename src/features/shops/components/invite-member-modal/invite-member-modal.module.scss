@@ -39,6 +39,7 @@
 .input {
   display: block;
   width: 100%;
+  min-height: 44px;
   padding: var(--spacing-200) var(--spacing-300);
   font-family: var(--font-family-sans);
   font-size: var(--font-size-500);
@@ -81,7 +82,21 @@
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: var(--spacing-200);
   margin-top: var(--spacing-400);
+
+  button {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    justify-content: flex-end;
+
+    button {
+      width: auto;
+    }
+  }
 }
