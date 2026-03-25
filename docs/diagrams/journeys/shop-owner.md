@@ -80,23 +80,34 @@ flowchart TD
 flowchart TD
     A[Owner views Shop Members section] --> B[See member list with roles]
 
-    B --> C{Add member}
-    C --> D["Enter member ID or search"]
-    D --> E{Select role}
-    E --> F["Owner (11111111-...-111111111101)"]
-    E --> G["Manager (11111111-...-111111111102)"]
-    E --> H["Contributor (11111111-...-111111111103)"]
-    G --> I["POST /api/shops/[id]/members"]
-    H --> I
-    I --> J[Member added to shop_members table]
-    J --> K[Member can now switch context to this shop]
+    B --> C{Invite member}
+    C --> D[Enter email + select role]
+    D --> E{Validation}
+    E -->|Invalid email/role| F[400 error]
+    E -->|Valid| G{Server-side checks}
+    G -->|"Members + pending invites >= 5"| H["409 MEMBER_LIMIT_REACHED"]
+    G -->|Already a member| I[409 already a member]
+    G -->|Duplicate pending invite| J[409 duplicate invite]
+    G -->|All clear| K["POST /api/shops/[id]/invites"]
+    K --> L[Insert shop_invites row with 7-day expiry]
+    L --> M[Send invite email via Resend]
+    M --> N["Recipient clicks /invite/{token} → #253"]
 
-    B --> L{Remove member}
-    L --> M["DELETE /api/shops/[id]/members/[memberId]"]
-    M --> N[Member removed from shop_members]
-    N --> O{Was member in shop context?}
-    O -->|Yes| P["403 on next API call → context revocation"]
-    O -->|No| Q[No immediate effect]
+    B --> O{Resend invite}
+    O --> P["POST /api/shops/[id]/invites/[inviteId]/resend"]
+    P --> Q[Regenerate token + reset expiry to 7 days]
+    Q --> R[Resend invite email with new token]
+
+    B --> S{Revoke invite}
+    S --> T["DELETE /api/shops/[id]/invites/[inviteId]"]
+    T --> U["Set status = 'revoked'"]
+
+    B --> V{Remove member}
+    V --> W["DELETE /api/shops/[id]/members/[memberId]"]
+    W --> X[Member removed from shop_members]
+    X --> Y{Was member in shop context?}
+    Y -->|Yes| Z["403 on next API call → context revocation"]
+    Y -->|No| AA[No immediate effect]
 ```
 
 ## Ownership Transfer
