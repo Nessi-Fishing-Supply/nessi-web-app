@@ -17,23 +17,24 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Service Functions
 
-| Function                                  | Purpose                                                                                                            |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `getShop(id)`                             | Fetch shop by ID, returns `Shop \| null`                                                                           |
-| `getShopBySlug(slug)`                     | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                             |
-| `getShopsByOwner(memberId)`               | Fetch all shops owned by a member, returns `Shop[]`                                                                |
-| `getShopsByMember(memberId)`              | Fetch all shops a member belongs to (any role), returns `Shop[]`                                                   |
-| `createShop(data)`                        | Insert a new shop row, returns created `Shop`                                                                      |
-| `updateShop(id, data)`                    | Update allowed shop fields, returns updated `Shop`                                                                 |
-| `deleteShop(id)`                          | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                       |
-| `updateShopSlug(shopId, slug)`            | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`              |
-| `getMyShopRole(shopId)`                   | Fetch the current authenticated user's shop membership with joined `shop_roles` data, returns `ShopMember \| null` |
-| `getShopMembers(shopId)`                  | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]`        |
-| `addShopMember(shopId, memberId, roleId)` | Add a member to a shop with a role UUID, returns created `ShopMember`                                              |
-| `removeShopMember(shopId, memberId)`      | Remove a member from a shop                                                                                        |
-| `transferOwnership(shopId, newOwnerId)`   | Transfer shop ownership to another member, updates owner_id                                                        |
-| `checkShopSlugAvailable(slug)`            | Slug uniqueness check against shared slugs table, returns `boolean`                                                |
-| `getShopRoles(shopId)`                    | Fetch all roles for a shop (system + custom) via `GET /api/shops/{shopId}/roles`, returns `ShopRole[]`             |
+| Function                                     | Purpose                                                                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `getShop(id)`                                | Fetch shop by ID, returns `Shop \| null`                                                                             |
+| `getShopBySlug(slug)`                        | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                               |
+| `getShopsByOwner(memberId)`                  | Fetch all shops owned by a member, returns `Shop[]`                                                                  |
+| `getShopsByMember(memberId)`                 | Fetch all shops a member belongs to (any role), returns `Shop[]`                                                     |
+| `createShop(data)`                           | Insert a new shop row, returns created `Shop`                                                                        |
+| `updateShop(id, data)`                       | Update allowed shop fields, returns updated `Shop`                                                                   |
+| `deleteShop(id)`                             | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                         |
+| `updateShopSlug(shopId, slug)`               | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`                |
+| `getMyShopRole(shopId)`                      | Fetch the current authenticated user's shop membership with joined `shop_roles` data, returns `ShopMember \| null`   |
+| `getShopMembers(shopId)`                     | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]`          |
+| `addShopMember(shopId, memberId, roleId)`    | Add a member to a shop with a role UUID, returns created `ShopMember`                                                |
+| `removeShopMember(shopId, memberId)`         | Remove a member from a shop                                                                                          |
+| `transferOwnership(shopId, newOwnerId)`      | Transfer shop ownership to another member, updates owner_id                                                          |
+| `checkShopSlugAvailable(slug)`               | Slug uniqueness check against shared slugs table, returns `boolean`                                                  |
+| `updateMemberRole(shopId, memberId, roleId)` | Update a shop member's role via `PATCH /api/shops/{shopId}/members/{memberId}/role`, returns `{ success, roleName }` |
+| `getShopRoles(shopId)`                       | Fetch all roles for a shop (system + custom) via `GET /api/shops/{shopId}/roles`, returns `ShopRole[]`               |
 
 ### Server-side Service Functions (`services/shop-server.ts`)
 
@@ -57,6 +58,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `useDeleteShop()`            | mutation, invalidates `['shops']`                    | Delete a shop via API route with storage cleanup                               |
 | `useUpdateShopSlug()`        | mutation, invalidates `['shops']`                    | Update a shop's slug via `POST /api/shops/slug`                                |
 | `useAddShopMember()`         | mutation, invalidates `['shops', shopId, 'members']` | Add a member to a shop                                                         |
+| `useUpdateMemberRole()`      | mutation, invalidates `['shops', shopId, 'members']` | Update a member's role with optimistic cache update and rollback on error      |
 | `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']` | Remove a member from a shop                                                    |
 | `useTransferOwnership()`     | mutation, invalidates `['shops']`                    | Transfer shop ownership to another member                                      |
 | `useShopRoles(shopId)`       | `['shops', shopId, 'roles']`                         | Fetch all roles for a shop                                                     |
@@ -75,6 +77,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `PermissionMatrix`         | `components/permission-matrix/`                        | Reusable matrix showing 6 features × 3 levels with visual indicators; accepts `disabled` prop (true for system roles, false for future custom role editing) |
 | `RoleCard`                 | `components/role-card/`                                | Card displaying a single role: name, system badge, description, and embedded PermissionMatrix                                                               |
 | `CustomRoleUpsellModal`    | `components/custom-role-upsell-modal/`                 | Placeholder modal for "Add Custom Role" — premium plan upsell gate                                                                                          |
+| `RoleSelect`               | `components/role-select/`                              | Standalone native `<select>` for assigning roles — filters out Owner, supports loading/disabled states, 44px tap target                                     |
 | `RolesPermissionsPage`     | `components/roles-permissions-page/`                   | Full page component for /dashboard/shop/roles — renders role cards, Owner-only add button                                                                   |
 
 ## Pages
@@ -133,6 +136,18 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Returns system roles and shop-specific custom roles for the given shop
 - Response: `ShopRole[]` JSON with `AUTH_CACHE_HEADERS`
 
+## Member Role Assignment API
+
+`PATCH /api/shops/[id]/members/[memberId]/role`
+
+- Requires `requireShopPermission(request, 'members', 'full', { expectedShopId })` — Owner-only
+- Accepts `{ roleId: string }` in request body
+- Validates: roleId exists and belongs to shop (or is system role), cannot assign Owner role, cannot change Owner member's role
+- Returns `{ success: true, roleName: string }` on 200
+- Returns 400 for invalid roleId, assigning Owner role, or changing Owner's role
+- Returns 403 for non-Owner callers
+- Returns 401 for unauthenticated requests
+
 ## Shared Components Reused
 
 - `InlineEdit` from `@/components/controls/inline-edit`
@@ -152,6 +167,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **Slug uniqueness** — Shop slugs are checked for uniqueness against the shared `slugs` table (not just the shops table), since slugs are a cross-entity namespace shared with member slugs. The `generateSlug` utility in `src/features/shared/utils/slug.ts` handles auto-generating a slug from a display name.
 - **Avatar upload via API route** — Unlike standard shop CRUD (direct Supabase), avatar uploads go through `POST /api/shops/avatar` for server-side image processing with `sharp`.
 - **Server-side deletion with storage cleanup** — Shop deletion uses `DELETE /api/shops/[id]` (server-side API route with admin client) to clean up storage objects before soft-deleting. The `deleteShop()` service function calls this API route via `fetch`. This parallels the account deletion pattern in `src/app/api/auth/delete-account/route.ts`.
+- **Deleted role fallback** — When a member's `role_id` references a deleted custom role (not found in the `useShopRoles` data), both the role badge and the `RoleSelect` dropdown default to "Contributor" (`SYSTEM_ROLE_IDS.CONTRIBUTOR`). This avoids runtime errors and ensures graceful degradation without requiring a database migration.
 - **PermissionMatrix reusability** — The `PermissionMatrix` component is designed for reuse. In the current Roles & Permissions page it always renders with `disabled={true}` (system roles are read-only). When custom role editing is implemented, it will render with `disabled={false}` to allow inline permission level changes.
 
 ## Shop Roles
