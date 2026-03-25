@@ -6,7 +6,11 @@ import Button from '@/components/controls/button';
 import { useToast } from '@/components/indicators/toast/context';
 import AddressCard from '@/features/addresses/components/address-card';
 import AddressFormModal from '@/features/addresses/components/address-form-modal';
-import { useAddresses, useDeleteAddress, useSetDefaultAddress } from '@/features/addresses/hooks/use-addresses';
+import {
+  useAddresses,
+  useDeleteAddress,
+  useSetDefaultAddress,
+} from '@/features/addresses/hooks/use-addresses';
 import { MAX_ADDRESSES } from '@/features/addresses/types/address';
 import type { Address } from '@/features/addresses/types/address';
 
@@ -118,11 +122,7 @@ export default function AddressList() {
         )}
       </div>
 
-      <AddressFormModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        address={editingAddress}
-      />
+      <AddressFormModal isOpen={isModalOpen} onClose={handleModalClose} address={editingAddress} />
     </CollapsibleCard>
   );
 }

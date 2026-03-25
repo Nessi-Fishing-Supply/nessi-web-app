@@ -158,12 +158,7 @@ export default function AddressFormModal({ isOpen, onClose, address }: AddressFo
 
             <div className={styles.cityStateZip}>
               <div className={styles.cityField}>
-                <Input
-                  name="city"
-                  label="City"
-                  isRequired
-                  autoComplete="address-level2"
-                />
+                <Input name="city" label="City" isRequired autoComplete="address-level2" />
               </div>
               <div className={styles.stateField}>
                 <Select

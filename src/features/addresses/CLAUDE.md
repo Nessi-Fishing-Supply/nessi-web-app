@@ -16,23 +16,24 @@ Saved shipping addresses for authenticated buyers — store and reuse up to 5 ad
 
 ### addresses table
 
-| Column     | Type        | Notes                               |
-| ---------- | ----------- | ----------------------------------- |
-| id         | uuid        | Primary key                         |
-| user_id    | uuid        | FK → members.id (ON DELETE CASCADE) |
-| label      | text        | Display name (e.g. "Home", "Work")  |
-| line1      | text        | Street address line 1               |
-| line2      | text \| null | Street address line 2 (optional)   |
-| city       | text        | City name                           |
-| state      | text        | 2-char US state code                |
-| zip        | text        | 5-digit or 5+4 ZIP code             |
-| is_default | boolean     | Default NOW() false                 |
-| created_at | timestamptz | Default NOW()                       |
-| updated_at | timestamptz | Auto-updated by trigger             |
+| Column     | Type         | Notes                               |
+| ---------- | ------------ | ----------------------------------- |
+| id         | uuid         | Primary key                         |
+| user_id    | uuid         | FK → members.id (ON DELETE CASCADE) |
+| label      | text         | Display name (e.g. "Home", "Work")  |
+| line1      | text         | Street address line 1               |
+| line2      | text \| null | Street address line 2 (optional)    |
+| city       | text         | City name                           |
+| state      | text         | 2-char US state code                |
+| zip        | text         | 5-digit or 5+4 ZIP code             |
+| is_default | boolean      | Default NOW() false                 |
+| created_at | timestamptz  | Default NOW()                       |
+| updated_at | timestamptz  | Auto-updated by trigger             |
 
 **Constraints:** UNIQUE(user_id, label) — one label per user.
 
 **Triggers:**
+
 - `enforce_max_addresses` — hard 5-address cap per user
 - `ensure_single_default` — atomically clears other defaults when a new default is set
 - `handle_addresses_updated_at` — updates `updated_at` on every row change
@@ -41,23 +42,23 @@ Saved shipping addresses for authenticated buyers — store and reuse up to 5 ad
 
 ## API Routes
 
-| Method | Route                               | Handler                        | Description                                              |
-| ------ | ----------------------------------- | ------------------------------ | -------------------------------------------------------- |
-| GET    | `/api/addresses`                    | `getAddressesServer`           | List all addresses for the authenticated user            |
-| POST   | `/api/addresses`                    | `createAddressServer`          | Create a new address (validates body, enforces 5-cap)    |
-| PUT    | `/api/addresses/[id]`               | `updateAddressServer`          | Update an existing address                               |
-| DELETE | `/api/addresses/[id]`               | `deleteAddressServer`          | Delete address; promotes next address to default if needed |
-| PATCH  | `/api/addresses/[id]/default`       | `updateAddressServer`          | Set address as the user's default                        |
+| Method | Route                         | Handler               | Description                                                |
+| ------ | ----------------------------- | --------------------- | ---------------------------------------------------------- |
+| GET    | `/api/addresses`              | `getAddressesServer`  | List all addresses for the authenticated user              |
+| POST   | `/api/addresses`              | `createAddressServer` | Create a new address (validates body, enforces 5-cap)      |
+| PUT    | `/api/addresses/[id]`         | `updateAddressServer` | Update an existing address                                 |
+| DELETE | `/api/addresses/[id]`         | `deleteAddressServer` | Delete address; promotes next address to default if needed |
+| PATCH  | `/api/addresses/[id]/default` | `updateAddressServer` | Set address as the user's default                          |
 
 ## Hooks
 
-| Hook                   | Query Key              | Purpose                        | Optimistic                                              |
-| ---------------------- | ---------------------- | ------------------------------ | ------------------------------------------------------- |
-| `useAddresses()`       | `['addresses', userId]` | List all saved addresses       | —                                                       |
-| `useCreateAddress()`   | mutation               | Create a new address           | —                                                       |
-| `useUpdateAddress()`   | mutation               | Update an existing address     | —                                                       |
-| `useDeleteAddress()`   | mutation               | Delete an address              | Yes — removes from cache, rollback on error             |
-| `useSetDefaultAddress()` | mutation             | Set address as default         | Yes — updates is_default flags in cache, rollback on error |
+| Hook                     | Query Key               | Purpose                    | Optimistic                                                 |
+| ------------------------ | ----------------------- | -------------------------- | ---------------------------------------------------------- |
+| `useAddresses()`         | `['addresses', userId]` | List all saved addresses   | —                                                          |
+| `useCreateAddress()`     | mutation                | Create a new address       | —                                                          |
+| `useUpdateAddress()`     | mutation                | Update an existing address | —                                                          |
+| `useDeleteAddress()`     | mutation                | Delete an address          | Yes — removes from cache, rollback on error                |
+| `useSetDefaultAddress()` | mutation                | Set address as default     | Yes — updates is_default flags in cache, rollback on error |
 
 **Query key convention:** `['addresses', userId]` is user-scoped. All mutations invalidate this key in `onSettled`.
 

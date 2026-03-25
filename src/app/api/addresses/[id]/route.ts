@@ -1,7 +1,10 @@
 import { createClient } from '@/libs/supabase/server';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
-import { updateAddressServer, deleteAddressServer } from '@/features/addresses/services/address-server';
+import {
+  updateAddressServer,
+  deleteAddressServer,
+} from '@/features/addresses/services/address-server';
 import { addressSchema } from '@/features/addresses/validations/address';
 
 export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
@@ -21,7 +24,10 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     }
 
     const body = await req.json();
-    const validatedData = await addressSchema.validate(body, { abortEarly: false, stripUnknown: true });
+    const validatedData = await addressSchema.validate(body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
 
     const { line2, ...rest } = validatedData;
     const updated = await updateAddressServer(user.id, id, {

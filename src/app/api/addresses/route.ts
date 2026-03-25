@@ -50,7 +50,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const validated = (await addressSchema.validate(body, { abortEarly: false })) as AddressFormData;
+    const validated = (await addressSchema.validate(body, {
+      abortEarly: false,
+    })) as AddressFormData;
 
     const address = await createAddressServer(user.id, validated);
 
