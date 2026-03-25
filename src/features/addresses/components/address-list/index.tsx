@@ -113,8 +113,10 @@ export default function AddressList() {
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onSetDefault={handleSetDefault}
-                  isDeleting={deleteAddress.isPending}
-                  isSettingDefault={setDefaultAddress.isPending}
+                  isDeleting={deleteAddress.isPending && deleteAddress.variables === address.id}
+                  isSettingDefault={
+                    setDefaultAddress.isPending && setDefaultAddress.variables === address.id
+                  }
                 />
               </li>
             ))}

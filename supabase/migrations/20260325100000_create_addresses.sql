@@ -129,24 +129,12 @@ CREATE TRIGGER on_address_ensure_single_default
   EXECUTE FUNCTION public.ensure_single_default();
 
 -- ============================================================
--- Step 9: Trigger function — auto-update updated_at on UPDATE
--- ============================================================
-
-CREATE OR REPLACE FUNCTION public.handle_addresses_updated_at()
-RETURNS trigger AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public;
-
--- ============================================================
--- Step 10: Trigger — updated_at on UPDATE
+-- Step 9: Trigger — updated_at on UPDATE
+-- Reuses the generic handle_updated_at() from profiles migration
 -- ============================================================
 
 DROP TRIGGER IF EXISTS on_address_updated_at ON public.addresses;
 CREATE TRIGGER on_address_updated_at
   BEFORE UPDATE ON public.addresses
   FOR EACH ROW
-  EXECUTE FUNCTION public.handle_addresses_updated_at();
+  EXECUTE FUNCTION public.handle_updated_at();
