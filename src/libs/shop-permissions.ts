@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
+import { meetsLevel } from '@/features/shops/utils/check-permission';
 import type { ShopMemberRow } from '@/features/shops/types/shop';
 import type {
   ShopPermissionFeature,
@@ -17,10 +18,8 @@ export type ShopPermissionResult = {
   member: ShopMemberRow & { shop_roles: ShopRole };
 };
 
-const PERMISSION_LEVELS: Record<ShopPermissionLevel, number> = {
-  none: 0,
-  view: 1,
-  full: 2,
+export type RequireShopPermissionOptions = {
+  expectedShopId?: string;
 };
 
 export async function getShopMemberWithRole(
@@ -59,6 +58,7 @@ export async function requireShopPermission(
   request: Request,
   feature: ShopPermissionFeature,
   level: ShopPermissionLevel,
+  options?: RequireShopPermissionOptions,
 ): Promise<NextResponse | ShopPermissionResult> {
   const supabase = await createClient();
   const {
@@ -82,6 +82,10 @@ export async function requireShopPermission(
     return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
   }
 
+  if (options?.expectedShopId && shopId !== options.expectedShopId) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
+  }
+
   const member = await getShopMemberWithRole(user.id, shopId);
   if (!member) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
@@ -91,8 +95,7 @@ export async function requireShopPermission(
     return { user, shopId, member };
   }
 
-  const userLevel = member.shop_roles.permissions[feature] ?? 'none';
-  if (PERMISSION_LEVELS[userLevel] < PERMISSION_LEVELS[level]) {
+  if (!meetsLevel(member.shop_roles.permissions, feature, level)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: AUTH_CACHE_HEADERS });
   }
 

@@ -35,3 +35,22 @@ export function hasFullAccess(
 ): boolean {
   return checkPermission(permissions, feature) === 'full';
 }
+
+const PERMISSION_LEVELS: Record<ShopPermissionLevel, number> = {
+  none: 0,
+  view: 1,
+  full: 2,
+};
+
+/**
+ * Check if the user's permission level for a feature meets the required level.
+ * Returns true if the user's level is >= the required level.
+ */
+export function meetsLevel(
+  permissions: Partial<ShopPermissions>,
+  feature: ShopPermissionFeature,
+  requiredLevel: ShopPermissionLevel,
+): boolean {
+  const userLevel = checkPermission(permissions, feature);
+  return PERMISSION_LEVELS[userLevel] >= PERMISSION_LEVELS[requiredLevel];
+}

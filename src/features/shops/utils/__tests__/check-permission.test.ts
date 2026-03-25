@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { checkPermission, hasAccess, hasFullAccess } from '../check-permission';
+import { checkPermission, hasAccess, hasFullAccess, meetsLevel } from '../check-permission';
 import type { ShopPermissions } from '@/features/shops/types/permissions';
 
 const fullPermissions: ShopPermissions = {
@@ -75,5 +75,42 @@ describe('hasFullAccess', () => {
 
   it('returns false when key is missing', () => {
     expect(hasFullAccess({}, 'listings')).toBe(false);
+  });
+});
+
+describe('meetsLevel', () => {
+  it('returns true when user has full and full is required', () => {
+    expect(meetsLevel(fullPermissions, 'listings', 'full')).toBe(true);
+  });
+
+  it('returns true when user has full and view is required', () => {
+    expect(meetsLevel(fullPermissions, 'listings', 'view')).toBe(true);
+  });
+
+  it('returns true when user has full and none is required', () => {
+    expect(meetsLevel(fullPermissions, 'listings', 'none')).toBe(true);
+  });
+
+  it('returns true when user has view and view is required', () => {
+    const permissions: Partial<ShopPermissions> = { listings: 'view' };
+    expect(meetsLevel(permissions, 'listings', 'view')).toBe(true);
+  });
+
+  it('returns false when user has view and full is required', () => {
+    const permissions: Partial<ShopPermissions> = { listings: 'view' };
+    expect(meetsLevel(permissions, 'listings', 'full')).toBe(false);
+  });
+
+  it('returns false when user has none and view is required', () => {
+    const permissions: Partial<ShopPermissions> = { listings: 'none' };
+    expect(meetsLevel(permissions, 'listings', 'view')).toBe(false);
+  });
+
+  it('returns true when none is required regardless of level', () => {
+    expect(meetsLevel({}, 'listings', 'none')).toBe(true);
+  });
+
+  it('returns false when key is missing and view is required', () => {
+    expect(meetsLevel({}, 'listings', 'view')).toBe(false);
   });
 });

@@ -3,7 +3,7 @@
   "issue": 238,
   "title": "Add server-side permission checking middleware for shop API routes",
   "branch": "feat/238/add-server-side-permission-checking",
-  "status": "implementing",
+  "status": "complete",
   "phase": {
     "current": 3,
     "total": 3,

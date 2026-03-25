@@ -6,7 +6,9 @@ import { requireShopPermission } from '@/libs/shop-permissions';
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: shopId } = await params;
 
-  const result = await requireShopPermission(request, 'members', 'full');
+  const result = await requireShopPermission(request, 'members', 'full', {
+    expectedShopId: shopId,
+  });
   if (result instanceof NextResponse) return result;
 
   const body = await request.json();

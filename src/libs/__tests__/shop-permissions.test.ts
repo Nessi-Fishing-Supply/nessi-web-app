@@ -203,6 +203,41 @@ describe('requireShopPermission', () => {
     expect(success.shopId).toBe(mockShopId);
   });
 
+  it('returns 403 when user permission is none and view is required', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: mockUser } });
+    mockSingle.mockResolvedValue({
+      data: { ...mockMemberRow, shop_roles: mockManagerRole },
+      error: null,
+    });
+
+    const result = await requireShopPermission(
+      createRequest(`shop:${mockShopId}`),
+      'members',
+      'view',
+    );
+
+    expect(result instanceof NextResponse).toBe(true);
+    expect((result as NextResponse).status).toBe(403);
+  });
+
+  it('returns 403 when expectedShopId does not match context header shopId', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: mockUser } });
+    mockSingle.mockResolvedValue({
+      data: { ...mockMemberRow, shop_roles: mockManagerRole },
+      error: null,
+    });
+
+    const result = await requireShopPermission(
+      createRequest(`shop:${mockShopId}`),
+      'listings',
+      'full',
+      { expectedShopId: 'different-shop-id' },
+    );
+
+    expect(result instanceof NextResponse).toBe(true);
+    expect((result as NextResponse).status).toBe(403);
+  });
+
   it('owner bypass: returns success even when checking any feature/level because role has is_system: true and slug: owner', async () => {
     mockGetUser.mockResolvedValue({ data: { user: mockUser } });
     mockSingle.mockResolvedValue({
