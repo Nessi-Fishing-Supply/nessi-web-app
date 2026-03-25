@@ -12,10 +12,10 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **constants/limits.ts** — Membership limits: `MAX_SHOPS_PER_MEMBER = 5` (max shops a member can belong to, owned + member-of combined), `MAX_MEMBERS_PER_SHOP = 5` (max members + pending invites per shop)
 - **utils/check-permission.ts** — Pure permission utility functions: `checkPermission` (returns level, defaults to `'none'`), `hasAccess` (true for `'full'` or `'view'`), `hasFullAccess` (true only for `'full'`), `meetsLevel` (true if user's level >= required level — used by `requireShopPermission` in `src/libs/shop-permissions.ts`)
 - **utils/check-member-shop-limit.ts** — Reusable server-side utility: `checkMemberShopLimit(memberId: string)` returns `{ withinLimit: boolean; currentCount: number; maxCount: number }`. Uses admin client with head-only count query on `shop_members`. Does NOT import from `next/server` — designed for reuse by invite endpoints (#252, #253).
-- **types/invite.ts** — `ShopInvite` (raw row from `shop_invites`), `ShopInviteWithInviter` (includes joined inviter name from `members`)
+- **types/invite.ts** — `ShopInvite` (raw row from `shop_invites`), `ShopInviteWithInviter` (includes joined inviter name from `members`), `InvitePageData` (invite details for the accept page — no invitee email, includes `shopAvatarUrl`, `inviterName`, `roleName`)
 - **validations/invite.ts** — `validateInviteInput({ email, roleId })` — validates email format, role validity, prevents Owner role invites
 - **services/shop.ts** — Direct Supabase queries via browser client (RLS handles authorization)
-- **services/shop-invites.ts** — Client-side service functions for invite CRUD (`getShopInvites`, `createShopInvite`, `resendShopInvite`, `revokeShopInvite`) using `get`/`post`/`del` from `@/libs/fetch`
+- **services/shop-invites.ts** — Client-side service functions for invite CRUD (`getShopInvites`, `createShopInvite`, `resendShopInvite`, `revokeShopInvite`, `acceptShopInvite`) using `get`/`post`/`del` from `@/libs/fetch`
 - **services/shop-server.ts** — Server-side Supabase queries via server client (for server components, e.g., public shop page)
 - **hooks/use-shops.ts** — Tanstack Query hooks for data fetching and mutations
 - **hooks/use-shop-invites.ts** — Tanstack Query hooks for invite operations (`useShopInvites`, `useCreateInvite`, `useResendInvite`, `useRevokeInvite`)
@@ -23,28 +23,29 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Service Functions
 
-| Function                                      | Purpose                                                                                                              |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `getShop(id)`                                 | Fetch shop by ID, returns `Shop \| null`                                                                             |
-| `getShopBySlug(slug)`                         | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                               |
-| `getShopsByOwner(memberId)`                   | Fetch all shops owned by a member, returns `Shop[]`                                                                  |
-| `getShopsByMember(memberId)`                  | Fetch all shops a member belongs to (any role), returns `Shop[]`                                                     |
-| `createShop(data)`                            | Insert a new shop row, returns created `Shop`                                                                        |
-| `updateShop(id, data)`                        | Update allowed shop fields, returns updated `Shop`                                                                   |
-| `deleteShop(id)`                              | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                         |
-| `updateShopSlug(shopId, slug)`                | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`                |
-| `getMyShopRole(shopId)`                       | Fetch the current authenticated user's shop membership with joined `shop_roles` data, returns `ShopMember \| null`   |
-| `getShopMembers(shopId)`                      | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]`          |
-| `addShopMember(shopId, memberId, roleId)`     | Add a member to a shop with a role UUID, returns created `ShopMember`                                                |
-| `removeShopMember(shopId, memberId)`          | Remove a member from a shop                                                                                          |
-| `transferOwnership(shopId, newOwnerId)`       | Transfer shop ownership to another member, updates owner_id                                                          |
-| `checkShopSlugAvailable(slug)`                | Slug uniqueness check against shared slugs table, returns `boolean`                                                  |
-| `updateMemberRole(shopId, memberId, roleId)`  | Update a shop member's role via `PATCH /api/shops/{shopId}/members/{memberId}/role`, returns `{ success, roleName }` |
-| `getShopRoles(shopId)`                        | Fetch all roles for a shop (system + custom) via `GET /api/shops/{shopId}/roles`, returns `ShopRole[]`               |
-| `getShopInvites(shopId)`                      | Fetch all invites for a shop via `GET /api/shops/{shopId}/invites`, returns `ShopInviteWithInviter[]`                |
-| `createShopInvite(shopId, { email, roleId })` | Create an invite via `POST /api/shops/{shopId}/invites`, returns `ShopInvite`                                        |
-| `resendShopInvite(shopId, inviteId)`          | Resend invite via `POST /api/shops/{shopId}/invites/{inviteId}/resend`, returns `ShopInvite`                         |
-| `revokeShopInvite(shopId, inviteId)`          | Revoke invite via `DELETE /api/shops/{shopId}/invites/{inviteId}`, returns `{ success: true }`                       |
+| Function                                      | Purpose                                                                                                                                                                  |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `getShop(id)`                                 | Fetch shop by ID, returns `Shop \| null`                                                                                                                                 |
+| `getShopBySlug(slug)`                         | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                                                                                   |
+| `getShopsByOwner(memberId)`                   | Fetch all shops owned by a member, returns `Shop[]`                                                                                                                      |
+| `getShopsByMember(memberId)`                  | Fetch all shops a member belongs to (any role), returns `Shop[]`                                                                                                         |
+| `createShop(data)`                            | Insert a new shop row, returns created `Shop`                                                                                                                            |
+| `updateShop(id, data)`                        | Update allowed shop fields, returns updated `Shop`                                                                                                                       |
+| `deleteShop(id)`                              | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                                                                             |
+| `updateShopSlug(shopId, slug)`                | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`                                                                    |
+| `getMyShopRole(shopId)`                       | Fetch the current authenticated user's shop membership with joined `shop_roles` data, returns `ShopMember \| null`                                                       |
+| `getShopMembers(shopId)`                      | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]`                                                              |
+| `addShopMember(shopId, memberId, roleId)`     | Add a member to a shop with a role UUID, returns created `ShopMember`                                                                                                    |
+| `removeShopMember(shopId, memberId)`          | Remove a member from a shop                                                                                                                                              |
+| `transferOwnership(shopId, newOwnerId)`       | Transfer shop ownership to another member, updates owner_id                                                                                                              |
+| `checkShopSlugAvailable(slug)`                | Slug uniqueness check against shared slugs table, returns `boolean`                                                                                                      |
+| `updateMemberRole(shopId, memberId, roleId)`  | Update a shop member's role via `PATCH /api/shops/{shopId}/members/{memberId}/role`, returns `{ success, roleName }`                                                     |
+| `getShopRoles(shopId)`                        | Fetch all roles for a shop (system + custom) via `GET /api/shops/{shopId}/roles`, returns `ShopRole[]`                                                                   |
+| `getShopInvites(shopId)`                      | Fetch all invites for a shop via `GET /api/shops/{shopId}/invites`, returns `ShopInviteWithInviter[]`                                                                    |
+| `createShopInvite(shopId, { email, roleId })` | Create an invite via `POST /api/shops/{shopId}/invites`, returns `ShopInvite`                                                                                            |
+| `resendShopInvite(shopId, inviteId)`          | Resend invite via `POST /api/shops/{shopId}/invites/{inviteId}/resend`, returns `ShopInvite`                                                                             |
+| `revokeShopInvite(shopId, inviteId)`          | Revoke invite via `DELETE /api/shops/{shopId}/invites/{inviteId}`, returns `{ success: true }`                                                                           |
+| `acceptShopInvite(token)`                     | Accept an invite via `POST /api/invites/{token}/accept` (raw fetch, no auth header — uses cookie session), returns `{ success: true, shopId: string, shopName: string }` |
 
 ### Server-side Service Functions (`services/shop-server.ts`)
 
@@ -54,28 +55,29 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Hooks
 
-| Hook                         | Query Key                                            | Purpose                                                                        |
-| ---------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `useShop(id)`                | `['shops', id]`                                      | Fetch shop by ID                                                               |
-| `useShopBySlug(slug)`        | `['shops', 'slug', slug]`                            | Fetch shop by slug                                                             |
-| `useShopsByOwner(memberId)`  | `['shops', 'owner', memberId]`                       | Fetch all shops owned by a member                                              |
-| `useShopsByMember(memberId)` | `['shops', 'member', memberId]`                      | Fetch all shops a member belongs to                                            |
-| `useShopMembers(shopId)`     | `['shops', shopId, 'members']`                       | Fetch all members of a shop                                                    |
-| `useShopPermissions(shopId)` | `['shops', shopId, 'my-permissions']`                | Current user's permissions and role for a shop (hooks/use-shop-permissions.ts) |
-| `useShopSlugCheck(slug)`     | `['shops', 'slug-check', slug]`                      | Slug availability check (enabled when slug is non-empty)                       |
-| `useCreateShop()`            | mutation, invalidates `['shops']`                    | Create a new shop                                                              |
-| `useUpdateShop()`            | mutation, invalidates `['shops']`                    | Update shop fields                                                             |
-| `useDeleteShop()`            | mutation, invalidates `['shops']`                    | Delete a shop via API route with storage cleanup                               |
-| `useUpdateShopSlug()`        | mutation, invalidates `['shops']`                    | Update a shop's slug via `POST /api/shops/slug`                                |
-| `useAddShopMember()`         | mutation, invalidates `['shops', shopId, 'members']` | Add a member to a shop                                                         |
-| `useUpdateMemberRole()`      | mutation, invalidates `['shops', shopId, 'members']` | Update a member's role with optimistic cache update and rollback on error      |
-| `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']` | Remove a member from a shop                                                    |
-| `useTransferOwnership()`     | mutation, invalidates `['shops']`                    | Transfer shop ownership to another member                                      |
-| `useShopRoles(shopId)`       | `['shops', shopId, 'roles']`                         | Fetch all roles for a shop                                                     |
-| `useShopInvites(shopId)`     | `['shops', shopId, 'invites']`                       | Fetch all invites for a shop with inviter names                                |
-| `useCreateInvite()`          | mutation, invalidates `['shops', shopId, 'invites']` | Create a shop invite and send email                                            |
-| `useResendInvite()`          | mutation, invalidates `['shops', shopId, 'invites']` | Resend invite email with new token and reset expiry                            |
-| `useRevokeInvite()`          | mutation, invalidates `['shops', shopId, 'invites']` | Revoke a pending invite                                                        |
+| Hook                         | Query Key                                                                      | Purpose                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `useShop(id)`                | `['shops', id]`                                                                | Fetch shop by ID                                                               |
+| `useShopBySlug(slug)`        | `['shops', 'slug', slug]`                                                      | Fetch shop by slug                                                             |
+| `useShopsByOwner(memberId)`  | `['shops', 'owner', memberId]`                                                 | Fetch all shops owned by a member                                              |
+| `useShopsByMember(memberId)` | `['shops', 'member', memberId]`                                                | Fetch all shops a member belongs to                                            |
+| `useShopMembers(shopId)`     | `['shops', shopId, 'members']`                                                 | Fetch all members of a shop                                                    |
+| `useShopPermissions(shopId)` | `['shops', shopId, 'my-permissions']`                                          | Current user's permissions and role for a shop (hooks/use-shop-permissions.ts) |
+| `useShopSlugCheck(slug)`     | `['shops', 'slug-check', slug]`                                                | Slug availability check (enabled when slug is non-empty)                       |
+| `useCreateShop()`            | mutation, invalidates `['shops']`                                              | Create a new shop                                                              |
+| `useUpdateShop()`            | mutation, invalidates `['shops']`                                              | Update shop fields                                                             |
+| `useDeleteShop()`            | mutation, invalidates `['shops']`                                              | Delete a shop via API route with storage cleanup                               |
+| `useUpdateShopSlug()`        | mutation, invalidates `['shops']`                                              | Update a shop's slug via `POST /api/shops/slug`                                |
+| `useAddShopMember()`         | mutation, invalidates `['shops', shopId, 'members']`                           | Add a member to a shop                                                         |
+| `useUpdateMemberRole()`      | mutation, invalidates `['shops', shopId, 'members']`                           | Update a member's role with optimistic cache update and rollback on error      |
+| `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']`                           | Remove a member from a shop                                                    |
+| `useTransferOwnership()`     | mutation, invalidates `['shops']`                                              | Transfer shop ownership to another member                                      |
+| `useShopRoles(shopId)`       | `['shops', shopId, 'roles']`                                                   | Fetch all roles for a shop                                                     |
+| `useShopInvites(shopId)`     | `['shops', shopId, 'invites']`                                                 | Fetch all invites for a shop with inviter names                                |
+| `useCreateInvite()`          | mutation, invalidates `['shops', shopId, 'invites']`                           | Create a shop invite and send email                                            |
+| `useResendInvite()`          | mutation, invalidates `['shops', shopId, 'invites']`                           | Resend invite email with new token and reset expiry                            |
+| `useRevokeInvite()`          | mutation, invalidates `['shops', shopId, 'invites']`                           | Revoke a pending invite                                                        |
+| `useAcceptInvite()`          | mutation, invalidates `['shops', 'member', userId]` and `['shops']` on success | Accept an invite by token — used on the public invite page                     |
 
 ## Components
 
@@ -93,6 +95,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `CustomRoleUpsellModal`    | `components/custom-role-upsell-modal/`                 | Placeholder modal for "Add Custom Role" — premium plan upsell gate                                                                                          |
 | `RoleSelect`               | `components/role-select/`                              | Standalone native `<select>` for assigning roles — filters out Owner, supports loading/disabled states, 44px tap target                                     |
 | `RolesPermissionsPage`     | `components/roles-permissions-page/`                   | Full page component for /dashboard/shop/roles — renders role cards, Owner-only add button                                                                   |
+| `InviteAccept`             | `components/invite-accept/`                            | Client component, auth-gated accept UI for public invite page — uses `useAuth()` for post-login reactivity, maps API error codes to user-facing messages    |
 
 ## Pages
 
@@ -102,6 +105,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `/dashboard/shop/settings` | Shop settings page — shop details (name, slug, avatar, hero banner), subscription, and deletion. Owner sees all, Manager sees details read-only, Contributor redirected by ShopRouteGuard |
 | `/dashboard/shop/roles`    | Roles & Permissions page — system roles with permission matrices, member management with role dropdowns, ownership transfer, and "Add Custom Role" upsell (Owner-only)                    |
 | `/shop/[slug]`             | Public shop page — server-rendered with SEO metadata, product grid, shop stats                                                                                                            |
+| `/invite/[token]`          | Public invite acceptance page — server component using admin client to fetch invite data, renders `InviteAccept`. Unauthenticated users see a sign-in prompt. Invalid tokens → 404.       |
 
 ## Avatar Upload API
 
@@ -172,6 +176,17 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - Requires `requireShopPermission(request, 'members', 'full', { expectedShopId })` — Owner-only
 - Sets invite status to `revoked`
 - Returns 200 with `{ success: true }`, 404 if not found, 400 if not pending
+
+`POST /api/invites/[token]/accept` — Accept invite
+
+- Auth required — returns 401 if no session (note: route is under `/api/invites/`, not `/api/shops/`)
+- No `X-Nessi-Context` header required
+- Looks up invite by token via admin client (bypasses RLS for read)
+- Returns 404 if token not found
+- Returns 400 with `{ error, code }` for non-pending invites: `code: 'INVITE_EXPIRED'`, `'INVITE_REVOKED'`, or `'INVITE_ALREADY_ACCEPTED'`
+- Enforces `MAX_MEMBERS_PER_SHOP` (409 `MEMBER_LIMIT_REACHED`) and `MAX_SHOPS_PER_MEMBER` (409 `SHOP_LIMIT_REACHED`)
+- Returns 409 `ALREADY_MEMBER` if user is already a shop member
+- On success: inserts `shop_members` row, sets invite `status = 'accepted'`, returns 200 `{ success: true, shopId, shopName }`
 
 ## Roles API
 
