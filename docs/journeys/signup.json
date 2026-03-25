@@ -33,7 +33,11 @@
           "codeRef": "src/app/api/auth/register/route.ts",
           "notes": "Uses admin client to create user, bypassing email confirmation flow. Triggers Supabase to send OTP email.",
           "errorCases": [
-            { "condition": "Email already registered", "result": "Show inline 'Sign in instead' link", "httpStatus": 409 }
+            {
+              "condition": "Email already registered",
+              "result": "Show inline 'Sign in instead' link",
+              "httpStatus": 409
+            }
           ]
         },
         {
@@ -64,9 +68,7 @@
         {
           "afterStep": "enter-otp",
           "condition": "Code not received?",
-          "paths": [
-            { "label": "Resend OTP (60s cooldown)", "goTo": "transition-to-otp" }
-          ]
+          "paths": [{ "label": "Resend OTP (60s cooldown)", "goTo": "transition-to-otp" }]
         }
       ]
     },

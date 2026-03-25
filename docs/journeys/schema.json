@@ -16,7 +16,17 @@
     },
     "persona": {
       "type": "string",
-      "enum": ["guest", "auth", "onboarding", "buyer", "seller", "shop-owner", "shop-member", "account", "context"],
+      "enum": [
+        "guest",
+        "auth",
+        "onboarding",
+        "buyer",
+        "seller",
+        "shop-owner",
+        "shop-member",
+        "account",
+        "context"
+      ],
       "description": "Which persona this journey belongs to"
     },
     "description": {

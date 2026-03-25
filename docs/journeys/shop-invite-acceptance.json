@@ -33,9 +33,21 @@
           "codeRef": "src/app/api/shops/[id]/invites/route.ts",
           "notes": "Requires requireShopPermission('members', 'full'). Enforces 5-member cap (members + pending invites).",
           "errorCases": [
-            { "condition": "Members + pending invites >= 5", "result": "MEMBER_LIMIT_REACHED", "httpStatus": 409 },
-            { "condition": "Email already a shop member", "result": "ALREADY_MEMBER", "httpStatus": 409 },
-            { "condition": "Duplicate pending invite for same email", "result": "DUPLICATE_INVITE", "httpStatus": 409 }
+            {
+              "condition": "Members + pending invites >= 5",
+              "result": "MEMBER_LIMIT_REACHED",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Email already a shop member",
+              "result": "ALREADY_MEMBER",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Duplicate pending invite for same email",
+              "result": "DUPLICATE_INVITE",
+              "httpStatus": 409
+            }
           ]
         },
         {
@@ -98,8 +110,16 @@
           "notes": "Uses cookie session auth (no X-Nessi-Context header). Looks up invite by token via admin client.",
           "errorCases": [
             { "condition": "Already a shop member", "result": "ALREADY_MEMBER", "httpStatus": 409 },
-            { "condition": "Shop at member cap", "result": "MEMBER_LIMIT_REACHED", "httpStatus": 409 },
-            { "condition": "Member belongs to 5 shops already", "result": "SHOP_LIMIT_REACHED", "httpStatus": 409 },
+            {
+              "condition": "Shop at member cap",
+              "result": "MEMBER_LIMIT_REACHED",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Member belongs to 5 shops already",
+              "result": "SHOP_LIMIT_REACHED",
+              "httpStatus": 409
+            },
             { "condition": "Invite expired", "result": "INVITE_EXPIRED", "httpStatus": 400 },
             { "condition": "Invite revoked", "result": "INVITE_REVOKED", "httpStatus": 400 }
           ]
