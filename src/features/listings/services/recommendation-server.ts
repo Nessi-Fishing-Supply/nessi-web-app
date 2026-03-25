@@ -13,7 +13,7 @@ import type {
 } from '@/features/listings/types/recommendation';
 
 async function getSimilarListings(params: SimilarParams): Promise<ListingWithPhotos[]> {
-  const { listingId, category, condition } = params;
+  const { listingId, category, condition, excludeListingId } = params;
 
   const conditionIndex = CONDITION_TIERS.findIndex((tier) => tier.value === condition);
   const adjacentConditions = CONDITION_TIERS.slice(
@@ -22,7 +22,7 @@ async function getSimilarListings(params: SimilarParams): Promise<ListingWithPho
   ).map((tier) => tier.value);
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from('listings')
     .select('*, listing_photos(*)')
     .eq('category', category as ListingCategory)
@@ -33,6 +33,12 @@ async function getSimilarListings(params: SimilarParams): Promise<ListingWithPho
     .order('created_at', { ascending: false })
     .order('position', { referencedTable: 'listing_photos', ascending: true })
     .limit(12);
+
+  if (excludeListingId && excludeListingId !== listingId) {
+    query = query.neq('id', excludeListingId);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Failed to fetch similar listings: ${error.message}`);
@@ -73,10 +79,12 @@ async function getSellerListings(params: SellerParams): Promise<ListingWithPhoto
   return (data ?? []) as ListingWithPhotos[];
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 async function getAlsoLikedListings(params: AlsoLikedParams): Promise<ListingWithPhotos[]> {
   const { listingIds, userId } = params;
 
-  let resolvedIds: string[] = listingIds ?? [];
+  let resolvedIds: string[] = (listingIds ?? []).filter((id) => UUID_REGEX.test(id));
 
   if (userId) {
     const dbIds = await getRecentlyViewedIds(userId);

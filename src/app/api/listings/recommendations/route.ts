@@ -82,7 +82,7 @@ export async function GET(req: Request) {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (user && user.id !== userId) {
+      if (!user || user.id !== userId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
       }
     }
