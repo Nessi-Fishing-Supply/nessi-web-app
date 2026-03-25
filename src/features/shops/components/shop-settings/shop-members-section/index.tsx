@@ -1,7 +1,13 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { HiDotsVertical, HiSwitchHorizontal, HiUserRemove } from 'react-icons/hi';
+import {
+  HiDotsVertical,
+  HiSwitchHorizontal,
+  HiUserRemove,
+  HiShieldCheck,
+  HiUserAdd,
+} from 'react-icons/hi';
 import Image from 'next/image';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context';
@@ -9,7 +15,9 @@ import {
   useShopMembers,
   useRemoveShopMember,
   useUpdateMemberRole,
+  useTransferOwnership,
 } from '@/features/shops/hooks/use-shops';
+import useContextStore from '@/features/context/stores/context-store';
 import { useShopRoles } from '@/features/shops/hooks/use-shop-roles';
 import { useToast } from '@/components/indicators/toast/context';
 import Modal from '@/components/layout/modal';
@@ -51,8 +59,10 @@ function getMemberInitials(member: ShopMember): string {
 }
 
 type ModalAction =
-  | { type: 'changeRole'; member: ShopMember; roleId: string }
-  | { type: 'remove'; member: ShopMember };
+  | { type: 'changeRole'; member: ShopMember }
+  | { type: 'remove'; member: ShopMember }
+  | { type: 'transfer'; member: ShopMember }
+  | { type: 'transferConfirm'; member: ShopMember };
 
 interface MemberRowProps {
   member: ShopMember;
@@ -155,12 +165,24 @@ function MemberRow({ member, isOwner, isCurrentUser, roles, onAction, isPending 
                 role="menuitem"
                 onClick={() => {
                   setMenuOpen(false);
-                  onAction({ type: 'changeRole', member, roleId: member.role_id });
+                  onAction({ type: 'changeRole', member });
                 }}
               >
                 <HiSwitchHorizontal aria-hidden="true" />
                 Change Role
               </button>
+              <button
+                className={styles.menuItem}
+                role="menuitem"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onAction({ type: 'transfer', member });
+                }}
+              >
+                <HiShieldCheck aria-hidden="true" />
+                Transfer Ownership
+              </button>
+              <div className={styles.menuDivider} role="separator" />
               <button
                 className={`${styles.menuItem} ${styles.menuItemDanger}`}
                 role="menuitem"
@@ -188,12 +210,15 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
   const { data: roles = [] } = useShopRoles(shop.id);
   const removeShopMember = useRemoveShopMember();
   const updateMemberRole = useUpdateMemberRole();
+  const transferOwnership = useTransferOwnership();
 
   const [modalAction, setModalAction] = useState<ModalAction | null>(null);
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const [confirmName, setConfirmName] = useState('');
 
   const isOwner = !!user && shop.owner_id === user.id;
-  const isPending = removeShopMember.isPending || updateMemberRole.isPending;
+  const isPending =
+    removeShopMember.isPending || updateMemberRole.isPending || transferOwnership.isPending;
 
   const handleAction = (action: ModalAction) => {
     setModalAction(action);
@@ -202,10 +227,16 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     }
   };
 
+  const closeModal = () => {
+    setModalAction(null);
+    setSelectedRoleId(null);
+    setConfirmName('');
+  };
+
   const handleConfirmRemove = () => {
     if (modalAction?.type !== 'remove') return;
     const { member } = modalAction;
-    setModalAction(null);
+    closeModal();
 
     removeShopMember.mutate(
       { shopId: shop.id, memberId: member.member_id },
@@ -232,15 +263,14 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     if (modalAction?.type !== 'changeRole' || !selectedRoleId) return;
     const { member } = modalAction;
     if (selectedRoleId === member.role_id) {
-      setModalAction(null);
+      closeModal();
       return;
     }
 
-    setModalAction(null);
+    closeModal();
 
     const previousMembers = queryClient.getQueryData<ShopMember[]>(['shops', shop.id, 'members']);
 
-    // Optimistic update
     queryClient.setQueryData<ShopMember[]>(['shops', shop.id, 'members'], (old) =>
       old?.map((m) => (m.member_id === member.member_id ? { ...m, role_id: selectedRoleId } : m)),
     );
@@ -267,14 +297,68 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     );
   };
 
+  const handleTransferStep1Confirm = () => {
+    if (modalAction?.type !== 'transfer') return;
+    setModalAction({ type: 'transferConfirm', member: modalAction.member });
+    setConfirmName('');
+  };
+
+  const handleTransferConfirm = async () => {
+    if (modalAction?.type !== 'transferConfirm') return;
+    const { member } = modalAction;
+
+    try {
+      await transferOwnership.mutateAsync({
+        shopId: shop.id,
+        newOwnerId: member.member_id,
+      });
+      useContextStore.getState().switchToMember();
+      showToast({
+        type: 'success',
+        message: 'Ownership transferred',
+        description: `${getMemberDisplayName(member)} is now the shop owner.`,
+      });
+      closeModal();
+    } catch {
+      showToast({
+        type: 'error',
+        message: 'Transfer failed',
+        description: 'Something went wrong. Please try again.',
+      });
+    }
+  };
+
+  const isTransferNameMatch = confirmName === shop.shop_name;
+
   return (
     <section className={styles.card} aria-labelledby="shop-members-heading">
-      <h2 id="shop-members-heading" className={styles.heading}>
-        Members
-      </h2>
-      <p className={styles.description}>
-        People who have access to this shop. Only the owner can manage roles and remove members.
-      </p>
+      <div className={styles.sectionHeader}>
+        <div>
+          <h2 id="shop-members-heading" className={styles.heading}>
+            Members
+          </h2>
+          <p className={styles.description}>
+            People who have access to this shop. Only the owner can manage roles and remove members.
+          </p>
+        </div>
+        {isOwner && (
+          <Button
+            style="secondary"
+            onClick={() => {
+              showToast({
+                type: 'success',
+                message: 'Coming soon',
+                description: 'Member invitations will be available in a future update.',
+              });
+            }}
+            icon={<HiUserAdd aria-hidden="true" />}
+            iconPosition="left"
+            ariaLabel="Invite member"
+          >
+            Invite
+          </Button>
+        )}
+      </div>
 
       {isLoading && (
         <p className={styles.stateMessage} role="status" aria-live="polite">
@@ -311,7 +395,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
       {/* Change Role Modal */}
       <Modal
         isOpen={modalAction?.type === 'changeRole'}
-        onClose={() => setModalAction(null)}
+        onClose={closeModal}
         ariaLabel="Change member role"
       >
         {modalAction?.type === 'changeRole' && (
@@ -337,7 +421,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
               </p>
             )}
             <div className={styles.confirmActions}>
-              <Button style="secondary" onClick={() => setModalAction(null)}>
+              <Button style="secondary" onClick={closeModal}>
                 Cancel
               </Button>
               <Button
@@ -355,7 +439,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
       {/* Remove Member Modal */}
       <Modal
         isOpen={modalAction?.type === 'remove'}
-        onClose={() => setModalAction(null)}
+        onClose={closeModal}
         ariaLabel="Remove member from shop"
       >
         {modalAction?.type === 'remove' && (
@@ -366,11 +450,80 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
               They will lose all access immediately. This action cannot be undone.
             </p>
             <div className={styles.confirmActions}>
-              <Button style="secondary" onClick={() => setModalAction(null)}>
+              <Button style="secondary" onClick={closeModal}>
                 Cancel
               </Button>
               <Button style="danger" onClick={handleConfirmRemove}>
                 Remove Member
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Transfer Ownership — Step 1: Intent */}
+      <Modal
+        isOpen={modalAction?.type === 'transfer'}
+        onClose={closeModal}
+        ariaLabel="Confirm ownership transfer"
+      >
+        {modalAction?.type === 'transfer' && (
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Transfer shop ownership?</h3>
+            <p className={styles.confirmMessage}>
+              Transfer ownership of <strong>{shop.shop_name}</strong> to{' '}
+              <strong>{getMemberDisplayName(modalAction.member)}</strong>? You will lose owner
+              privileges immediately.
+            </p>
+            <div className={styles.confirmActions}>
+              <Button style="secondary" onClick={closeModal}>
+                Cancel
+              </Button>
+              <Button style="primary" onClick={handleTransferStep1Confirm}>
+                Yes, continue
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Transfer Ownership — Step 2: Type shop name */}
+      <Modal
+        isOpen={modalAction?.type === 'transferConfirm'}
+        onClose={closeModal}
+        ariaLabel="Confirm shop name to transfer"
+      >
+        {modalAction?.type === 'transferConfirm' && (
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Confirm transfer</h3>
+            <p className={styles.confirmMessage} id="transfer-confirm-hint">
+              Type <strong>{shop.shop_name}</strong> to confirm ownership transfer to{' '}
+              <strong>{getMemberDisplayName(modalAction.member)}</strong>.
+            </p>
+            <label htmlFor="transfer-confirm-input" className="sr-only">
+              Shop name confirmation
+            </label>
+            <input
+              id="transfer-confirm-input"
+              className={styles.confirmInput}
+              type="text"
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+              placeholder={shop.shop_name ?? ''}
+              aria-describedby="transfer-confirm-hint"
+              autoComplete="off"
+            />
+            <div className={styles.confirmActions}>
+              <Button style="secondary" onClick={closeModal} disabled={transferOwnership.isPending}>
+                Cancel
+              </Button>
+              <Button
+                style="danger"
+                onClick={handleTransferConfirm}
+                disabled={!isTransferNameMatch}
+                loading={transferOwnership.isPending}
+              >
+                Transfer Ownership
               </Button>
             </div>
           </div>

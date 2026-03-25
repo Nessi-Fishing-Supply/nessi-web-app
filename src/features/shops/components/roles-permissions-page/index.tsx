@@ -10,7 +10,6 @@ import { useShopPermissions } from '@/features/shops/hooks/use-shop-permissions'
 import RoleCard from '@/features/shops/components/role-card';
 import CustomRoleUpsellModal from '@/features/shops/components/custom-role-upsell-modal';
 import ShopMembersSection from '@/features/shops/components/shop-settings/shop-members-section';
-import OwnershipTransferSection from '@/features/shops/components/shop-settings/ownership-transfer-section';
 import Button from '@/components/controls/button';
 import type { ShopRole } from '@/features/shops/types/permissions';
 import styles from './roles-permissions-page.module.scss';
@@ -114,12 +113,6 @@ export default function RolesPermissionsPage() {
       {shop && hasFullMembers && (
         <div className={styles.membersSection}>
           <ShopMembersSection shop={shop} />
-        </div>
-      )}
-
-      {shop && hasFullMembers && (
-        <div className={styles.membersSection}>
-          <OwnershipTransferSection shop={shop} />
         </div>
       )}
 
