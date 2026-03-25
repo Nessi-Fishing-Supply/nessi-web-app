@@ -14,6 +14,7 @@ interface InlineEditProps {
   validating?: boolean;
   ariaLabel?: string;
   compact?: boolean;
+  readOnly?: boolean;
 }
 
 export default function InlineEdit({
@@ -26,6 +27,7 @@ export default function InlineEdit({
   validating = false,
   ariaLabel,
   compact = false,
+  readOnly = false,
 }: InlineEditProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -119,6 +121,14 @@ export default function InlineEdit({
           disabled={saving}
         />
       </div>
+    );
+  }
+
+  if (readOnly) {
+    return (
+      <span className={styles.displayText}>
+        {value || <span className={styles.placeholder}>{placeholder}</span>}
+      </span>
     );
   }
 

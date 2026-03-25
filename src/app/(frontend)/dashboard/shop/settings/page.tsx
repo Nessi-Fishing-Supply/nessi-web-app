@@ -3,6 +3,7 @@
 import { useAuth } from '@/features/auth/context';
 import useContextStore from '@/features/context/stores/context-store';
 import { useShop } from '@/features/shops/hooks/use-shops';
+import { useShopPermissions } from '@/features/shops/hooks/use-shop-permissions';
 import ShopDetailsSection from '@/features/shops/components/shop-settings/shop-details-section';
 import ShopMembersSection from '@/features/shops/components/shop-settings/shop-members-section';
 import ShopSubscriptionSection from '@/features/shops/components/shop-settings/shop-subscription-section';
@@ -14,15 +15,16 @@ import { HiExternalLink } from 'react-icons/hi';
 import styles from './shop-settings.module.scss';
 
 export default function ShopSettings() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const activeContext = useContextStore.use.activeContext();
 
   const isShopContext = activeContext.type === 'shop';
   const shopId = isShopContext ? activeContext.shopId : '';
 
   const { data: shop, isLoading: shopLoading, isError, refetch } = useShop(shopId, isShopContext);
+  const { permissions, isLoading: permissionsLoading } = useShopPermissions(shopId);
 
-  if (authLoading || shopLoading) {
+  if (authLoading || shopLoading || permissionsLoading) {
     return (
       <div className={styles.page}>
         <p>Loading...</p>
@@ -41,6 +43,9 @@ export default function ShopSettings() {
     );
   }
 
+  const hasFullSettings = permissions.shop_settings === 'full';
+  const hasFullMembers = permissions.members === 'full';
+
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Shop Settings</h1>
@@ -51,13 +56,13 @@ export default function ShopSettings() {
       )}
 
       <div className={styles.sections}>
-        {shop && <ShopDetailsSection shop={shop} />}
-        {shop && <ShopMembersSection shop={shop} />}
+        {shop && <ShopDetailsSection shop={shop} readOnly={!hasFullSettings} />}
+        {shop && hasFullMembers && <ShopMembersSection shop={shop} />}
         <ShopSubscriptionSection />
-        {shop && user && shop.owner_id === user.id && <OwnershipTransferSection shop={shop} />}
+        {shop && hasFullMembers && <OwnershipTransferSection shop={shop} />}
       </div>
 
-      {shop && user && shop.owner_id === user.id && <ShopDeletionSection shop={shop} />}
+      {shop && hasFullSettings && <ShopDeletionSection shop={shop} />}
     </div>
   );
 }

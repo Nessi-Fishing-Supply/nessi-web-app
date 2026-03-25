@@ -18,9 +18,10 @@ import styles from './shop-details-section.module.scss';
 
 interface ShopDetailsSectionProps {
   shop: Shop;
+  readOnly?: boolean;
 }
 
-export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
+export default function ShopDetailsSection({ shop, readOnly = false }: ShopDetailsSectionProps) {
   const { showToast } = useToast();
   const updateShop = useUpdateShop();
   const updateShopSlug = useUpdateShopSlug();
@@ -143,7 +144,7 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
               onUpload={handleAvatarUpload}
               uploadUrl="/api/shops/avatar"
               extraFormData={{ shopId: shop.id }}
-              disabled={updateShop.isPending}
+              disabled={readOnly || updateShop.isPending}
             />
           </div>
 
@@ -161,7 +162,7 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
                   duration: 4000,
                 })
               }
-              disabled={updateShop.isPending}
+              disabled={readOnly || updateShop.isPending}
             />
           </div>
 
@@ -174,6 +175,7 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
                   onSave={handleShopNameSave}
                   placeholder="Add a shop name"
                   ariaLabel="shop name"
+                  readOnly={readOnly}
                 />
               </div>
             </div>
@@ -188,6 +190,7 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
                   placeholder="Add a handle"
                   validating={isChecking || slugTaken}
                   ariaLabel="shop handle"
+                  readOnly={readOnly}
                 />
                 {showAvailabilityIcon && slugAvailable && !isChecking && (
                   <span className={styles.availabilityIcon}>
@@ -224,6 +227,7 @@ export default function ShopDetailsSection({ shop }: ShopDetailsSectionProps) {
                   multiline
                   placeholder="Tell buyers about your shop"
                   ariaLabel="shop description"
+                  readOnly={readOnly}
                 />
               </div>
             </div>
