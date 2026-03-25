@@ -61,8 +61,7 @@ function getMemberInitials(member: ShopMember): string {
 type ModalAction =
   | { type: 'changeRole'; member: ShopMember }
   | { type: 'remove'; member: ShopMember }
-  | { type: 'transfer'; member: ShopMember }
-  | { type: 'transferConfirm'; member: ShopMember };
+  | { type: 'transfer'; member: ShopMember };
 
 interface MemberRowProps {
   member: ShopMember;
@@ -297,14 +296,8 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     );
   };
 
-  const handleTransferStep1Confirm = () => {
-    if (modalAction?.type !== 'transfer') return;
-    setModalAction({ type: 'transferConfirm', member: modalAction.member });
-    setConfirmName('');
-  };
-
   const handleTransferConfirm = async () => {
-    if (modalAction?.type !== 'transferConfirm') return;
+    if (modalAction?.type !== 'transfer') return;
     const { member } = modalAction;
 
     try {
@@ -328,7 +321,10 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     }
   };
 
-  const isTransferNameMatch = confirmName === shop.shop_name;
+  const transferTarget =
+    modalAction?.type === 'transfer' ? getMemberDisplayName(modalAction.member) : '';
+  const transferPhrase = `Transfer Ownership to ${transferTarget}`;
+  const isTransferPhraseMatch = confirmName === transferPhrase;
 
   return (
     <section className={styles.card} aria-labelledby="shop-members-heading">
@@ -461,7 +457,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
         )}
       </Modal>
 
-      {/* Transfer Ownership — Step 1: Intent */}
+      {/* Transfer Ownership — requires typing full confirmation phrase */}
       <Modal
         isOpen={modalAction?.type === 'transfer'}
         onClose={closeModal}
@@ -469,39 +465,22 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
       >
         {modalAction?.type === 'transfer' && (
           <div className={styles.confirmModal}>
-            <h3 className={styles.confirmTitle}>Transfer shop ownership?</h3>
+            <h3 className={styles.confirmTitle}>Transfer shop ownership</h3>
             <p className={styles.confirmMessage}>
-              Transfer ownership of <strong>{shop.shop_name}</strong> to{' '}
-              <strong>{getMemberDisplayName(modalAction.member)}</strong>? You will lose owner
-              privileges immediately.
+              You are about to transfer ownership of <strong>{shop.shop_name}</strong> to{' '}
+              <strong>{getMemberDisplayName(modalAction.member)}</strong>. This will:
             </p>
-            <div className={styles.confirmActions}>
-              <Button style="secondary" onClick={closeModal}>
-                Cancel
-              </Button>
-              <Button style="primary" onClick={handleTransferStep1Confirm}>
-                Yes, continue
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
-
-      {/* Transfer Ownership — Step 2: Type shop name */}
-      <Modal
-        isOpen={modalAction?.type === 'transferConfirm'}
-        onClose={closeModal}
-        ariaLabel="Confirm shop name to transfer"
-      >
-        {modalAction?.type === 'transferConfirm' && (
-          <div className={styles.confirmModal}>
-            <h3 className={styles.confirmTitle}>Confirm transfer</h3>
+            <ul className={styles.confirmList}>
+              <li>Immediately grant them full owner privileges</li>
+              <li>Remove your owner access to this shop</li>
+              <li>Switch your context back to your member profile</li>
+            </ul>
             <p className={styles.confirmMessage} id="transfer-confirm-hint">
-              Type <strong>{shop.shop_name}</strong> to confirm ownership transfer to{' '}
-              <strong>{getMemberDisplayName(modalAction.member)}</strong>.
+              To confirm, type <strong className={styles.confirmPhrase}>{transferPhrase}</strong>{' '}
+              below.
             </p>
             <label htmlFor="transfer-confirm-input" className="sr-only">
-              Shop name confirmation
+              Transfer confirmation phrase
             </label>
             <input
               id="transfer-confirm-input"
@@ -509,7 +488,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
               type="text"
               value={confirmName}
               onChange={(e) => setConfirmName(e.target.value)}
-              placeholder={shop.shop_name ?? ''}
+              placeholder={transferPhrase}
               aria-describedby="transfer-confirm-hint"
               autoComplete="off"
             />
@@ -520,7 +499,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
               <Button
                 style="danger"
                 onClick={handleTransferConfirm}
-                disabled={!isTransferNameMatch}
+                disabled={!isTransferPhraseMatch}
                 loading={transferOwnership.isPending}
               >
                 Transfer Ownership

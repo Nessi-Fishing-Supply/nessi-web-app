@@ -304,6 +304,27 @@
   margin-bottom: var(--spacing-300);
 }
 
+.confirmList {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  line-height: 1.6;
+  margin: 0 0 var(--spacing-400);
+  padding-left: var(--spacing-400);
+
+  li {
+    margin-bottom: var(--spacing-100);
+  }
+}
+
+.confirmPhrase {
+  font-family: var(--font-family-mono, monospace);
+  font-size: var(--font-size-400);
+  background: var(--color-neutral-100);
+  padding: var(--spacing-50) var(--spacing-100);
+  border-radius: var(--radius-100, 4px);
+  overflow-wrap: break-word;
+}
+
 .confirmInput {
   display: block;
   width: 100%;
