@@ -234,6 +234,26 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **Deleted role fallback** — When a member's `role_id` references a deleted custom role (not found in the `useShopRoles` data), both the role badge and the `RoleSelect` dropdown default to "Contributor" (`SYSTEM_ROLE_IDS.CONTRIBUTOR`). This avoids runtime errors and ensures graceful degradation without requiring a database migration.
 - **PermissionMatrix reusability** — The `PermissionMatrix` component is designed for reuse. In the current Roles & Permissions page it always renders with `disabled={true}` (system roles are read-only). When custom role editing is implemented, it will render with `disabled={false}` to allow inline permission level changes.
 
+## Invite Auto-Accept (New User Registration)
+
+When an unauthenticated user lands on `/invite/[token]`, the `InviteAccept` component shows both "Sign Up" and "Sign In" buttons. The "Sign Up" button navigates to `?register=true&invite={token}`, which the Navbar detects and stores in component state.
+
+### Flow
+
+1. User clicks "Sign Up" on invite page → URL gets `?register=true&invite={token}`
+2. Navbar's `useEffect` detects params → stores `inviteToken` in state, opens register modal, cleans URL
+3. `inviteToken` is threaded: Navbar → `RegisterForm` → `OtpInput` (via props)
+4. After `verifyOtp()` succeeds in `OtpInput`, if `inviteToken` is present, `acceptShopInvite(inviteToken)` is called
+5. On accept success: `onInviteAccepted({ shopName })` callback fires → Navbar shows "You've joined {shopName}!" toast and redirects to `/dashboard`
+6. On accept failure: error is silently caught — account creation is never blocked. Navbar shows an error toast suggesting manual acceptance.
+
+### Key Design Decisions
+
+- **URL query params** for token transport — no localStorage, no context providers
+- **Invite token lives in Navbar component state** — cleaned up when modal closes or user switches to login
+- **Failure is never blocking** — all accept calls are wrapped in try/catch
+- **`acceptShopInvite`** is reused from `services/shop-invites.ts` (same function used by the manual accept button)
+
 ## Shop Roles
 
 Shop member roles are stored in the `shop_roles` table with a FK from `shop_members.role_id`. Three system roles are seeded with deterministic UUIDs:

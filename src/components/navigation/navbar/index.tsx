@@ -56,6 +56,7 @@ export default function Navbar() {
   );
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActiveIndex, setSearchActiveIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -136,15 +137,24 @@ export default function Navbar() {
   // Detect query params and open appropriate modals/toasts
   useEffect(() => {
     const loginQuery = searchParams?.get('login');
+    const registerQuery = searchParams?.get('register');
+    const inviteQuery = searchParams?.get('invite');
 
-    if (loginQuery === 'true') {
+    if (registerQuery === 'true') {
+      if (inviteQuery) {
+        setInviteToken(inviteQuery);
+      }
+      requestAnimationFrame(() => setRegisterModalOpen(true));
+    } else if (loginQuery === 'true') {
       requestAnimationFrame(() => setLoginModalOpen(true));
     }
 
     // Clean up query params after consuming
-    if (loginQuery) {
+    if (loginQuery || registerQuery || inviteQuery) {
       const url = new URL(window.location.href);
       url.searchParams.delete('login');
+      url.searchParams.delete('register');
+      url.searchParams.delete('invite');
       window.history.replaceState({}, '', url.pathname + url.search);
     }
   }, [searchParams]);
@@ -165,7 +175,14 @@ export default function Navbar() {
   };
 
   const toggleRegisterModal = () => {
-    setRegisterModalOpen((prev) => !prev);
+    setRegisterModalOpen((prev) => {
+      // Clear invite token when closing register modal
+      if (prev) {
+        setInviteToken(null);
+        setInviteAcceptedShopName(null);
+      }
+      return !prev;
+    });
     if (isLoginModalOpen) setLoginModalOpen(false);
   };
 
@@ -173,17 +190,44 @@ export default function Navbar() {
     setLoginModalOpen(false);
   };
 
+  const [inviteAcceptedShopName, setInviteAcceptedShopName] = useState<string | null>(null);
+
+  const handleInviteAccepted = (data: { shopName: string }) => {
+    setInviteAcceptedShopName(data.shopName);
+  };
+
   const handleRegisterSuccess = () => {
     setRegisterModalOpen(false);
-    showToast({
-      type: 'success',
-      message: 'Welcome to Nessi!',
-      description: 'Your account is ready.',
-    });
+
+    if (inviteAcceptedShopName) {
+      showToast({
+        type: 'success',
+        message: `You've joined ${inviteAcceptedShopName}!`,
+        description: 'You now have access to this shop.',
+      });
+      setInviteAcceptedShopName(null);
+      setInviteToken(null);
+      router.push('/dashboard');
+    } else if (inviteToken) {
+      // Invite was present but auto-accept failed
+      showToast({
+        type: 'error',
+        message: "We couldn't auto-join the shop.",
+        description: 'Try accepting the invite from your dashboard.',
+      });
+      setInviteToken(null);
+    } else {
+      showToast({
+        type: 'success',
+        message: 'Welcome to Nessi!',
+        description: 'Your account is ready.',
+      });
+    }
   };
 
   const handleRegisterToLogin = () => {
     setRegisterModalOpen(false);
+    setInviteToken(null);
     setLoginModalOpen(true);
   };
 
@@ -480,7 +524,12 @@ export default function Navbar() {
         ariaLabelledBy="register-title"
       >
         <h2 id="register-title">Create Your Account</h2>
-        <RegisterForm onSuccess={handleRegisterSuccess} onSwitchToLogin={handleRegisterToLogin} />
+        <RegisterForm
+          onSuccess={handleRegisterSuccess}
+          onSwitchToLogin={handleRegisterToLogin}
+          inviteToken={inviteToken ?? undefined}
+          onInviteAccepted={handleInviteAccepted}
+        />
       </Modal>
 
       <SearchOverlay isOpen={isSearchOverlayOpen} onClose={() => setSearchOverlayOpen(false)} />

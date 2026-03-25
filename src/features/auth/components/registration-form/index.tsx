@@ -15,9 +15,17 @@ import styles from './registration-form.module.scss';
 
 interface RegisterFormProps extends AuthFormProps<RegisterFormData, AuthFormResponse> {
   onSwitchToLogin?: () => void;
+  inviteToken?: string;
+  onInviteAccepted?: (data: { shopName: string }) => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onError, onSwitchToLogin }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({
+  onSuccess,
+  onError,
+  onSwitchToLogin,
+  inviteToken,
+  onInviteAccepted,
+}) => {
   const [step, setStep] = useState<'form' | 'otp'>('form');
   const [registeredEmail, setRegisteredEmail] = useState('');
   const { isLoading, error, setLoading, setError } = useFormState();
@@ -66,6 +74,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onError, onSwitc
           type="signup"
           onSuccess={handleOtpSuccess}
           onResend={handleResend}
+          inviteToken={inviteToken}
+          onInviteAccepted={onInviteAccepted}
         />
       </div>
     );

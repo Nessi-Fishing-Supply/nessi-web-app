@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { verifyOtp } from '@/features/auth/services/auth';
+import { acceptShopInvite } from '@/features/shops/services/shop-invites';
 import styles from './otp-input.module.scss';
 
 interface OtpInputProps {
@@ -9,12 +10,21 @@ interface OtpInputProps {
   type: 'signup' | 'recovery' | 'email_change';
   onSuccess: () => void;
   onResend: () => Promise<void>;
+  inviteToken?: string;
+  onInviteAccepted?: (data: { shopName: string }) => void;
 }
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN_SECONDS = 60;
 
-const OtpInput: React.FC<OtpInputProps> = ({ email, type, onSuccess, onResend }) => {
+const OtpInput: React.FC<OtpInputProps> = ({
+  email,
+  type,
+  onSuccess,
+  onResend,
+  inviteToken,
+  onInviteAccepted,
+}) => {
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [error, setError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -38,6 +48,17 @@ const OtpInput: React.FC<OtpInputProps> = ({ email, type, onSuccess, onResend })
       setError(null);
       try {
         await verifyOtp({ email, token, type });
+
+        // Auto-accept shop invite after successful OTP verification
+        if (inviteToken) {
+          try {
+            const result = await acceptShopInvite(inviteToken);
+            onInviteAccepted?.({ shopName: result.shopName });
+          } catch {
+            // Invite failure must never block account creation
+          }
+        }
+
         onSuccess();
       } catch (err) {
         const message =
@@ -51,7 +72,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ email, type, onSuccess, onResend })
         setIsVerifying(false);
       }
     },
-    [email, type, onSuccess],
+    [email, type, onSuccess, inviteToken, onInviteAccepted],
   );
 
   const distributeDigits = useCallback(
