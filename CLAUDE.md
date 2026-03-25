@@ -118,6 +118,7 @@ DELETE /api/auth/delete-account
 - `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its CLAUDE.md)
 - `src/features/listings/` — Listings domain: types, services, hooks, components for the full listing lifecycle — create wizard, edit wizard, photo management, status actions (see its CLAUDE.md)
 - `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
+- `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its CLAUDE.md)
 - `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
 - `src/app/api/` — API routes (auth, listings, upload)
