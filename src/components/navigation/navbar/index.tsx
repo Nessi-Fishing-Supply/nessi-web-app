@@ -57,6 +57,7 @@ export default function Navbar() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [inviteToken, setInviteToken] = useState<string | null>(null);
+  const [inviteAcceptedShopName, setInviteAcceptedShopName] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActiveIndex, setSearchActiveIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -191,8 +192,6 @@ export default function Navbar() {
   const handleLoginSuccess = () => {
     setLoginModalOpen(false);
   };
-
-  const [inviteAcceptedShopName, setInviteAcceptedShopName] = useState<string | null>(null);
 
   const handleInviteAccepted = (data: { shopName: string }) => {
     setInviteAcceptedShopName(data.shopName);

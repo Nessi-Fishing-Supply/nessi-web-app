@@ -144,7 +144,12 @@ export function InviteAccept({ invite, isAuthenticated: serverAuth }: Props) {
             <p className={styles.unauthMessage}>
               Sign in or create an account to accept this invitation
             </p>
-            <Button onClick={() => router.push(`?register=true&invite=${invite.token}`)} fullWidth>
+            <Button
+              onClick={() =>
+                router.push(`?register=true&invite=${encodeURIComponent(invite.token)}`)
+              }
+              fullWidth
+            >
               Sign Up
             </Button>
             <Button onClick={() => router.push('?login=true')} style="dark" outline fullWidth>
