@@ -11,6 +11,7 @@ import {
 } from '@/features/shops/hooks/use-shops';
 import { useShopRoles } from '@/features/shops/hooks/use-shop-roles';
 import { useToast } from '@/components/indicators/toast/context';
+import Modal from '@/components/layout/modal';
 import Button from '@/components/controls/button';
 import RoleSelect from '@/features/shops/components/role-select';
 import type { Shop, ShopMember } from '@/features/shops/types/shop';
@@ -33,6 +34,11 @@ function getMemberDisplayName(member: ShopMember): string {
     if (name) return name;
   }
   return member.member_id;
+}
+
+interface PendingRoleChange {
+  member: ShopMember;
+  roleId: string;
 }
 
 interface MemberRowProps {
@@ -131,6 +137,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
 
   const [pendingRemoveMemberId, setPendingRemoveMemberId] = useState<string | null>(null);
   const [pendingRoleMemberId, setPendingRoleMemberId] = useState<string | null>(null);
+  const [pendingRoleChange, setPendingRoleChange] = useState<PendingRoleChange | null>(null);
 
   const isOwner = !!user && shop.owner_id === user.id;
 
@@ -165,8 +172,16 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     );
   };
 
-  const handleRoleChange = (member: ShopMember, roleId: string) => {
+  const handleRoleSelectChange = (member: ShopMember, roleId: string) => {
     if (roleId === member.role_id) return;
+    setPendingRoleChange({ member, roleId });
+  };
+
+  const handleRoleChangeConfirm = () => {
+    if (!pendingRoleChange) return;
+
+    const { member, roleId } = pendingRoleChange;
+    setPendingRoleChange(null);
 
     const previousMembers = queryClient.getQueryData<ShopMember[]>(['shops', shop.id, 'members']);
 
@@ -200,6 +215,10 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
         },
       },
     );
+  };
+
+  const handleRoleChangeCancel = () => {
+    setPendingRoleChange(null);
   };
 
   return (
@@ -237,7 +256,7 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
               isCurrentUser={user?.id === member.member_id}
               roles={roles}
               onRemove={handleRemove}
-              onRoleChange={handleRoleChange}
+              onRoleChange={handleRoleSelectChange}
               isRemovePending={removeShopMember.isPending}
               pendingRemoveMemberId={pendingRemoveMemberId}
               pendingRoleMemberId={pendingRoleMemberId}
@@ -245,6 +264,32 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
           ))}
         </ul>
       )}
+
+      <Modal
+        isOpen={!!pendingRoleChange}
+        onClose={handleRoleChangeCancel}
+        ariaLabel="Confirm role change"
+      >
+        {pendingRoleChange && (
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Change member role?</h3>
+            <p className={styles.confirmMessage}>
+              Change <strong>{getMemberDisplayName(pendingRoleChange.member)}</strong>&apos;s role
+              from <strong>{getRoleLabel(pendingRoleChange.member.role_id, roles)}</strong> to{' '}
+              <strong>{getRoleLabel(pendingRoleChange.roleId, roles)}</strong>? This will
+              immediately update their permissions in this shop.
+            </p>
+            <div className={styles.confirmActions}>
+              <Button style="secondary" onClick={handleRoleChangeCancel}>
+                Cancel
+              </Button>
+              <Button style="primary" onClick={handleRoleChangeConfirm}>
+                Change Role
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </section>
   );
 }

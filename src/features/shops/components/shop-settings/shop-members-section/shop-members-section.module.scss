@@ -128,3 +128,27 @@
     flex-shrink: 0;
   }
 }
+
+.confirmModal {
+  padding: var(--spacing-400);
+}
+
+.confirmTitle {
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-200);
+}
+
+.confirmMessage {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  line-height: 1.5;
+  margin: 0 0 var(--spacing-400);
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-200);
+}
