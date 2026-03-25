@@ -8,6 +8,7 @@ import {
   HiOutlineShoppingBag,
   HiOutlineCog,
   HiOutlinePlusCircle,
+  HiOutlineShieldCheck,
 } from 'react-icons/hi';
 import AppLink from '@/components/controls/app-link';
 import useContextStore from '@/features/context/stores/context-store';
@@ -32,6 +33,12 @@ const SHOP_NAV_ITEMS: ShopNavItem[] = [
     icon: <HiOutlineShoppingBag />,
     label: 'Listings',
     requiredFeature: 'listings',
+  },
+  {
+    href: '/dashboard/shop/roles',
+    icon: <HiOutlineShieldCheck />,
+    label: 'Roles & Permissions',
+    requiredFeature: 'members',
   },
   {
     href: '/dashboard/shop/settings',
