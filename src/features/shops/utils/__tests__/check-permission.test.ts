@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  checkPermission,
-  hasAccess,
-  hasFullAccess,
-} from '../check-permission';
+import { checkPermission, hasAccess, hasFullAccess } from '../check-permission';
 import type { ShopPermissions } from '@/features/shops/types/permissions';
 
 const fullPermissions: ShopPermissions = {

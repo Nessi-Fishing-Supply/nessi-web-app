@@ -1,4 +1,8 @@
-import type { ShopPermissionFeature, ShopPermissionLevel, ShopPermissions } from '@/features/shops/types/permissions';
+import type {
+  ShopPermissionFeature,
+  ShopPermissionLevel,
+  ShopPermissions,
+} from '@/features/shops/types/permissions';
 
 /**
  * Look up the permission level for a specific feature.
