@@ -36,7 +36,7 @@ Saved shipping addresses for authenticated buyers — store and reuse up to 5 ad
 
 - `enforce_max_addresses` — hard 5-address cap per user
 - `ensure_single_default` — atomically clears other defaults when a new default is set
-- `handle_addresses_updated_at` — updates `updated_at` on every row change
+- `handle_updated_at` — generic trigger (shared with members, shops, listings) that updates `updated_at` on every row change
 
 **RLS:** 4 policies (SELECT, INSERT, UPDATE, DELETE) all scoped to `user_id = auth.uid()`.
 
