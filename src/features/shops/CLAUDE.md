@@ -11,6 +11,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 - **constants/roles.ts** — System role constants: `SYSTEM_ROLE_IDS` (deterministic UUIDs), `SYSTEM_ROLE_SLUGS`, `DEFAULT_ROLE_ID` (Contributor)
 - **constants/limits.ts** — Membership limits: `MAX_SHOPS_PER_MEMBER = 5` (max shops a member can belong to, owned + member-of combined), `MAX_MEMBERS_PER_SHOP = 5` (max members + pending invites per shop)
 - **utils/check-permission.ts** — Pure permission utility functions: `checkPermission` (returns level, defaults to `'none'`), `hasAccess` (true for `'full'` or `'view'`), `hasFullAccess` (true only for `'full'`), `meetsLevel` (true if user's level >= required level — used by `requireShopPermission` in `src/libs/shop-permissions.ts`)
+- **utils/get-relative-time.ts** — `getRelativeTime(dateString)` — returns human-readable relative time ("just now", "2 days ago", etc.), used by PendingInvitesList for invite sent timestamps
 - **utils/check-member-shop-limit.ts** — Reusable server-side utility: `checkMemberShopLimit(memberId: string)` returns `{ withinLimit: boolean; currentCount: number; maxCount: number }`. Uses admin client with head-only count query on `shop_members`. Does NOT import from `next/server` — designed for reuse by invite endpoints (#252, #253).
 - **types/invite.ts** — `ShopInvite` (raw row from `shop_invites`), `ShopInviteWithInviter` (includes joined inviter name from `members`), `InvitePageData` (invite details for the accept page — no invitee email, includes `shopAvatarUrl`, `inviterName`, `roleName`)
 - **validations/invite.ts** — `validateInviteInput({ email, roleId })` — validates email format, role validity, prevents Owner role invites
@@ -96,6 +97,8 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `RoleSelect`               | `components/role-select/`                              | Standalone native `<select>` for assigning roles — filters out Owner, supports loading/disabled states, 44px tap target                                     |
 | `RolesPermissionsPage`     | `components/roles-permissions-page/`                   | Full page component for /dashboard/shop/roles — renders role cards, Owner-only add button                                                                   |
 | `InviteAccept`             | `components/invite-accept/`                            | Client component, auth-gated accept UI for public invite page — uses `useAuth()` for post-login reactivity, maps API error codes to user-facing messages    |
+| `InviteMemberModal`        | `components/invite-member-modal/`                      | Modal with email input + RoleSelect for creating shop invites — Owner-only, validates via `validateInviteInput`, handles 409 inline errors                  |
+| `PendingInvitesList`       | `components/pending-invites-list/`                     | Renders pending/expired/revoked invites with status badges (Pill), relative timestamps, Resend/Revoke actions with confirmation modal — Owner-only          |
 
 ## Pages
 
