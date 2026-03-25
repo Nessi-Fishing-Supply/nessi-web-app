@@ -27,6 +27,7 @@
       "Bash(pnpm lint:*)",
       "Bash(pnpm typecheck:*)",
       "Bash(pnpm format:*)",
+      "Bash(pnpm prettier:*)",
       "Bash(pnpm test:*)",
       "Bash(mkdir -p:*)",
       "Bash(cat > */.conductor/*)",
