@@ -128,6 +128,21 @@ export async function getRecentlyViewedServer(
   });
 }
 
+export async function getRecentlyViewedIds(userId: string): Promise<string[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('recently_viewed')
+    .select('listing_id')
+    .eq('user_id', userId)
+    .order('viewed_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to fetch recently viewed IDs: ${error.message}`);
+  }
+
+  return (data ?? []).map((row) => row.listing_id);
+}
+
 export async function clearRecentlyViewedServer(userId: string): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.from('recently_viewed').delete().eq('user_id', userId);
