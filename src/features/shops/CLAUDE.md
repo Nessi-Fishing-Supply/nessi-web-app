@@ -73,17 +73,17 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Pages
 
-| Route                      | Description                                                                       |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| `/dashboard/shop/create`   | Shop creation page — renders `ShopCreationForm`                                   |
-| `/dashboard/shop/settings` | Shop settings page — shop context only; owner sees transfer and deletion sections |
-| `/shop/[slug]`             | Public shop page — server-rendered with SEO metadata, product grid, shop stats    |
+| Route                      | Description                                                                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/dashboard/shop/create`   | Shop creation page — renders `ShopCreationForm`                                                                                                                          |
+| `/dashboard/shop/settings` | Shop settings page — permission-based rendering: Owner sees all, Manager sees details read-only (no members/transfer/deletion), Contributor redirected by ShopRouteGuard |
+| `/shop/[slug]`             | Public shop page — server-rendered with SEO metadata, product grid, shop stats                                                                                           |
 
 ## Avatar Upload API
 
 `POST /api/shops/avatar`
 
-- Requires authenticated session + shop owner verification
+- Requires `requireShopPermission(request, 'shop_settings', 'full')` — validates via `X-Nessi-Context` header
 - Accepts `file` (image) + `shopId` in `multipart/form-data`
 - Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
 - Processes with `sharp`: resizes to 200x200, converts to WebP at 80% quality
@@ -95,7 +95,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 `POST /api/shops/hero-banner`
 
-- Requires authenticated session + shop owner verification
+- Requires `requireShopPermission(request, 'shop_settings', 'full')` — validates via `X-Nessi-Context` header
 - Accepts `file` (image) + `shopId` in `multipart/form-data`
 - Validates MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`), 5MB limit
 - Processes with `sharp`: resizes to max 1200x400 (fit inside, no upscale), converts to WebP at 85% quality
@@ -107,8 +107,8 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 `DELETE /api/shops/[id]`
 
-- Requires authenticated session + shop owner verification (`owner_id === user.id`)
-- Returns 401 (no session), 403 (not owner), 404 (not found or already soft-deleted)
+- Requires `requireShopPermission(request, 'shop_settings', 'full', { expectedShopId })` — Owner-only via permission bypass
+- Returns 401 (no session), 403 (insufficient permissions), 404 (not found or already soft-deleted)
 - Performs best-effort storage cleanup before soft delete:
   - Removes shop assets at `shops/{shopId}/avatar.webp` and hero banner from `profile-assets` bucket
   - Queries shop-owned products → `product_images`, removes files from `listing-images` bucket
@@ -130,6 +130,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 ## Key Patterns
 
 - **Direct Supabase access** — Most services use the browser client (`@/libs/supabase/client`) directly, with RLS policies enforcing authorization. Exceptions: `deleteShop()` calls the API route for server-side storage cleanup, and avatar uploads go through `POST /api/shops/avatar` for server-side image processing.
+- **Standardized API authorization** — All shop API routes (except `POST /api/shops` for creation) use `requireShopPermission` from `src/libs/shop-permissions.ts` instead of manual `owner_id` checks. Routes with `shopId` in URL params pass `{ expectedShopId }` to prevent privilege escalation. Routes with `shopId` in the request body validate it matches `result.shopId` after the permission check.
 - **Database-derived types** — `Shop` type comes from `Database['public']['Tables']['shops']['Row']` and `ShopMember` from `Database['public']['Tables']['shop_members']['Row']`, ensuring type safety with the schema.
 - **System-managed fields** — `ShopInsert` and `ShopUpdate` omit fields managed by database triggers or system processes (id, created_at, updated_at, deleted_at).
 - **Soft delete** — Shops are soft-deleted via the `deleted_at` column. Queries that list or fetch active shops filter `deleted_at IS NULL`.
