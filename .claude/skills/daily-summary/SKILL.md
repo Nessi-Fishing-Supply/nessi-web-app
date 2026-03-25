@@ -16,7 +16,9 @@ No arguments needed. Always uses today's date in **America/Denver (Mountain Time
 TZ=America/Denver date +%Y-%m-%d
 ```
 
-Use this date for all queries below. All GitHub `--search` date filters and git `--since`/`--until` flags should use this MT calendar day.
+Use this date for all queries below.
+
+**Timezone conversion:** The MT calendar day spans from `{date}T06:00:00Z` to `{next_date}T06:00:00Z` in UTC. GitHub's `--search` date filters and `mergedAt`/`createdAt` timestamps are in UTC. Always convert UTC timestamps to MT before deciding if they fall on the report date. For example, a PR merged at `2026-03-25T03:00:00Z` is actually `2026-03-24T21:00:00 MT` — it belongs in the March 24 report.
 
 ## Data Collection
 
@@ -24,15 +26,19 @@ Run these commands in parallel to gather the day's work:
 
 ### 1. Merged PRs
 
+Query both the MT date and the next UTC date to capture evening MT merges:
+
 ```bash
 gh pr list --repo Nessi-Fishing-Supply/Nessi-Web-App --state merged --search "merged:>={date}" --json number,title,labels,mergedAt,body --limit 50
 ```
 
+Then filter the results: only include PRs whose `mergedAt` falls within `{date}T06:00:00Z` to `{next_date}T06:00:00Z` (the MT calendar day in UTC).
+
 If no results (date filtering can be flaky), fall back to:
 ```bash
-gh pr list --repo Nessi-Fishing-Supply/Nessi-Web-App --state merged --limit 20 --json number,title,labels,mergedAt,body
+gh pr list --repo Nessi-Fishing-Supply/Nessi-Web-App --state merged --limit 30 --json number,title,labels,mergedAt,body
 ```
-Then filter by date in code.
+Then filter by the MT-adjusted UTC window.
 
 ### 2. Nessi Kanban Board (GitHub Project #2) — Source of Truth
 
@@ -56,13 +62,25 @@ For each matching track, read `state.json` for issue number and title, and `plan
 
 ### 4. Tickets Created Today
 
-Use the Nessi Kanban board (GitHub Project #2) as the source of truth — not `gh issue list`.
+**Timezone handling is critical.** GitHub's `created:` search filter uses UTC dates, but the report uses Mountain Time (UTC-6). A ticket created at 9 PM MT on March 24 has a UTC timestamp of March 25. You must query BOTH UTC dates that overlap with the MT calendar day.
+
+Calculate the two UTC dates that cover the MT day:
 
 ```bash
-gh project item-list 2 --owner Nessi-Fishing-Supply --format json --limit 200
+# MT day runs from {date}T06:00:00Z to {next_date}T06:00:00Z
+# So query both {date} and {next_date} in UTC, then filter by MT
+MT_DATE=$(TZ=America/Denver date +%Y-%m-%d)
+NEXT_DATE=$(TZ=America/Denver date -v+1d +%Y-%m-%d)  # macOS; use date -d "+1 day" on Linux
 ```
 
-From the full project item list, filter for items whose `createdAt` (or issue creation date) falls on `{date}`. Each item includes its issue number, title, labels, and status column. Include tickets in any column — a ticket created and completed on the same day should appear in both the "Tickets Created" and shipped sections.
+Run TWO queries to cover the full MT day, and include `--state all` to catch issues that were created and closed the same day:
+
+```bash
+gh issue list --repo Nessi-Fishing-Supply/Nessi-Web-App --state all --search "created:${MT_DATE}" --json number,title,labels,createdAt --limit 100
+gh issue list --repo Nessi-Fishing-Supply/Nessi-Web-App --state all --search "created:${NEXT_DATE}" --json number,title,labels,createdAt --limit 100
+```
+
+Then filter the combined results to only include issues whose `createdAt` falls within the MT day window (`{date}T06:00:00Z` to `{next_date}T06:00:00Z`). **Exclude tickets that were both created and completed the same day** — those are already captured in the shipped features/bug fixes sections. The "Tickets Created" section should only show new work that's queued up for the future.
 
 ### 5. Recent Commits on Main (supplementary)
 
@@ -135,7 +153,7 @@ Output format:
 - **Features get the spotlight.** 1-2 bullet points each, written from the user's perspective. "Shop owners can now invite members with specific roles (owner, manager, contributor)" — not "Added shop_roles table with FK migration."
 - **Bug fixes are one-liners.** "Fixed cart not updating badge count after removing items" — not "Resolved race condition in useCartBadgeCount hook."
 - **Infrastructure is brief.** "Moved conductor pipeline for better autonomous execution" — not implementation details.
-- **Tickets Created lists what's in the pipeline.** Show each ticket with its label so the team can see what's queued up. If a ticket was both created and completed the same day, it appears in both sections.
+- **Tickets Created lists what's in the pipeline.** Show each ticket with its label so the team can see what's queued up. **Exclude tickets that were created and completed the same day** — those are already covered in the shipped sections above. This section is only for new work that's still pending.
 - **Skip internal-only changes** that have zero user impact (CI tweaks, linter config, test-only changes) unless they're significant.
 - **Use plain language.** No code references, file paths, or technical jargon. Your audience is product managers and associate engineers.
 - **Group related PRs.** If 3 PRs all contributed to one feature (e.g., cart: DB migration, API routes, UI), collapse them into one feature entry with the parent issue number.
