@@ -63,33 +63,55 @@ block-beta
 
 > **STATUS: Permission enforcement is NOT YET BUILT.** The role structure exists in the DB (shop_roles table with deterministic UUIDs), but UI gating and API-level checks are pending.
 
+## Invite Acceptance Flow
+
+```mermaid
+flowchart TD
+    A[User receives invite email] --> B["Clicks link → /invite/{token}"]
+    B --> C{Authenticated?}
+    C -->|No| D["Sign in via navbar modal (?login=true)"]
+    D --> E[Page re-renders with Accept button]
+    C -->|Yes| E
+    E --> F{Invite still valid?}
+    F -->|Expired| G["Show 'Invitation Expired' message"]
+    F -->|Revoked| H["Show 'Invitation Revoked' message"]
+    F -->|Already accepted| I["Show 'Already Accepted' message"]
+    F -->|Pending + not expired| J["Click 'Accept Invitation'"]
+    J --> K["POST /api/invites/{token}/accept"]
+    K --> L{Validation}
+    L -->|Already a member| M[409 ALREADY_MEMBER]
+    L -->|Shop at member cap| N[409 MEMBER_LIMIT_REACHED]
+    L -->|Member at 5-shop limit| O[409 SHOP_LIMIT_REACHED]
+    L -->|All clear| P["Insert shop_members row with invite's role_id"]
+    P --> Q["Update shop_invites status = 'accepted'"]
+    Q --> R[Redirect to /dashboard + success toast]
+    R --> S[Member sees shop in navbar dropdown]
+```
+
 ## Shop Member Journey
 
 ```mermaid
 flowchart TD
-    A[User is invited to shop] --> B["Owner: POST /api/shops/[id]/members"]
-    B --> C["Member added with role_id (manager or contributor)"]
-    C --> D[Member sees shop in navbar dropdown]
-    D --> E["Member clicks shop name → switchToShop(shopId)"]
-    E --> F["X-Nessi-Context: shop:{shopId}"]
+    A[Member joins shop via invite acceptance] --> B["Member clicks shop name → switchToShop(shopId)"]
+    B --> C["X-Nessi-Context: shop:{shopId}"]
 
-    F --> G{What can they do?}
+    C --> D{What can they do?}
 
-    G --> H[Create listing in shop context]
-    H --> I["Listing created with shop_id, visible on shop page"]
+    D --> E[Create listing in shop context]
+    E --> F["Listing created with shop_id, visible on shop page"]
 
-    G --> J{Role?}
-    J -->|Owner/Manager| K[Access shop settings]
-    J -->|Owner/Manager| L[Manage other members]
-    J -->|Owner/Manager| M[Edit any shop listing]
-    J -->|Owner only| N[Transfer ownership]
-    J -->|Owner only| O[Delete shop]
-    J -->|Contributor| P[Edit own listings only]
-    J -->|Contributor| Q[No access to settings/members]
+    D --> G{Role?}
+    G -->|Owner/Manager| H[Access shop settings]
+    G -->|Owner/Manager| I[Manage other members]
+    G -->|Owner/Manager| J[Edit any shop listing]
+    G -->|Owner only| K[Transfer ownership]
+    G -->|Owner only| L[Delete shop]
+    G -->|Contributor| M[Edit own listings only]
+    G -->|Contributor| N[No access to settings/members]
 
-    R[Switch back to personal] --> S["switchToMember()"]
-    S --> T["X-Nessi-Context: member"]
-    T --> U[Listings now under personal profile]
+    O[Switch back to personal] --> P["switchToMember()"]
+    P --> Q["X-Nessi-Context: member"]
+    Q --> R[Listings now under personal profile]
 ```
 
 ## Context Revocation

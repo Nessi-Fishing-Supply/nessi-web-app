@@ -91,7 +91,7 @@ flowchart TD
     G -->|All clear| K["POST /api/shops/[id]/invites"]
     K --> L[Insert shop_invites row with 7-day expiry]
     L --> M[Send invite email via Resend]
-    M --> N["Recipient clicks /invite/{token} → #253"]
+    M --> N["Recipient clicks /invite/{token} → invite acceptance flow"]
 
     B --> O{Resend invite}
     O --> P["POST /api/shops/[id]/invites/[inviteId]/resend"]
