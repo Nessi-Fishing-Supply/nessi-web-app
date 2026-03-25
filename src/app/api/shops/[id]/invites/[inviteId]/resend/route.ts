@@ -48,11 +48,12 @@ export async function POST(
       );
     }
 
-    // Update expires_at to 7 days from now
+    // Regenerate token and reset expiry to 7 days from now
+    const newToken = crypto.randomUUID();
     const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data: updatedInvite, error: updateError } = await admin
       .from('shop_invites')
-      .update({ expires_at: newExpiresAt })
+      .update({ expires_at: newExpiresAt, token: newToken })
       .eq('id', inviteId)
       .select()
       .single();
@@ -73,12 +74,13 @@ export async function POST(
 
     // Resend email (failure does not block response)
     if (shop && inviter && role) {
-      const inviterName = `${inviter.first_name} ${inviter.last_name}`.trim();
+      const inviterName =
+        `${inviter.first_name ?? ''} ${inviter.last_name ?? ''}`.trim() || 'A shop member';
       const template = inviteToShop({
         shopName: shop.shop_name,
         inviterName,
         roleName: role.name,
-        token: invite.token,
+        token: newToken,
       });
       try {
         await sendEmail({ to: invite.email, ...template });

@@ -84,14 +84,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       const {
         data: { users },
         error: listError,
-      } = await admin.auth.admin.listUsers({ page, perPage: 50 });
+      } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
       if (listError || users.length === 0) break;
       const found = users.find((u) => u.email?.toLowerCase() === normalizedEmail);
       if (found) {
         matchingUserId = found.id;
         break;
       }
-      if (users.length < 50) break;
+      if (users.length < 1000) break;
       page++;
     }
 
@@ -174,7 +174,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Send invite email (failure should not block the response)
     if (role && shop) {
-      const inviterName = `${inviter.first_name} ${inviter.last_name}`.trim();
+      const inviterName =
+        `${inviter.first_name ?? ''} ${inviter.last_name ?? ''}`.trim() || 'A shop member';
       const template = inviteToShop({
         shopName: shop.shop_name,
         inviterName,
