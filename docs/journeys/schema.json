@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nessi-journey-v1",
+  "title": "Nessi User Journey",
+  "description": "Structured journey data for the Nessi docs site. Source of truth for flow visualizations, coverage tracking, and test planning.",
+  "type": "object",
+  "required": ["slug", "title", "persona", "description", "flows"],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "description": "URL-safe identifier (e.g., 'signup-with-invite')"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title"
+    },
+    "persona": {
+      "type": "string",
+      "enum": ["guest", "auth", "onboarding", "buyer", "seller", "shop-owner", "shop-member", "account", "context"],
+      "description": "Which persona this journey belongs to"
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line summary of what this journey covers"
+    },
+    "relatedIssues": {
+      "type": "array",
+      "items": { "type": "number" },
+      "description": "GitHub issue numbers that built this flow"
+    },
+    "flows": {
+      "type": "array",
+      "description": "Ordered list of flows within this journey. A journey may contain multiple related flows (e.g., 'Guest Cart' has add-to-cart, view-cart, and merge-on-login flows).",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "steps"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Flow identifier within this journey"
+          },
+          "title": {
+            "type": "string",
+            "description": "Flow title shown in the UI"
+          },
+          "trigger": {
+            "type": "string",
+            "description": "What initiates this flow (e.g., 'User clicks Sign Up', 'Guest logs in')"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "label", "layer"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Step identifier, referenceable from conductor tickets"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Human-readable step description"
+                },
+                "layer": {
+                  "type": "string",
+                  "enum": ["client", "server", "database", "background", "email", "external"],
+                  "description": "Where this step executes. 'client' = visible in browser. 'server' = API route / server action. 'database' = trigger or RLS. 'background' = silent client-side (merge, sync). 'email' = Resend / transactional email. 'external' = third-party (Stripe, etc.)."
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["planned", "built", "tested"],
+                  "default": "built",
+                  "description": "Implementation status"
+                },
+                "route": {
+                  "type": "string",
+                  "description": "API route or page route associated with this step (e.g., 'POST /api/auth/register', '/invite/[token]')"
+                },
+                "codeRef": {
+                  "type": "string",
+                  "description": "Path to the primary source file (e.g., 'src/features/auth/services/auth.ts')"
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "Implementation details, edge cases, or testing notes"
+                },
+                "errorCases": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["condition", "result"],
+                    "properties": {
+                      "condition": { "type": "string" },
+                      "result": { "type": "string" },
+                      "httpStatus": { "type": "number" }
+                    }
+                  },
+                  "description": "Known error/edge cases at this step"
+                }
+              }
+            }
+          },
+          "branches": {
+            "type": "array",
+            "description": "Decision points that split the flow into paths",
+            "items": {
+              "type": "object",
+              "required": ["afterStep", "condition", "paths"],
+              "properties": {
+                "afterStep": {
+                  "type": "string",
+                  "description": "Step ID where the branch occurs"
+                },
+                "condition": {
+                  "type": "string",
+                  "description": "The question being asked (e.g., 'Authenticated?')"
+                },
+                "paths": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["label", "goTo"],
+                    "properties": {
+                      "label": {
+                        "type": "string",
+                        "description": "Branch label (e.g., 'Yes', 'No', 'Expired')"
+                      },
+                      "goTo": {
+                        "type": "string",
+                        "description": "Step ID to continue at, or 'END' for terminal"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "connections": {
+            "type": "array",
+            "description": "Explicit step-to-step connections (when not simply sequential)",
+            "items": {
+              "type": "object",
+              "required": ["from", "to"],
+              "properties": {
+                "from": { "type": "string" },
+                "to": { "type": "string" },
+                "label": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
