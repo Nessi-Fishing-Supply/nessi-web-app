@@ -31,16 +31,16 @@ planning ──→ implementing ←──────────────┐
 (any state) ──→ blocked (human intervention needed)
 ```
 
-| Status | Description | Valid Next States |
-|--------|-------------|-------------------|
-| `planning` | Reading ticket, scanning codebase, generating phased plan | `implementing` |
-| `implementing` | Tasks being executed by task-executor agent | `reviewing` |
-| `reviewing` | Quality checks running (build, lint, preflight) | `complete`, `needs_fixes` |
-| `needs_fixes` | Review findings need resolution | `fixing` |
-| `fixing` | Findings being resolved by task-executor | `reviewing` |
-| `complete` | Review passed, ready for PR | `pr_open` |
-| `pr_open` | PR created, track moved to depot | **Terminal** |
-| `blocked` | Escalated to human — ticket moved to Blocked column with comment | **Requires human to unblock** |
+| Status         | Description                                                      | Valid Next States             |
+| -------------- | ---------------------------------------------------------------- | ----------------------------- |
+| `planning`     | Reading ticket, scanning codebase, generating phased plan        | `implementing`                |
+| `implementing` | Tasks being executed by task-executor agent                      | `reviewing`                   |
+| `reviewing`    | Quality checks running (build, lint, preflight)                  | `complete`, `needs_fixes`     |
+| `needs_fixes`  | Review findings need resolution                                  | `fixing`                      |
+| `fixing`       | Findings being resolved by task-executor                         | `reviewing`                   |
+| `complete`     | Review passed, ready for PR                                      | `pr_open`                     |
+| `pr_open`      | PR created, track moved to depot                                 | **Terminal**                  |
+| `blocked`      | Escalated to human — ticket moved to Blocked column with comment | **Requires human to unblock** |
 
 ### No Approval Gates
 
@@ -118,6 +118,7 @@ Tracks are named `{issue_number}-{kebab-title}`, derived from the GitHub issue n
 ### Depot Lifecycle
 
 When a PR is created (`status = "pr_open"`):
+
 1. `completedAt` and `pruneAfter` (now + 60 days) are added to state.json
 2. Track directory is moved from `tracks/` to `depot/`
 3. `active.json` is cleared
@@ -178,20 +179,20 @@ When a PR is created (`status = "pr_open"`):
 
 Skills live in `.claude/skills/` as Markdown files. The conductor's core skills:
 
-| Skill | What It Does |
-|-------|--------------|
-| `conductor-start` | Main entry. Fetches ticket, plans, executes full flow |
-| `conductor-status` | Read-only status dashboard — progress, health, next action |
-| `conductor-resume` | Resume an interrupted track from last known state |
-| `conductor-cleanup` | Prune expired depot entries |
+| Skill               | What It Does                                               |
+| ------------------- | ---------------------------------------------------------- |
+| `conductor-start`   | Main entry. Fetches ticket, plans, executes full flow      |
+| `conductor-status`  | Read-only status dashboard — progress, health, next action |
+| `conductor-resume`  | Resume an interrupted track from last known state          |
+| `conductor-cleanup` | Prune expired depot entries                                |
 
 ### Future Skills (referenced but not yet built)
 
-| Skill | What It Does |
-|-------|--------------|
-| `ticket-gen` | Breaks down a feature into detailed GitHub issues |
-| `preflight` | Comprehensive quality gate (lint, docs, tests, etc.) |
-| `debug` | Verbose investigation protocol for stuck tasks |
+| Skill        | What It Does                                         |
+| ------------ | ---------------------------------------------------- |
+| `ticket-gen` | Breaks down a feature into detailed GitHub issues    |
+| `preflight`  | Comprehensive quality gate (lint, docs, tests, etc.) |
+| `debug`      | Verbose investigation protocol for stuck tasks       |
 
 ---
 
@@ -199,20 +200,21 @@ Skills live in `.claude/skills/` as Markdown files. The conductor's core skills:
 
 Each agent is an autonomous AI subprocess with its own system prompt, tool access, and max turns.
 
-| Agent | Model | Tools | Max Turns | Purpose |
-|-------|-------|-------|-----------|---------|
-| **plan-architect** | Opus | Read, Grep, Glob, Bash | 20 | Reads ticket + codebase, generates phased implementation plan. 2-5 phases, 3-7 tasks each. Each task has ID, title, description, files, acceptance criteria. |
-| **task-executor** | Sonnet | Read, Write, Edit, Bash, Grep, Glob | 40 | Implements ONE task. Orient → Plan → Implement → Verify (`pnpm build`) → Report. Follows existing codebase patterns. Reports failure after 2 attempts. |
-| **phase-verifier** | Sonnet | Bash, Read | 10 | Runs verification commands at phase boundaries. Reports pass/fail. Does NOT fix issues. |
-| **review-orchestrator** | Sonnet | Bash, Read, Grep, Glob | 30 | Runs build, lint, and available quality checks. Categorizes findings as [B] Blocking, [W] Warning, [I] Info. |
-| **superpowers:code-reviewer** | (built-in) | All tools | — | Reviews implementation against plan, coding standards, and acceptance criteria. Launched during review phase. |
-| **finding-resolver** | Sonnet | Read, Write, Edit, Grep | 15 | Takes findings.md, creates atomic fix tasks. Blocking → auto-fixed. Warnings → auto-fixed. |
-| **debug-investigator** | Opus | Read, Write, Edit, Bash, Grep, Glob, WebFetch, WebSearch | 50 | 7-step protocol: Reproduce → Isolate → Research → Inspect → Hypothesize → Fix → Verify. Used on 3rd retry before escalation to blocked. |
-| **pr-creator** | Sonnet | Bash, Read, Grep, Glob | 20 | Git operations: stage, commit, push, `gh pr create`. Moves ticket on kanban via `gh project item-edit`. Never modifies source code. |
+| Agent                         | Model      | Tools                                                    | Max Turns | Purpose                                                                                                                                                      |
+| ----------------------------- | ---------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **plan-architect**            | Opus       | Read, Grep, Glob, Bash                                   | 20        | Reads ticket + codebase, generates phased implementation plan. 2-5 phases, 3-7 tasks each. Each task has ID, title, description, files, acceptance criteria. |
+| **task-executor**             | Sonnet     | Read, Write, Edit, Bash, Grep, Glob                      | 40        | Implements ONE task. Orient → Plan → Implement → Verify (`pnpm build`) → Report. Follows existing codebase patterns. Reports failure after 2 attempts.       |
+| **phase-verifier**            | Sonnet     | Bash, Read                                               | 10        | Runs verification commands at phase boundaries. Reports pass/fail. Does NOT fix issues.                                                                      |
+| **review-orchestrator**       | Sonnet     | Bash, Read, Grep, Glob                                   | 30        | Runs build, lint, and available quality checks. Categorizes findings as [B] Blocking, [W] Warning, [I] Info.                                                 |
+| **superpowers:code-reviewer** | (built-in) | All tools                                                | —         | Reviews implementation against plan, coding standards, and acceptance criteria. Launched during review phase.                                                |
+| **finding-resolver**          | Sonnet     | Read, Write, Edit, Grep                                  | 15        | Takes findings.md, creates atomic fix tasks. Blocking → auto-fixed. Warnings → auto-fixed.                                                                   |
+| **debug-investigator**        | Opus       | Read, Write, Edit, Bash, Grep, Glob, WebFetch, WebSearch | 50        | 7-step protocol: Reproduce → Isolate → Research → Inspect → Hypothesize → Fix → Verify. Used on 3rd retry before escalation to blocked.                      |
+| **pr-creator**                | Sonnet     | Bash, Read, Grep, Glob                                   | 20        | Git operations: stage, commit, push, `gh pr create`. Moves ticket on kanban via `gh project item-edit`. Never modifies source code.                          |
 
 ### Agent Dispatch Pattern
 
 The orchestrating skill launches agents via the Agent tool:
+
 ```
 Agent({
   subagent_type: "task-executor",
@@ -228,16 +230,17 @@ Agents return results to the orchestrating skill, which updates state and decide
 
 Three-strike escalation with increasing investigation depth:
 
-| Attempt | Strategy | Agent |
-|---------|----------|-------|
-| 1st failure | Simple retry — same task, fresh context | task-executor |
-| 2nd failure | Simple retry — same task, include prior error context | task-executor |
-| 3rd failure | Verbose debug investigation + one more fix attempt | debug-investigator |
-| Still failing | Escalate to human — move ticket to **Blocked** | (orchestrator) |
+| Attempt       | Strategy                                              | Agent              |
+| ------------- | ----------------------------------------------------- | ------------------ |
+| 1st failure   | Simple retry — same task, fresh context               | task-executor      |
+| 2nd failure   | Simple retry — same task, include prior error context | task-executor      |
+| 3rd failure   | Verbose debug investigation + one more fix attempt    | debug-investigator |
+| Still failing | Escalate to human — move ticket to **Blocked**        | (orchestrator)     |
 
 ### Blocked Escalation
 
 When escalating to blocked:
+
 1. Update `state.json` → `status: "blocked"`
 2. Move GitHub issue to **Blocked** column via `gh project item-edit`
 3. Leave a comment on the issue via `gh issue comment` with:
@@ -253,20 +256,22 @@ When escalating to blocked:
 
 The conductor has access to MCP (Model Context Protocol) servers for direct infrastructure provisioning. **Agents must use these tools — never leave manual setup instructions.**
 
-| MCP Server | Tool Prefix | Capabilities | Used By |
-|-----------|-------------|--------------|---------|
-| **Supabase** | `mcp__plugin_supabase_supabase__*` | Execute SQL, apply migrations, list tables/extensions, manage storage buckets, RLS policies, deploy edge functions | task-executor, debug-investigator, ticket-generator |
-| **Vercel** | `mcp__plugin_vercel_vercel__*` | Manage deployments, environment variables, domains, project settings | task-executor |
-| **Context7** | `mcp__plugin_context7_context7__*` | Query up-to-date library docs | plan-architect, task-executor, debug-investigator, ux-researcher |
+| MCP Server   | Tool Prefix                        | Capabilities                                                                                                       | Used By                                                          |
+| ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| **Supabase** | `mcp__plugin_supabase_supabase__*` | Execute SQL, apply migrations, list tables/extensions, manage storage buckets, RLS policies, deploy edge functions | task-executor, debug-investigator, ticket-generator              |
+| **Vercel**   | `mcp__plugin_vercel_vercel__*`     | Manage deployments, environment variables, domains, project settings                                               | task-executor                                                    |
+| **Context7** | `mcp__plugin_context7_context7__*` | Query up-to-date library docs                                                                                      | plan-architect, task-executor, debug-investigator, ux-researcher |
 
 ### Infrastructure-as-Task Pattern
 
 When a feature requires backend infrastructure (storage buckets, tables, columns, RLS policies), the plan-architect creates explicit tasks tagged with `**MCP:** supabase` or `**MCP:** vercel`. These tasks:
+
 - Go in Phase 1 (foundation), before any code that depends on them
 - Are executed by the task-executor using MCP tools directly
 - Must be verified (e.g., `list_tables` to confirm the table exists after creation)
 
 **Common infrastructure tasks:**
+
 - Create a Supabase Storage bucket with RLS policies
 - Add a new table with FK constraints and RLS
 - Add columns to existing tables
@@ -281,31 +286,32 @@ All GitHub interaction happens via the `gh` CLI. Ensure `gh auth status` passes 
 
 ### Key `gh` Commands
 
-| Operation | Command |
-|-----------|---------|
-| Fetch issue | `gh issue view {number} --json title,body,labels,comments,assignees` |
-| Comment on issue | `gh issue comment {number} --body "{message}"` |
-| Create issue | `gh issue create --title "{title}" --label "{labels}" --body "{body}"` |
-| Create PR | `gh pr create --title "{title}" --body "{body}"` |
-| List project items | `gh project item-list {PROJECT_NUMBER} --owner {OWNER} --format json` |
-| Move kanban column | `gh project item-edit --project-id {ID} --id {ITEM_ID} --field-id {FIELD_ID} --single-select-option-id {OPTION_ID}` |
-| List project fields | `gh project field-list {PROJECT_NUMBER} --owner {OWNER} --format json` |
+| Operation           | Command                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Fetch issue         | `gh issue view {number} --json title,body,labels,comments,assignees`                                                |
+| Comment on issue    | `gh issue comment {number} --body "{message}"`                                                                      |
+| Create issue        | `gh issue create --title "{title}" --label "{labels}" --body "{body}"`                                              |
+| Create PR           | `gh pr create --title "{title}" --body "{body}"`                                                                    |
+| List project items  | `gh project item-list {PROJECT_NUMBER} --owner {OWNER} --format json`                                               |
+| Move kanban column  | `gh project item-edit --project-id {ID} --id {ITEM_ID} --field-id {FIELD_ID} --single-select-option-id {OPTION_ID}` |
+| List project fields | `gh project field-list {PROJECT_NUMBER} --owner {OWNER} --format json`                                              |
 
 Use `gh project field-list` and `gh project item-list` to discover project/field/option IDs dynamically at runtime.
 
 ### Kanban Column Mapping
 
-| Column | Conductor Action |
-|--------|-----------------|
-| **Todo** | Ticket is available for pickup |
-| **In Progress** | Conductor moves ticket here on start |
-| **Blocked** | Conductor moves ticket here on escalation |
+| Column               | Conductor Action                              |
+| -------------------- | --------------------------------------------- |
+| **Todo**             | Ticket is available for pickup                |
+| **In Progress**      | Conductor moves ticket here on start          |
+| **Blocked**          | Conductor moves ticket here on escalation     |
 | **Ready for Review** | Conductor moves ticket here after PR creation |
-| **Done** | (External — after PR merge) |
+| **Done**             | (External — after PR merge)                   |
 
 ### Issue Data Used
 
 When fetching a ticket, the conductor reads:
+
 - Title and description (primary task context)
 - Labels (for categorization and branch type)
 - Acceptance criteria (from issue body)
@@ -338,14 +344,17 @@ When fetching a ticket, the conductor reads:
 # Implementation Plan: #{issue} — {Title}
 
 ## Overview
+
 {phases} phases, {tasks} total tasks
 Estimated scope: {small|medium|large}
 
 ## Phase 1: {Phase Title}
+
 **Goal:** {one sentence}
 **Verify:** `{command}`
 
 ### Task 1.1: {Title}
+
 {Description}
 **Files:** {paths}
 **AC:** {criteria}
@@ -366,6 +375,7 @@ Within `conductor-start`, for each task in the current phase:
    - Still failing: escalate to blocked
 
 At phase boundary:
+
 1. Launch `phase-verifier` with verification command
 2. If fails: attempt fix, re-verify once, then escalate to blocked if still failing
 3. If passes: update health in state.json
@@ -414,6 +424,7 @@ Maximum 2 review/fix cycles. If findings persist after 2 cycles, escalate to blo
 Format: `{type}/{issue_number}/{kebab-description}`
 
 Examples:
+
 - `feat/42/add-order-history`
 - `fix/58/cart-total-calculation`
 - `chore/61/update-drizzle-schema`
@@ -441,6 +452,7 @@ Co-Authored-By: Conductor <noreply@conductor.dev>
 ### Depot Move Commit
 
 Before PR creation, the conductor MUST:
+
 1. Update `state.json` → `status: "pr_open"`, add `completedAt` and `pruneAfter`
 2. Move track from `tracks/` to `depot/`
 3. Clear `active.json`
@@ -457,6 +469,7 @@ This commit must happen BEFORE the branch is pushed. If the depot move isn't in 
 Title format: `{type}({scope}): #{issue} {description}`
 
 Body includes:
+
 1. **Summary** — what was built and why (from plan + changes)
 2. **GitHub Issue** — link to ticket
 3. **Changes** — phase-by-phase breakdown
@@ -487,21 +500,21 @@ Knowledge capture never blocks execution. It's a best-effort append that enriche
 
 ### Emoji Map
 
-| Emoji | Stage |
-|-------|-------|
-| 🚂 | Starting up / engine firing |
-| 🎫 | Loading ticket / boarding |
-| 🚃 | Rolling / in transit (phase start) |
-| 🚉 | Checkpoint / phase complete |
-| 🔍 | Review / inspection |
-| 🛤️ | Switching to fix track |
-| 🔧 | Debug / investigation |
-| ⚠️ | Derailed / error |
-| 🛑 | Blocked / escalated to human |
-| 🏁 | End of the line / completion |
-| ✅ | Pass |
-| ❌ | Fail |
-| 🔗 | PR created |
+| Emoji | Stage                              |
+| ----- | ---------------------------------- |
+| 🚂    | Starting up / engine firing        |
+| 🎫    | Loading ticket / boarding          |
+| 🚃    | Rolling / in transit (phase start) |
+| 🚉    | Checkpoint / phase complete        |
+| 🔍    | Review / inspection                |
+| 🛤️    | Switching to fix track             |
+| 🔧    | Debug / investigation              |
+| ⚠️    | Derailed / error                   |
+| 🛑    | Blocked / escalated to human       |
+| 🏁    | End of the line / completion       |
+| ✅    | Pass                               |
+| ❌    | Fail                               |
+| 🔗    | PR created                         |
 
 ### Banner Format
 
@@ -515,6 +528,7 @@ Knowledge capture never blocks execution. It's a best-effort append that enriche
 ### Progress Bars
 
 Block characters, 20 chars wide:
+
 ```
 Full block:  █ (U+2588)
 Empty block: ░ (U+2591)
