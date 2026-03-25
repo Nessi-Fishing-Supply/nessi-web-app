@@ -2,6 +2,7 @@ import { createClient } from '@/libs/supabase/server';
 import { createAdminClient } from '@/libs/supabase/admin';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { SYSTEM_ROLE_IDS } from '@/features/shops/constants/roles';
+import { checkMemberShopLimit } from '@/features/shops/utils/check-member-shop-limit';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
@@ -14,6 +15,15 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401, headers: AUTH_CACHE_HEADERS },
+    );
+  }
+
+  // Check shop membership limit before parsing body
+  const { withinLimit } = await checkMemberShopLimit(user.id);
+  if (!withinLimit) {
+    return NextResponse.json(
+      { error: 'SHOP_LIMIT_REACHED', message: 'Members can belong to a maximum of 5 shops' },
+      { status: 409, headers: AUTH_CACHE_HEADERS },
     );
   }
 
