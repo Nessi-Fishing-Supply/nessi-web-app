@@ -362,6 +362,64 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_invites: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          role_id: string
+          shop_id: string
+          status: Database["public"]["Enums"]["invite_status"]
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          role_id: string
+          shop_id: string
+          status?: Database["public"]["Enums"]["invite_status"]
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          role_id?: string
+          shop_id?: string
+          status?: Database["public"]["Enums"]["invite_status"]
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_invites_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shop_invites_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "shop_roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shop_invites_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shop_members: {
         Row: {
           created_at: string
@@ -564,10 +622,9 @@ export type Database = {
         Args: { p_entity_id: string; p_entity_type: string; p_slug: string }
         Returns: undefined
       }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
+      invite_status: "pending" | "accepted" | "expired" | "revoked"
       listing_category:
         | "rods"
         | "reels"
@@ -721,6 +778,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      invite_status: ["pending", "accepted", "expired", "revoked"],
       listing_category: [
         "rods",
         "reels",
