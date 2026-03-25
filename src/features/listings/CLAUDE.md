@@ -9,12 +9,15 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 - **types/listing.ts** — Database-derived types: `Listing`, `ListingInsert`, `ListingUpdate`, `ListingStatus`, `ListingWithPhotos`, `ListingDraft`, `ListingCondition`, `ListingCategory`, `SellerProfile`, `ListingDetailData`
 - **types/listing-photo.ts** — Photo types: `ListingPhoto`, `ListingPhotoInsert`, `ListingPhotoUpdate`, `UploadResult`
 - **types/search.ts** — Search types: `SearchFilters` (URL param-driven filter state), `AutocompleteSuggestion`, `SearchSuggestion`
+- **types/recommendation.ts** — Recommendation types: `RecommendationContext` (union of 3 modes), `SimilarParams`, `SellerParams`, `AlsoLikedParams`, `RecommendationsParams` (discriminated union), `RecommendationsResponse`
 - **constants/condition.ts** — `CONDITION_TIERS` (6-tier array with labels, descriptions, WCAG AA colors), `CATEGORY_PHOTO_GUIDANCE` (per-category photo tips), `ConditionTier` type
 - **constants/category.ts** — `LISTING_CATEGORIES` (10 categories with labels and react-icons), `getCategoryLabel()`, `getCategoryIcon()`
 - **`@/features/shared/utils/format.ts`** — `formatPrice(cents)`, `calculateFee(cents)`, `calculateNet(cents)` — shared currency formatters (not listing-specific, lives in shared)
 - **services/listing.ts** — Client-side service functions calling API routes via `@/libs/fetch` helpers (`getListings`, `getListingById`, `createListing`, `updateListing`, `deleteListing`, `updateListingStatus`, etc.)
 - **services/listing-photo.ts** — Photo upload/delete services calling API routes
 - **services/listing-server.ts** — Server-side Supabase queries: `getListingByIdServer`, `getListingWithSellerServer` (listing + seller profile), `getListingsByMemberServer`, `getListingsByShopServer`, `getActiveListingsServer`
+- **services/recommendation-server.ts** — Server-side recommendation queries: `getRecommendationsServer` with 3 context modes (similar, seller, also_liked). Uses `CONDITION_TIERS` for adjacent condition filtering in similar mode. Calls `getRecentlyViewedIds` from `@/features/recently-viewed` for also_liked mode.
+- **services/recommendation.ts** — Client-side recommendation service: `getRecommendations(params)` calling `GET /api/listings/recommendations` via fetch helper
 - **services/search.ts** — Client-side search services: `searchListings()`, `getAutocompleteSuggestions()`, `trackSearchSuggestion()`
 - **config/categories.ts** — Category SEO config with `getCategoryBySlug()`, `CATEGORY_MAP`, `VALID_CATEGORY_SLUGS`
 - **config/species.ts** — `SPECIES_LIST` (15 common fishing species with value/label pairs), `Species` type
@@ -25,6 +28,7 @@ Listings are the core marketplace entities in Nessi — individual items posted 
 - **hooks/use-autocomplete.ts** — `useAutocomplete` (debounced query, 200ms, min 3 chars, 30s staleTime)
 - **hooks/use-debounced-value.ts** — Generic `useDebouncedValue<T>(value, delay)` hook
 - **hooks/use-search-filters.ts** — `useSearchFilters` — reads/writes all filter state from URL params, single source of truth
+- **hooks/use-recommendations.ts** — `useRecommendations(args)` — Tanstack Query hook for fetching recommendations with per-context enabled guards and query keys
 - **components/photo-manager/** — Multi-photo upload, reorder, and delete UI for listing creation and editing
 - **components/condition-badge/** — Color-coded pill displaying condition tier with hover/tap popover description
 - **components/condition-selector/** — Vertical radio list for selecting condition tier in create wizard, with category-specific photo guidance accordion
@@ -151,31 +155,34 @@ All listing API routes live in `src/app/api/listings/`:
 
 `POST /api/listings/[id]/duplicate` — Authenticated + ownership. Creates a new draft by copying fields from any non-deleted listing (active, sold, archived, or draft). Copies: title, description, category, condition, price_cents, shipping_paid_by, shipping_price_cents, weight_oz, brand, model, quantity, location_city, location_state. Does NOT copy: photos, cover_photo_url, published_at, sold_at, counts, search_vector. Uses `X-Nessi-Context` header for member/shop identity on the new draft. Returns 201 with the new `ListingWithPhotos` (empty photos array).
 
+`GET /api/listings/recommendations` — Public. Returns up to 12 recommended listings based on context mode. Params: `context` (required: `similar`, `seller`, or `also_liked`). **similar**: requires `listingId`, `category`, `condition` — returns same-category listings with adjacent condition tiers (using `CONDITION_TIERS` ordering). **seller**: requires `sellerId`, optional `shopId` — returns listings from the same seller/shop. **also_liked**: optional `listingIds` (comma-separated), optional `userId` — resolves recently viewed listings from DB when `userId` is provided (auth check: userId must match authenticated user), then returns listings in matching categories. All modes exclude source listing(s), filter `status='active'` + `deleted_at IS NULL`, and join `listing_photos`. Returns `{ listings, context }`.
+
 ## Hooks
 
-| Hook                                 | Query Key                                      | Purpose                                                                           |
-| ------------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------- |
-| `useListings(filters)`               | `['listings', filters]`                        | Paginated listing search with filters                                             |
-| `useListing(id)`                     | `['listings', id]`                             | Fetch listing by ID with photos                                                   |
-| `useSellerListings(status?)`         | `['listings', 'seller', status]`               | Fetch authenticated user's listings                                               |
-| `useDrafts()`                        | `['listings', 'drafts']`                       | Fetch user's draft listings                                                       |
-| `useListingPhotos(listingId)`        | `['listings', listingId, 'photos']`            | Fetch ordered photos for a listing                                                |
-| `useCreateListing()`                 | mutation, invalidates `['listings']`           | Create a new listing                                                              |
-| `useCreateDraft()`                   | mutation, invalidates `['listings']`           | Create an empty draft                                                             |
-| `useDuplicateListing()`              | mutation, invalidates `['listings']`           | Duplicate an existing listing as a new draft (copies all fields except photos)    |
-| `useUpdateListing()`                 | mutation, invalidates `['listings']`           | Update listing fields                                                             |
-| `useDeleteListing()`                 | mutation, invalidates `['listings']`           | Soft-delete a listing                                                             |
-| `useDeleteDraft()`                   | mutation, invalidates `['listings']`           | Hard-delete a draft                                                               |
-| `useUpdateListingStatus()`           | mutation, invalidates `['listings']`           | Change listing status                                                             |
-| `useIncrementViewCount()`            | mutation (fire-and-forget)                     | Increment view count                                                              |
-| `useUploadListingPhoto()`            | mutation, invalidates listing photos key       | Upload photo via `POST /api/listings/upload`                                      |
-| `useDeleteListingPhoto()`            | mutation, invalidates listing photos key       | Delete photo via `DELETE /api/listings/upload/delete`                             |
-| `useListingsInfinite(params)`        | `['listings', 'infinite', { category, sort }]` | Infinite scroll listing feed with cursor-based pagination                         |
-| `useSearchListingsInfinite(filters)` | `['listings', 'search', filters]`              | Infinite scroll search results with all filter params                             |
-| `useAutocomplete(query)`             | `['autocomplete', debouncedQuery]`             | Debounced (200ms) autocomplete suggestions, enabled >= 2 chars                    |
-| `useRecentSearches()`                | — (localStorage-backed, no query key)          | localStorage-backed recent searches (max 5, SSR-safe)                             |
-| `useTrackSearchSuggestion()`         | mutation (fire-and-forget)                     | Increments search_suggestions popularity counter                                  |
-| `useSearchFilters()`                 | — (URL-based, no query key)                    | Reads/writes all filter state from URL params via `useSearchParams` + `useRouter` |
+| Hook                                 | Query Key                                       | Purpose                                                                                        |
+| ------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `useListings(filters)`               | `['listings', filters]`                         | Paginated listing search with filters                                                          |
+| `useListing(id)`                     | `['listings', id]`                              | Fetch listing by ID with photos                                                                |
+| `useSellerListings(status?)`         | `['listings', 'seller', status]`                | Fetch authenticated user's listings                                                            |
+| `useDrafts()`                        | `['listings', 'drafts']`                        | Fetch user's draft listings                                                                    |
+| `useListingPhotos(listingId)`        | `['listings', listingId, 'photos']`             | Fetch ordered photos for a listing                                                             |
+| `useCreateListing()`                 | mutation, invalidates `['listings']`            | Create a new listing                                                                           |
+| `useCreateDraft()`                   | mutation, invalidates `['listings']`            | Create an empty draft                                                                          |
+| `useDuplicateListing()`              | mutation, invalidates `['listings']`            | Duplicate an existing listing as a new draft (copies all fields except photos)                 |
+| `useUpdateListing()`                 | mutation, invalidates `['listings']`            | Update listing fields                                                                          |
+| `useDeleteListing()`                 | mutation, invalidates `['listings']`            | Soft-delete a listing                                                                          |
+| `useDeleteDraft()`                   | mutation, invalidates `['listings']`            | Hard-delete a draft                                                                            |
+| `useUpdateListingStatus()`           | mutation, invalidates `['listings']`            | Change listing status                                                                          |
+| `useIncrementViewCount()`            | mutation (fire-and-forget)                      | Increment view count                                                                           |
+| `useUploadListingPhoto()`            | mutation, invalidates listing photos key        | Upload photo via `POST /api/listings/upload`                                                   |
+| `useDeleteListingPhoto()`            | mutation, invalidates listing photos key        | Delete photo via `DELETE /api/listings/upload/delete`                                          |
+| `useListingsInfinite(params)`        | `['listings', 'infinite', { category, sort }]`  | Infinite scroll listing feed with cursor-based pagination                                      |
+| `useSearchListingsInfinite(filters)` | `['listings', 'search', filters]`               | Infinite scroll search results with all filter params                                          |
+| `useAutocomplete(query)`             | `['autocomplete', debouncedQuery]`              | Debounced (200ms) autocomplete suggestions, enabled >= 2 chars                                 |
+| `useRecentSearches()`                | — (localStorage-backed, no query key)           | localStorage-backed recent searches (max 5, SSR-safe)                                          |
+| `useTrackSearchSuggestion()`         | mutation (fire-and-forget)                      | Increments search_suggestions popularity counter                                               |
+| `useSearchFilters()`                 | — (URL-based, no query key)                     | Reads/writes all filter state from URL params via `useSearchParams` + `useRouter`              |
+| `useRecommendations(args)`           | `['listings', 'recommendations', context, ...]` | Fetch recommendations by context (similar, seller, also_liked) with per-context enabled guards |
 
 ## Components
 

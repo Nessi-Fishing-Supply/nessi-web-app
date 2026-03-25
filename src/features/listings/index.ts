@@ -29,6 +29,14 @@ export type {
   UploadResult,
 } from './types/listing-photo';
 export type { SearchFilters, AutocompleteSuggestion, SearchSuggestion } from './types/search';
+export type {
+  RecommendationContext,
+  RecommendationsParams,
+  RecommendationsResponse,
+  SimilarParams,
+  SellerParams,
+  AlsoLikedParams,
+} from './types/recommendation';
 
 // Services
 export { uploadListingPhoto, deleteListingPhoto } from './services/listing-photo';
@@ -51,6 +59,7 @@ export {
   updateListingStatus,
   incrementViewCount,
 } from './services/listing';
+export { getRecommendations } from './services/recommendation';
 
 // Hooks
 export { useUploadListingPhoto, useDeleteListingPhoto } from './hooks/use-listing-photos';
@@ -72,6 +81,7 @@ export { useSearchListingsInfinite, useTrackSearchSuggestion } from './hooks/use
 export { useAutocomplete } from './hooks/use-autocomplete';
 export { useDebouncedValue } from './hooks/use-debounced-value';
 export { useSearchFilters } from './hooks/use-search-filters';
+export { useRecommendations } from './hooks/use-recommendations';
 
 // Server Services
 export {
@@ -81,6 +91,7 @@ export {
   getListingsByShopServer,
   getActiveListingsServer,
 } from './services/listing-server';
+export { getRecommendationsServer } from './services/recommendation-server';
 
 // Stores
 export { default as useCreateWizardStore } from './stores/create-wizard-store';
