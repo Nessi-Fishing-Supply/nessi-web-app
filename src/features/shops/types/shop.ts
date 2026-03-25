@@ -1,5 +1,23 @@
 import type { Database, Json } from '@/types/database';
 
+export type OwnershipTransfer = Database['public']['Tables']['shop_ownership_transfers']['Row'];
+
+export type OwnershipTransferStatus = 'pending' | 'accepted' | 'cancelled';
+
+export type OwnershipTransferWithDetails = {
+  id: string;
+  shopId: string;
+  shopName: string;
+  fromMemberId: string;
+  fromMemberName: string;
+  toMemberId: string;
+  toMemberName: string;
+  status: OwnershipTransferStatus;
+  token: string;
+  expiresAt: string;
+  createdAt: string | null;
+};
+
 export type Shop = Database['public']['Tables']['shops']['Row'];
 
 export type ShopInsert = Omit<
