@@ -3,7 +3,7 @@
   "issue": 257,
   "title": "Ownership transfer request/accept/cancel backend with email notification",
   "branch": "feat/257/ownership-transfer-request-accept-cancel",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 4,
     "total": 4,
@@ -28,7 +28,7 @@
   },
   "health": {
     "build": "pass",
-    "lint": "unknown",
+    "lint": "pass",
     "tests": "unknown"
   },
   "failureCount": {
@@ -36,6 +36,8 @@
   },
   "timestamps": {
     "started": "2026-03-25T15:00:00Z",
-    "lastActivity": "2026-03-25T16:00:00Z"
+    "lastActivity": "2026-03-25T16:35:00Z",
+    "completedAt": "2026-03-25T16:35:00Z",
+    "pruneAfter": "2026-05-24T16:35:00Z"
   }
 }
