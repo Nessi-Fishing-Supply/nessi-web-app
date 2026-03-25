@@ -1,14 +1,17 @@
 # Implementation Plan: #24 — Listing create wizard
 
 ## Overview
+
 4 phases, 18 total tasks
 Estimated scope: large
 
 ## Phase 1: Foundation — Zustand store, Yup validations, category selector
+
 **Goal:** Establish the wizard's client state layer, per-step validation schemas, and the reusable category selector component so all subsequent wizard steps have their dependencies in place.
 **Verify:** `pnpm build`
 
 ### Task 1.1: Create the create-wizard Zustand store
+
 Create the Zustand store that holds all wizard form data, current step index, draft/listing IDs, and actions for setting fields, navigating steps, and resetting. Use `zustand/middleware` `persist` with a `nessi-create-wizard` localStorage key so the wizard survives page refreshes. Wrap with `createSelectors` from `@/libs/create-selectors.ts` following the pattern in `src/features/context/stores/context-store.ts`.
 
 Store shape per the ticket: `step` (1-6), `photos` (ListingPhoto[]), `category`, `condition`, `title`, `description`, `fishingHistory`, `priceCents`, `shippingPreference` ('ship' | 'local_pickup'), `shippingPaidBy` ('buyer' | 'seller' | null), `weightOz`, `packageDimensions` ({length, width, height} | null), `listingId`, `draftId`, `setStep`, `setField` (generic setter), `reset`.
@@ -18,6 +21,7 @@ Store shape per the ticket: `step` (1-6), `photos` (ListingPhoto[]), `category`,
 **Expert Domains:** state-management
 
 ### Task 1.2: Create per-step Yup validation schemas
+
 Create Yup validation schemas for each wizard step: `photosSchema` (photos array min 2), `categoryConditionSchema` (category required, condition required), `detailsSchema` (title 10-80 chars, description 20-2000 chars, fishingHistory optional max 500 chars), `pricingSchema` (priceCents min 100 max 999900, shippingPreference required), `shippingSchema` (weightOz required positive, packageDimensions.length/width/height required positive, shippingPaidBy required). Export a `STEP_SCHEMAS` array mapping step index to its schema so the wizard can dynamically resolve validation per step.
 
 **Files:** `src/features/listings/validations/listing.ts`
@@ -25,6 +29,7 @@ Create Yup validation schemas for each wizard step: `photosSchema` (photos array
 **Expert Domains:** nextjs
 
 ### Task 1.3: Create the category selector component
+
 Build a reusable tile-grid component that renders `LISTING_CATEGORIES` from `src/features/listings/constants/category.ts` as selectable icon tiles. Each tile shows the category icon (from `react-icons`) and label. Single-select behavior via `value`/`onChange` props. The grid is 2 columns on mobile, 3 on tablet (`md`), 4 on desktop (`lg`). Active tile has a highlighted border using `--color-primary`. The component is placed in `src/features/listings/components/category-selector/` since it is listing-domain-specific but reusable across create and edit wizards.
 
 Note: The issue mentions 12 categories but `LISTING_CATEGORIES` currently has 10 entries. The component should render whatever is in the constant array — do not hardcode a count.
@@ -34,16 +39,19 @@ Note: The issue mentions 12 categories but `LISTING_CATEGORIES` currently has 10
 **Expert Domains:** scss
 
 ### Task 1.4: Export new modules from the listings barrel
+
 Add exports for the new store, validations, and category selector to the listings barrel file so they are importable via `@/features/listings`.
 
 **Files:** `src/features/listings/index.ts`
 **AC:** `useCreateWizardStore` exported from store; `STEP_SCHEMAS` and individual schemas exported from validations; `CategorySelector` exported as default component; no circular dependency issues; `pnpm build` passes.
 
 ## Phase 2: Wizard shell and first three steps (Photos, Category/Condition, Details)
+
 **Goal:** Create the wizard container with step navigation, progress indicator, slide transitions, and implement Steps 1-3 so the user can upload photos, select category/condition, and enter listing details.
 **Verify:** `pnpm build`
 
 ### Task 2.1: Create the wizard progress bar component
+
 Build a horizontal step progress indicator that shows 5 labeled steps (Photos, Category, Details, Pricing, Shipping) plus a 6th unlabeled Review dot. The current step is highlighted, completed steps show a checkmark. On mobile, show only the step number dots (labels hidden); on `md`+, show labels below dots. Use a `<nav>` with `aria-label="Listing creation progress"` and `aria-current="step"` on the active step.
 
 **Files:** `src/features/listings/components/create-wizard/wizard-progress.tsx`, `src/features/listings/components/create-wizard/wizard-progress.module.scss`
@@ -51,6 +59,7 @@ Build a horizontal step progress indicator that shows 5 labeled steps (Photos, C
 **Expert Domains:** scss
 
 ### Task 2.2: Create the wizard shell (CreateWizard container component)
+
 Build the main wizard container that renders the progress bar, the active step component, and navigation buttons (Back/Next/Save Draft). The wizard reads `step` from the Zustand store and renders the corresponding step component. Implement slide-left/slide-right CSS transitions when step changes. The "Next" button is sticky/fixed at the bottom on mobile (48px height, full-width). "Save draft and exit" link is always visible in the header area. The wizard prevents form submission on Enter for non-final steps by wrapping each step in a `<form>` with `onSubmit` that calls `preventDefault` unless on the review step. Browser back button support: use `window.history.pushState` when navigating forward and `popstate` listener to go back a step without losing state.
 
 **Files:** `src/features/listings/components/create-wizard/index.tsx`, `src/features/listings/components/create-wizard/create-wizard.module.scss`
@@ -59,6 +68,7 @@ Build the main wizard container that renders the progress bar, the active step c
 **Expert Domains:** nextjs, scss, state-management
 
 ### Task 2.3: Create the route page (server component)
+
 Create the Next.js page at `/dashboard/listings/new`. This is a server component that optionally loads an existing draft by `draftId` query param (using `getListingByIdServer` from `src/features/listings/services/listing-server.ts`), then passes the draft data as props to the client `CreateWizard` component. If no draft param, renders the wizard with empty state. The route is under `/dashboard/` so proxy.ts handles auth protection automatically.
 
 **Files:** `src/app/(frontend)/dashboard/listings/new/page.tsx`
@@ -66,6 +76,7 @@ Create the Next.js page at `/dashboard/listings/new`. This is a server component
 **Expert Domains:** nextjs, supabase
 
 ### Task 2.4: Implement Step 1 — Photos step
+
 Build the photos step that renders the existing `PhotoManager` component from `src/features/listings/components/photo-manager/`. The step needs a `listingId` to upload photos against — if no draft exists yet, it creates one via `useCreateDraft()` on first photo add, then stores the returned `listingId` and `draftId` in the Zustand store. Display the minimum photos requirement (2) and a "?" icon button that opens a modal with photo guidance tips (from `CATEGORY_PHOTO_GUIDANCE`). The Next button is disabled until photos.length >= 2. Photos array is synced to the Zustand store via `onPhotosChange`.
 
 **Files:** `src/features/listings/components/create-wizard/steps/photos-step.tsx`
@@ -74,6 +85,7 @@ Build the photos step that renders the existing `PhotoManager` component from `s
 **Expert Domains:** state-management
 
 ### Task 2.5: Implement Step 2 — Category & Condition step
+
 Build the step that renders the `CategorySelector` (from Task 1.3) and `ConditionSelector` (existing at `src/features/listings/components/condition-selector/`). Both selections are stored in the Zustand store. The condition selector receives the selected category so it can show category-specific photo guidance. Next is disabled until both category and condition are selected.
 
 **Files:** `src/features/listings/components/create-wizard/steps/category-condition-step.tsx`
@@ -82,6 +94,7 @@ Build the step that renders the `CategorySelector` (from Task 1.3) and `Conditio
 **Expert Domains:** state-management
 
 ### Task 2.6: Implement Step 3 — Details step
+
 Build the step with title, description, and fishing history fields using react-hook-form with the `detailsSchema` Yup resolver. Title is a text input (10-80 chars), description is a textarea (20-2000 chars), fishing history is an optional textarea (500 chars). All fields show live character counters below them (e.g., "24 / 80"). Fields sync to the Zustand store on change. The existing `Input` and `Textarea` components from `src/components/controls/` integrate with react-hook-form via `useFormContext`, so wrap the step in a `FormProvider`.
 
 **Files:** `src/features/listings/components/create-wizard/steps/details-step.tsx`
@@ -90,10 +103,12 @@ Build the step with title, description, and fishing history fields using react-h
 **Expert Domains:** nextjs
 
 ## Phase 3: Steps 4-5 and Review screen
+
 **Goal:** Complete the remaining wizard steps (Pricing, Shipping) and the Review screen with publish/save-draft actions, enabling the full end-to-end wizard flow.
 **Verify:** `pnpm build`
 
 ### Task 3.1: Implement Step 4 — Pricing step
+
 Build the pricing step with a price input that has a "$" prefix and `inputmode="decimal"`. The input converts dollar values to cents for storage in the Zustand store. Include a live fee calculator that shows: Nessi fee (from `calculateFee`), your earnings (from `calculateNet`), and formatted prices (from `formatPrice`). The fee display updates with a 200ms debounce after the user stops typing. Include a shipping preference toggle: "I'll ship this item" vs "Local pickup only" — stored as `shippingPreference` in the store. Min price $1.00 (100 cents), max $9,999.00 (999900 cents).
 
 **Files:** `src/features/listings/components/create-wizard/steps/pricing-step.tsx`, `src/features/listings/components/create-wizard/steps/pricing-step.module.scss`
@@ -102,6 +117,7 @@ Build the pricing step with a price input that has a "$" prefix and `inputmode="
 **Expert Domains:** state-management
 
 ### Task 3.2: Implement Step 5 — Shipping step
+
 Build the shipping step, only rendered when `shippingPreference === 'ship'`. If "Local pickup only" was selected, the wizard skips directly to Review. Fields: weight in lbs + oz (two inputs, converted to total oz for storage), package dimensions (length, width, height in inches), and shipping payer choice ("Buyer pays" / "Seller pays" radio buttons). Include a collapsible "What box should I use?" section with general shipping tips. All values sync to the Zustand store.
 
 **Files:** `src/features/listings/components/create-wizard/steps/shipping-step.tsx`, `src/features/listings/components/create-wizard/steps/shipping-step.module.scss`
@@ -110,6 +126,7 @@ Build the shipping step, only rendered when `shippingPreference === 'ship'`. If 
 **Expert Domains:** scss
 
 ### Task 3.3: Implement Step 6 — Review step
+
 Build the review step that displays a read-only summary of all wizard data: a listing card preview (using `ListingCard` or a simplified preview card showing cover photo, title, price, condition badge) and a details breakdown (category, condition, description, shipping info, fees). Two action buttons: "Publish Listing" (primary, sets status to 'active' via `useUpdateListing` then `useUpdateListingStatus`) and "Save as Draft" (secondary, redirects without status change since the listing is already a draft). Publish redirects to `/listing/[id]` (or `/item/[id]` matching the existing `ListingCard` link pattern). Save draft redirects to `/dashboard/listings`. Both actions clear the Zustand store via `reset()`.
 
 **Files:** `src/features/listings/components/create-wizard/steps/review-step.tsx`, `src/features/listings/components/create-wizard/steps/review-step.module.scss`
@@ -118,6 +135,7 @@ Build the review step that displays a read-only summary of all wizard data: a li
 **Expert Domains:** nextjs, state-management
 
 ### Task 3.4: Wire step skipping logic in the wizard shell
+
 Update the wizard shell (CreateWizard) to handle step 5 (shipping) being skipped when `shippingPreference === 'local_pickup'`. When the user clicks Next on step 4 (pricing) and local pickup is selected, advance directly to step 6 (review). Similarly, when on review and clicking Back, go to step 4 if local pickup. Update the progress bar to show step 5 as "skipped" (grayed out) when local pickup is selected.
 
 **Files:** `src/features/listings/components/create-wizard/index.tsx`
@@ -125,10 +143,12 @@ Update the wizard shell (CreateWizard) to handle step 5 (shipping) being skipped
 **Expert Domains:** state-management
 
 ## Phase 4: Auto-save, draft resume, and polish
+
 **Goal:** Add auto-save every 30 seconds, draft resume on wizard load, and remaining UX polish (transitions, accessibility, final build verification).
 **Verify:** `pnpm build && pnpm lint && pnpm typecheck`
 
 ### Task 4.1: Implement auto-save draft logic
+
 Create a custom hook `useAutoSaveDraft` that saves the current wizard state to the backend every 30 seconds of inactivity (debounced). It uses `useUpdateListing` to persist title, description, price, category, condition, and other fields to the existing draft listing. The hook should track a `lastSavedAt` timestamp and show a subtle "Draft saved" indicator. Only saves when there are actual changes (dirty check against last-saved values). The hook is used inside the CreateWizard component.
 
 **Files:** `src/features/listings/hooks/use-auto-save-draft.ts`
@@ -136,6 +156,7 @@ Create a custom hook `useAutoSaveDraft` that saves the current wizard state to t
 **Expert Domains:** state-management
 
 ### Task 4.2: Implement draft resume on wizard load
+
 Update the wizard page and CreateWizard component to handle draft resume. When the page loads with a `?draftId=` query param, the server component fetches the draft data. The CreateWizard receives this as `initialDraft` prop and hydrates the Zustand store with the draft's values (title, description, price, category, condition, photos, etc.) and sets the step to the last incomplete step. Add logic to determine the "last incomplete step" by checking which step's required fields are populated.
 
 **Files:** `src/app/(frontend)/dashboard/listings/new/page.tsx`, `src/features/listings/components/create-wizard/index.tsx`
@@ -143,6 +164,7 @@ Update the wizard page and CreateWizard component to handle draft resume. When t
 **Expert Domains:** nextjs, supabase
 
 ### Task 4.3: Implement "Save draft and exit" action
+
 Wire the "Save draft and exit" button that is visible on all steps. When clicked, it saves the current wizard state to the backend (same as auto-save but immediate), clears the Zustand store, and redirects to `/dashboard/listings`. If no draft exists yet (step 1, no photos), it simply clears the store and redirects without saving. Show a toast confirmation "Draft saved" on successful save.
 
 **Files:** `src/features/listings/components/create-wizard/index.tsx`
@@ -151,6 +173,7 @@ Wire the "Save draft and exit" button that is visible on all steps. When clicked
 **Expert Domains:** state-management
 
 ### Task 4.4: Add WCAG 2.1 AA accessibility refinements
+
 Audit all wizard components for accessibility compliance. Ensure: all form inputs have `aria-required`, `aria-invalid`, `aria-describedby` linking to error messages; the progress bar uses `aria-current="step"`; focus is moved to the step heading when navigating between steps; the sticky Next button has `aria-busy` during validation; the photo guidance modal has focus trap; all interactive elements have visible `:focus-visible` outlines and minimum 44x44px tap targets on mobile.
 
 **Files:** `src/features/listings/components/create-wizard/index.tsx`, `src/features/listings/components/create-wizard/steps/photos-step.tsx`, `src/features/listings/components/create-wizard/steps/category-condition-step.tsx`, `src/features/listings/components/create-wizard/steps/details-step.tsx`, `src/features/listings/components/create-wizard/steps/pricing-step.tsx`, `src/features/listings/components/create-wizard/steps/shipping-step.tsx`, `src/features/listings/components/create-wizard/steps/review-step.tsx`, `src/features/listings/components/create-wizard/wizard-progress.tsx`

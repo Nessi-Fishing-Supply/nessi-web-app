@@ -5,6 +5,7 @@
 - [W] Formatting issue in `src/app/api/shops/[id]/route.ts` — fixed with Prettier
 
 ### Results
+
 - Build: PASS
 - Lint: PASS
 - Typecheck: PASS

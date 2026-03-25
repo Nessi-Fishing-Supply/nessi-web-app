@@ -2,14 +2,14 @@
 
 ## Preflight Results
 
-| Check | Result |
-|-------|--------|
-| Build | PASS |
-| Lint | PASS |
-| Typecheck | PASS |
-| Format | PASS (fixed in style commit) |
-| Stylelint | PASS |
-| Tests | PASS (67/67) |
+| Check     | Result                       |
+| --------- | ---------------------------- |
+| Build     | PASS                         |
+| Lint      | PASS                         |
+| Typecheck | PASS                         |
+| Format    | PASS (fixed in style commit) |
+| Stylelint | PASS                         |
+| Tests     | PASS (67/67)                 |
 
 ## Findings
 

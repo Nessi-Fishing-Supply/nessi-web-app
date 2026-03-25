@@ -1,6 +1,7 @@
 # Review Findings — #65
 
 ## Summary
+
 All checks relevant to this ticket's scope pass. Build/typecheck failures are expected per ticket scope (Ticket 2 handles app code rename).
 
 ## Findings
@@ -14,4 +15,5 @@ All checks relevant to this ticket's scope pass. Build/typecheck failures are ex
 [I] `profiles_pkey` index was not renamed to `members_pkey` — PostgreSQL doesn't auto-rename PK indexes on table rename. Cosmetic only, does not affect functionality.
 
 ## Verdict
+
 **PASS** — No blocking or warning findings. All acceptance criteria verified via SQL assertions.

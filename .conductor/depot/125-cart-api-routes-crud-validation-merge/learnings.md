@@ -1,6 +1,7 @@
 # Learnings — #125
 
 ## Cart API Route Patterns
+
 - All cart routes follow the same auth → delegate → respond pattern as listings routes
 - Error mapping from service throw messages to HTTP status codes works cleanly for the cart domain
 - The `addToCartServer` function takes a `_priceCents` parameter it ignores — the API passes 0 as a placeholder since the service snapshots from DB

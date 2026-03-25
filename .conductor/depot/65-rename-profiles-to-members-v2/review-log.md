@@ -1,6 +1,7 @@
 # Review Log — #65
 
 ## Review 1 (2026-03-20)
+
 - Lint: PASS (0 errors, 4 pre-existing warnings)
 - Format: PASS (1 pre-existing issue in unrelated file)
 - Build: EXPECTED FAIL (type errors from profiles→members rename in app code — Ticket 2 scope)

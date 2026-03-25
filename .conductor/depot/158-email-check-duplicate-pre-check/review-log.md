@@ -1,6 +1,7 @@
 # Review Log: #158
 
 ## Review 1 — 2026-03-24
+
 - **Build:** pass
 - **Lint:** 0 errors, 7 pre-existing warnings
 - **Typecheck:** pass
@@ -12,6 +13,7 @@
 - **Status:** needs_fixes
 
 ## Review 2 — 2026-03-24
+
 - **Build:** pass
 - **Lint:** 0 errors
 - **Typecheck:** pass

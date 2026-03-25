@@ -2,13 +2,13 @@
 
 ## Preflight Results
 
-| Check | Result |
-|-------|--------|
-| Build | pass |
-| Lint | pass (0 errors, 4 pre-existing warnings unrelated to this change) |
-| Typecheck | pass |
-| Format | pass |
-| Tests | pass (67/67) |
+| Check     | Result                                                            |
+| --------- | ----------------------------------------------------------------- |
+| Build     | pass                                                              |
+| Lint      | pass (0 errors, 4 pre-existing warnings unrelated to this change) |
+| Typecheck | pass                                                              |
+| Format    | pass                                                              |
+| Tests     | pass (67/67)                                                      |
 
 ## Findings
 

@@ -1,14 +1,17 @@
 # Implementation Plan: #65 — chore(database): rename profiles table to members
 
 ## Overview
+
 2 phases, 3 total tasks
 Estimated scope: small
 
 ## Phase 1: Create the rename migration
+
 **Goal:** Write a single SQL migration that renames the `profiles` table to `members`, restores `shop_name` to `display_name`, and updates all associated database objects (indexes, constraints, triggers, trigger functions, RLS policies).
 **Verify:** `pnpm build`
 
 ### Task 1.1: Write the rename migration SQL file
+
 Create a new migration file that performs the full rename in a single transaction. The migration must:
 
 1. Rename `profiles` table to `members`
@@ -21,6 +24,7 @@ Create a new migration file that performs the full rename in a single transactio
 8. Drop and recreate all three RLS policies on `members` with updated policy names: "Members are viewable by everyone" (SELECT), "Users can insert own member row" (INSERT), "Users can update own member row" (UPDATE)
 
 Reference the current schema from these existing migrations to ensure nothing is missed:
+
 - `supabase/migrations/20260319000000_create_profiles_table.sql` (original table, indexes, constraints, triggers, RLS)
 - `supabase/migrations/20260320000000_add_first_last_name_to_profiles.sql` (added first_name/last_name, updated handle_new_user)
 - `supabase/migrations/20260320000001_rename_display_name_to_shop_name.sql` (renamed display_name to shop_name, updated indexes/constraints/trigger)
@@ -29,6 +33,7 @@ Use timestamp format `20260320000002` for the migration filename so it sorts aft
 
 **Files:** `supabase/migrations/20260320000002_rename_profiles_to_members.sql`
 **AC:**
+
 - `ALTER TABLE profiles RENAME TO members` is present
 - `ALTER TABLE members RENAME COLUMN shop_name TO display_name` is present
 - All four indexes are renamed with `members_` prefix and reference `display_name` where applicable
@@ -38,26 +43,31 @@ Use timestamp format `20260320000002` for the migration filename so it sorts aft
 - Triggers `on_members_updated_at` and `on_members_system_fields` exist on `members` table
 - Three RLS policies exist on `members` with updated names
 - No references to `profiles` or `shop_name` remain in the new migration (except in comments noting the rename)
-**Expert Domains:** supabase
-**MCP:** supabase
+  **Expert Domains:** supabase
+  **MCP:** supabase
 
 ## Phase 2: Regenerate TypeScript types
+
 **Goal:** Regenerate the database types so `src/types/database.ts` reflects the `members` table with `display_name` column instead of `profiles` with `shop_name`.
 **Verify:** `pnpm build` (note: type errors in application code are expected per ticket scope -- only verify the migration applied and types regenerated)
 
 ### Task 2.1: Apply migration to local Supabase and regenerate types
+
 Apply the new migration to the local Supabase instance using `supabase db reset` (since there is no production data and this ensures a clean state with all migrations applied in order), then run `pnpm db:types` to regenerate `src/types/database.ts`.
 
 **Files:** `src/types/database.ts` (modified by regeneration)
 **AC:**
+
 - `src/types/database.ts` contains a `members` key under `Tables` (not `profiles`)
 - The `members` type has `display_name: string` in its Row type (not `shop_name`)
 - The `members` type has `first_name: string | null` and `last_name: string | null`
 - No reference to `profiles` table or `shop_name` column exists in the generated types
-**Expert Domains:** supabase
+  **Expert Domains:** supabase
 
 ### Task 2.2: Verify migration correctness via SQL assertions
+
 Run SQL queries against the local Supabase database to verify the migration applied correctly. Check:
+
 1. `SELECT * FROM members LIMIT 0` succeeds
 2. `SELECT * FROM profiles LIMIT 0` fails with "relation does not exist"
 3. Index `members_display_name_unique` exists in `pg_indexes`

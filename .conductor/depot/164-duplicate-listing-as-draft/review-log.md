@@ -3,6 +3,7 @@
 ## Review Cycle 1 — 2026-03-24
 
 ### Preflight Results
+
 - TypeScript: pass (4.9s)
 - ESLint: pass (8.2s, 0 errors, 7 pre-existing warnings)
 - Stylelint: pass (1.5s)
@@ -11,6 +12,7 @@
 - Build: pass (15s)
 
 ### Code Review
+
 - Reviewer: superpowers:code-reviewer
 - Verdict: Approved
 - Findings: 0 blocking, 0 warnings, 4 info

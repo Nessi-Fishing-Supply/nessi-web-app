@@ -1,6 +1,7 @@
 # Implementation Plan: #27 — Category browse pages + shared listing grid infrastructure
 
 ## Overview
+
 3 phases, 14 total tasks
 Estimated scope: medium
 

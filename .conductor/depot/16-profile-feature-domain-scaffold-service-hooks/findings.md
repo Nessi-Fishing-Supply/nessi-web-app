@@ -1,6 +1,7 @@
 # Review Findings — #16
 
 ## Summary
+
 - Blocking: 0
 - Warning: 1
 - Info: 0
@@ -14,6 +15,7 @@ None.
 ## Warning
 
 ### [W1] Prettier formatting violations in 2 profile feature files
+
 **Source:** format:check
 **File:** src/features/profiles/CLAUDE.md
 **File:** src/features/profiles/services/profile.ts
