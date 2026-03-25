@@ -564,14 +564,16 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
       >
         {modalAction?.type === 'leave' && (
           <div className={styles.confirmModal}>
-            <h3 className={styles.confirmTitle}>Leave this shop?</h3>
+            <h3 className={styles.confirmTitle}>Leave shop?</h3>
             <p className={styles.confirmMessage}>
               You are about to leave <strong>{shop.shop_name}</strong>. This will:
             </p>
             <ul className={styles.confirmList}>
-              <li>You will immediately lose access to this shop</li>
-              <li>Your listings and contributions remain but you can no longer manage them</li>
-              <li>Your context will switch back to your member profile</li>
+              <li>Immediately revoke your access to this shop</li>
+              <li>
+                Leave your listings and contributions intact, but you can no longer manage them
+              </li>
+              <li>Switch your context back to your member profile</li>
             </ul>
             <p className={styles.confirmMessage} id="leave-confirm-hint">
               To confirm, type <strong className={styles.confirmPhrase}>{leavePhrase}</strong>{' '}
