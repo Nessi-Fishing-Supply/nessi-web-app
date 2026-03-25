@@ -28,16 +28,16 @@ interface ShopNavItem {
 const SHOP_NAV_ITEMS: ShopNavItem[] = [
   { href: '/dashboard', icon: <HiOutlineHome />, label: 'Dashboard' },
   {
-    href: '/dashboard/shop/settings',
-    icon: <HiOutlineCog />,
-    label: 'Shop Settings',
-    requiredFeature: 'shop_settings',
-  },
-  {
     href: '/dashboard/listings',
     icon: <HiOutlineShoppingBag />,
     label: 'Listings',
     requiredFeature: 'listings',
+  },
+  {
+    href: '/dashboard/shop/settings',
+    icon: <HiOutlineCog />,
+    label: 'Shop Settings',
+    requiredFeature: 'shop_settings',
   },
 ];
 

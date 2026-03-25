@@ -17,21 +17,22 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Service Functions
 
-| Function                                  | Purpose                                                                                                     |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `getShop(id)`                             | Fetch shop by ID, returns `Shop \| null`                                                                    |
-| `getShopBySlug(slug)`                     | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                      |
-| `getShopsByOwner(memberId)`               | Fetch all shops owned by a member, returns `Shop[]`                                                         |
-| `getShopsByMember(memberId)`              | Fetch all shops a member belongs to (any role), returns `Shop[]`                                            |
-| `createShop(data)`                        | Insert a new shop row, returns created `Shop`                                                               |
-| `updateShop(id, data)`                    | Update allowed shop fields, returns updated `Shop`                                                          |
-| `deleteShop(id)`                          | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                |
-| `updateShopSlug(shopId, slug)`            | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`       |
-| `getShopMembers(shopId)`                  | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]` |
-| `addShopMember(shopId, memberId, roleId)` | Add a member to a shop with a role UUID, returns created `ShopMember`                                       |
-| `removeShopMember(shopId, memberId)`      | Remove a member from a shop                                                                                 |
-| `transferOwnership(shopId, newOwnerId)`   | Transfer shop ownership to another member, updates owner_id                                                 |
-| `checkShopSlugAvailable(slug)`            | Slug uniqueness check against shared slugs table, returns `boolean`                                         |
+| Function                                  | Purpose                                                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `getShop(id)`                             | Fetch shop by ID, returns `Shop \| null`                                                                           |
+| `getShopBySlug(slug)`                     | Fetch shop by URL slug (excludes soft-deleted), returns `Shop \| null`                                             |
+| `getShopsByOwner(memberId)`               | Fetch all shops owned by a member, returns `Shop[]`                                                                |
+| `getShopsByMember(memberId)`              | Fetch all shops a member belongs to (any role), returns `Shop[]`                                                   |
+| `createShop(data)`                        | Insert a new shop row, returns created `Shop`                                                                      |
+| `updateShop(id, data)`                    | Update allowed shop fields, returns updated `Shop`                                                                 |
+| `deleteShop(id)`                          | Calls `DELETE /api/shops/{id}` for server-side deletion with storage cleanup, returns `void`                       |
+| `updateShopSlug(shopId, slug)`            | Calls `POST /api/shops/slug` to atomically update the shop's slug via the slugs table, returns `void`              |
+| `getMyShopRole(shopId)`                   | Fetch the current authenticated user's shop membership with joined `shop_roles` data, returns `ShopMember \| null` |
+| `getShopMembers(shopId)`                  | Fetch all members of a shop with joined `shop_roles` data (name, slug, permissions), returns `ShopMember[]`        |
+| `addShopMember(shopId, memberId, roleId)` | Add a member to a shop with a role UUID, returns created `ShopMember`                                              |
+| `removeShopMember(shopId, memberId)`      | Remove a member from a shop                                                                                        |
+| `transferOwnership(shopId, newOwnerId)`   | Transfer shop ownership to another member, updates owner_id                                                        |
+| `checkShopSlugAvailable(slug)`            | Slug uniqueness check against shared slugs table, returns `boolean`                                                |
 
 ### Server-side Service Functions (`services/shop-server.ts`)
 
@@ -41,21 +42,22 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 
 ## Hooks
 
-| Hook                         | Query Key                                            | Purpose                                                  |
-| ---------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
-| `useShop(id)`                | `['shops', id]`                                      | Fetch shop by ID                                         |
-| `useShopBySlug(slug)`        | `['shops', 'slug', slug]`                            | Fetch shop by slug                                       |
-| `useShopsByOwner(memberId)`  | `['shops', 'owner', memberId]`                       | Fetch all shops owned by a member                        |
-| `useShopsByMember(memberId)` | `['shops', 'member', memberId]`                      | Fetch all shops a member belongs to                      |
-| `useShopMembers(shopId)`     | `['shops', shopId, 'members']`                       | Fetch all members of a shop                              |
-| `useShopSlugCheck(slug)`     | `['shops', 'slug-check', slug]`                      | Slug availability check (enabled when slug is non-empty) |
-| `useCreateShop()`            | mutation, invalidates `['shops']`                    | Create a new shop                                        |
-| `useUpdateShop()`            | mutation, invalidates `['shops']`                    | Update shop fields                                       |
-| `useDeleteShop()`            | mutation, invalidates `['shops']`                    | Delete a shop via API route with storage cleanup         |
-| `useUpdateShopSlug()`        | mutation, invalidates `['shops']`                    | Update a shop's slug via `POST /api/shops/slug`          |
-| `useAddShopMember()`         | mutation, invalidates `['shops', shopId, 'members']` | Add a member to a shop                                   |
-| `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']` | Remove a member from a shop                              |
-| `useTransferOwnership()`     | mutation, invalidates `['shops']`                    | Transfer shop ownership to another member                |
+| Hook                         | Query Key                                            | Purpose                                                                        |
+| ---------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `useShop(id)`                | `['shops', id]`                                      | Fetch shop by ID                                                               |
+| `useShopBySlug(slug)`        | `['shops', 'slug', slug]`                            | Fetch shop by slug                                                             |
+| `useShopsByOwner(memberId)`  | `['shops', 'owner', memberId]`                       | Fetch all shops owned by a member                                              |
+| `useShopsByMember(memberId)` | `['shops', 'member', memberId]`                      | Fetch all shops a member belongs to                                            |
+| `useShopMembers(shopId)`     | `['shops', shopId, 'members']`                       | Fetch all members of a shop                                                    |
+| `useShopPermissions(shopId)` | `['shops', shopId, 'my-permissions']`                | Current user's permissions and role for a shop (hooks/use-shop-permissions.ts) |
+| `useShopSlugCheck(slug)`     | `['shops', 'slug-check', slug]`                      | Slug availability check (enabled when slug is non-empty)                       |
+| `useCreateShop()`            | mutation, invalidates `['shops']`                    | Create a new shop                                                              |
+| `useUpdateShop()`            | mutation, invalidates `['shops']`                    | Update shop fields                                                             |
+| `useDeleteShop()`            | mutation, invalidates `['shops']`                    | Delete a shop via API route with storage cleanup                               |
+| `useUpdateShopSlug()`        | mutation, invalidates `['shops']`                    | Update a shop's slug via `POST /api/shops/slug`                                |
+| `useAddShopMember()`         | mutation, invalidates `['shops', shopId, 'members']` | Add a member to a shop                                                         |
+| `useRemoveShopMember()`      | mutation, invalidates `['shops', shopId, 'members']` | Remove a member from a shop                                                    |
+| `useTransferOwnership()`     | mutation, invalidates `['shops']`                    | Transfer shop ownership to another member                                      |
 
 ## Components
 
@@ -67,6 +69,7 @@ Shops are business entities in Nessi's C2C marketplace, separate from member ide
 | `OwnershipTransferSection` | `components/shop-settings/ownership-transfer-section/` | Two-step confirmation modal for transferring shop ownership                                                |
 | `ShopDeletionSection`      | `components/shop-settings/shop-deletion-section/`      | Danger zone with type-to-confirm deletion modal                                                            |
 | `HeroBannerUpload`         | `components/hero-banner-upload/`                       | Hero banner image picker with crop UI (uses ImageCropper + Modal); uploads via POST /api/shops/hero-banner |
+| `ShopRouteGuard`           | `components/shop-route-guard/`                         | Client-side route guard — redirects to /dashboard with toast when user lacks permission for a shop route   |
 
 ## Pages
 
