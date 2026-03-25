@@ -3,7 +3,7 @@
   "issue": 251,
   "title": "Add Resend email utility and shop invite email template",
   "branch": "feat/251/add-resend-email-utility-and-shop-invite-email",
-  "status": "reviewing",
+  "status": "complete",
   "phase": {
     "current": 2,
     "total": 2,
@@ -15,5 +15,5 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-25T12:00:00Z", "lastActivity": "2026-03-25T12:15:00Z" }
+  "timestamps": { "started": "2026-03-25T12:00:00Z", "lastActivity": "2026-03-25T12:25:00Z" }
 }

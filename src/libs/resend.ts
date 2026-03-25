@@ -1,6 +1,26 @@
+import 'server-only';
+
 import { Resend } from 'resend';
 
+if (!process.env.RESEND_API_KEY) {
+  throw new Error('Missing RESEND_API_KEY environment variable');
+}
+
+if (!process.env.RESEND_FROM_EMAIL) {
+  throw new Error('Missing RESEND_FROM_EMAIL environment variable');
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
+const fromEmail = process.env.RESEND_FROM_EMAIL;
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 interface SendInviteEmailParams {
   to: string;
@@ -17,6 +37,9 @@ export async function sendInviteEmail({
   roleName,
   token,
 }: SendInviteEmailParams) {
+  const safeShopName = escapeHtml(shopName);
+  const safeInviterName = escapeHtml(inviterName);
+  const safeRoleName = escapeHtml(roleName);
   const acceptUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${token}`;
 
   const html = `
@@ -25,7 +48,7 @@ export async function sendInviteEmail({
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>You've been invited to join ${shopName} on Nessi</title>
+    <title>You've been invited to join ${safeShopName} on Nessi</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f4f5; padding: 40px 16px;">
@@ -43,9 +66,9 @@ export async function sendInviteEmail({
               <td style="padding: 32px;">
                 <p style="margin: 0 0 16px; color: #111827; font-size: 16px; line-height: 1.5;">Hi there,</p>
                 <p style="margin: 0 0 24px; color: #374151; font-size: 16px; line-height: 1.6;">
-                  <strong style="color: #111827;">${inviterName}</strong> has invited you to join
-                  <strong style="color: #111827;">${shopName}</strong> as a
-                  <strong style="color: #111827;">${roleName}</strong> on Nessi.
+                  <strong style="color: #111827;">${safeInviterName}</strong> has invited you to join
+                  <strong style="color: #111827;">${safeShopName}</strong> as a
+                  <strong style="color: #111827;">${safeRoleName}</strong> on Nessi.
                 </p>
                 <!-- CTA Button -->
                 <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 24px;">
@@ -81,9 +104,9 @@ export async function sendInviteEmail({
   `.trim();
 
   return resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL!,
+    from: fromEmail,
     to,
-    subject: `You've been invited to join ${shopName} on Nessi`,
+    subject: `You've been invited to join ${safeShopName} on Nessi`,
     html,
   });
 }
