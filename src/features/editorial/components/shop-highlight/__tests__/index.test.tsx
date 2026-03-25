@@ -37,7 +37,6 @@ describe('ShopHighlight', () => {
 
   it('renders all 3 preview items (capped at 3)', () => {
     render(<ShopHighlight {...baseProps} />);
-    const images = screen.getAllByRole('img');
     // hero image + 3 preview items = 4 (no avatar since avatarUrl not provided)
     const previewPrices = screen.getAllByText(/\$/);
     expect(previewPrices.length).toBeGreaterThanOrEqual(3);

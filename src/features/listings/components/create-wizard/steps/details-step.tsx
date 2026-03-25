@@ -36,6 +36,7 @@ export default function DetailsStep() {
   const descriptionValue = watch('description') ?? '';
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/incompatible-library
     const subscription = watch((values, { name }) => {
       if (name === 'title' && values.title !== undefined) {
         setField('title', values.title);

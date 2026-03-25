@@ -39,31 +39,6 @@ const draftListing = {
 };
 
 // ---------------------------------------------------------------------------
-// Chainable Supabase query builder factory
-// ---------------------------------------------------------------------------
-
-function makeQueryBuilder(resolvedValue: { data: unknown; error: unknown }) {
-  const builder: Record<string, unknown> = {};
-  const chain = () => builder;
-  builder.select = vi.fn().mockReturnValue(builder);
-  builder.eq = vi.fn().mockReturnValue(builder);
-  builder.is = vi.fn().mockReturnValue(builder);
-  builder.order = vi.fn().mockReturnValue(builder);
-  builder.update = vi.fn().mockReturnValue(builder);
-  builder.single = vi.fn().mockResolvedValue(resolvedValue);
-  // Allow update().eq() to resolve for non-single chains
-  (builder.eq as ReturnType<typeof vi.fn>).mockImplementation(() => {
-    const eqBuilder = { ...builder };
-    eqBuilder.eq = vi.fn().mockReturnValue(eqBuilder);
-    // Make the builder itself thenable so await supabase.from().update().eq() works
-    (eqBuilder as Record<string, unknown>).then = (resolve: (v: unknown) => unknown) =>
-      Promise.resolve(resolvedValue).then(resolve);
-    return eqBuilder;
-  });
-  return builder;
-}
-
-// ---------------------------------------------------------------------------
 // GET /api/listings/[id]
 // ---------------------------------------------------------------------------
 

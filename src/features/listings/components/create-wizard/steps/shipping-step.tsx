@@ -35,6 +35,7 @@ export default function ShippingStep({ errors = {} }: { errors?: Record<string, 
   const { watch, register, setValue } = methods;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/incompatible-library
     const subscription = watch((values, { name }) => {
       if (name === 'weightLbs' || name === 'weightOz') {
         const lbs = Number(values.weightLbs) || 0;

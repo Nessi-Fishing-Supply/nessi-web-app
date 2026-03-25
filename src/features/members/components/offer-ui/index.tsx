@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { HiExclamationCircle, HiCheckCircle } from 'react-icons/hi';
 import Button from '@/components/controls/button';
 import styles from './offer-ui.module.scss';
@@ -27,7 +27,7 @@ function formatCurrency(value: number): string {
 }
 
 function useCountdown(expiresAt: Date): string {
-  const getRemaining = () => {
+  const getRemaining = useCallback(() => {
     const diff = expiresAt.getTime() - Date.now();
     if (diff <= 0) return 'Expired';
     const h = Math.floor(diff / 3_600_000);
@@ -36,14 +36,14 @@ function useCountdown(expiresAt: Date): string {
     if (h > 0) return `${h}h ${m}m`;
     if (m > 0) return `${m}m ${s}s`;
     return `${s}s`;
-  };
+  }, [expiresAt]);
 
   const [remaining, setRemaining] = useState(getRemaining);
 
   useEffect(() => {
     const id = setInterval(() => setRemaining(getRemaining()), 1000);
     return () => clearInterval(id);
-  }, [expiresAt]);
+  }, [expiresAt, getRemaining]);
 
   return remaining;
 }
