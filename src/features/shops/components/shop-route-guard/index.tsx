@@ -37,31 +37,38 @@ export default function ShopRouteGuard({ children }: ShopRouteGuardProps) {
 
   const matchedRoute = GUARDED_ROUTES.find((route) => pathname.startsWith(route.pathPrefix));
 
+  const isOnShopRoute = matchedRoute !== undefined;
+
   const isDenied =
     activeContext.type === 'shop' &&
     !isLoading &&
-    matchedRoute !== undefined &&
+    isOnShopRoute &&
     !meetsLevel(permissions, matchedRoute.feature, matchedRoute.level);
+
+  const isContextMismatch = activeContext.type === 'member' && isOnShopRoute;
 
   useEffect(() => {
     redirectedRef.current = false;
   }, [pathname]);
 
   useEffect(() => {
-    if (!isDenied || redirectedRef.current) return;
+    if (redirectedRef.current) return;
+    if (!isDenied && !isContextMismatch) return;
 
     redirectedRef.current = true;
 
     showToast({
-      message: 'Access denied',
-      description: "You don't have permission to access this page.",
-      type: 'error',
+      message: isContextMismatch ? 'Switched to member' : 'Access denied',
+      description: isContextMismatch
+        ? 'You left shop context. Redirecting to your dashboard.'
+        : "You don't have permission to access this page.",
+      type: isContextMismatch ? 'success' : 'error',
     });
 
     router.push('/dashboard');
-  }, [isDenied, router, showToast]);
+  }, [isDenied, isContextMismatch, router, showToast]);
 
-  if (isDenied) {
+  if (isDenied || isContextMismatch) {
     return null;
   }
 
