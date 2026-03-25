@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "issue": 260,
+  "title": "Add \"Leave Shop\" action for non-owner shop members",
+  "branch": "feat/260/add-leave-shop-action",
+  "status": "implementing",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "1.2", "2.1", "2.2"], "current": null, "remaining": [] }
+  },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-25T12:00:00Z", "lastActivity": "2026-03-25T12:00:00Z" }
+}

@@ -7,6 +7,7 @@ import {
   HiUserRemove,
   HiShieldCheck,
   HiUserAdd,
+  HiLogout,
 } from 'react-icons/hi';
 import Image from 'next/image';
 import { useQueryClient } from '@tanstack/react-query';
@@ -61,7 +62,8 @@ function getMemberInitials(member: ShopMember): string {
 type ModalAction =
   | { type: 'changeRole'; member: ShopMember }
   | { type: 'remove'; member: ShopMember }
-  | { type: 'transfer'; member: ShopMember };
+  | { type: 'transfer'; member: ShopMember }
+  | { type: 'leave'; member: ShopMember };
 
 interface MemberRowProps {
   member: ShopMember;
@@ -110,6 +112,7 @@ function MemberRow({ member, isOwner, isCurrentUser, roles, onAction, isPending 
   }, [menuOpen]);
 
   const showMenu = isOwner && !isOwnerRole && !isCurrentUser;
+  const showLeaveButton = isCurrentUser && !isOwnerRole;
 
   return (
     <li className={styles.memberRow}>
@@ -142,6 +145,19 @@ function MemberRow({ member, isOwner, isCurrentUser, roles, onAction, isPending 
           {roleLabel}
         </span>
       </div>
+
+      {showLeaveButton && (
+        <Button
+          style="danger"
+          onClick={() => onAction({ type: 'leave', member })}
+          disabled={isPending}
+          ariaLabel="Leave this shop"
+          icon={<HiLogout aria-hidden="true" />}
+          iconPosition="left"
+        >
+          Leave
+        </Button>
+      )}
 
       {showMenu && (
         <div className={styles.menuWrapper} ref={menuRef}>
@@ -321,10 +337,41 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
     }
   };
 
+  const handleConfirmLeave = async () => {
+    if (modalAction?.type !== 'leave') return;
+    const { member } = modalAction;
+
+    try {
+      await removeShopMember.mutateAsync({
+        shopId: shop.id,
+        memberId: member.member_id,
+      });
+      useContextStore.getState().switchToMember();
+      queryClient.invalidateQueries({ queryKey: ['shops', 'member', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['shops'] });
+      showToast({
+        type: 'success',
+        message: `You left ${shop.shop_name}`,
+        description: 'You no longer have access to this shop.',
+      });
+      closeModal();
+    } catch {
+      showToast({
+        type: 'error',
+        message: 'Failed to leave shop',
+        description: 'Something went wrong. Please try again.',
+      });
+    }
+  };
+
   const transferTarget =
     modalAction?.type === 'transfer' ? getMemberDisplayName(modalAction.member) : '';
   const transferPhrase = `Transfer Ownership to ${transferTarget}`;
   const isTransferPhraseMatch = confirmName === transferPhrase;
+
+  const leaveTarget = modalAction?.type === 'leave' ? getMemberDisplayName(modalAction.member) : '';
+  const leavePhrase = `I ${leaveTarget} want to leave ${shop.shop_name}`;
+  const isLeavePhraseMatch = modalAction?.type === 'leave' && confirmName === leavePhrase;
 
   return (
     <section className={styles.card} aria-labelledby="shop-members-heading">
@@ -503,6 +550,57 @@ export default function ShopMembersSection({ shop }: ShopMembersSectionProps) {
                 loading={transferOwnership.isPending}
               >
                 Transfer Ownership
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Leave Shop — requires typing full confirmation phrase */}
+      <Modal
+        isOpen={modalAction?.type === 'leave'}
+        onClose={closeModal}
+        ariaLabel="Confirm leaving shop"
+      >
+        {modalAction?.type === 'leave' && (
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Leave this shop?</h3>
+            <p className={styles.confirmMessage}>
+              You are about to leave <strong>{shop.shop_name}</strong>. This will:
+            </p>
+            <ul className={styles.confirmList}>
+              <li>You will immediately lose access to this shop</li>
+              <li>Your listings and contributions remain but you can no longer manage them</li>
+              <li>Your context will switch back to your member profile</li>
+            </ul>
+            <p className={styles.confirmMessage} id="leave-confirm-hint">
+              To confirm, type <strong className={styles.confirmPhrase}>{leavePhrase}</strong>{' '}
+              below.
+            </p>
+            <label htmlFor="leave-confirm-input" className="sr-only">
+              Leave confirmation phrase
+            </label>
+            <input
+              id="leave-confirm-input"
+              className={styles.confirmInput}
+              type="text"
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+              placeholder={leavePhrase}
+              aria-describedby="leave-confirm-hint"
+              autoComplete="off"
+            />
+            <div className={styles.confirmActions}>
+              <Button style="secondary" onClick={closeModal} disabled={removeShopMember.isPending}>
+                Cancel
+              </Button>
+              <Button
+                style="danger"
+                onClick={handleConfirmLeave}
+                disabled={!isLeavePhraseMatch}
+                loading={removeShopMember.isPending}
+              >
+                Leave Shop
               </Button>
             </div>
           </div>
