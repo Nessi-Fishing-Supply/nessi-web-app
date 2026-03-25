@@ -136,6 +136,29 @@ export async function getShopMembers(shopId: string): Promise<ShopMember[]> {
   return data as unknown as ShopMember[];
 }
 
+export async function getMyShopRole(shopId: string): Promise<ShopMember | null> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from('shop_members')
+    .select('*, members(first_name, last_name, avatar_url), shop_roles(name, slug, permissions)')
+    .eq('shop_id', shopId)
+    .eq('member_id', user.id)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    throw new Error(`Failed to fetch shop role: ${error.message}`);
+  }
+
+  return data as unknown as ShopMember;
+}
+
 export async function addShopMember(
   shopId: string,
   memberId: string,
