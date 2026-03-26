@@ -10,6 +10,7 @@ import ExpandableSection from '@/features/listings/components/expandable-section
 import ConditionBadge from '@/features/listings/components/condition-badge';
 import ShareButton from '@/features/listings/components/share-button';
 import SimilarItemsStrip from '@/features/listings/components/similar-items-strip';
+import MoreFromSellerStrip from '@/features/listings/components/more-from-seller-strip';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/controls/button';
 import AddToCartButton from '@/features/cart/components/add-to-cart-button';
@@ -307,6 +308,16 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
           category={listing.category}
           condition={listing.condition}
         />
+
+        {/* More from this seller */}
+        {seller && (
+          <MoreFromSellerStrip
+            sellerId={listing.seller_id}
+            seller={seller}
+            shopId={listing.shop_id ?? undefined}
+            excludeListingId={listing.id}
+          />
+        )}
 
         {/* Report */}
         <div className={styles.reportRow}>

@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "issue": 210,
+  "title": "feat(recommendations): #154.6 — More From This Seller section on listing detail page",
+  "branch": "feat/210/more-from-this-seller-section",
+  "status": "reviewing",
+  "phase": { "current": 1, "total": 1, "tasks": { "completed": ["1.1", "1.2", "1.3"], "current": null, "remaining": [] } },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-26T12:00:00Z", "lastActivity": "2026-03-26T12:05:00Z" }
+}

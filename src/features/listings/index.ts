@@ -142,3 +142,4 @@ export { default as SpeciesFilter } from './components/species-filter';
 export { default as ListingTypeFilter } from './components/listing-type-filter';
 export { default as SimilarItemsStrip } from './components/similar-items-strip';
 export { default as AlsoLikedStrip } from './components/also-liked-strip';
+export { default as MoreFromSellerStrip } from './components/more-from-seller-strip';
