@@ -1,5 +1,6 @@
 {
   "slug": "context-switching",
+  "domain": "identity",
   "title": "Context Switching (Member / Shop Identity)",
   "persona": "context",
   "description": "Identity system overview: member/shop context switching via Zustand store, X-Nessi-Context header on every request, localStorage persistence, page load rehydration, and edge case handling.",
@@ -65,7 +66,10 @@
               "detail": "Only member context available",
               "goTo": "END"
             },
-            { "label": "Yes", "goTo": "show-switcher" }
+            {
+              "label": "Yes",
+              "goTo": "show-switcher"
+            }
           ]
         }
       ]
@@ -179,9 +183,18 @@
           "afterStep": "rehydrate",
           "condition": "Stored context?",
           "paths": [
-            { "label": "None", "goTo": "set-default" },
-            { "label": "Member", "goTo": "set-member" },
-            { "label": "Shop", "goTo": "set-shop" }
+            {
+              "label": "None",
+              "goTo": "set-default"
+            },
+            {
+              "label": "Member",
+              "goTo": "set-member"
+            },
+            {
+              "label": "Shop",
+              "goTo": "set-shop"
+            }
           ]
         },
         {

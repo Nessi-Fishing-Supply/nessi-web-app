@@ -1,5 +1,6 @@
 {
   "slug": "seller-context",
+  "domain": "identity",
   "title": "Seller Context (Member vs Shop)",
   "persona": "seller",
   "description": "Listings are created under either member or shop context, controlled by the X-Nessi-Context header. Determines where the listing appears publicly.",
@@ -51,14 +52,26 @@
           "afterStep": "check-context",
           "condition": "Active context?",
           "paths": [
-            { "label": "Member", "goTo": "member-context" },
-            { "label": "Shop", "goTo": "shop-context" }
+            {
+              "label": "Member",
+              "goTo": "member-context"
+            },
+            {
+              "label": "Shop",
+              "goTo": "shop-context"
+            }
           ]
         }
       ],
       "connections": [
-        { "from": "member-context", "to": "member-public" },
-        { "from": "shop-context", "to": "shop-public" }
+        {
+          "from": "member-context",
+          "to": "member-public"
+        },
+        {
+          "from": "shop-context",
+          "to": "shop-public"
+        }
       ]
     },
     {
@@ -93,8 +106,14 @@
           "afterStep": "send-header",
           "condition": "Header value?",
           "paths": [
-            { "label": "Member", "goTo": "validate-member" },
-            { "label": "Shop", "goTo": "validate-shop" }
+            {
+              "label": "Member",
+              "goTo": "validate-member"
+            },
+            {
+              "label": "Shop",
+              "goTo": "validate-shop"
+            }
           ]
         }
       ]

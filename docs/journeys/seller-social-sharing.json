@@ -1,5 +1,6 @@
 {
   "slug": "seller-social-sharing",
+  "domain": "listings",
   "title": "Listing Social Sharing",
   "persona": "seller",
   "description": "Share listing via Web Share API (mobile) or clipboard copy (desktop). Handles API availability, cancellation, and clipboard permission gracefully.",
@@ -75,8 +76,14 @@
           "afterStep": "clipboard-copy",
           "condition": "Clipboard access?",
           "paths": [
-            { "label": "Success", "goTo": "copy-success" },
-            { "label": "Denied", "goTo": "copy-denied" }
+            {
+              "label": "Success",
+              "goTo": "copy-success"
+            },
+            {
+              "label": "Denied",
+              "goTo": "copy-denied"
+            }
           ]
         }
       ]

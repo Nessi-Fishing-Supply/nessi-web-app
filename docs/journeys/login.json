@@ -1,5 +1,6 @@
 {
   "slug": "login",
+  "domain": "auth",
   "title": "Login (Email + Password)",
   "persona": "auth",
   "description": "Existing user logs in with email and password. Triggers background cart merge and recently-viewed merge as side effects.",
@@ -81,7 +82,10 @@
               "detail": "Invalid credentials — show error message",
               "goTo": "END"
             },
-            { "label": "Success", "goTo": "session-set" }
+            {
+              "label": "Success",
+              "goTo": "session-set"
+            }
           ]
         }
       ]

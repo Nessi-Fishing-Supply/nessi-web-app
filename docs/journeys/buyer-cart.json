@@ -1,5 +1,6 @@
 {
   "slug": "buyer-cart",
+  "domain": "cart",
   "title": "Authenticated Cart (DB-Backed)",
   "persona": "buyer",
   "description": "Authenticated buyer adds items to DB-backed cart with price snapshots, 30-day expiry, seller grouping, and pre-checkout validation.",
@@ -17,9 +18,18 @@
           "layer": "client",
           "status": "built",
           "errorCases": [
-            { "condition": "Own listing", "result": "Button disabled" },
-            { "condition": "Already in cart", "result": "Button shows 'In Cart'" },
-            { "condition": "Cart has 25 items", "result": "Toast: cart full" }
+            {
+              "condition": "Own listing",
+              "result": "Button disabled"
+            },
+            {
+              "condition": "Already in cart",
+              "result": "Button shows 'In Cart'"
+            },
+            {
+              "condition": "Cart has 25 items",
+              "result": "Toast: cart full"
+            }
           ]
         },
         {
@@ -96,9 +106,21 @@
         }
       ],
       "connections": [
-        { "from": "cart-actions", "to": "remove-item", "label": "Remove" },
-        { "from": "cart-actions", "to": "clear-all", "label": "Clear" },
-        { "from": "cart-actions", "to": "refresh-expiry", "label": "Refresh" }
+        {
+          "from": "cart-actions",
+          "to": "remove-item",
+          "label": "Remove"
+        },
+        {
+          "from": "cart-actions",
+          "to": "clear-all",
+          "label": "Clear"
+        },
+        {
+          "from": "cart-actions",
+          "to": "refresh-expiry",
+          "label": "Refresh"
+        }
       ]
     },
     {

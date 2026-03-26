@@ -1,9 +1,14 @@
 {
   "slug": "guest-cart",
+  "domain": "cart",
   "title": "Guest Cart → Login → Merge",
   "persona": "guest",
   "description": "Guest adds items to localStorage cart, logs in, and cart silently merges to the database.",
-  "relatedIssues": [128, 129, 130],
+  "relatedIssues": [
+    128,
+    129,
+    130
+  ],
   "flows": [
     {
       "id": "add-to-cart",
@@ -25,9 +30,18 @@
           "status": "built",
           "tooltip": "Client-side validation: own listing, already in cart, cart full",
           "errorCases": [
-            { "condition": "User's own listing", "result": "Button disabled" },
-            { "condition": "Already in cart", "result": "Button shows 'In Cart'" },
-            { "condition": "Cart has 25 items", "result": "Toast: cart full" }
+            {
+              "condition": "User's own listing",
+              "result": "Button disabled"
+            },
+            {
+              "condition": "Already in cart",
+              "result": "Button shows 'In Cart'"
+            },
+            {
+              "condition": "Cart has 25 items",
+              "result": "Toast: cart full"
+            }
           ]
         },
         {
@@ -85,7 +99,10 @@
           "afterStep": "load-cart",
           "condition": "Has items?",
           "paths": [
-            { "label": "Yes", "goTo": "group-by-seller" },
+            {
+              "label": "Yes",
+              "goTo": "group-by-seller"
+            },
             {
               "label": "No",
               "detail": "Empty state + browse CTA",

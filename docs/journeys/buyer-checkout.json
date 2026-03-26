@@ -1,5 +1,6 @@
 {
   "slug": "buyer-checkout",
+  "domain": "cart",
   "title": "Checkout (Escrow via Stripe Connect)",
   "persona": "buyer",
   "description": "Buyer checkout with Stripe Connect escrow payments. Funds held until buyer confirms receipt. NOT BUILT — planned for post-MVP.",

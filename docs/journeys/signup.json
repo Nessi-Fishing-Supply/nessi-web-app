@@ -1,9 +1,13 @@
 {
   "slug": "signup",
+  "domain": "auth",
   "title": "Signup (Email + OTP)",
   "persona": "auth",
   "description": "New user registers with email and password, verifies via 6-digit OTP code, and gets a session. Includes invite auto-accept, cart merge, and recently-viewed merge as background side effects.",
-  "relatedIssues": [159, 254],
+  "relatedIssues": [
+    159,
+    254
+  ],
   "flows": [
     {
       "id": "register",
@@ -67,7 +71,10 @@
           "status": "built",
           "tooltip": "verifyOtp(type='signup') — on success, Supabase sets session cookies",
           "errorCases": [
-            { "condition": "Invalid/expired code", "result": "Show error, allow retry" }
+            {
+              "condition": "Invalid/expired code",
+              "result": "Show error, allow retry"
+            }
           ]
         }
       ],

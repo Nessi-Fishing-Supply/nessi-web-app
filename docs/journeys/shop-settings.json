@@ -1,5 +1,6 @@
 {
   "slug": "shop-settings",
+  "domain": "shops",
   "title": "Shop Settings & Deletion",
   "persona": "shop-owner",
   "description": "Shop settings page with sections for details, hero banner, subscription (planned), and shop deletion with full storage cleanup.",

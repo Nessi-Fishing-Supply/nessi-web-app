@@ -1,5 +1,6 @@
 {
   "slug": "email-change",
+  "domain": "auth",
   "title": "Email Change (Authenticated + OTP)",
   "persona": "account",
   "description": "Authenticated user changes their email address from account settings. Requires OTP verification sent to the new email.",
@@ -32,7 +33,10 @@
           "status": "built",
           "tooltip": "checkEmailAvailable(email)",
           "errorCases": [
-            { "condition": "Email already taken", "result": "Show error: email taken" }
+            {
+              "condition": "Email already taken",
+              "result": "Show error: email taken"
+            }
           ]
         },
         {
@@ -57,7 +61,10 @@
           "status": "built",
           "tooltip": "verifyEmailChange(type='email_change')",
           "errorCases": [
-            { "condition": "Invalid/expired code", "result": "Show error" }
+            {
+              "condition": "Invalid/expired code",
+              "result": "Show error"
+            }
           ]
         },
         {
@@ -73,7 +80,10 @@
           "afterStep": "check-availability",
           "condition": "Email available?",
           "paths": [
-            { "label": "Yes", "goTo": "send-change-request" },
+            {
+              "label": "Yes",
+              "goTo": "send-change-request"
+            },
             {
               "label": "No",
               "detail": "Email already taken",
@@ -85,7 +95,10 @@
           "afterStep": "verify-otp",
           "condition": "OTP valid?",
           "paths": [
-            { "label": "Yes", "goTo": "email-updated" },
+            {
+              "label": "Yes",
+              "goTo": "email-updated"
+            },
             {
               "label": "No",
               "detail": "Show error, allow retry",

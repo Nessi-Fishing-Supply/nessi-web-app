@@ -1,5 +1,6 @@
 {
   "slug": "onboarding",
+  "domain": "account",
   "title": "Onboarding Wizard (Buyer vs Seller Path)",
   "persona": "onboarding",
   "description": "Branching wizard after first signup. Buyer path (4 steps) vs Seller path (5 steps). Includes post-onboarding seller opt-in for users who initially chose buyer.",
@@ -78,7 +79,10 @@
           "afterStep": "step2-intent",
           "condition": "Intent choice?",
           "paths": [
-            { "label": "Buyer", "goTo": "step3-fishing-identity" },
+            {
+              "label": "Buyer",
+              "goTo": "step3-fishing-identity"
+            },
             {
               "label": "Seller/Both",
               "detail": "See seller-path flow",
@@ -138,8 +142,14 @@
           "afterStep": "step4-seller-type",
           "condition": "Seller type?",
           "paths": [
-            { "label": "Free Profile", "goTo": "step5-bio" },
-            { "label": "Shop", "goTo": "step5-bio" }
+            {
+              "label": "Free Profile",
+              "goTo": "step5-bio"
+            },
+            {
+              "label": "Shop",
+              "goTo": "step5-bio"
+            }
           ]
         }
       ]

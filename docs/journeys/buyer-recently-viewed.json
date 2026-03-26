@@ -1,5 +1,6 @@
 {
   "slug": "buyer-recently-viewed",
+  "domain": "shopping",
   "title": "Recently Viewed (Dual-Source)",
   "persona": "buyer",
   "description": "Recently viewed listings use dual-source storage: localStorage for guests, DB-backed API for authenticated users. Includes merge on login and clear history.",
@@ -38,8 +39,14 @@
           "afterStep": "view-listing",
           "condition": "Authenticated?",
           "paths": [
-            { "label": "Yes", "goTo": "track-authenticated" },
-            { "label": "No", "goTo": "track-guest" }
+            {
+              "label": "Yes",
+              "goTo": "track-authenticated"
+            },
+            {
+              "label": "No",
+              "goTo": "track-guest"
+            }
           ]
         }
       ]
@@ -71,8 +78,14 @@
           "afterStep": "browse-history",
           "condition": "Authenticated?",
           "paths": [
-            { "label": "Yes", "goTo": "fetch-authenticated" },
-            { "label": "No", "goTo": "fetch-guest" }
+            {
+              "label": "Yes",
+              "goTo": "fetch-authenticated"
+            },
+            {
+              "label": "No",
+              "goTo": "fetch-guest"
+            }
           ]
         }
       ]
@@ -136,8 +149,16 @@
           "route": "/api/listings/batch",
           "tooltip": "Only returns active, non-deleted listings. Stale IDs silently filtered. Max 30 IDs.",
           "errorCases": [
-            { "condition": "No IDs provided", "result": "400 Bad Request", "httpStatus": 400 },
-            { "condition": "More than 30 IDs", "result": "400 Bad Request", "httpStatus": 400 }
+            {
+              "condition": "No IDs provided",
+              "result": "400 Bad Request",
+              "httpStatus": 400
+            },
+            {
+              "condition": "More than 30 IDs",
+              "result": "400 Bad Request",
+              "httpStatus": 400
+            }
           ]
         },
         {
@@ -161,7 +182,10 @@
           "afterStep": "batch-fetch",
           "condition": "Listings found?",
           "paths": [
-            { "label": "Yes", "goTo": "render-strip" },
+            {
+              "label": "Yes",
+              "goTo": "render-strip"
+            },
             {
               "label": "No",
               "detail": "Empty or all stale/deleted",
@@ -197,8 +221,14 @@
           "afterStep": "clear-history",
           "condition": "Authenticated?",
           "paths": [
-            { "label": "Yes", "goTo": "clear-authenticated" },
-            { "label": "No", "goTo": "clear-guest" }
+            {
+              "label": "Yes",
+              "goTo": "clear-authenticated"
+            },
+            {
+              "label": "No",
+              "goTo": "clear-guest"
+            }
           ]
         }
       ]

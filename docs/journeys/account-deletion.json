@@ -1,5 +1,6 @@
 {
   "slug": "account-deletion",
+  "domain": "account",
   "title": "Account Deletion (Full Cascade)",
   "persona": "account",
   "description": "Full account deletion cascade: shop ownership gate, storage cleanup (avatars, listing photos, hero banners), slug cleanup, auth user deletion with FK cascades and DB triggers.",
@@ -134,7 +135,10 @@
               "detail": "409 — must resolve first",
               "goTo": "END"
             },
-            { "label": "No", "goTo": "delete-member-avatar" }
+            {
+              "label": "No",
+              "goTo": "delete-member-avatar"
+            }
           ]
         }
       ]

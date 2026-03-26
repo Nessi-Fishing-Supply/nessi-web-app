@@ -4,11 +4,16 @@
   "title": "Nessi User Journey",
   "description": "Structured journey data for the Nessi docs site. Source of truth for flow visualizations, coverage tracking, and test planning.",
   "type": "object",
-  "required": ["slug", "title", "persona", "description", "flows"],
+  "required": ["slug", "domain", "title", "persona", "description", "flows"],
   "properties": {
     "slug": {
       "type": "string",
       "description": "URL-safe identifier (e.g., 'signup-with-invite')"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["auth", "shopping", "cart", "account", "shops", "listings", "identity"],
+      "description": "Feature domain this journey belongs to. Used for grouping in the docs UI."
     },
     "title": {
       "type": "string",

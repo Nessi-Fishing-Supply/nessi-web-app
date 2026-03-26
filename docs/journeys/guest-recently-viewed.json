@@ -1,5 +1,6 @@
 {
   "slug": "guest-recently-viewed",
+  "domain": "shopping",
   "title": "Guest Recently Viewed",
   "persona": "guest",
   "description": "Guest's listing views are tracked in localStorage, deduped and capped at 30 items. On login, views silently merge to the database.",
@@ -82,7 +83,10 @@
           "afterStep": "batch-fetch",
           "condition": "Listings found?",
           "paths": [
-            { "label": "Yes", "goTo": "render-strip" },
+            {
+              "label": "Yes",
+              "goTo": "render-strip"
+            },
             {
               "label": "No",
               "detail": "Empty or all stale/deleted",

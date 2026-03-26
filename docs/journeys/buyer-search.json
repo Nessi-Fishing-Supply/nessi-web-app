@@ -1,5 +1,6 @@
 {
   "slug": "buyer-search",
+  "domain": "shopping",
   "title": "Buyer Search & Discovery",
   "persona": "buyer",
   "description": "Authenticated buyer discovers listings via search with autocomplete, category browsing, or homepage featured. Includes filters, infinite scroll, view tracking, and recently viewed.",

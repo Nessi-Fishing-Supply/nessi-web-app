@@ -1,5 +1,6 @@
 {
   "slug": "shop-roles",
+  "domain": "shops",
   "title": "Shop Roles & Permissions",
   "persona": "shop-owner",
   "description": "Roles & Permissions page showing system role cards (Owner, Manager, Contributor) with permission matrix. Custom roles gated behind premium plan.",
@@ -66,7 +67,10 @@
           "afterStep": "route-guard",
           "condition": "User's role?",
           "paths": [
-            { "label": "Owner/Manager", "goTo": "show-system-roles" },
+            {
+              "label": "Owner/Manager",
+              "goTo": "show-system-roles"
+            },
             {
               "label": "Contributor",
               "detail": "Redirect to /dashboard",

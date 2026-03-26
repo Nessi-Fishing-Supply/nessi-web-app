@@ -1,5 +1,6 @@
 {
   "slug": "shop-create",
+  "domain": "shops",
   "title": "Create Shop",
   "persona": "shop-owner",
   "description": "User creates a new shop via onboarding, dashboard, or seller opt-in modal. Includes slug generation, availability check, and atomic server-side setup (slug reservation, shop row, owner membership, seller flag).",
@@ -40,7 +41,10 @@
           "status": "built",
           "tooltip": "checkShopSlugAvailable(slug)",
           "errorCases": [
-            { "condition": "Slug unavailable", "result": "Show error, suggest alternatives" }
+            {
+              "condition": "Slug unavailable",
+              "result": "Show error, suggest alternatives"
+            }
           ]
         },
         {
@@ -107,7 +111,10 @@
           "afterStep": "check-slug",
           "condition": "Slug available?",
           "paths": [
-            { "label": "Yes", "goTo": "enter-description" },
+            {
+              "label": "Yes",
+              "goTo": "enter-description"
+            },
             {
               "label": "No",
               "detail": "Show error, suggest alternatives",

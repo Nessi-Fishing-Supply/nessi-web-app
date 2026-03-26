@@ -1,5 +1,6 @@
 {
   "slug": "account-settings",
+  "domain": "account",
   "title": "Account Settings & Profile Completeness",
   "persona": "account",
   "description": "Account settings page with sections for personal info, fishing identity, notifications, seller settings, shipping addresses, linked accounts, and profile completeness tracking.",
@@ -117,8 +118,14 @@
           "afterStep": "show-progress",
           "condition": "100% complete?",
           "paths": [
-            { "label": "No", "goTo": "show-suggestions" },
-            { "label": "Yes", "goTo": "complete-badge" }
+            {
+              "label": "No",
+              "goTo": "show-suggestions"
+            },
+            {
+              "label": "Yes",
+              "goTo": "complete-badge"
+            }
           ]
         }
       ]

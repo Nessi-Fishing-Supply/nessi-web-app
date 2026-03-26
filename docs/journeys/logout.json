@@ -1,5 +1,6 @@
 {
   "slug": "logout",
+  "domain": "auth",
   "title": "Logout",
   "persona": "auth",
   "description": "User logs out, clearing session cookies, resetting context store, and redirecting to homepage.",

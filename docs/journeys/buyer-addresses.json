@@ -1,5 +1,6 @@
 {
   "slug": "buyer-addresses",
+  "domain": "account",
   "title": "Saved Shipping Addresses",
   "persona": "buyer",
   "description": "Buyer manages up to 5 saved shipping addresses with CRUD operations, default address management, and auto-promotion on delete.",
@@ -31,7 +32,10 @@
           "afterStep": "fetch-addresses",
           "condition": "Has addresses?",
           "paths": [
-            { "label": "Yes", "goTo": "show-list" },
+            {
+              "label": "Yes",
+              "goTo": "show-list"
+            },
             {
               "label": "No",
               "detail": "Empty state: 'Add your first address'",
@@ -77,7 +81,10 @@
           "status": "built",
           "route": "/api/addresses",
           "errorCases": [
-            { "condition": "Duplicate label", "result": "Error: label already used" }
+            {
+              "condition": "Duplicate label",
+              "result": "Error: label already used"
+            }
           ]
         },
         {
@@ -98,7 +105,10 @@
               "detail": "Button disabled: maximum reached",
               "goTo": "END"
             },
-            { "label": "No", "goTo": "open-modal" }
+            {
+              "label": "No",
+              "goTo": "open-modal"
+            }
           ]
         }
       ]

@@ -1,5 +1,6 @@
 {
   "slug": "seller-listings",
+  "domain": "listings",
   "title": "Listing Lifecycle (Create, Edit, Manage)",
   "persona": "seller",
   "description": "Full listing lifecycle: 5-step create wizard with photo upload, edit wizard with partial saves, dashboard management with status tabs, and listing actions (publish, sold, archive, duplicate, delete).",
@@ -144,7 +145,10 @@
           "afterStep": "step1-photos",
           "condition": "2+ photos uploaded?",
           "paths": [
-            { "label": "Yes", "goTo": "step2-category" },
+            {
+              "label": "Yes",
+              "goTo": "step2-category"
+            },
             {
               "label": "No",
               "detail": "Cannot proceed without photos",

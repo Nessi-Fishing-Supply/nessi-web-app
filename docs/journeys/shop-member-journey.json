@@ -1,5 +1,6 @@
 {
   "slug": "shop-member-journey",
+  "domain": "shops",
   "title": "Shop Member Journey (Join, Work, Leave)",
   "persona": "shop-member",
   "description": "Shop member lifecycle: switch to shop context, work within role-based permissions, leave shop with confirmation, and handle context revocation when removed by owner.",
@@ -137,7 +138,10 @@
           "afterStep": "type-phrase",
           "condition": "Phrase matches?",
           "paths": [
-            { "label": "Yes", "goTo": "remove-self" },
+            {
+              "label": "Yes",
+              "goTo": "remove-self"
+            },
             {
               "label": "No",
               "detail": "Submit button disabled",

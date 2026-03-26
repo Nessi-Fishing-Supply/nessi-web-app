@@ -1,5 +1,6 @@
 {
   "slug": "shop-member-management",
+  "domain": "shops",
   "title": "Shop Member Management (Invite, Remove, Roles)",
   "persona": "shop-owner",
   "description": "Owner manages shop members: invite via email, resend/revoke invites, remove members, and assign roles with permission enforcement.",
@@ -24,7 +25,11 @@
           "layer": "client",
           "status": "built",
           "errorCases": [
-            { "condition": "Invalid email/role", "result": "400 error", "httpStatus": 400 }
+            {
+              "condition": "Invalid email/role",
+              "result": "400 error",
+              "httpStatus": 400
+            }
           ]
         },
         {
@@ -182,7 +187,11 @@
           "status": "built",
           "route": "/api/shops/[id]/members/[memberId]/role",
           "errorCases": [
-            { "condition": "Cannot assign Owner role", "result": "400 error", "httpStatus": 400 }
+            {
+              "condition": "Cannot assign Owner role",
+              "result": "400 error",
+              "httpStatus": 400
+            }
           ]
         },
         {

@@ -1,5 +1,6 @@
 {
   "slug": "guest-browse",
+  "domain": "shopping",
   "title": "Guest Browse & Discover",
   "persona": "guest",
   "description": "Unauthenticated user browses the marketplace by category, keyword search, or featured listings. Views listing details, seller profiles, and shop pages.",

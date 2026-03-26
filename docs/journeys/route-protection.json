@@ -1,5 +1,6 @@
 {
   "slug": "route-protection",
+  "domain": "auth",
   "title": "Route Protection (proxy.ts)",
   "persona": "auth",
   "description": "proxy.ts intercepts every request to enforce auth on /dashboard/* routes, redirect completed onboarding users, and refresh session cookies on public pages.",
@@ -85,16 +86,29 @@
               "detail": "/api/*, /_next/*, /auth/* — skip auth",
               "goTo": "skip-auth"
             },
-            { "label": "Dashboard", "detail": "/dashboard/*", "goTo": "verify-jwt" },
-            { "label": "Public", "goTo": "refresh-public" }
+            {
+              "label": "Dashboard",
+              "detail": "/dashboard/*",
+              "goTo": "verify-jwt"
+            },
+            {
+              "label": "Public",
+              "goTo": "refresh-public"
+            }
           ]
         },
         {
           "afterStep": "verify-jwt",
           "condition": "Authenticated?",
           "paths": [
-            { "label": "No", "goTo": "redirect-unauthed" },
-            { "label": "Yes", "goTo": "check-onboarding" }
+            {
+              "label": "No",
+              "goTo": "redirect-unauthed"
+            },
+            {
+              "label": "Yes",
+              "goTo": "check-onboarding"
+            }
           ]
         },
         {
@@ -106,7 +120,10 @@
               "detail": "Path is /onboarding but already completed",
               "goTo": "redirect-onboarded"
             },
-            { "label": "No", "goTo": "allow-dashboard" }
+            {
+              "label": "No",
+              "goTo": "allow-dashboard"
+            }
           ]
         }
       ]

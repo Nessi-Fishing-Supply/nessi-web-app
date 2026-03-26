@@ -1,5 +1,6 @@
 {
   "slug": "shop-ownership-transfer",
+  "domain": "shops",
   "title": "Shop Ownership Transfer (Request → Accept → Cancel)",
   "persona": "shop-owner",
   "description": "Owner initiates ownership transfer to another member. Transferee receives email link, accepts on a dedicated page. Includes atomic role swap and cancellation flow.",
@@ -91,9 +92,18 @@
           "status": "built",
           "tooltip": "Server component fetches transfer via admin client — validate status, user, expiry",
           "errorCases": [
-            { "condition": "Not found or non-pending", "result": "notFound()" },
-            { "condition": "Wrong user", "result": "notFound()" },
-            { "condition": "Expired", "result": "Show expired message" }
+            {
+              "condition": "Not found or non-pending",
+              "result": "notFound()"
+            },
+            {
+              "condition": "Wrong user",
+              "result": "notFound()"
+            },
+            {
+              "condition": "Expired",
+              "result": "Show expired message"
+            }
           ]
         },
         {
@@ -143,7 +153,10 @@
               "detail": "Redirect to /",
               "goTo": "END"
             },
-            { "label": "Yes", "goTo": "validate-transfer" }
+            {
+              "label": "Yes",
+              "goTo": "validate-transfer"
+            }
           ]
         }
       ]

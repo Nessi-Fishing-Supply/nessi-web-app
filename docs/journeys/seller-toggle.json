@@ -1,5 +1,6 @@
 {
   "slug": "seller-toggle",
+  "domain": "account",
   "title": "Seller Toggle (On/Off)",
   "persona": "seller",
   "description": "User toggles seller status on or off from account settings. Toggling off requires no active listings or orders, and hides all listings from search.",
@@ -96,7 +97,10 @@
               "detail": "Must resolve active listings/orders first",
               "goTo": "show-warning"
             },
-            { "label": "No", "goTo": "post-toggle-off" }
+            {
+              "label": "No",
+              "goTo": "post-toggle-off"
+            }
           ]
         }
       ]
