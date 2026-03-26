@@ -3,17 +3,17 @@
   "issue": 200,
   "title": "ReportBottomSheet component and useSubmitReport hook",
   "branch": "feat/200/report-bottom-sheet-and-submit-hook",
-  "status": "implementing",
+  "status": "reviewing",
   "phase": {
-    "current": 2,
+    "current": 3,
     "total": 3,
     "tasks": {
-      "completed": ["1.1", "1.2", "2.1", "2.2", "2.3"],
+      "completed": ["1.1", "1.2", "2.1", "2.2", "2.3", "3.1", "3.2", "3.3"],
       "current": null,
-      "remaining": ["3.1", "3.2", "3.3"]
+      "remaining": []
     }
   },
   "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-26T12:00:00Z", "lastActivity": "2026-03-26T12:20:00Z" }
+  "timestamps": { "started": "2026-03-26T12:00:00Z", "lastActivity": "2026-03-26T12:30:00Z" }
 }
