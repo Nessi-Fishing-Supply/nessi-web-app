@@ -84,7 +84,20 @@
                 },
                 "action": {
                   "type": "string",
-                  "enum": ["click", "submit", "open", "close", "navigate", "scroll", "hover", "toggle", "drag", "select", "type", "upload"],
+                  "enum": [
+                    "click",
+                    "submit",
+                    "open",
+                    "close",
+                    "navigate",
+                    "scroll",
+                    "hover",
+                    "toggle",
+                    "drag",
+                    "select",
+                    "type",
+                    "upload"
+                  ],
                   "description": "For client-layer steps: the user interaction that triggers this step. Shown as a small badge on the node."
                 },
                 "method": {
@@ -196,23 +209,57 @@
       "description": "Guidelines for writing good step titles (for documentation, not validation)",
       "examples": {
         "client": [
-          { "title": "Open Address Form", "action": "click", "tooltip": "AddressFormModal opens with empty fields for label, address lines, city, state, zip, and default toggle" },
-          { "title": "Enter Address Details", "action": "type", "tooltip": "Fields: label, line1, line2, city, state, zip, is_default" },
-          { "title": "Confirm Deletion", "action": "click", "tooltip": "Confirmation dialog with 'Are you sure?' prompt" }
+          {
+            "title": "Open Address Form",
+            "action": "click",
+            "tooltip": "AddressFormModal opens with empty fields for label, address lines, city, state, zip, and default toggle"
+          },
+          {
+            "title": "Enter Address Details",
+            "action": "type",
+            "tooltip": "Fields: label, line1, line2, city, state, zip, is_default"
+          },
+          {
+            "title": "Confirm Deletion",
+            "action": "click",
+            "tooltip": "Confirmation dialog with 'Are you sure?' prompt"
+          }
         ],
         "server": [
-          { "title": "Save Address", "method": "POST", "route": "/api/addresses", "tooltip": "Validates address fields, checks 5-address cap, creates record with optional default promotion" },
-          { "title": "Update Default", "method": "PATCH", "route": "/api/addresses/[id]/default", "tooltip": "Sets this address as default, clears default flag from previous default" },
-          { "title": "Fetch Cart Items", "method": "GET", "route": "/api/cart", "tooltip": "Returns cart items joined with listing data, grouped by seller. Includes price-change detection." }
+          {
+            "title": "Save Address",
+            "method": "POST",
+            "route": "/api/addresses",
+            "tooltip": "Validates address fields, checks 5-address cap, creates record with optional default promotion"
+          },
+          {
+            "title": "Update Default",
+            "method": "PATCH",
+            "route": "/api/addresses/[id]/default",
+            "tooltip": "Sets this address as default, clears default flag from previous default"
+          },
+          {
+            "title": "Fetch Cart Items",
+            "method": "GET",
+            "route": "/api/cart",
+            "tooltip": "Returns cart items joined with listing data, grouped by seller. Includes price-change detection."
+          }
         ],
         "database": [
-          { "title": "Cascade Delete Members", "tooltip": "CASCADE: members row deleted triggers handle_member_deletion() — releases member slug + owned shop slugs" }
+          {
+            "title": "Cascade Delete Members",
+            "tooltip": "CASCADE: members row deleted triggers handle_member_deletion() — releases member slug + owned shop slugs"
+          }
         ],
         "branch": {
           "condition": "Has addresses?",
           "paths": [
             { "label": "Yes", "goTo": "show-list" },
-            { "label": "No", "detail": "Empty state: 'Add your first address'", "goTo": "show-empty" }
+            {
+              "label": "No",
+              "detail": "Empty state: 'Add your first address'",
+              "goTo": "show-empty"
+            }
           ]
         }
       },

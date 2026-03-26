@@ -4,14 +4,7 @@
   "title": "Shop Invite → Accept (or Register & Auto-Accept)",
   "persona": "shop-member",
   "description": "A user receives a shop invite email, lands on the invite page, and either accepts directly (if authenticated) or registers a new account with auto-accept.",
-  "relatedIssues": [
-    250,
-    251,
-    252,
-    253,
-    254,
-    255
-  ],
+  "relatedIssues": [250, 251, 252, 253, 254, 255],
   "flows": [
     {
       "id": "invite-sent",

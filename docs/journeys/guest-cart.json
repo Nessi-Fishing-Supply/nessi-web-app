@@ -4,11 +4,7 @@
   "title": "Guest Cart → Login → Merge",
   "persona": "guest",
   "description": "Guest adds items to localStorage cart, logs in, and cart silently merges to the database.",
-  "relatedIssues": [
-    128,
-    129,
-    130
-  ],
+  "relatedIssues": [128, 129, 130],
   "flows": [
     {
       "id": "add-to-cart",
