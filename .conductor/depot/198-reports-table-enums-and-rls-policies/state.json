@@ -3,7 +3,7 @@
   "issue": 198,
   "title": "feat(reports): #152.1 — reports table, enums, and RLS policies",
   "branch": "feat/198/reports-table-enums-and-rls-policies",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -13,7 +13,12 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-26T12:00:00Z", "lastActivity": "2026-03-26T12:20:00Z" }
+  "timestamps": {
+    "started": "2026-03-26T12:00:00Z",
+    "lastActivity": "2026-03-26T12:30:00Z",
+    "completedAt": "2026-03-26T12:30:00Z",
+    "pruneAfter": "2026-05-25T12:30:00Z"
+  }
 }
