@@ -3,7 +3,9 @@
   "issue": 199,
   "title": "feat(reports): #152.2 — feature scaffold, services, API routes, and validation",
   "branch": "feat/199/reports-scaffold-services-api",
-  "status": "complete",
+  "status": "pr_open",
+  "completedAt": "2026-03-26T12:10:00Z",
+  "pruneAfter": "2026-05-25T12:10:00Z",
   "phase": {
     "current": 3,
     "total": 3,
