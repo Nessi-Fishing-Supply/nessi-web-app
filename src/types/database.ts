@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.4'
+    PostgrestVersion: "14.4"
   }
   public: {
     Tables: {
@@ -56,11 +56,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'addresses_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "addresses_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -94,18 +94,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'cart_items_listing_id_fkey'
-            columns: ['listing_id']
+            foreignKeyName: "cart_items_listing_id_fkey"
+            columns: ["listing_id"]
             isOneToOne: false
-            referencedRelation: 'listings'
-            referencedColumns: ['id']
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'cart_items_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "cart_items_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -136,19 +136,19 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'listing_photos_listing_id_fkey'
-            columns: ['listing_id']
+            foreignKeyName: "listing_photos_listing_id_fkey"
+            columns: ["listing_id"]
             isOneToOne: false
-            referencedRelation: 'listings'
-            referencedColumns: ['id']
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
           },
         ]
       }
       listings: {
         Row: {
           brand: string | null
-          category: Database['public']['Enums']['listing_category']
-          condition: Database['public']['Enums']['listing_condition']
+          category: Database["public"]["Enums"]["listing_category"]
+          condition: Database["public"]["Enums"]["listing_condition"]
           cover_photo_url: string | null
           created_at: string
           deleted_at: string | null
@@ -166,11 +166,13 @@ export type Database = {
           quantity: number
           search_vector: unknown
           seller_id: string
-          shipping_paid_by: Database['public']['Enums']['shipping_paid_by'] | null
+          shipping_paid_by:
+            | Database["public"]["Enums"]["shipping_paid_by"]
+            | null
           shipping_price_cents: number | null
           shop_id: string | null
           sold_at: string | null
-          status: Database['public']['Enums']['listing_status']
+          status: Database["public"]["Enums"]["listing_status"]
           title: string
           updated_at: string
           view_count: number
@@ -179,8 +181,8 @@ export type Database = {
         }
         Insert: {
           brand?: string | null
-          category: Database['public']['Enums']['listing_category']
-          condition: Database['public']['Enums']['listing_condition']
+          category: Database["public"]["Enums"]["listing_category"]
+          condition: Database["public"]["Enums"]["listing_condition"]
           cover_photo_url?: string | null
           created_at?: string
           deleted_at?: string | null
@@ -198,11 +200,13 @@ export type Database = {
           quantity?: number
           search_vector?: unknown
           seller_id: string
-          shipping_paid_by?: Database['public']['Enums']['shipping_paid_by'] | null
+          shipping_paid_by?:
+            | Database["public"]["Enums"]["shipping_paid_by"]
+            | null
           shipping_price_cents?: number | null
           shop_id?: string | null
           sold_at?: string | null
-          status?: Database['public']['Enums']['listing_status']
+          status?: Database["public"]["Enums"]["listing_status"]
           title: string
           updated_at?: string
           view_count?: number
@@ -211,8 +215,8 @@ export type Database = {
         }
         Update: {
           brand?: string | null
-          category?: Database['public']['Enums']['listing_category']
-          condition?: Database['public']['Enums']['listing_condition']
+          category?: Database["public"]["Enums"]["listing_category"]
+          condition?: Database["public"]["Enums"]["listing_condition"]
           cover_photo_url?: string | null
           created_at?: string
           deleted_at?: string | null
@@ -230,11 +234,13 @@ export type Database = {
           quantity?: number
           search_vector?: unknown
           seller_id?: string
-          shipping_paid_by?: Database['public']['Enums']['shipping_paid_by'] | null
+          shipping_paid_by?:
+            | Database["public"]["Enums"]["shipping_paid_by"]
+            | null
           shipping_price_cents?: number | null
           shop_id?: string | null
           sold_at?: string | null
-          status?: Database['public']['Enums']['listing_status']
+          status?: Database["public"]["Enums"]["listing_status"]
           title?: string
           updated_at?: string
           view_count?: number
@@ -243,25 +249,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'listings_seller_id_fkey'
-            columns: ['seller_id']
+            foreignKeyName: "listings_seller_id_fkey"
+            columns: ["seller_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'products_member_id_fkey'
-            columns: ['member_id']
+            foreignKeyName: "products_member_id_fkey"
+            columns: ["member_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'products_shop_id_fkey'
-            columns: ['shop_id']
+            foreignKeyName: "products_shop_id_fkey"
+            columns: ["shop_id"]
             isOneToOne: false
-            referencedRelation: 'shops'
-            referencedColumns: ['id']
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -367,38 +373,71 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'recently_viewed_listing_id_fkey'
-            columns: ['listing_id']
+            foreignKeyName: "recently_viewed_listing_id_fkey"
+            columns: ["listing_id"]
             isOneToOne: false
-            referencedRelation: 'listings'
-            referencedColumns: ['id']
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'recently_viewed_user_id_fkey'
-            columns: ['user_id']
+            foreignKeyName: "recently_viewed_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
         ]
       }
+      reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          reason: Database["public"]["Enums"]["report_reason"]
+          reporter_id: string
+          status: Database["public"]["Enums"]["report_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["report_target_type"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason: Database["public"]["Enums"]["report_reason"]
+          reporter_id: string
+          status?: Database["public"]["Enums"]["report_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["report_target_type"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason?: Database["public"]["Enums"]["report_reason"]
+          reporter_id?: string
+          status?: Database["public"]["Enums"]["report_status"]
+          target_id?: string
+          target_type?: Database["public"]["Enums"]["report_target_type"]
+        }
+        Relationships: []
+      }
       search_suggestions: {
         Row: {
-          category: Database['public']['Enums']['listing_category'] | null
+          category: Database["public"]["Enums"]["listing_category"] | null
           created_at: string
           id: string
           popularity: number
           term: string
         }
         Insert: {
-          category?: Database['public']['Enums']['listing_category'] | null
+          category?: Database["public"]["Enums"]["listing_category"] | null
           created_at?: string
           id?: string
           popularity?: number
           term: string
         }
         Update: {
-          category?: Database['public']['Enums']['listing_category'] | null
+          category?: Database["public"]["Enums"]["listing_category"] | null
           created_at?: string
           id?: string
           popularity?: number
@@ -415,7 +454,7 @@ export type Database = {
           invited_by: string | null
           role_id: string
           shop_id: string
-          status: Database['public']['Enums']['invite_status']
+          status: Database["public"]["Enums"]["invite_status"]
           token: string
         }
         Insert: {
@@ -426,7 +465,7 @@ export type Database = {
           invited_by?: string | null
           role_id: string
           shop_id: string
-          status?: Database['public']['Enums']['invite_status']
+          status?: Database["public"]["Enums"]["invite_status"]
           token?: string
         }
         Update: {
@@ -437,30 +476,30 @@ export type Database = {
           invited_by?: string | null
           role_id?: string
           shop_id?: string
-          status?: Database['public']['Enums']['invite_status']
+          status?: Database["public"]["Enums"]["invite_status"]
           token?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'shop_invites_invited_by_fkey'
-            columns: ['invited_by']
+            foreignKeyName: "shop_invites_invited_by_fkey"
+            columns: ["invited_by"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'shop_invites_role_id_fkey'
-            columns: ['role_id']
+            foreignKeyName: "shop_invites_role_id_fkey"
+            columns: ["role_id"]
             isOneToOne: false
-            referencedRelation: 'shop_roles'
-            referencedColumns: ['id']
+            referencedRelation: "shop_roles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'shop_invites_shop_id_fkey'
-            columns: ['shop_id']
+            foreignKeyName: "shop_invites_shop_id_fkey"
+            columns: ["shop_id"]
             isOneToOne: false
-            referencedRelation: 'shops'
-            referencedColumns: ['id']
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -488,25 +527,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'shop_members_member_id_fkey'
-            columns: ['member_id']
+            foreignKeyName: "shop_members_member_id_fkey"
+            columns: ["member_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'shop_members_role_id_fkey'
-            columns: ['role_id']
+            foreignKeyName: "shop_members_role_id_fkey"
+            columns: ["role_id"]
             isOneToOne: false
-            referencedRelation: 'shop_roles'
-            referencedColumns: ['id']
+            referencedRelation: "shop_roles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'shop_members_shop_id_fkey'
-            columns: ['shop_id']
+            foreignKeyName: "shop_members_shop_id_fkey"
+            columns: ["shop_id"]
             isOneToOne: false
-            referencedRelation: 'shops'
-            referencedColumns: ['id']
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -543,25 +582,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'shop_ownership_transfers_from_member_id_fkey'
-            columns: ['from_member_id']
+            foreignKeyName: "shop_ownership_transfers_from_member_id_fkey"
+            columns: ["from_member_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'shop_ownership_transfers_shop_id_fkey'
-            columns: ['shop_id']
+            foreignKeyName: "shop_ownership_transfers_shop_id_fkey"
+            columns: ["shop_id"]
             isOneToOne: false
-            referencedRelation: 'shops'
-            referencedColumns: ['id']
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'shop_ownership_transfers_to_member_id_fkey'
-            columns: ['to_member_id']
+            foreignKeyName: "shop_ownership_transfers_to_member_id_fkey"
+            columns: ["to_member_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -598,11 +637,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'shop_roles_shop_id_fkey'
-            columns: ['shop_id']
+            foreignKeyName: "shop_roles_shop_id_fkey"
+            columns: ["shop_id"]
             isOneToOne: false
-            referencedRelation: 'shops'
-            referencedColumns: ['id']
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -678,11 +717,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'shops_owner_id_fkey'
-            columns: ['owner_id']
+            foreignKeyName: "shops_owner_id_fkey"
+            columns: ["owner_id"]
             isOneToOne: false
-            referencedRelation: 'members'
-            referencedColumns: ['id']
+            referencedRelation: "members"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -714,12 +753,12 @@ export type Database = {
     Functions: {
       accept_ownership_transfer: {
         Args: {
-          p_transfer_id: string
-          p_shop_id: string
           p_from_member_id: string
-          p_to_member_id: string
-          p_owner_role_id: string
           p_manager_role_id: string
+          p_owner_role_id: string
+          p_shop_id: string
+          p_to_member_id: string
+          p_transfer_id: string
         }
         Returns: undefined
       }
@@ -734,27 +773,43 @@ export type Database = {
       }
     }
     Enums: {
-      invite_status: 'pending' | 'accepted' | 'expired' | 'revoked'
+      invite_status: "pending" | "accepted" | "expired" | "revoked"
       listing_category:
-        | 'rods'
-        | 'reels'
-        | 'lures'
-        | 'flies'
-        | 'tackle'
-        | 'line'
-        | 'apparel'
-        | 'electronics'
-        | 'watercraft'
-        | 'other'
+        | "rods"
+        | "reels"
+        | "lures"
+        | "flies"
+        | "tackle"
+        | "line"
+        | "apparel"
+        | "electronics"
+        | "watercraft"
+        | "other"
       listing_condition:
-        | 'new_with_tags'
-        | 'new_without_tags'
-        | 'like_new'
-        | 'good'
-        | 'fair'
-        | 'poor'
-      listing_status: 'draft' | 'active' | 'reserved' | 'sold' | 'archived' | 'deleted'
-      shipping_paid_by: 'seller' | 'buyer' | 'split'
+        | "new_with_tags"
+        | "new_without_tags"
+        | "like_new"
+        | "good"
+        | "fair"
+        | "poor"
+      listing_status:
+        | "draft"
+        | "active"
+        | "reserved"
+        | "sold"
+        | "archived"
+        | "deleted"
+      report_reason:
+        | "spam"
+        | "prohibited_item"
+        | "counterfeit"
+        | "inappropriate_content"
+        | "off_platform_transaction"
+        | "harassment"
+        | "other"
+      report_status: "pending" | "reviewed" | "resolved" | "dismissed"
+      report_target_type: "listing" | "member" | "shop" | "message"
+      shipping_paid_by: "seller" | "buyer" | "split"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -762,33 +817,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -797,23 +852,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -822,23 +877,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -847,64 +902,82 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
   public: {
     Enums: {
-      invite_status: ['pending', 'accepted', 'expired', 'revoked'],
+      invite_status: ["pending", "accepted", "expired", "revoked"],
       listing_category: [
-        'rods',
-        'reels',
-        'lures',
-        'flies',
-        'tackle',
-        'line',
-        'apparel',
-        'electronics',
-        'watercraft',
-        'other',
+        "rods",
+        "reels",
+        "lures",
+        "flies",
+        "tackle",
+        "line",
+        "apparel",
+        "electronics",
+        "watercraft",
+        "other",
       ],
       listing_condition: [
-        'new_with_tags',
-        'new_without_tags',
-        'like_new',
-        'good',
-        'fair',
-        'poor',
+        "new_with_tags",
+        "new_without_tags",
+        "like_new",
+        "good",
+        "fair",
+        "poor",
       ],
-      listing_status: ['draft', 'active', 'reserved', 'sold', 'archived', 'deleted'],
-      shipping_paid_by: ['seller', 'buyer', 'split'],
+      listing_status: [
+        "draft",
+        "active",
+        "reserved",
+        "sold",
+        "archived",
+        "deleted",
+      ],
+      report_reason: [
+        "spam",
+        "prohibited_item",
+        "counterfeit",
+        "inappropriate_content",
+        "off_platform_transaction",
+        "harassment",
+        "other",
+      ],
+      report_status: ["pending", "reviewed", "resolved", "dismissed"],
+      report_target_type: ["listing", "member", "shop", "message"],
+      shipping_paid_by: ["seller", "buyer", "split"],
     },
   },
 } as const
