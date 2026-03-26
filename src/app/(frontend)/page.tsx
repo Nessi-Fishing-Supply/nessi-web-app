@@ -4,6 +4,7 @@ import React from 'react';
 import { useListings } from '@/features/listings/hooks/use-listings';
 import ListingCard from '@/features/listings/components/listing-card';
 import Grid from '@/components/layout/grid';
+import { RecentlyViewedStrip } from '@/features/recently-viewed';
 
 export default function Home() {
   const { data, isLoading } = useListings();
@@ -24,6 +25,7 @@ export default function Home() {
           ))}
         </Grid>
       )}
+      <RecentlyViewedStrip />
     </main>
   );
 }

@@ -8,6 +8,7 @@ import InfiniteScroll from '@/features/listings/components/infinite-scroll';
 import SortSelect from '@/features/listings/components/sort-select';
 import EmptyState from '@/features/listings/components/empty-state';
 import { useListingsInfinite } from '@/features/listings/hooks/use-listings-infinite';
+import { RecentlyViewedStrip } from '@/features/recently-viewed';
 import styles from './category-browse.module.scss';
 
 type CategoryBrowseProps = {
@@ -40,6 +41,8 @@ export default function CategoryBrowse({ slug, label }: CategoryBrowseProps) {
         <h1 className={styles.title}>{label}</h1>
         <SortSelect value={sort} onChange={handleSortChange} />
       </div>
+
+      <RecentlyViewedStrip />
 
       {isLoading ? (
         <ListingGrid>

@@ -18,21 +18,28 @@ Items are capped at 30, deduplicated (re-added items move to the front with an u
 
 ## API Routes
 
-| Method | Route                        | Handler                     | Purpose                                             |
-| ------ | ---------------------------- | --------------------------- | --------------------------------------------------- |
-| GET    | `/api/recently-viewed`       | `getRecentlyViewedServer`   | Fetch authenticated user's recently viewed listings |
-| DELETE | `/api/recently-viewed`       | `clearRecentlyViewedServer` | Clear authenticated user's recently viewed history  |
-| POST   | `/api/recently-viewed/merge` | `mergeGuestViewsServer`     | Merge guest localStorage items into DB on login     |
+| Method | Route                         | Handler                     | Purpose                                             |
+| ------ | ----------------------------- | --------------------------- | --------------------------------------------------- |
+| GET    | `/api/recently-viewed`        | `getRecentlyViewedServer`   | Fetch authenticated user's recently viewed listings |
+| DELETE | `/api/recently-viewed`        | `clearRecentlyViewedServer` | Clear authenticated user's recently viewed history  |
+| POST   | `/api/recently-viewed/merge`  | `mergeGuestViewsServer`     | Merge guest localStorage items into DB on login     |
+| GET    | `/api/listings/batch?ids=...` | `getListingsByIdsServer`    | Batch fetch active listings by IDs (max 30)         |
 
 ## Hooks
 
-| Hook                       | Query Key                       | Purpose                                                          | Notes                                          |
-| -------------------------- | ------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------- |
-| `useRecentlyViewed()`      | delegates (see below)           | Auth-aware dual-source hook: DB for auth, localStorage for guest | Returns `{ items, add, clear }`                |
-| `useRecentlyViewedQuery()` | `['recently-viewed', userId]`   | Fetch DB-backed recently viewed listings (authenticated only)    | `enabled: !!user?.id`                          |
-| `useClearRecentlyViewed()` | mutation, invalidates query key | Clear the DB history for the current user                        | Invalidates on settled                         |
-| `useMergeGuestViews()`     | mutation, invalidates query key | Merge guest `RecentlyViewedItem[]` into DB, clears localStorage  | Calls `clearRecentlyViewed()` on success       |
-| `useRecentlyViewedMerge()` | side-effect (no own key)        | Detects login transition, merges guest views silently            | No toast — passive tracking. Wired into Navbar |
+| Hook                          | Query Key                                    | Purpose                                                          | Notes                                                  |
+| ----------------------------- | -------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------ |
+| `useRecentlyViewed()`         | delegates (see below)                        | Auth-aware dual-source hook: DB for auth, localStorage for guest | Returns `{ items, add, clear }`                        |
+| `useRecentlyViewedQuery()`    | `['recently-viewed', userId]`                | Fetch DB-backed recently viewed listings (authenticated only)    | `enabled: !!user?.id`                                  |
+| `useClearRecentlyViewed()`    | mutation, invalidates query key              | Clear the DB history for the current user                        | Invalidates on settled                                 |
+| `useMergeGuestViews()`        | mutation, invalidates query key              | Merge guest `RecentlyViewedItem[]` into DB, clears localStorage  | Calls `clearRecentlyViewed()` on success               |
+| `useRecentlyViewedMerge()`    | side-effect (no own key)                     | Detects login transition, merges guest views silently            | No toast — passive tracking. Wired into Navbar         |
+| `useRecentlyViewedListings()` | `['recently-viewed-listings', ...sortedIds]` | Fetch full listing data for recently viewed IDs                  | Returns `{ listings: ListingWithPhotos[], isLoading }` |
+
+## Components
+
+- **`RecentlyViewedStrip`** (`src/features/recently-viewed/components/recently-viewed-strip/`) — Drop-in component that composes `useRecentlyViewedListings` with `ListingScrollStrip`. Renders the "Recently Viewed" horizontal strip on any page. Returns `null` when the recently viewed list is empty, so it is safe to include unconditionally on any page.
+- **`ListingScrollStrip`** (`src/components/layout/listing-scroll-strip/`) — Shared, reusable horizontal scroll strip. Features CSS scroll-snap, responsive card sizing (160px mobile / 220px desktop), skeleton loading states during data fetch, and full a11y markup. Not specific to recently viewed — also used wherever a horizontal list of listing cards is needed.
 
 ## Key Patterns
 
@@ -58,3 +65,4 @@ The `recently_viewed` table is created by issue #233. It stores one row per (use
 - `src/features/listings/` — Listing entity; `listing_id` stored in recently-viewed items
 - `src/features/cart/` — Pattern reference for localStorage + `useSyncExternalStore` approach (guest cart) and the merge-on-login pattern (`use-cart-merge.ts`)
 - `src/features/auth/context` — `useAuth()` used by merge hook to detect login transition
+- `src/components/layout/listing-scroll-strip/` — Shared horizontal scroll strip component used by `RecentlyViewedStrip`
