@@ -57,6 +57,27 @@ There is intentionally **no FK constraint** on `target_id`. The application laye
 - Deleting a target (e.g., a listing) does NOT cascade-delete its reports — reports persist for moderation history
 - The application must validate that `target_id` exists for the given `target_type` before inserting
 
+## Architecture
+
+- **types/report.ts** — Database-derived types: `Report` (Row), `ReportInsert`, `ReportReason`, `ReportTargetType`, `ReportStatus`, `ReportFormData`, `DuplicateCheckParams`
+- **constants/reasons.ts** — `REPORT_REASONS` (7 entries with value/label/description), `REPORT_TARGET_TYPES` (4 entries with value/label)
+- **validations/report.ts** — Yup schema validating: `target_type` (oneOf 4 types), `target_id` (UUID), `reason` (oneOf 7 reasons), `description` (optional, max 1000 chars)
+- **services/report-server.ts** — Server-side Supabase queries: `createReportServer` (inserts report, catches 23505 unique constraint for duplicates), `getExistingReportServer` (returns report or null via `maybeSingle()`)
+- **services/report.ts** — Client-side fetch wrappers: `submitReport` (POST /api/reports), `checkDuplicateReport` (GET /api/reports/check)
+
+## API Routes
+
+| Method | Route                | Handler                   | Status Codes    | Description                                              |
+| ------ | -------------------- | ------------------------- | --------------- | -------------------------------------------------------- |
+| POST   | `/api/reports`       | `createReportServer`      | 201/400/401/409 | Create a report (409 on duplicate per unique constraint) |
+| GET    | `/api/reports/check` | `getExistingReportServer` | 200/400/401     | Check if user already reported a target (`{ exists }`)   |
+
+## Key Patterns
+
+- **Server client** — Uses `@/libs/supabase/server` (not admin client), matching addresses and listings patterns
+- **Client services** — Thin `@/libs/fetch` wrappers calling `/api/reports/*` routes
+- **Duplicate detection** — Postgres unique constraint `(reporter_id, target_type, target_id)` enforced at DB level; server service catches error code `23505` and surfaces as 409
+
 ## Migration
 
 `supabase/migrations/20260326000000_create_reports.sql`
@@ -64,6 +85,7 @@ There is intentionally **no FK constraint** on `target_id`. The application laye
 ## Future Work
 
 - Report submission UI (modal with reason picker + optional description)
+- Tanstack Query hooks for report submission and duplicate checking
 - Admin dashboard for reviewing reports (bypasses RLS)
 - Report count badges on listings/members/shops
 - Automated moderation triggers (e.g., auto-hide after N reports)
