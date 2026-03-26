@@ -15,10 +15,14 @@ interface SourceErrorCase {
 
 interface SourceStep {
   id: string;
-  label: string;
+  label?: string;
+  title?: string;
   layer: string;
   status?: string;
   route?: string;
+  method?: string;
+  action?: string;
+  tooltip?: string;
   codeRef?: string;
   notes?: string;
   why?: string;
@@ -54,6 +58,7 @@ interface SourceFlow {
 
 interface SourceJourney {
   slug: string;
+  domain?: string;
   title: string;
   persona: string;
   description: string;
@@ -94,13 +99,14 @@ function transformJourney(source: SourceJourney): Journey {
       const stepNode: JourneyNode = {
         id: stepNodeId,
         type: 'step',
-        label: step.label,
+        label: step.title || step.label || step.id,
       };
       if (step.layer) stepNode.layer = step.layer;
       if (step.status) stepNode.status = step.status;
       if (step.route) stepNode.route = step.route;
       if (step.codeRef) stepNode.codeRef = step.codeRef;
-      if (step.notes) stepNode.notes = step.notes;
+      if (step.tooltip) stepNode.why = step.tooltip;
+      else if (step.notes) stepNode.notes = step.notes;
       if (step.why) stepNode.why = step.why;
       if (step.ux) stepNode.ux = step.ux;
       if (step.errorCases && step.errorCases.length > 0) {
@@ -164,6 +170,7 @@ function transformJourney(source: SourceJourney): Journey {
 
   return {
     slug: source.slug,
+    domain: source.domain,
     title: source.title,
     persona: source.persona,
     description: source.description,

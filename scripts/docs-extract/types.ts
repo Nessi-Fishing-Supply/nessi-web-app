@@ -132,6 +132,7 @@ export interface JourneyEdge {
 
 export interface Journey {
   slug: string;
+  domain?: string;
   title: string;
   persona: string;
   description: string;
