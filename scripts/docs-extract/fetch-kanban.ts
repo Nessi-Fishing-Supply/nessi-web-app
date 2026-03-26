@@ -147,15 +147,15 @@ export async function fetchKanban(): Promise<RoadmapItem[]> {
   return items;
 }
 
-// CLI entrypoint
-async function main() {
-  console.log('Fetching kanban board...');
-  const items = await fetchKanban();
-  writeJson('roadmap.json', { items });
-  console.log(`  Found ${items.length} kanban items`);
+// CLI entrypoint — only runs when executed directly
+if (process.argv[1]?.includes('fetch-kanban')) {
+  fetchKanban()
+    .then((items) => {
+      writeJson('roadmap.json', { items });
+      console.log(`  Found ${items.length} kanban items`);
+    })
+    .catch((err) => {
+      console.error('Failed:', err);
+      process.exit(1);
+    });
 }
-
-main().catch((err) => {
-  console.error('Failed:', err);
-  process.exit(1);
-});

@@ -111,14 +111,15 @@ export async function fetchMergedPRs(): Promise<ChangelogEntry[]> {
   return entries;
 }
 
-async function main(): Promise<void> {
-  console.log('Fetching merged PRs from GitHub…');
-  const entries = await fetchMergedPRs();
-  console.log(`  Found ${entries.length} merged PRs`);
-  writeJson('changelog.json', { entries });
+// CLI entrypoint — only runs when executed directly
+if (process.argv[1]?.includes('fetch-changelog')) {
+  fetchMergedPRs()
+    .then((entries) => {
+      console.log(`  Found ${entries.length} merged PRs`);
+      writeJson('changelog.json', { entries });
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 }
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
