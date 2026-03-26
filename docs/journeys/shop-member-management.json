@@ -12,13 +12,15 @@
       "steps": [
         {
           "id": "enter-invite",
-          "label": "Enter email + select role",
+          "title": "Enter Invite Details",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Enter email + select role"
         },
         {
           "id": "validate-invite",
-          "label": "Validate email and role",
+          "title": "Validate Input",
           "layer": "client",
           "status": "built",
           "errorCases": [
@@ -27,9 +29,10 @@
         },
         {
           "id": "server-checks",
-          "label": "Server-side checks: member cap, existing member, duplicate invite",
+          "title": "Check Limits",
           "layer": "server",
           "status": "built",
+          "tooltip": "Server-side checks: member cap, existing member, duplicate invite",
           "errorCases": [
             {
               "condition": "Members + pending invites >= 5",
@@ -50,22 +53,25 @@
         },
         {
           "id": "create-invite",
-          "label": "POST /api/shops/[id]/invites",
+          "title": "Create Invite",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/shops/[id]/invites"
+          "route": "/api/shops/[id]/invites"
         },
         {
           "id": "insert-invite-row",
-          "label": "Insert shop_invites row with 7-day expiry",
+          "title": "Insert Invite Row",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "shop_invites row with 7-day expiry"
         },
         {
           "id": "send-email",
-          "label": "Send invite email via Resend with /invite/{token} link",
+          "title": "Send Invite Email",
           "layer": "email",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Send via Resend with /invite/{token} link"
         }
       ]
     },
@@ -76,22 +82,25 @@
       "steps": [
         {
           "id": "click-resend",
-          "label": "POST /api/shops/[id]/invites/[inviteId]/resend",
+          "title": "Resend Invite",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/shops/[id]/invites/[inviteId]/resend"
+          "route": "/api/shops/[id]/invites/[inviteId]/resend"
         },
         {
           "id": "regenerate-token",
-          "label": "Regenerate token + reset expiry to 7 days",
+          "title": "Regenerate Token",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Regenerate token + reset expiry to 7 days"
         },
         {
           "id": "resend-email",
-          "label": "Resend invite email with new token",
+          "title": "Resend Email",
           "layer": "email",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Resend invite email with new token"
         }
       ]
     },
@@ -102,16 +111,18 @@
       "steps": [
         {
           "id": "delete-invite",
-          "label": "DELETE /api/shops/[id]/invites/[inviteId]",
+          "title": "Revoke Invite",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/shops/[id]/invites/[inviteId]"
+          "route": "/api/shops/[id]/invites/[inviteId]"
         },
         {
           "id": "set-revoked",
-          "label": "Set status = 'revoked'",
+          "title": "Mark as Revoked",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Set status = 'revoked'"
         }
       ]
     },
@@ -122,23 +133,25 @@
       "steps": [
         {
           "id": "delete-member",
-          "label": "DELETE /api/shops/[id]/members/[memberId]",
+          "title": "Remove Member",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/shops/[id]/members/[memberId]"
+          "route": "/api/shops/[id]/members/[memberId]"
         },
         {
           "id": "member-removed",
-          "label": "Member removed from shop_members",
+          "title": "Delete Membership Row",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Member removed from shop_members"
         },
         {
           "id": "context-revocation",
-          "label": "If member was in shop context: 403 on next API call → context revocation",
+          "title": "Trigger Revocation",
           "layer": "background",
           "status": "built",
-          "notes": "See context-switching.json for revocation safety net."
+          "tooltip": "If member was in shop context: 403 on next API call triggers revocation. See context-switching.json."
         }
       ]
     },
@@ -149,43 +162,49 @@
       "steps": [
         {
           "id": "show-dropdown",
-          "label": "Each member row has RoleSelect dropdown (disabled for owner)",
+          "title": "Show Role Dropdown",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Each member row has RoleSelect dropdown (disabled for owner)"
         },
         {
           "id": "select-role",
-          "label": "Select new role from dropdown",
+          "title": "Select New Role",
+          "action": "select",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "patch-role",
-          "label": "PATCH /api/shops/[id]/members/[memberId]/role",
+          "title": "Update Role",
+          "method": "PATCH",
           "layer": "server",
           "status": "built",
-          "route": "PATCH /api/shops/[id]/members/[memberId]/role",
+          "route": "/api/shops/[id]/members/[memberId]/role",
           "errorCases": [
             { "condition": "Cannot assign Owner role", "result": "400 error", "httpStatus": 400 }
           ]
         },
         {
           "id": "optimistic-update",
-          "label": "Optimistic cache update",
+          "title": "Update Cache",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Optimistic cache update"
         },
         {
           "id": "show-toast",
-          "label": "Toast: 'Role updated to {roleName}'",
+          "title": "Show Role Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toast: 'Role updated to {roleName}'"
         },
         {
           "id": "permissions-change",
-          "label": "Member's permissions change immediately",
+          "title": "Apply Permissions",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Member's permissions change immediately"
         }
       ]
     }

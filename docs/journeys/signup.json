@@ -12,26 +12,30 @@
       "steps": [
         {
           "id": "open-modal",
-          "label": "User clicks Sign Up → navbar modal opens",
+          "title": "Open Sign Up Modal",
+          "action": "click",
           "layer": "client",
           "status": "built",
+          "tooltip": "User clicks Sign Up in navbar, modal opens with RegisterForm",
           "codeRef": "src/features/auth/components/register-form/index.tsx"
         },
         {
           "id": "enter-credentials",
-          "label": "Enter email + password",
+          "title": "Enter Credentials",
+          "action": "type",
           "layer": "client",
           "status": "built",
-          "notes": "Client-side validation: email format, password min 8 chars."
+          "tooltip": "Email + password fields with client-side validation: email format, password min 8 chars"
         },
         {
           "id": "submit-register",
-          "label": "POST /api/auth/register (admin client creates user)",
+          "title": "Create User Account",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/auth/register",
+          "route": "/api/auth/register",
           "codeRef": "src/app/api/auth/register/route.ts",
-          "notes": "Uses admin client to create user, bypassing email confirmation flow. Triggers Supabase to send OTP email.",
+          "tooltip": "Admin client creates user, bypassing email confirmation flow. Triggers Supabase to send OTP email.",
           "errorCases": [
             {
               "condition": "Email already registered",
@@ -42,23 +46,26 @@
         },
         {
           "id": "transition-to-otp",
-          "label": "Form transitions to OTP input (same modal, no page change)",
+          "title": "Show OTP Input",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Form transitions to OTP input in same modal, no page change"
         },
         {
           "id": "enter-otp",
-          "label": "User enters 6-digit code from email",
+          "title": "Enter OTP Code",
+          "action": "type",
           "layer": "client",
           "status": "built",
+          "tooltip": "User enters 6-digit code from email",
           "codeRef": "src/features/auth/components/otp-input/index.tsx"
         },
         {
           "id": "verify-otp",
-          "label": "verifyOtp(type='signup') → session established",
+          "title": "Verify OTP",
           "layer": "server",
           "status": "built",
-          "notes": "On success, Supabase sets session cookies.",
+          "tooltip": "verifyOtp(type='signup') — on success, Supabase sets session cookies",
           "errorCases": [
             { "condition": "Invalid/expired code", "result": "Show error, allow retry" }
           ]
@@ -68,7 +75,13 @@
         {
           "afterStep": "enter-otp",
           "condition": "Code not received?",
-          "paths": [{ "label": "Resend OTP (60s cooldown)", "goTo": "transition-to-otp" }]
+          "paths": [
+            {
+              "label": "Resend",
+              "detail": "Resend OTP with 60s cooldown",
+              "goTo": "transition-to-otp"
+            }
+          ]
         }
       ]
     },
@@ -79,41 +92,41 @@
       "steps": [
         {
           "id": "invite-check",
-          "label": "Check if invite token was present in URL params",
+          "title": "Check Invite Token",
           "layer": "background",
           "status": "built",
-          "notes": "Token was stored in Navbar state from ?register=true&invite={token}. Threaded to OtpInput via props."
+          "tooltip": "Token was stored in Navbar state from ?register=true&invite={token}. Threaded to OtpInput via props."
         },
         {
           "id": "auto-accept-invite",
-          "label": "acceptShopInvite(token) — join shop automatically",
+          "title": "Auto-Accept Invite",
           "layer": "background",
           "status": "built",
           "codeRef": "src/features/shops/services/shop-invites.ts",
-          "notes": "Only fires if invite token present. Failure never blocks — account is always created. See shop-invite-acceptance.json for full flow."
+          "tooltip": "acceptShopInvite(token) — only fires if invite token present. Failure never blocks. See shop-invite-acceptance.json."
         },
         {
           "id": "cart-merge",
-          "label": "useCartMerge() — merge localStorage cart to DB",
+          "title": "Merge Guest Cart",
           "layer": "background",
           "status": "built",
           "codeRef": "src/features/cart/hooks/use-cart-merge.ts",
-          "notes": "Silent. No toast. Fires on any auth state change. See guest-cart.json for full flow."
+          "tooltip": "useCartMerge() merges localStorage cart to DB. Silent, no toast. See guest-cart.json."
         },
         {
           "id": "recently-viewed-merge",
-          "label": "useRecentlyViewedMerge() — merge localStorage views to DB",
+          "title": "Merge Recently Viewed",
           "layer": "background",
           "status": "built",
           "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-merge.ts",
-          "notes": "Silent. POST /api/recently-viewed/merge. Deduplicates on server."
+          "tooltip": "useRecentlyViewedMerge() — POST /api/recently-viewed/merge. Deduplicates on server. Silent."
         },
         {
           "id": "onboarding-check",
-          "label": "Check onboarding_completed_at on member record",
+          "title": "Check Onboarding",
           "layer": "client",
           "status": "built",
-          "notes": "If null → onboarding banner appears. If set → user stays on current page."
+          "tooltip": "Check onboarding_completed_at on member record. If null → banner appears. If set → user stays on current page."
         }
       ]
     }

@@ -12,49 +12,63 @@
       "steps": [
         {
           "id": "click-share",
-          "label": "Click ShareButton in action bar on listing detail page",
+          "title": "Click Share Button",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "ShareButton in action bar on listing detail page"
         },
         {
           "id": "check-api",
-          "label": "Check if Web Share API is available",
+          "title": "Check Share API",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Check if Web Share API is available"
         },
         {
           "id": "native-share",
-          "label": "navigator.share({ title, url }) — native share sheet opens (mobile)",
+          "title": "Open Native Share",
           "layer": "client",
           "status": "built",
-          "notes": "AbortError from user cancellation is silently ignored."
+          "tooltip": "navigator.share({ title, url }) — native share sheet opens (mobile). AbortError from cancellation silently ignored."
         },
         {
           "id": "clipboard-copy",
-          "label": "navigator.clipboard.writeText(url) — copy link (desktop)",
+          "title": "Copy Link",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "navigator.clipboard.writeText(url) — copy link to clipboard (desktop)"
         },
         {
           "id": "copy-success",
-          "label": "Toast: 'Link copied!'",
+          "title": "Show Copied Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toast: 'Link copied!'"
         },
         {
           "id": "copy-denied",
-          "label": "Toast: 'Unable to copy link' (clipboard access denied)",
+          "title": "Show Error Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toast: 'Unable to copy link' (clipboard access denied)"
         }
       ],
       "branches": [
         {
           "afterStep": "check-api",
-          "condition": "Web Share API available?",
+          "condition": "Share API available?",
           "paths": [
-            { "label": "Yes (mobile)", "goTo": "native-share" },
-            { "label": "No (desktop)", "goTo": "clipboard-copy" }
+            {
+              "label": "Yes",
+              "detail": "Mobile — native share sheet",
+              "goTo": "native-share"
+            },
+            {
+              "label": "No",
+              "detail": "Desktop — clipboard copy",
+              "goTo": "clipboard-copy"
+            }
           ]
         },
         {

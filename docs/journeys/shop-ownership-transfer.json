@@ -12,22 +12,27 @@
       "steps": [
         {
           "id": "select-member",
-          "label": "Select new owner from current members",
+          "title": "Select New Owner",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Select new owner from current members"
         },
         {
           "id": "confirm-modal",
-          "label": "Two-step confirmation modal",
+          "title": "Confirm Transfer",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Two-step confirmation modal"
         },
         {
           "id": "post-transfer",
-          "label": "POST /api/shops/[id]/ownership",
+          "title": "Request Transfer",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/shops/[id]/ownership",
+          "route": "/api/shops/[id]/ownership",
           "errorCases": [
             {
               "condition": "Pending transfer already exists",
@@ -38,21 +43,24 @@
         },
         {
           "id": "insert-transfer",
-          "label": "Insert shop_ownership_transfers row (status: pending, 7-day expiry)",
+          "title": "Create Transfer Row",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Insert shop_ownership_transfers row (status: pending, 7-day expiry)"
         },
         {
           "id": "send-email",
-          "label": "Send ownership transfer email with /shop/transfer/{token} link",
+          "title": "Send Transfer Email",
           "layer": "email",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Ownership transfer email with /shop/transfer/{token} link"
         },
         {
           "id": "show-pending",
-          "label": "Pending status card shown with transferee name + expiry",
+          "title": "Show Pending Status",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Pending status card with transferee name + expiry"
         }
       ]
     },
@@ -63,22 +71,25 @@
       "steps": [
         {
           "id": "land-on-page",
-          "label": "Transferee lands on /shop/transfer/{token}",
+          "title": "Open Transfer Page",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/shop/transfer/[token]"
         },
         {
           "id": "check-auth",
-          "label": "proxy.ts: check authentication",
+          "title": "Check Auth",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "proxy.ts: check authentication"
         },
         {
           "id": "validate-transfer",
-          "label": "Server component fetches transfer via admin client — validate status, user, expiry",
+          "title": "Validate Transfer",
           "layer": "server",
           "status": "built",
+          "tooltip": "Server component fetches transfer via admin client — validate status, user, expiry",
           "errorCases": [
             { "condition": "Not found or non-pending", "result": "notFound()" },
             { "condition": "Wrong user", "result": "notFound()" },
@@ -87,34 +98,39 @@
         },
         {
           "id": "show-accept",
-          "label": "Show TransferAccept component",
+          "title": "Show Accept UI",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "TransferAccept component"
         },
         {
           "id": "click-accept",
-          "label": "Transferee clicks Accept",
+          "title": "Click Accept",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "accept-api",
-          "label": "POST /api/shops/ownership-transfer/[token]/accept",
+          "title": "Accept Transfer",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/shops/ownership-transfer/[token]/accept"
+          "route": "/api/shops/ownership-transfer/[token]/accept"
         },
         {
           "id": "atomic-swap",
-          "label": "Atomic swap: shops.owner_id → new owner, new owner role → OWNER, old owner role → MANAGER, transfer status → accepted",
+          "title": "Swap Ownership",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Atomic swap: owner_id → new owner, new role → OWNER, old role → MANAGER, status → accepted"
         },
         {
           "id": "transfer-complete",
-          "label": "Ownership transferred successfully",
+          "title": "Transfer Complete",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Ownership transferred successfully"
         }
       ],
       "branches": [
@@ -122,7 +138,11 @@
           "afterStep": "check-auth",
           "condition": "Authenticated?",
           "paths": [
-            { "label": "No — redirect to /", "goTo": "END" },
+            {
+              "label": "No",
+              "detail": "Redirect to /",
+              "goTo": "END"
+            },
             { "label": "Yes", "goTo": "validate-transfer" }
           ]
         }
@@ -135,28 +155,33 @@
       "steps": [
         {
           "id": "click-cancel",
-          "label": "Owner clicks Cancel Transfer",
+          "title": "Click Cancel",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "confirm-cancel",
-          "label": "Confirmation modal",
+          "title": "Confirm Cancellation",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Confirmation modal"
         },
         {
           "id": "delete-transfer",
-          "label": "DELETE /api/shops/[id]/ownership-transfer",
+          "title": "Cancel Transfer",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/shops/[id]/ownership-transfer"
+          "route": "/api/shops/[id]/ownership-transfer"
         },
         {
           "id": "set-cancelled",
-          "label": "Set transfer status → cancelled",
+          "title": "Mark as Cancelled",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Set transfer status → cancelled"
         }
       ]
     }

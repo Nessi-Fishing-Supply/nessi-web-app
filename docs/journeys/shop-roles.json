@@ -12,47 +12,53 @@
       "steps": [
         {
           "id": "navigate-roles",
-          "label": "Navigate to /dashboard/shop/roles",
+          "title": "Open Roles Page",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/dashboard/shop/roles"
         },
         {
           "id": "route-guard",
-          "label": "ShopRouteGuard checks user role",
+          "title": "Check User Role",
           "layer": "client",
           "status": "built",
-          "notes": "Contributors are redirected to /dashboard."
+          "tooltip": "ShopRouteGuard checks user role. Contributors redirected to /dashboard."
         },
         {
           "id": "show-system-roles",
-          "label": "System Roles section with RoleCards",
+          "title": "Show System Roles",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "System Roles section with RoleCards"
         },
         {
           "id": "owner-role",
-          "label": "RoleCard: Owner — all 6 domains at 'full'",
+          "title": "Owner Role Card",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "All 6 domains at 'full' permission level"
         },
         {
           "id": "manager-role",
-          "label": "RoleCard: Manager — listings/pricing/orders/messaging 'full', shop_settings 'view', members 'none'",
+          "title": "Manager Role Card",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "listings/pricing/orders/messaging 'full', shop_settings 'view', members 'none'"
         },
         {
           "id": "contributor-role",
-          "label": "RoleCard: Contributor — listings 'full' only",
+          "title": "Contributor Role Card",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "listings 'full' only"
         },
         {
           "id": "permission-matrix",
-          "label": "Each card shows PermissionMatrix grid",
+          "title": "Show Permission Grid",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Each card shows PermissionMatrix grid"
         }
       ],
       "branches": [
@@ -60,8 +66,12 @@
           "afterStep": "route-guard",
           "condition": "User's role?",
           "paths": [
-            { "label": "Owner or Manager", "goTo": "show-system-roles" },
-            { "label": "Contributor — redirect to /dashboard", "goTo": "END" }
+            { "label": "Owner/Manager", "goTo": "show-system-roles" },
+            {
+              "label": "Contributor",
+              "detail": "Redirect to /dashboard",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -73,15 +83,18 @@
       "steps": [
         {
           "id": "click-add-custom",
-          "label": "Owner clicks 'Add Custom Role' button",
+          "title": "Click Add Custom Role",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "upsell-modal",
-          "label": "CustomRoleUpsellModal opens — premium plan gate (not yet available)",
+          "title": "Show Upsell Modal",
+          "action": "open",
           "layer": "client",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "CustomRoleUpsellModal — premium plan gate (not yet available)"
         }
       ]
     }

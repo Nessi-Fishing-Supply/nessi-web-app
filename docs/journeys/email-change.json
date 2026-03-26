@@ -12,50 +12,60 @@
       "steps": [
         {
           "id": "click-edit",
-          "label": "User clicks edit email in /dashboard/account",
+          "title": "Click Edit Email",
+          "action": "click",
           "layer": "client",
           "status": "built",
           "route": "/dashboard/account"
         },
         {
           "id": "enter-new-email",
-          "label": "Enter new email address",
+          "title": "Enter New Email",
+          "action": "type",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "check-availability",
-          "label": "checkEmailAvailable(email)",
+          "title": "Check Availability",
           "layer": "server",
           "status": "built",
+          "tooltip": "checkEmailAvailable(email)",
           "errorCases": [
             { "condition": "Email already taken", "result": "Show error: email taken" }
           ]
         },
         {
           "id": "send-change-request",
-          "label": "changeEmail(newEmail) — OTP sent to NEW email",
+          "title": "Send Change OTP",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "changeEmail(newEmail) — OTP sent to NEW email"
         },
         {
           "id": "enter-otp",
-          "label": "Enter 6-digit code from new email",
+          "title": "Enter OTP Code",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Enter 6-digit code from new email"
         },
         {
           "id": "verify-otp",
-          "label": "verifyEmailChange(type='email_change')",
+          "title": "Verify Email Change",
           "layer": "server",
           "status": "built",
-          "errorCases": [{ "condition": "Invalid/expired code", "result": "Show error" }]
+          "tooltip": "verifyEmailChange(type='email_change')",
+          "errorCases": [
+            { "condition": "Invalid/expired code", "result": "Show error" }
+          ]
         },
         {
           "id": "email-updated",
-          "label": "Email updated, session persists",
+          "title": "Email Updated",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Email updated, session persists"
         }
       ],
       "branches": [
@@ -64,7 +74,11 @@
           "condition": "Email available?",
           "paths": [
             { "label": "Yes", "goTo": "send-change-request" },
-            { "label": "No — email taken", "goTo": "END" }
+            {
+              "label": "No",
+              "detail": "Email already taken",
+              "goTo": "END"
+            }
           ]
         },
         {
@@ -72,7 +86,11 @@
           "condition": "OTP valid?",
           "paths": [
             { "label": "Yes", "goTo": "email-updated" },
-            { "label": "No — show error", "goTo": "enter-otp" }
+            {
+              "label": "No",
+              "detail": "Show error, allow retry",
+              "goTo": "enter-otp"
+            }
           ]
         }
       ]

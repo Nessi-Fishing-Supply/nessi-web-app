@@ -12,21 +12,26 @@
       "steps": [
         {
           "id": "open-modal",
-          "label": "User clicks Log In → navbar modal opens",
+          "title": "Open Login Modal",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "User clicks Log In in navbar, modal opens"
         },
         {
           "id": "enter-credentials",
-          "label": "Enter email + password",
+          "title": "Enter Credentials",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Enter email + password"
         },
         {
           "id": "sign-in",
-          "label": "signInWithPassword() called",
+          "title": "Authenticate User",
           "layer": "server",
           "status": "built",
+          "tooltip": "signInWithPassword() called via Supabase client",
           "errorCases": [
             {
               "condition": "email_not_confirmed",
@@ -40,30 +45,42 @@
         },
         {
           "id": "session-set",
-          "label": "Session cookies set on success",
+          "title": "Set Session Cookies",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Session cookies set on successful authentication"
         },
         {
           "id": "close-modal",
-          "label": "onSuccess callback fires, modal closes",
+          "title": "Close Modal",
+          "action": "close",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "onSuccess callback fires, modal closes"
         },
         {
           "id": "stay-on-page",
-          "label": "User stays on current page",
+          "title": "Stay on Current Page",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "User stays on current page after login"
         }
       ],
       "branches": [
         {
           "afterStep": "sign-in",
-          "condition": "Response?",
+          "condition": "Auth result?",
           "paths": [
-            { "label": "email_not_confirmed", "goTo": "END" },
-            { "label": "Invalid credentials", "goTo": "END" },
+            {
+              "label": "Unconfirmed",
+              "detail": "email_not_confirmed — show resend button",
+              "goTo": "END"
+            },
+            {
+              "label": "Invalid",
+              "detail": "Invalid credentials — show error message",
+              "goTo": "END"
+            },
             { "label": "Success", "goTo": "session-set" }
           ]
         }
@@ -76,19 +93,19 @@
       "steps": [
         {
           "id": "cart-merge",
-          "label": "useCartMerge() — merge localStorage cart to DB",
+          "title": "Merge Guest Cart",
           "layer": "background",
           "status": "built",
           "codeRef": "src/features/cart/hooks/use-cart-merge.ts",
-          "notes": "Silent. No toast. Fires on any auth state change. See guest-cart.json for full flow."
+          "tooltip": "useCartMerge() merges localStorage cart to DB. Silent, no toast. See guest-cart.json."
         },
         {
           "id": "recently-viewed-merge",
-          "label": "useRecentlyViewedMerge() — merge localStorage views to DB",
+          "title": "Merge Recently Viewed",
           "layer": "background",
           "status": "built",
           "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-merge.ts",
-          "notes": "Silent. POST /api/recently-viewed/merge. Deduplicates on server."
+          "tooltip": "useRecentlyViewedMerge() — POST /api/recently-viewed/merge. Deduplicates on server. Silent."
         }
       ]
     },
@@ -99,21 +116,24 @@
       "steps": [
         {
           "id": "show-resend-button",
-          "label": "Show inline resend verification button",
+          "title": "Show Resend Button",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Inline resend verification button appears"
         },
         {
           "id": "resend-otp",
-          "label": "resendOtp() sends new verification code",
+          "title": "Resend OTP",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "resendOtp() sends new verification code to user's email"
         },
         {
           "id": "verify-then-login",
-          "label": "User verifies email, then logs in again",
+          "title": "Verify Then Login",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "User verifies email, then logs in again"
         }
       ]
     }

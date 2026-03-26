@@ -12,50 +12,60 @@
       "steps": [
         {
           "id": "create-draft",
-          "label": "POST /api/listings — create empty draft",
+          "title": "Create Draft",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/listings"
+          "route": "/api/listings",
+          "tooltip": "Create empty draft listing"
         },
         {
           "id": "draft-state",
-          "label": "Listing in draft state — requires 2+ photos to publish",
+          "title": "Draft State",
           "layer": "database",
           "status": "built",
-          "notes": "localStorage persistence for create wizard."
+          "tooltip": "Listing in draft state — requires 2+ photos to publish. localStorage persistence for create wizard."
         },
         {
           "id": "publish",
-          "label": "PATCH status=active — publish, sets published_at",
+          "title": "Publish Listing",
+          "method": "PATCH",
           "layer": "server",
           "status": "built",
-          "notes": "Visible in search, browse, shop page. Editable until sold."
+          "tooltip": "status=active, sets published_at. Visible in search, browse, shop page. Editable until sold."
         },
         {
           "id": "mark-sold",
-          "label": "PATCH status=sold — sets sold_at (final state)",
+          "title": "Mark as Sold",
+          "method": "PATCH",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "status=sold, sets sold_at (final state)"
         },
         {
           "id": "archive",
-          "label": "PATCH status=archived — hide from search",
+          "title": "Archive Listing",
+          "method": "PATCH",
           "layer": "server",
           "status": "built",
-          "notes": "Hidden from search. Kept for history. Can be reactivated."
+          "tooltip": "status=archived. Hidden from search. Kept for history. Can be reactivated."
         },
         {
           "id": "unarchive",
-          "label": "PATCH status=active — reactivate archived listing",
+          "title": "Reactivate Listing",
+          "method": "PATCH",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "status=active — reactivate archived listing"
         },
         {
           "id": "delete-draft",
-          "label": "DELETE /api/listings/drafts — hard delete (draft only)",
+          "title": "Delete Draft",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/listings/drafts"
+          "route": "/api/listings/drafts",
+          "tooltip": "Hard delete (draft only)"
         }
       ]
     },
@@ -66,55 +76,67 @@
       "steps": [
         {
           "id": "click-new",
-          "label": "Seller clicks 'New Listing'",
+          "title": "Click New Listing",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "create-draft",
-          "label": "POST /api/listings/drafts → empty draft created",
+          "title": "Create Draft",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/listings/drafts"
+          "route": "/api/listings/drafts",
+          "tooltip": "Empty draft created"
         },
         {
           "id": "redirect-wizard",
-          "label": "Redirect to /dashboard/listings/new",
+          "title": "Open Create Wizard",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/dashboard/listings/new"
         },
         {
           "id": "step1-photos",
-          "label": "Step 1: Photos — upload via POST /api/listings/upload",
+          "title": "Upload Photos",
+          "action": "upload",
           "layer": "client",
           "status": "built",
-          "route": "POST /api/listings/upload",
-          "notes": "Sharp: resize 1200x1200 max + 400x400 thumb. Stored as WebP in listing-images bucket."
+          "route": "/api/listings/upload",
+          "tooltip": "Step 1: Photos — Sharp resize 1200x1200 max + 400x400 thumb. Stored as WebP in listing-images bucket."
         },
         {
           "id": "step2-category",
-          "label": "Step 2: Category (10 options) + Condition (6 tiers)",
+          "title": "Select Category",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 2: Category (10 options) + Condition (6 tiers)"
         },
         {
           "id": "step3-details",
-          "label": "Step 3: Details — title, brand, description, species, state, listing type",
+          "title": "Enter Details",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 3: title, brand, description, species, state, listing type"
         },
         {
           "id": "step4-pricing",
-          "label": "Step 4: Pricing (dollars → stored as cents) + Shipping options",
+          "title": "Set Pricing",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 4: Pricing (dollars stored as cents) + Shipping options"
         },
         {
           "id": "step5-review",
-          "label": "Step 5: Review — preview all fields",
+          "title": "Review Listing",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 5: Preview all fields before publish"
         }
       ],
       "branches": [
@@ -123,15 +145,27 @@
           "condition": "2+ photos uploaded?",
           "paths": [
             { "label": "Yes", "goTo": "step2-category" },
-            { "label": "No — cannot proceed", "goTo": "END" }
+            {
+              "label": "No",
+              "detail": "Cannot proceed without photos",
+              "goTo": "END"
+            }
           ]
         },
         {
           "afterStep": "step5-review",
           "condition": "Action?",
           "paths": [
-            { "label": "Save as draft — PUT /api/listings/[id]", "goTo": "END" },
-            { "label": "Publish — PUT + PATCH status=active, published_at set", "goTo": "END" }
+            {
+              "label": "Save Draft",
+              "detail": "PUT /api/listings/[id]",
+              "goTo": "END"
+            },
+            {
+              "label": "Publish",
+              "detail": "PUT + PATCH status=active, published_at set",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -143,44 +177,52 @@
       "steps": [
         {
           "id": "click-edit",
-          "label": "Seller clicks Edit on listing",
+          "title": "Click Edit",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "navigate-edit",
-          "label": "Navigate to /dashboard/listings/[id]/edit",
+          "title": "Open Edit Wizard",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/dashboard/listings/[id]/edit"
         },
         {
           "id": "prefill-wizard",
-          "label": "GET /api/listings/[id] → pre-populate wizard",
+          "title": "Prefill Wizard Data",
+          "method": "GET",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "GET /api/listings/[id] — pre-populate wizard"
         },
         {
           "id": "edit-steps",
-          "label": "Same 5-step wizard as create, tracks changedFields for partial save",
+          "title": "Edit Listing Fields",
+          "action": "type",
           "layer": "client",
           "status": "built",
-          "notes": "No localStorage persistence for edit mode."
+          "tooltip": "Same 5-step wizard, tracks changedFields for partial save. No localStorage persistence."
         },
         {
           "id": "save-changes",
-          "label": "PUT /api/listings/[id] with only changed fields",
+          "title": "Save Changes",
+          "method": "PUT",
           "layer": "server",
           "status": "built",
-          "route": "PUT /api/listings/[id]"
+          "route": "/api/listings/[id]",
+          "tooltip": "Only changed fields sent"
         },
         {
           "id": "photo-management",
-          "label": "Add new photos or delete existing (DELETE /api/listings/upload/delete)",
+          "title": "Manage Photos",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/listings/upload/delete",
-          "notes": "Remaining photos re-sequenced after deletion."
+          "route": "/api/listings/upload/delete",
+          "tooltip": "Add new photos or delete existing. Remaining photos re-sequenced."
         }
       ]
     },
@@ -191,42 +233,50 @@
       "steps": [
         {
           "id": "fetch-listings",
-          "label": "GET /api/listings/seller — all listings, all statuses",
+          "title": "Fetch Seller Listings",
+          "method": "GET",
           "layer": "server",
           "status": "built",
-          "route": "GET /api/listings/seller"
+          "route": "/api/listings/seller",
+          "tooltip": "All listings, all statuses"
         },
         {
           "id": "filter-tabs",
-          "label": "Filter by tab: Active, Drafts, Sold, Archived",
+          "title": "Filter by Status Tab",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Tabs: Active, Drafts, Sold, Archived"
         },
         {
           "id": "active-actions",
-          "label": "Active listing actions: Edit, Mark Sold, Archive, Quick Edit Price, Duplicate",
+          "title": "Active Actions",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Edit, Mark Sold, Archive, Quick Edit Price, Duplicate"
         },
         {
           "id": "duplicate-listing",
-          "label": "Duplicate → POST /api/listings/[id]/duplicate → new draft with copied fields",
+          "title": "Duplicate Listing",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/listings/[id]/duplicate",
-          "notes": "Opens at Step 1 — needs photos."
+          "route": "/api/listings/[id]/duplicate",
+          "tooltip": "New draft with copied fields. Opens at Step 1 — needs photos."
         },
         {
           "id": "draft-actions",
-          "label": "Draft actions: Continue editing, Delete draft (hard delete)",
+          "title": "Draft Actions",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Continue editing or delete draft (hard delete)"
         },
         {
           "id": "archived-actions",
-          "label": "Archived actions: Reactivate → PATCH status=active",
+          "title": "Archived Actions",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Reactivate → PATCH status=active"
         }
       ]
     }

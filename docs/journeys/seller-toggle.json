@@ -12,22 +12,26 @@
       "steps": [
         {
           "id": "click-toggle-on",
-          "label": "Toggle ON in Seller Settings",
+          "title": "Toggle Seller On",
+          "action": "toggle",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "post-toggle-on",
-          "label": "POST /api/members/toggle-seller (is_seller=true)",
+          "title": "Enable Seller Flag",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/members/toggle-seller"
+          "route": "/api/members/toggle-seller",
+          "tooltip": "is_seller=true"
         },
         {
           "id": "show-seller-features",
-          "label": "Dashboard shows seller features",
+          "title": "Show Seller Features",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Dashboard shows seller features"
         }
       ]
     },
@@ -38,50 +42,61 @@
       "steps": [
         {
           "id": "click-toggle-off",
-          "label": "Click toggle OFF in Seller Settings",
+          "title": "Toggle Seller Off",
+          "action": "toggle",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "check-preconditions",
-          "label": "GET /api/members/seller-preconditions",
+          "title": "Check Preconditions",
+          "method": "GET",
           "layer": "server",
           "status": "built",
-          "route": "GET /api/members/seller-preconditions"
+          "route": "/api/members/seller-preconditions"
         },
         {
           "id": "show-warning",
-          "label": "Show warning: X active listings, Y orders — must resolve first",
+          "title": "Show Warning",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "X active listings, Y orders — must resolve first"
         },
         {
           "id": "post-toggle-off",
-          "label": "POST /api/members/toggle-seller (is_seller=false)",
+          "title": "Disable Seller Flag",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/members/toggle-seller"
+          "route": "/api/members/toggle-seller",
+          "tooltip": "is_seller=false"
         },
         {
           "id": "hide-listings",
-          "label": "All listings hidden from search",
+          "title": "Hide All Listings",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "All listings hidden from search"
         },
         {
           "id": "hide-seller-features",
-          "label": "Seller features hidden in dashboard",
+          "title": "Hide Seller Features",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Seller features hidden in dashboard"
         }
       ],
       "branches": [
         {
           "afterStep": "check-preconditions",
-          "condition": "Has active listings or orders?",
+          "condition": "Has active items?",
           "paths": [
-            { "label": "Yes — must resolve first", "goTo": "show-warning" },
-            { "label": "No — proceed", "goTo": "post-toggle-off" }
+            {
+              "label": "Yes",
+              "detail": "Must resolve active listings/orders first",
+              "goTo": "show-warning"
+            },
+            { "label": "No", "goTo": "post-toggle-off" }
           ]
         }
       ]

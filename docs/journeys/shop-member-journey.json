@@ -12,33 +12,40 @@
       "steps": [
         {
           "id": "switch-to-shop",
-          "label": "Member clicks shop name → switchToShop(shopId)",
+          "title": "Switch to Shop",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Member clicks shop name in navbar context switcher"
         },
         {
           "id": "set-context-header",
-          "label": "X-Nessi-Context: shop:{shopId} set on all requests",
+          "title": "Set Context Header",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "X-Nessi-Context: shop:{shopId} set on all requests"
         },
         {
           "id": "create-listing",
-          "label": "Create listing in shop context — shop_id set, visible on shop page",
+          "title": "Create Shop Listing",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Listing created with shop_id set, visible on shop page"
         },
         {
           "id": "role-based-access",
-          "label": "Access based on role: Owner/Manager get settings + members, Contributor gets own listings only",
+          "title": "Role-Based Access",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Owner/Manager: settings + members. Contributor: own listings only."
         },
         {
           "id": "switch-back",
-          "label": "Switch back to personal: switchToMember() → X-Nessi-Context: member",
+          "title": "Switch to Personal",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "switchToMember() — X-Nessi-Context: member"
         }
       ],
       "branches": [
@@ -47,11 +54,13 @@
           "condition": "Role?",
           "paths": [
             {
-              "label": "Owner/Manager — access shop settings, manage members, edit any listing",
+              "label": "Owner/Manager",
+              "detail": "Access shop settings, manage members, edit any listing",
               "goTo": "create-listing"
             },
             {
-              "label": "Contributor — edit own listings only, no settings/members access",
+              "label": "Contributor",
+              "detail": "Edit own listings only, no settings/members access",
               "goTo": "create-listing"
             }
           ]
@@ -65,52 +74,62 @@
       "steps": [
         {
           "id": "click-leave",
-          "label": "Non-owner sees and clicks 'Leave Shop' button",
+          "title": "Click Leave Shop",
+          "action": "click",
           "layer": "client",
           "status": "built",
-          "notes": "Leave button NOT shown for owners — must transfer ownership first."
+          "tooltip": "Leave button NOT shown for owners — must transfer ownership first"
         },
         {
           "id": "confirm-modal",
-          "label": "Confirmation modal opens",
+          "title": "Open Confirm Modal",
+          "action": "open",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "type-phrase",
-          "label": "Type confirmation phrase: 'I {name} want to leave {shopName}'",
+          "title": "Type Confirmation",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Type: 'I {name} want to leave {shopName}'"
         },
         {
           "id": "remove-self",
-          "label": "removeShopMember(shopId, myMemberId)",
+          "title": "Leave Shop",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "removeShopMember(shopId, myMemberId)"
         },
         {
           "id": "switch-to-member",
-          "label": "switchToMember() — revert to personal context",
+          "title": "Revert to Personal",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "switchToMember() — revert to personal context"
         },
         {
           "id": "invalidate-queries",
-          "label": "Invalidate shop queries",
+          "title": "Invalidate Queries",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Invalidate shop queries"
         },
         {
           "id": "show-toast",
-          "label": "Toast: 'You left {shopName}'",
+          "title": "Show Left Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toast: 'You left {shopName}'"
         },
         {
           "id": "close-modal",
-          "label": "Modal closes, user in member context",
+          "title": "Close Modal",
+          "action": "close",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Modal closes, user in member context"
         }
       ],
       "branches": [
@@ -119,7 +138,11 @@
           "condition": "Phrase matches?",
           "paths": [
             { "label": "Yes", "goTo": "remove-self" },
-            { "label": "No — submit button disabled", "goTo": "END" }
+            {
+              "label": "No",
+              "detail": "Submit button disabled",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -131,57 +154,67 @@
       "steps": [
         {
           "id": "owner-removes",
-          "label": "Owner removes member from shop via API",
+          "title": "Owner Removes Member",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Owner removes member from shop via API"
         },
         {
           "id": "next-api-call",
-          "label": "Member's next API call includes shop context",
+          "title": "Next API Call",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Member's next API call includes shop context"
         },
         {
           "id": "receive-403",
-          "label": "API returns 403 Forbidden",
+          "title": "Receive 403",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "API returns 403 Forbidden"
         },
         {
           "id": "handle-revocation",
-          "label": "handleContextRevocation() fires (with 2s dedup check)",
+          "title": "Handle Revocation",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "handleContextRevocation() fires with 2s dedup check"
         },
         {
           "id": "switch-to-member",
-          "label": "switchToMember() — revert to personal context",
+          "title": "Revert to Personal",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "switchToMember() — revert to personal context"
         },
         {
           "id": "cancel-queries",
-          "label": "Cancel all queries + invalidate cache",
+          "title": "Cancel All Queries",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Cancel all queries + invalidate cache"
         },
         {
           "id": "dispatch-event",
-          "label": "Dispatch 'nessi:context-revoked' event",
+          "title": "Dispatch Event",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Dispatch 'nessi:context-revoked' event"
         },
         {
           "id": "show-toast",
-          "label": "ContextRevocationListener → Toast: 'You have been removed from shop'",
+          "title": "Show Removed Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "ContextRevocationListener — Toast: 'You have been removed from shop'"
         },
         {
           "id": "navigate-dashboard",
-          "label": "Navigate to /dashboard",
+          "title": "Go to Dashboard",
+          "action": "navigate",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Navigate to /dashboard"
         }
       ]
     },
@@ -192,33 +225,39 @@
       "steps": [
         {
           "id": "fetch-shops",
-          "label": "getShopsByMember(memberId) — fetch all shops",
+          "title": "Fetch User Shops",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "getShopsByMember(memberId) — fetch all shops"
         },
         {
           "id": "navbar-dropdown",
-          "label": "Navbar dropdown lists all shops + personal profile",
+          "title": "Show Shop Dropdown",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Navbar dropdown lists all shops + personal profile"
         },
         {
           "id": "select-identity",
-          "label": "Select identity: personal, or any shop (with role)",
+          "title": "Select Identity",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Select identity: personal, or any shop (with role)"
         },
         {
           "id": "set-context",
-          "label": "Set context in Zustand store",
+          "title": "Set Context Store",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Set context in Zustand store"
         },
         {
           "id": "persist-context",
-          "label": "Persisted to localStorage — survives page refresh",
+          "title": "Persist to Storage",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Persisted to localStorage — survives page refresh"
         }
       ]
     }

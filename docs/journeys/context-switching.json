@@ -12,39 +12,47 @@
       "steps": [
         {
           "id": "login-default",
-          "label": "User logs in — default context: { type: 'member' }",
+          "title": "Set Default Context",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "User logs in — default: { type: 'member' }"
         },
         {
           "id": "check-shops",
-          "label": "Check if user belongs to shops",
+          "title": "Check Shop Membership",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Check if user belongs to shops"
         },
         {
           "id": "show-switcher",
-          "label": "Navbar shows context switcher dropdown (if shops exist)",
+          "title": "Show Context Switcher",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Navbar shows context switcher dropdown (if shops exist)"
         },
         {
           "id": "switch-to-member",
-          "label": "switchToMember() — Zustand: { type: 'member' } — X-Nessi-Context: member",
+          "title": "Switch to Member",
+          "action": "click",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "switchToMember() — Zustand: { type: 'member' }, X-Nessi-Context: member"
         },
         {
           "id": "switch-to-shop",
-          "label": "switchToShop(shopId, shopName) — Zustand: { type: 'shop', shopId } — X-Nessi-Context: shop:{shopId}",
+          "title": "Switch to Shop",
+          "action": "click",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "switchToShop(shopId, shopName) — Zustand: { type: 'shop', shopId }, X-Nessi-Context: shop:{shopId}"
         },
         {
           "id": "persist-localstorage",
-          "label": "Persisted to localStorage — survives refresh, tab close, re-open",
+          "title": "Persist Context",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Persisted to localStorage — survives refresh, tab close, re-open"
         }
       ],
       "branches": [
@@ -52,7 +60,11 @@
           "afterStep": "check-shops",
           "condition": "Belongs to shops?",
           "paths": [
-            { "label": "No — only member context available", "goTo": "END" },
+            {
+              "label": "No",
+              "detail": "Only member context available",
+              "goTo": "END"
+            },
             { "label": "Yes", "goTo": "show-switcher" }
           ]
         }
@@ -65,51 +77,59 @@
       "steps": [
         {
           "id": "create-listing-member",
-          "label": "Create listing (member): listing.member_id = user.id, shop_id = null — appears on /member/[slug]",
+          "title": "Create as Member",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "member_id = user.id, shop_id = null — appears on /member/[slug]"
         },
         {
           "id": "create-listing-shop",
-          "label": "Create listing (shop): listing.shop_id = shopId, member_id = null — appears on /shop/[slug]",
+          "title": "Create as Shop",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "shop_id = shopId, member_id = null — appears on /shop/[slug]"
         },
         {
           "id": "dashboard-member",
-          "label": "View dashboard (member): personal dashboard KPIs",
+          "title": "Member Dashboard",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Personal dashboard KPIs"
         },
         {
           "id": "dashboard-shop",
-          "label": "View dashboard (shop): shop dashboard KPIs",
+          "title": "Shop Dashboard",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Shop dashboard KPIs"
         },
         {
           "id": "settings-member",
-          "label": "Shop settings (member): not available",
+          "title": "No Shop Settings",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Shop settings not available in member context"
         },
         {
           "id": "settings-shop",
-          "label": "Shop settings (shop): accessible based on role",
+          "title": "Shop Settings Access",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Accessible based on role"
         },
         {
           "id": "upload-member",
-          "label": "Upload assets (member): stored in members/{userId}/",
+          "title": "Upload as Member",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Assets stored in members/{userId}/"
         },
         {
           "id": "upload-shop",
-          "label": "Upload assets (shop): stored in shops/{shopId}/",
+          "title": "Upload as Shop",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Assets stored in shops/{shopId}/"
         }
       ]
     },
@@ -120,33 +140,38 @@
       "steps": [
         {
           "id": "rehydrate",
-          "label": "Zustand rehydrates from localStorage",
+          "title": "Rehydrate Store",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Zustand rehydrates from localStorage"
         },
         {
           "id": "set-default",
-          "label": "No stored context — default to { type: 'member' }",
+          "title": "Set Default Context",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "No stored context — default to { type: 'member' }"
         },
         {
           "id": "set-member",
-          "label": "Stored member context — set context: member",
+          "title": "Restore Member",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Stored member context — set context: member"
         },
         {
           "id": "set-shop",
-          "label": "Stored shop context — set context: shop:{id}",
+          "title": "Restore Shop",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Stored shop context — set context: shop:{id}"
         },
         {
           "id": "validate-membership",
-          "label": "First API call validates membership",
+          "title": "Validate Membership",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "First API call validates shop membership"
         }
       ],
       "branches": [
@@ -163,8 +188,16 @@
           "afterStep": "validate-membership",
           "condition": "Still a member?",
           "paths": [
-            { "label": "Yes — continue in shop context", "goTo": "END" },
-            { "label": "No — 403 — revocation flow", "goTo": "END" }
+            {
+              "label": "Yes",
+              "detail": "Continue in shop context",
+              "goTo": "END"
+            },
+            {
+              "label": "No",
+              "detail": "403 — revocation flow",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -176,27 +209,31 @@
       "steps": [
         {
           "id": "shop-deleted",
-          "label": "Shop deleted while user in shop context — next API call — 403 — revocation",
+          "title": "Shop Deleted",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Shop deleted while user in shop context — next API call → 403 → revocation"
         },
         {
           "id": "role-changed",
-          "label": "Role changed (e.g., owner to contributor) — API checks role per request, UI may show stale permissions until refresh",
+          "title": "Role Changed",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Role changed (e.g., owner to contributor). API checks role per request, UI may show stale until refresh."
         },
         {
           "id": "multiple-tabs",
-          "label": "Multiple tabs in different contexts — localStorage sync via StorageEvent, both tabs update",
+          "title": "Multi-Tab Sync",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Multiple tabs in different contexts — localStorage sync via StorageEvent, both tabs update"
         },
         {
           "id": "localstorage-cleared",
-          "label": "localStorage cleared or incognito — defaults to member context",
+          "title": "Storage Cleared",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "localStorage cleared or incognito — defaults to member context"
         }
       ]
     }

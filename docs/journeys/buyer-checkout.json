@@ -12,15 +12,18 @@
       "steps": [
         {
           "id": "click-checkout",
-          "label": "Checkout button (disabled in MVP)",
+          "title": "Click Checkout",
+          "action": "click",
           "layer": "client",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Checkout button (disabled in MVP)"
         },
         {
           "id": "check-stripe",
-          "label": "Check if seller has Stripe Connect onboarded",
+          "title": "Check Seller Stripe",
           "layer": "server",
           "status": "planned",
+          "tooltip": "Check if seller has Stripe Connect onboarded",
           "errorCases": [
             {
               "condition": "Seller has no Stripe Connect",
@@ -30,45 +33,52 @@
         },
         {
           "id": "create-payment-intent",
-          "label": "Create payment intent via Stripe",
+          "title": "Create Payment Intent",
           "layer": "external",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Create payment intent via Stripe"
         },
         {
           "id": "escrow-hold",
-          "label": "Escrow hold — funds captured but not transferred",
+          "title": "Hold Funds in Escrow",
           "layer": "external",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Funds captured but not transferred to seller"
         },
         {
           "id": "order-created",
-          "label": "Order created in database",
+          "title": "Create Order",
           "layer": "database",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Order created in database"
         },
         {
           "id": "seller-notified",
-          "label": "Seller notified of new order",
+          "title": "Notify Seller",
           "layer": "email",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Seller notified of new order via email"
         },
         {
           "id": "seller-ships",
-          "label": "Seller ships the item",
+          "title": "Seller Ships Item",
           "layer": "external",
           "status": "planned"
         },
         {
           "id": "buyer-confirms",
-          "label": "Buyer confirms receipt",
+          "title": "Confirm Receipt",
+          "action": "click",
           "layer": "client",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Buyer confirms receipt of item"
         },
         {
           "id": "escrow-released",
-          "label": "Escrow released to seller",
+          "title": "Release Escrow",
           "layer": "external",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Escrow released to seller after buyer confirmation"
         }
       ]
     }

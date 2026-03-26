@@ -12,58 +12,67 @@
       "steps": [
         {
           "id": "receive-request",
-          "label": "proxy.ts intercepts incoming request",
+          "title": "Intercept Request",
           "layer": "server",
           "status": "built",
-          "codeRef": "src/proxy.ts"
+          "codeRef": "src/proxy.ts",
+          "tooltip": "proxy.ts intercepts incoming request"
         },
         {
           "id": "check-path",
-          "label": "Check request path pattern",
+          "title": "Check Request Path",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Match request path against known patterns"
         },
         {
           "id": "skip-auth",
-          "label": "Skip auth check for /api/*, /_next/*, /auth/* — pass through",
+          "title": "Pass Through",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Skip auth check for /api/*, /_next/*, /auth/* paths"
         },
         {
           "id": "verify-jwt",
-          "label": "getUser() — verify JWT from cookies for /dashboard/* routes",
+          "title": "Verify JWT",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "getUser() verifies JWT from cookies for /dashboard/* routes"
         },
         {
           "id": "redirect-unauthed",
-          "label": "Redirect unauthenticated users to /",
+          "title": "Redirect to Home",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Redirect unauthenticated users to /"
         },
         {
           "id": "check-onboarding",
-          "label": "Check if path is /onboarding and onboarding_completed_at is set",
+          "title": "Check Onboarding",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Check if path is /onboarding and onboarding_completed_at is set"
         },
         {
           "id": "redirect-onboarded",
-          "label": "Redirect already-onboarded users away from /onboarding to /",
+          "title": "Redirect Onboarded",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Redirect already-onboarded users away from /onboarding to /"
         },
         {
           "id": "allow-dashboard",
-          "label": "Allow authenticated user through to dashboard",
+          "title": "Allow Dashboard Access",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Allow authenticated user through to dashboard"
         },
         {
           "id": "refresh-public",
-          "label": "Refresh session cookies on public pages, allow through",
+          "title": "Refresh Public Session",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Refresh session cookies on public pages, allow through"
         }
       ],
       "branches": [
@@ -71,9 +80,13 @@
           "afterStep": "check-path",
           "condition": "Path type?",
           "paths": [
-            { "label": "/api/*, /_next/*, /auth/*", "goTo": "skip-auth" },
-            { "label": "/dashboard/*", "goTo": "verify-jwt" },
-            { "label": "Public pages", "goTo": "refresh-public" }
+            {
+              "label": "API/Static",
+              "detail": "/api/*, /_next/*, /auth/* — skip auth",
+              "goTo": "skip-auth"
+            },
+            { "label": "Dashboard", "detail": "/dashboard/*", "goTo": "verify-jwt" },
+            { "label": "Public", "goTo": "refresh-public" }
           ]
         },
         {
@@ -86,10 +99,14 @@
         },
         {
           "afterStep": "check-onboarding",
-          "condition": "Path is /onboarding and already completed?",
+          "condition": "Already onboarded?",
           "paths": [
-            { "label": "Yes — already onboarded", "goTo": "redirect-onboarded" },
-            { "label": "No — allow through", "goTo": "allow-dashboard" }
+            {
+              "label": "Yes",
+              "detail": "Path is /onboarding but already completed",
+              "goTo": "redirect-onboarded"
+            },
+            { "label": "No", "goTo": "allow-dashboard" }
           ]
         }
       ]

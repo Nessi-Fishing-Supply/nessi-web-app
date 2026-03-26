@@ -12,54 +12,63 @@
       "steps": [
         {
           "id": "land-homepage",
-          "label": "Guest lands on homepage",
+          "title": "Land on Homepage",
+          "action": "navigate",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "click-category",
-          "label": "Click a category link",
+          "title": "Click Category",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "category-page",
-          "label": "Navigate to /category/[slug]",
+          "title": "View Category Page",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/category/[slug]"
         },
         {
           "id": "apply-filters",
-          "label": "Filter: condition, price, state, species, listing type",
+          "title": "Apply Filters",
+          "action": "select",
           "layer": "client",
           "status": "built",
-          "notes": "All filters stored in URL params (shareable)."
+          "tooltip": "Filter: condition, price, state, species, listing type. All filters stored in URL params (shareable)."
         },
         {
           "id": "infinite-scroll",
-          "label": "Infinite scroll results",
+          "title": "Scroll Results",
+          "action": "scroll",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Infinite scroll pagination"
         },
         {
           "id": "click-listing",
-          "label": "Click listing card",
+          "title": "Click Listing Card",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "listing-detail",
-          "label": "View listing detail at /listing/[id]",
+          "title": "View Listing Detail",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/listing/[id]"
         },
         {
           "id": "view-count",
-          "label": "View count incremented",
+          "title": "Increment View Count",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "View count incremented on listing detail page load"
         }
       ]
     },
@@ -70,40 +79,49 @@
       "steps": [
         {
           "id": "type-search",
-          "label": "Type in search bar",
+          "title": "Type Search Query",
+          "action": "type",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "autocomplete",
-          "label": "Autocomplete suggestions appear (3+ chars, 200ms debounce)",
+          "title": "Show Autocomplete",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Suggestions appear after 3+ chars with 200ms debounce"
         },
         {
           "id": "select-or-enter",
-          "label": "Select suggestion or press Enter",
+          "title": "Select or Submit",
+          "action": "submit",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Select suggestion or press Enter"
         },
         {
           "id": "search-results",
-          "label": "Navigate to /search?q=...",
+          "title": "View Search Results",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/search"
         },
         {
           "id": "filter-results",
-          "label": "Apply filters: condition, price, state, species, listing type",
+          "title": "Apply Filters",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Filter: condition, price, state, species, listing type"
         },
         {
           "id": "scroll-results",
-          "label": "Infinite scroll results",
+          "title": "Scroll Results",
+          "action": "scroll",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Infinite scroll pagination"
         }
       ]
     },
@@ -114,41 +132,49 @@
       "steps": [
         {
           "id": "click-seller",
-          "label": "Click seller profile link on listing detail",
+          "title": "Click Seller Link",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Click seller profile link on listing detail"
         },
         {
           "id": "member-page",
-          "label": "View seller profile at /member/[slug]",
+          "title": "View Seller Profile",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/member/[slug]"
         },
         {
           "id": "seller-listings",
-          "label": "See seller's other listings",
+          "title": "Browse Seller Items",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "See seller's other listings"
         },
         {
           "id": "click-shop",
-          "label": "Click shop page link on listing detail",
+          "title": "Click Shop Link",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Click shop page link on listing detail"
         },
         {
           "id": "shop-page",
-          "label": "View shop page at /shop/[slug]",
+          "title": "View Shop Page",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/shop/[slug]"
         },
         {
           "id": "shop-listings",
-          "label": "See shop's listings grid + hero banner",
+          "title": "Browse Shop Items",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Shop's listings grid + hero banner"
         }
       ]
     }

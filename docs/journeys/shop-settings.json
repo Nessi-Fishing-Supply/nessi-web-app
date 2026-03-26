@@ -12,35 +12,44 @@
       "steps": [
         {
           "id": "visit-settings",
-          "label": "Navigate to /dashboard/shop/settings",
+          "title": "Open Shop Settings",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/dashboard/shop/settings"
         },
         {
           "id": "edit-name",
-          "label": "Inline-edit shop name",
+          "title": "Edit Shop Name",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Inline-edit shop name"
         },
         {
           "id": "edit-slug",
-          "label": "Edit slug (availability check)",
+          "title": "Edit Shop Slug",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Edit slug with availability check"
         },
         {
           "id": "edit-description",
-          "label": "Edit description",
+          "title": "Edit Description",
+          "action": "type",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "upload-avatar",
-          "label": "Upload avatar (200x200 WebP)",
+          "title": "Upload Shop Avatar",
+          "method": "POST",
+          "action": "upload",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/shops/avatar"
+          "route": "/api/shops/avatar",
+          "tooltip": "200x200 WebP via Sharp"
         }
       ]
     },
@@ -51,22 +60,26 @@
       "steps": [
         {
           "id": "upload-banner",
-          "label": "Upload hero banner image",
+          "title": "Select Banner Image",
+          "action": "upload",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "process-banner",
-          "label": "Sharp: max 1200x400, convert to WebP",
+          "title": "Process Banner Image",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/shops/hero-banner"
+          "route": "/api/shops/hero-banner",
+          "tooltip": "Sharp: max 1200x400, convert to WebP"
         },
         {
           "id": "store-banner",
-          "label": "Stored in profile-assets bucket",
+          "title": "Store in Bucket",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Stored in profile-assets bucket"
         }
       ]
     },
@@ -77,44 +90,50 @@
       "steps": [
         {
           "id": "type-confirmation",
-          "label": "Type shop name to confirm deletion",
+          "title": "Type Confirmation",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Type shop name to confirm deletion"
         },
         {
           "id": "delete-api",
-          "label": "DELETE /api/shops/[id]",
+          "title": "Delete Shop",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/shops/[id]"
+          "route": "/api/shops/[id]"
         },
         {
           "id": "delete-avatar",
-          "label": "Delete avatar from storage",
+          "title": "Delete Avatar",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete avatar from storage"
         },
         {
           "id": "delete-hero",
-          "label": "Delete hero banner from storage",
+          "title": "Delete Hero Banner",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete hero banner from storage"
         },
         {
           "id": "delete-listing-photos",
-          "label": "Delete all shop listing photos",
+          "title": "Delete Listing Photos",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete all shop listing photos from storage"
         },
         {
           "id": "soft-delete-shop",
-          "label": "Soft-delete shop row",
+          "title": "Soft-Delete Shop Row",
           "layer": "database",
           "status": "built"
         },
         {
           "id": "release-slug",
-          "label": "Release slug",
+          "title": "Release Slug",
           "layer": "database",
           "status": "built"
         }

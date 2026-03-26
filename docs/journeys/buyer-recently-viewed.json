@@ -12,22 +12,25 @@
       "steps": [
         {
           "id": "view-listing",
-          "label": "User views listing detail page",
+          "title": "View Listing Detail",
+          "action": "navigate",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "track-authenticated",
-          "label": "POST /api/recently-viewed (server tracks)",
+          "title": "Track View in DB",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/recently-viewed"
+          "route": "/api/recently-viewed"
         },
         {
           "id": "track-guest",
-          "label": "addRecentlyViewed() → localStorage",
+          "title": "Track View Locally",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "addRecentlyViewed() saves to localStorage"
         }
       ],
       "branches": [
@@ -48,16 +51,19 @@
       "steps": [
         {
           "id": "fetch-authenticated",
-          "label": "GET /api/recently-viewed (with listing data)",
+          "title": "Fetch from API",
+          "method": "GET",
           "layer": "server",
           "status": "built",
-          "route": "GET /api/recently-viewed"
+          "route": "/api/recently-viewed",
+          "tooltip": "Returns recently viewed with listing data"
         },
         {
           "id": "fetch-guest",
-          "label": "getRecentlyViewed() from localStorage",
+          "title": "Fetch from Storage",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "getRecentlyViewed() from localStorage"
         }
       ],
       "branches": [
@@ -78,29 +84,33 @@
       "steps": [
         {
           "id": "detect-login",
-          "label": "useRecentlyViewedMerge() detects login",
+          "title": "Detect Login",
           "layer": "background",
           "status": "built",
-          "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-merge.ts"
+          "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-merge.ts",
+          "tooltip": "useRecentlyViewedMerge() detects login"
         },
         {
           "id": "post-merge",
-          "label": "POST /api/recently-viewed/merge",
+          "title": "Merge Views to DB",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/recently-viewed/merge"
+          "route": "/api/recently-viewed/merge"
         },
         {
           "id": "dedup-merge",
-          "label": "Dedup + merge to DB",
+          "title": "Dedup and Insert",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Dedup + merge to DB"
         },
         {
           "id": "silent-complete",
-          "label": "Silent — no toast",
+          "title": "Silent Complete",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "No toast — silent merge"
         }
       ]
     },
@@ -111,18 +121,20 @@
       "steps": [
         {
           "id": "hook-reads-ids",
-          "label": "useRecentlyViewedListings() reads IDs from useRecentlyViewed()",
+          "title": "Read View IDs",
           "layer": "background",
           "status": "built",
-          "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-listings.ts"
+          "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-listings.ts",
+          "tooltip": "useRecentlyViewedListings() reads IDs from useRecentlyViewed()"
         },
         {
           "id": "batch-fetch",
-          "label": "GET /api/listings/batch?ids=... fetches full listing data",
+          "title": "Fetch Listing Data",
+          "method": "GET",
           "layer": "server",
           "status": "built",
-          "route": "GET /api/listings/batch",
-          "notes": "Only returns active, non-deleted listings. Stale IDs silently filtered. Max 30 IDs.",
+          "route": "/api/listings/batch",
+          "tooltip": "Only returns active, non-deleted listings. Stale IDs silently filtered. Max 30 IDs.",
           "errorCases": [
             { "condition": "No IDs provided", "result": "400 Bad Request", "httpStatus": 400 },
             { "condition": "More than 30 IDs", "result": "400 Bad Request", "httpStatus": 400 }
@@ -130,18 +142,18 @@
         },
         {
           "id": "render-strip",
-          "label": "RecentlyViewedStrip renders horizontal scroll of ListingCards",
+          "title": "Render Strip",
           "layer": "client",
           "status": "built",
           "codeRef": "src/features/recently-viewed/components/recently-viewed-strip/index.tsx",
-          "notes": "CSS scroll-snap, 160px cards mobile / 220px desktop. Returns null when empty. role=region + aria-label."
+          "tooltip": "Horizontal scroll of ListingCards. CSS scroll-snap, 160px mobile / 220px desktop. role=region + aria-label."
         },
         {
           "id": "strip-empty",
-          "label": "Strip returns null — nothing rendered",
+          "title": "Render Nothing",
           "layer": "client",
           "status": "built",
-          "notes": "No recently viewed items or all stale/deleted"
+          "tooltip": "Strip returns null — no recently viewed items or all stale/deleted"
         }
       ],
       "branches": [
@@ -150,7 +162,11 @@
           "condition": "Listings found?",
           "paths": [
             { "label": "Yes", "goTo": "render-strip" },
-            { "label": "No (empty/stale)", "goTo": "strip-empty" }
+            {
+              "label": "No",
+              "detail": "Empty or all stale/deleted",
+              "goTo": "strip-empty"
+            }
           ]
         }
       ]
@@ -162,16 +178,18 @@
       "steps": [
         {
           "id": "clear-authenticated",
-          "label": "DELETE /api/recently-viewed",
+          "title": "Clear from DB",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/recently-viewed"
+          "route": "/api/recently-viewed"
         },
         {
           "id": "clear-guest",
-          "label": "clearRecentlyViewed() — clear localStorage",
+          "title": "Clear localStorage",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "clearRecentlyViewed() — clear localStorage"
         }
       ],
       "branches": [

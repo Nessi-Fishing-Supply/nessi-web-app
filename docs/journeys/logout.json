@@ -12,34 +12,38 @@
       "steps": [
         {
           "id": "click-logout",
-          "label": "User clicks Logout button",
+          "title": "Click Logout",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "sign-out",
-          "label": "signOut() called",
+          "title": "Sign Out User",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "signOut() called via Supabase client"
         },
         {
           "id": "clear-cookies",
-          "label": "Session cookies cleared",
+          "title": "Clear Session Cookies",
           "layer": "server",
           "status": "built"
         },
         {
           "id": "reset-context",
-          "label": "Context store reset to member",
+          "title": "Reset Context Store",
           "layer": "background",
           "status": "built",
-          "notes": "Zustand store reverts to default member context."
+          "tooltip": "Zustand store reverts to default member context"
         },
         {
           "id": "redirect-home",
-          "label": "Redirect to /",
+          "title": "Redirect Home",
+          "action": "navigate",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Redirect to /"
         }
       ]
     }

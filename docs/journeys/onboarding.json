@@ -12,52 +12,65 @@
       "steps": [
         {
           "id": "banner-appears",
-          "label": "Onboarding banner appears after signup",
+          "title": "Show Onboarding Banner",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Onboarding banner appears after signup"
         },
         {
           "id": "visit-onboarding",
-          "label": "Visit /onboarding",
+          "title": "Visit Onboarding Page",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/onboarding"
         },
         {
           "id": "step1-display-name",
-          "label": "Step 1: Display Name + Avatar",
+          "title": "Set Display Name",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 1: Display Name + Avatar"
         },
         {
           "id": "step2-intent",
-          "label": "Step 2: Intent — How will you use Nessi?",
+          "title": "Choose Intent",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 2: How will you use Nessi?"
         },
         {
           "id": "step3-fishing-identity",
-          "label": "Step 3: Fishing Identity (optional)",
+          "title": "Fishing Identity",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 3: Fishing Identity (optional)"
         },
         {
           "id": "step4-bio",
-          "label": "Step 4: Bio (280 chars)",
+          "title": "Write Bio",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 4: Bio (280 chars)"
         },
         {
           "id": "complete-onboarding",
-          "label": "completeOnboarding() called",
+          "title": "Complete Onboarding",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "completeOnboarding() called"
         },
         {
           "id": "redirect-dashboard",
-          "label": "Redirect to /dashboard",
+          "title": "Go to Dashboard",
+          "action": "navigate",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Redirect to /dashboard"
         }
       ],
       "branches": [
@@ -66,7 +79,11 @@
           "condition": "Intent choice?",
           "paths": [
             { "label": "Buyer", "goTo": "step3-fishing-identity" },
-            { "label": "Seller / Both", "goTo": "END" }
+            {
+              "label": "Seller/Both",
+              "detail": "See seller-path flow",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -78,33 +95,42 @@
       "steps": [
         {
           "id": "step3-fishing-identity-seller",
-          "label": "Step 3: Fishing Identity (optional)",
+          "title": "Fishing Identity",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 3: Fishing Identity (optional)"
         },
         {
           "id": "step4-seller-type",
-          "label": "Step 4: Seller Type — free profile or shop",
+          "title": "Choose Seller Type",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 4: Free profile or shop"
         },
         {
           "id": "step5-bio",
-          "label": "Step 5: Bio (280 chars)",
+          "title": "Write Bio",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Step 5: Bio (280 chars)"
         },
         {
           "id": "complete-onboarding-seller",
-          "label": "completeOnboarding() called",
+          "title": "Complete Onboarding",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "completeOnboarding() called"
         },
         {
           "id": "redirect-dashboard-seller",
-          "label": "Redirect to /dashboard",
+          "title": "Go to Dashboard",
+          "action": "navigate",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Redirect to /dashboard"
         }
       ],
       "branches": [
@@ -112,7 +138,7 @@
           "afterStep": "step4-seller-type",
           "condition": "Seller type?",
           "paths": [
-            { "label": "Free profile", "goTo": "step5-bio" },
+            { "label": "Free Profile", "goTo": "step5-bio" },
             { "label": "Shop", "goTo": "step5-bio" }
           ]
         }
@@ -125,21 +151,26 @@
       "steps": [
         {
           "id": "show-cta",
-          "label": "Dashboard shows 'Start Selling' CTA",
+          "title": "Show Selling CTA",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Dashboard shows 'Start Selling' CTA"
         },
         {
           "id": "click-cta",
-          "label": "User clicks CTA → SellerOnboardingModal opens",
+          "title": "Click Start Selling",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "SellerOnboardingModal opens"
         },
         {
           "id": "choose-method",
-          "label": "How do you want to sell? Free profile or Create a shop",
+          "title": "Choose Selling Method",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Free profile or Create a shop"
         }
       ],
       "branches": [
@@ -147,8 +178,16 @@
           "afterStep": "choose-method",
           "condition": "Selling method?",
           "paths": [
-            { "label": "Free profile → toggleSeller(true) → is_seller = true", "goTo": "END" },
-            { "label": "Create a shop → redirect to /dashboard/shop/create", "goTo": "END" }
+            {
+              "label": "Free Profile",
+              "detail": "toggleSeller(true) → is_seller = true",
+              "goTo": "END"
+            },
+            {
+              "label": "Create Shop",
+              "detail": "Redirect to /dashboard/shop/create",
+              "goTo": "END"
+            }
           ]
         }
       ]

@@ -12,22 +12,25 @@
       "steps": [
         {
           "id": "click-delete",
-          "label": "User clicks Delete Account",
+          "title": "Click Delete Account",
+          "action": "click",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "call-api",
-          "label": "DELETE /api/auth/delete-account",
+          "title": "Delete Account",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/auth/delete-account"
+          "route": "/api/auth/delete-account"
         },
         {
           "id": "check-shops",
-          "label": "Check if user owns active shops",
+          "title": "Check Shop Ownership",
           "layer": "server",
           "status": "built",
+          "tooltip": "Check if user owns active shops",
           "errorCases": [
             {
               "condition": "Owns active shops",
@@ -38,75 +41,87 @@
         },
         {
           "id": "delete-member-avatar",
-          "label": "Delete member avatar from profile-assets bucket",
+          "title": "Delete Member Avatar",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete from profile-assets bucket"
         },
         {
           "id": "delete-listing-photos",
-          "label": "Delete listing photos from listing-images bucket",
+          "title": "Delete Listing Photos",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete from listing-images bucket"
         },
         {
           "id": "delete-shop-avatars",
-          "label": "Delete shop avatars from profile-assets bucket",
+          "title": "Delete Shop Avatars",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete from profile-assets bucket"
         },
         {
           "id": "delete-shop-banners",
-          "label": "Delete shop hero banners from profile-assets bucket",
+          "title": "Delete Shop Banners",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete hero banners from profile-assets bucket"
         },
         {
           "id": "delete-shop-listing-photos",
-          "label": "Delete shop listing photos from listing-images bucket",
+          "title": "Delete Shop Photos",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete shop listing photos from listing-images bucket"
         },
         {
           "id": "delete-member-slug",
-          "label": "Delete member slug from slugs table",
+          "title": "Delete Member Slug",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete member slug from slugs table"
         },
         {
           "id": "delete-auth-user",
-          "label": "auth.admin.deleteUser() — triggers CASCADE",
+          "title": "Delete Auth User",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "auth.admin.deleteUser() — triggers CASCADE"
         },
         {
           "id": "cascade-members",
-          "label": "CASCADE: members row deleted",
+          "title": "Cascade Delete Members",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "CASCADE: members row deleted"
         },
         {
           "id": "trigger-cleanup",
-          "label": "BEFORE DELETE trigger: handle_member_deletion() — release member slug + owned shop slugs",
+          "title": "Run Deletion Trigger",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "BEFORE DELETE trigger: handle_member_deletion() — release member slug + owned shop slugs"
         },
         {
           "id": "cascade-fk",
-          "label": "CASCADE: cart items, recently viewed, shop memberships deleted",
+          "title": "Cascade FK Deletes",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "CASCADE: cart items, recently viewed, shop memberships deleted"
         },
         {
           "id": "clear-session",
-          "label": "Session cleared",
+          "title": "Clear Session",
           "layer": "server",
           "status": "built"
         },
         {
           "id": "redirect-home",
-          "label": "Redirect to /",
+          "title": "Redirect Home",
+          "action": "navigate",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Redirect to /"
         }
       ],
       "branches": [
@@ -114,8 +129,12 @@
           "afterStep": "check-shops",
           "condition": "Owns active shops?",
           "paths": [
-            { "label": "Yes — 409, must resolve first", "goTo": "END" },
-            { "label": "No — begin cleanup", "goTo": "delete-member-avatar" }
+            {
+              "label": "Yes",
+              "detail": "409 — must resolve first",
+              "goTo": "END"
+            },
+            { "label": "No", "goTo": "delete-member-avatar" }
           ]
         }
       ]

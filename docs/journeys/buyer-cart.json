@@ -12,7 +12,8 @@
       "steps": [
         {
           "id": "click-add",
-          "label": "Buyer clicks 'Add to Cart' button",
+          "title": "Click Add to Cart",
+          "action": "click",
           "layer": "client",
           "status": "built",
           "errorCases": [
@@ -23,34 +24,39 @@
         },
         {
           "id": "post-cart",
-          "label": "POST /api/cart (listingId, priceCents)",
+          "title": "Add to Cart",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/cart"
+          "route": "/api/cart",
+          "tooltip": "Send listingId + priceCents"
         },
         {
           "id": "price-snapshot",
-          "label": "Price snapshot saved as price_at_add",
+          "title": "Save Price Snapshot",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Price snapshot saved as price_at_add"
         },
         {
           "id": "set-expiry",
-          "label": "30-day expiry TTL set",
+          "title": "Set 30-Day Expiry",
           "layer": "database",
           "status": "built"
         },
         {
           "id": "optimistic-update",
-          "label": "Optimistic cache update",
+          "title": "Update Cache",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Optimistic cache update"
         },
         {
           "id": "show-toast",
-          "label": "Toast: Added to cart",
+          "title": "Show Added Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toast: Added to cart"
         }
       ]
     },
@@ -61,28 +67,32 @@
       "steps": [
         {
           "id": "fetch-cart",
-          "label": "GET /api/cart (items + listing data)",
+          "title": "Fetch Cart Items",
+          "method": "GET",
           "layer": "server",
           "status": "built",
-          "route": "GET /api/cart"
+          "route": "/api/cart",
+          "tooltip": "Returns cart items joined with listing data"
         },
         {
           "id": "group-by-seller",
-          "label": "Items grouped by seller",
+          "title": "Group by Seller",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "show-item-states",
-          "label": "Show item states: valid, price changed (old vs new), removed/sold (warning)",
+          "title": "Show Item States",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "States: valid, price changed (old vs new), removed/sold (warning)"
         },
         {
           "id": "cart-actions",
-          "label": "Actions: remove item, clear all, refresh expiry",
+          "title": "Show Cart Actions",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Actions: remove item, clear all, refresh expiry"
         }
       ],
       "connections": [
@@ -98,24 +108,27 @@
       "steps": [
         {
           "id": "remove-item",
-          "label": "Remove item — DELETE /api/cart/[id]",
+          "title": "Remove Item",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/cart/[id]"
+          "route": "/api/cart/[id]"
         },
         {
           "id": "clear-all",
-          "label": "Clear all — DELETE /api/cart",
+          "title": "Clear All Items",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/cart"
+          "route": "/api/cart"
         },
         {
           "id": "refresh-expiry",
-          "label": "Refresh expiry — PATCH /api/cart/[id]/expiry",
+          "title": "Refresh Expiry",
+          "method": "PATCH",
           "layer": "server",
           "status": "built",
-          "route": "PATCH /api/cart/[id]/expiry"
+          "route": "/api/cart/[id]/expiry"
         }
       ]
     },
@@ -126,16 +139,18 @@
       "steps": [
         {
           "id": "validate-cart",
-          "label": "POST /api/cart/validate",
+          "title": "Validate Cart",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/cart/validate"
+          "route": "/api/cart/validate"
         },
         {
           "id": "handle-result",
-          "label": "Handle validation result",
+          "title": "Handle Result",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Handle validation result"
         }
       ],
       "branches": [
@@ -143,9 +158,21 @@
           "afterStep": "validate-cart",
           "condition": "Validation result?",
           "paths": [
-            { "label": "Valid — proceed to checkout", "goTo": "END" },
-            { "label": "Price changed — acknowledge changes", "goTo": "END" },
-            { "label": "Removed — items auto-removed", "goTo": "END" }
+            {
+              "label": "Valid",
+              "detail": "Proceed to checkout",
+              "goTo": "END"
+            },
+            {
+              "label": "Price Changed",
+              "detail": "Acknowledge price changes",
+              "goTo": "END"
+            },
+            {
+              "label": "Removed",
+              "detail": "Items auto-removed from cart",
+              "goTo": "END"
+            }
           ]
         }
       ]

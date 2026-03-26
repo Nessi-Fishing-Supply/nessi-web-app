@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "nessi-journey-v1",
+  "$id": "nessi-journey-v2",
   "title": "Nessi User Journey",
   "description": "Structured journey data for the Nessi docs site. Source of truth for flow visualizations, coverage tracking, and test planning.",
   "type": "object",
@@ -12,7 +12,8 @@
     },
     "title": {
       "type": "string",
-      "description": "Human-readable title"
+      "maxLength": 30,
+      "description": "Short, clean journey name (max 30 chars). Use plain language describing the feature or user goal. No parenthetical tech details, arrows, implementation notes, or file references. Good: 'Account Deletion', 'Shipping Addresses', 'Cart & Checkout'. Bad: 'Account Deletion (Full Cascade)', 'Guest Cart → Login → Merge'."
     },
     "persona": {
       "type": "string",
@@ -40,7 +41,7 @@
     },
     "flows": {
       "type": "array",
-      "description": "Ordered list of flows within this journey. A journey may contain multiple related flows (e.g., 'Guest Cart' has add-to-cart, view-cart, and merge-on-login flows).",
+      "description": "Ordered list of flows within this journey.",
       "items": {
         "type": "object",
         "required": ["id", "title", "steps"],
@@ -55,26 +56,41 @@
           },
           "trigger": {
             "type": "string",
-            "description": "What initiates this flow (e.g., 'User clicks Sign Up', 'Guest logs in')"
+            "description": "What initiates this flow (e.g., 'User clicks Sign Up')"
           },
           "steps": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["id", "label", "layer"],
+              "required": ["id", "title", "layer"],
               "properties": {
                 "id": {
                   "type": "string",
                   "description": "Step identifier, referenceable from conductor tickets"
                 },
+                "title": {
+                  "type": "string",
+                  "maxLength": 24,
+                  "description": "Short, human-readable title for the node (max 24 chars). Use plain language describing what happens from the user's perspective. Examples: 'Save Address', 'Validate Cart', 'Send Welcome Email'. Avoid: arrows (→), em-dashes (—), HTTP methods, camelCase, technical jargon, file paths, or code references."
+                },
                 "label": {
                   "type": "string",
-                  "description": "Human-readable step description"
+                  "description": "DEPRECATED — use 'title' instead. Kept for backwards compatibility during migration."
+                },
+                "action": {
+                  "type": "string",
+                  "enum": ["click", "submit", "open", "close", "navigate", "scroll", "hover", "toggle", "drag", "select", "type", "upload"],
+                  "description": "For client-layer steps: the user interaction that triggers this step. Shown as a small badge on the node."
+                },
+                "method": {
+                  "type": "string",
+                  "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+                  "description": "For server-layer steps: the HTTP method. Shown as a pill badge on the node. Do NOT include the method in the title — it's displayed separately."
                 },
                 "layer": {
                   "type": "string",
                   "enum": ["client", "server", "database", "background", "email", "external"],
-                  "description": "Where this step executes. 'client' = visible in browser. 'server' = API route / server action. 'database' = trigger or RLS. 'background' = silent client-side (merge, sync). 'email' = Resend / transactional email. 'external' = third-party (Stripe, etc.)."
+                  "description": "Where this step executes. 'client' = visible in browser. 'server' = API route / server action. 'database' = trigger or RLS. 'background' = silent client-side (merge, sync). 'email' = transactional email. 'external' = third-party (Stripe, etc.)."
                 },
                 "status": {
                   "type": "string",
@@ -84,7 +100,11 @@
                 },
                 "route": {
                   "type": "string",
-                  "description": "API route or page route associated with this step (e.g., 'POST /api/auth/register', '/invite/[token]')"
+                  "description": "API route or page route (e.g., '/api/addresses', '/invite/[token]'). Do NOT include the HTTP method here — use the 'method' field instead."
+                },
+                "tooltip": {
+                  "type": "string",
+                  "description": "Rich explanation shown when hovering the node. Use this for implementation details, context, or any information that won't fit in the title. Supports longer text (up to 300 chars)."
                 },
                 "codeRef": {
                   "type": "string",
@@ -92,7 +112,7 @@
                 },
                 "notes": {
                   "type": "string",
-                  "description": "Implementation details, edge cases, or testing notes"
+                  "description": "Internal implementation notes or testing details (shown in tooltip)"
                 },
                 "errorCases": {
                   "type": "array",
@@ -123,7 +143,7 @@
                 },
                 "condition": {
                   "type": "string",
-                  "description": "The question being asked (e.g., 'Authenticated?')"
+                  "description": "Short yes/no question (e.g., 'Has addresses?', 'Authenticated?'). Keep under 30 chars."
                 },
                 "paths": {
                   "type": "array",
@@ -133,7 +153,11 @@
                     "properties": {
                       "label": {
                         "type": "string",
-                        "description": "Branch label (e.g., 'Yes', 'No', 'Expired')"
+                        "description": "Short branch label: 'Yes', 'No', 'Expired', etc. Keep to 1-2 words. Any additional context (like 'empty state shown' or 'button disabled') goes in 'detail'."
+                      },
+                      "detail": {
+                        "type": "string",
+                        "description": "Optional context shown in a tooltip when hovering this branch option. Use for state descriptions, UI behavior, or edge case explanations. Example: 'Empty state: Add your first address'"
                       },
                       "goTo": {
                         "type": "string",
@@ -160,6 +184,47 @@
           }
         }
       }
+    }
+  },
+  "$defs": {
+    "labelGuidelines": {
+      "description": "Guidelines for writing good step titles (for documentation, not validation)",
+      "examples": {
+        "client": [
+          { "title": "Open Address Form", "action": "click", "tooltip": "AddressFormModal opens with empty fields for label, address lines, city, state, zip, and default toggle" },
+          { "title": "Enter Address Details", "action": "type", "tooltip": "Fields: label, line1, line2, city, state, zip, is_default" },
+          { "title": "Confirm Deletion", "action": "click", "tooltip": "Confirmation dialog with 'Are you sure?' prompt" }
+        ],
+        "server": [
+          { "title": "Save Address", "method": "POST", "route": "/api/addresses", "tooltip": "Validates address fields, checks 5-address cap, creates record with optional default promotion" },
+          { "title": "Update Default", "method": "PATCH", "route": "/api/addresses/[id]/default", "tooltip": "Sets this address as default, clears default flag from previous default" },
+          { "title": "Fetch Cart Items", "method": "GET", "route": "/api/cart", "tooltip": "Returns cart items joined with listing data, grouped by seller. Includes price-change detection." }
+        ],
+        "database": [
+          { "title": "Cascade Delete Members", "tooltip": "CASCADE: members row deleted triggers handle_member_deletion() — releases member slug + owned shop slugs" }
+        ],
+        "branch": {
+          "condition": "Has addresses?",
+          "paths": [
+            { "label": "Yes", "goTo": "show-list" },
+            { "label": "No", "detail": "Empty state: 'Add your first address'", "goTo": "show-empty" }
+          ]
+        }
+      },
+      "rules": [
+        "Titles must be ≤ 24 characters — short, clear, action-oriented",
+        "Use plain English verbs: Save, Fetch, Update, Delete, Open, Show, Send, Check",
+        "Never include HTTP methods in titles — use the 'method' field",
+        "Never include route paths in titles — use the 'route' field",
+        "Never use arrows (→) or em-dashes (—) in titles",
+        "Never use camelCase or PascalCase in titles",
+        "Never include parenthetical details in titles — use 'tooltip' field",
+        "For client steps, include 'action' to show user interaction type",
+        "For server steps, include 'method' and 'route' as separate fields",
+        "Branch labels should be 1-2 words max (Yes, No, Expired, etc.)",
+        "Branch detail goes in 'detail' field, not in the label",
+        "Use 'tooltip' for anything that won't fit in 24 chars"
+      ]
     }
   }
 }

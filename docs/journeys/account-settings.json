@@ -12,53 +12,64 @@
       "steps": [
         {
           "id": "visit-account",
-          "label": "Navigate to /dashboard/account",
+          "title": "Open Account Page",
+          "action": "navigate",
           "layer": "client",
           "status": "built",
           "route": "/dashboard/account"
         },
         {
           "id": "personal-info",
-          "label": "Personal Info: edit display name, bio (280 chars), upload avatar (200x200 WebP)",
+          "title": "Edit Personal Info",
+          "action": "type",
           "layer": "client",
           "status": "built",
-          "notes": "Change email triggers OTP flow — see email-change.json."
+          "tooltip": "Display name, bio (280 chars), avatar upload (200x200 WebP). Email change triggers OTP — see email-change.json."
         },
         {
           "id": "fishing-identity",
-          "label": "Fishing Identity: select species (multi), technique (multi), home state, years fishing",
+          "title": "Edit Fishing Identity",
+          "action": "select",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Species (multi), technique (multi), home state, years fishing"
         },
         {
           "id": "notifications",
-          "label": "Notifications: email preferences (JSONB)",
+          "title": "Email Preferences",
+          "action": "toggle",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Notification email preferences (JSONB)"
         },
         {
           "id": "seller-settings",
-          "label": "Seller Settings: toggle seller on/off — see seller-toggle.json",
+          "title": "Seller Settings",
+          "action": "toggle",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toggle seller on/off — see seller-toggle.json"
         },
         {
           "id": "shipping-addresses",
-          "label": "Shipping Addresses: view/add/edit/delete (max 5) — see buyer-addresses.json",
+          "title": "Shipping Addresses",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "View/add/edit/delete (max 5) — see buyer-addresses.json"
         },
         {
           "id": "linked-accounts",
-          "label": "Linked Accounts: Stripe Connect placeholder",
+          "title": "Linked Accounts",
           "layer": "client",
-          "status": "planned"
+          "status": "planned",
+          "tooltip": "Stripe Connect placeholder"
         },
         {
           "id": "danger-zone",
-          "label": "Danger Zone: Delete Account — see account-deletion.json",
+          "title": "Danger Zone",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Delete Account — see account-deletion.json"
         }
       ]
     },
@@ -69,33 +80,36 @@
       "steps": [
         {
           "id": "check-fields",
-          "label": "Check fields: has avatar, has bio, has fishing identity, has display name",
+          "title": "Check Profile Fields",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Check: has avatar, has bio, has fishing identity, has display name"
         },
         {
           "id": "calculate-percentage",
-          "label": "Calculate % complete",
+          "title": "Calculate Percentage",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "show-progress",
-          "label": "Show progress bar",
+          "title": "Show Progress Bar",
           "layer": "client",
           "status": "built"
         },
         {
           "id": "show-suggestions",
-          "label": "Show suggestions for missing fields (if not 100%)",
+          "title": "Show Suggestions",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Suggestions for missing fields (if not 100%)"
         },
         {
           "id": "complete-badge",
-          "label": "Profile complete badge (if 100%)",
+          "title": "Show Complete Badge",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Profile complete badge when 100%"
         }
       ],
       "branches": [

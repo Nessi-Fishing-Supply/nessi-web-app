@@ -12,16 +12,18 @@
       "steps": [
         {
           "id": "click-add",
-          "label": "Guest clicks 'Add to Cart' button",
+          "title": "Click Add to Cart",
+          "action": "click",
           "layer": "client",
           "status": "built",
           "codeRef": "src/features/cart/components/add-to-cart-button/index.tsx"
         },
         {
           "id": "validate-client",
-          "label": "Client-side validation (own listing, already in cart, cart full)",
+          "title": "Validate Cart State",
           "layer": "client",
           "status": "built",
+          "tooltip": "Client-side validation: own listing, already in cart, cart full",
           "errorCases": [
             { "condition": "User's own listing", "result": "Button disabled" },
             { "condition": "Already in cart", "result": "Button shows 'In Cart'" },
@@ -30,22 +32,24 @@
         },
         {
           "id": "write-localstorage",
-          "label": "Add item to localStorage cart (listingId + priceCents snapshot)",
+          "title": "Save to localStorage",
           "layer": "background",
           "status": "built",
-          "notes": "Guest cart is entirely localStorage-backed. No API calls."
+          "tooltip": "Add item to localStorage cart (listingId + priceCents snapshot). No API calls."
         },
         {
           "id": "update-badge",
-          "label": "CartIcon badge count updates via Zustand store",
+          "title": "Update Cart Badge",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "CartIcon badge count updates via Zustand store"
         },
         {
           "id": "show-toast",
-          "label": "Toast: 'Added to cart'",
+          "title": "Show Added Toast",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Toast: 'Added to cart'"
         }
       ]
     },
@@ -56,23 +60,24 @@
       "steps": [
         {
           "id": "load-cart",
-          "label": "Read cart items from localStorage",
+          "title": "Read localStorage Cart",
           "layer": "background",
           "status": "built"
         },
         {
           "id": "group-by-seller",
-          "label": "Items grouped by seller for display",
+          "title": "Group by Seller",
           "layer": "client",
           "status": "built",
-          "codeRef": "src/app/(frontend)/cart/page.tsx"
+          "codeRef": "src/app/(frontend)/cart/page.tsx",
+          "tooltip": "Items grouped by seller for display"
         },
         {
           "id": "show-items",
-          "label": "Render cart items with remove/clear actions",
+          "title": "Render Cart Items",
           "layer": "client",
           "status": "built",
-          "notes": "Checkout button is disabled in MVP."
+          "tooltip": "Cart items with remove/clear actions. Checkout button disabled in MVP."
         }
       ],
       "branches": [
@@ -81,7 +86,11 @@
           "condition": "Has items?",
           "paths": [
             { "label": "Yes", "goTo": "group-by-seller" },
-            { "label": "No — show empty state + browse CTA", "goTo": "END" }
+            {
+              "label": "No",
+              "detail": "Empty state + browse CTA",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -93,45 +102,48 @@
       "steps": [
         {
           "id": "login-detected",
-          "label": "useCartMerge() detects auth state change",
+          "title": "Detect Auth Change",
           "layer": "background",
           "status": "built",
           "codeRef": "src/features/cart/hooks/use-cart-merge.ts",
-          "notes": "This is a background hook — the user sees nothing. It fires on login regardless of what page they're on."
+          "tooltip": "useCartMerge() detects auth state change. Background hook — user sees nothing."
         },
         {
           "id": "read-guest-cart",
-          "label": "Read localStorage cart items",
+          "title": "Read Guest Cart",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Read localStorage cart items"
         },
         {
           "id": "post-merge",
-          "label": "POST /api/cart/merge with guest items",
+          "title": "Merge Cart to DB",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/cart/merge",
-          "notes": "Server validates every guest item: checks listing exists, not sold, not own listing, not already in DB cart."
+          "route": "/api/cart/merge",
+          "tooltip": "Server validates every guest item: listing exists, not sold, not own listing, not already in DB cart."
         },
         {
           "id": "server-validate",
-          "label": "Skip invalid/duplicate/own-listing items",
+          "title": "Skip Invalid Items",
           "layer": "server",
           "status": "built",
-          "notes": "No errors surfaced to user — invalid items are silently dropped."
+          "tooltip": "Invalid/duplicate/own-listing items silently dropped. No errors surfaced to user."
         },
         {
           "id": "insert-valid",
-          "label": "Insert valid items into cart table (DB)",
+          "title": "Insert Valid Items",
           "layer": "database",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Insert valid items into cart table"
         },
         {
           "id": "clear-localstorage",
-          "label": "Clear localStorage guest cart",
+          "title": "Clear Guest Cart",
           "layer": "background",
           "status": "built",
-          "notes": "No toast, no redirect. Entirely silent. User's cart page now shows DB-backed items."
+          "tooltip": "Clear localStorage guest cart. No toast, no redirect. Cart page now shows DB-backed items."
         }
       ]
     }

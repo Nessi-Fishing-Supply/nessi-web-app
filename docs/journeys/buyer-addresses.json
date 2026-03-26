@@ -12,16 +12,18 @@
       "steps": [
         {
           "id": "fetch-addresses",
-          "label": "GET /api/addresses",
+          "title": "Fetch Addresses",
+          "method": "GET",
           "layer": "server",
           "status": "built",
-          "route": "GET /api/addresses"
+          "route": "/api/addresses"
         },
         {
           "id": "show-list",
-          "label": "AddressList: cards with label, address, default badge",
+          "title": "Show Address Cards",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "AddressList: cards with label, address, default badge"
         }
       ],
       "branches": [
@@ -30,7 +32,11 @@
           "condition": "Has addresses?",
           "paths": [
             { "label": "Yes", "goTo": "show-list" },
-            { "label": "No — empty state: 'Add your first address'", "goTo": "END" }
+            {
+              "label": "No",
+              "detail": "Empty state: 'Add your first address'",
+              "goTo": "END"
+            }
           ]
         }
       ]
@@ -42,35 +48,44 @@
       "steps": [
         {
           "id": "check-cap",
-          "label": "Check if at 5-address cap",
+          "title": "Check Address Cap",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Check if at 5-address cap"
         },
         {
           "id": "open-modal",
-          "label": "AddressFormModal opens",
+          "title": "Open Address Form",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "AddressFormModal opens"
         },
         {
           "id": "enter-details",
-          "label": "Enter: label, line1, line2, city, state, zip, is_default",
+          "title": "Enter Address Details",
+          "action": "type",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Fields: label, line1, line2, city, state, zip, is_default"
         },
         {
           "id": "save-address",
-          "label": "POST /api/addresses",
+          "title": "Save Address",
+          "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "POST /api/addresses",
-          "errorCases": [{ "condition": "Duplicate label", "result": "Error: label already used" }]
+          "route": "/api/addresses",
+          "errorCases": [
+            { "condition": "Duplicate label", "result": "Error: label already used" }
+          ]
         },
         {
           "id": "list-updates",
-          "label": "Address saved, list updates",
+          "title": "Refresh List",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Address saved, list updates"
         }
       ],
       "branches": [
@@ -78,7 +93,11 @@
           "afterStep": "check-cap",
           "condition": "At 5-address cap?",
           "paths": [
-            { "label": "Yes — button disabled: maximum reached", "goTo": "END" },
+            {
+              "label": "Yes",
+              "detail": "Button disabled: maximum reached",
+              "goTo": "END"
+            },
             { "label": "No", "goTo": "open-modal" }
           ]
         }
@@ -91,29 +110,35 @@
       "steps": [
         {
           "id": "edit-address",
-          "label": "Edit → AddressFormModal (pre-populated)",
+          "title": "Edit Address",
+          "action": "click",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "AddressFormModal opens pre-populated"
         },
         {
           "id": "delete-address",
-          "label": "Delete → confirmation → DELETE /api/addresses/[id]",
+          "title": "Delete Address",
+          "method": "DELETE",
           "layer": "server",
           "status": "built",
-          "route": "DELETE /api/addresses/[id]"
+          "route": "/api/addresses/[id]",
+          "tooltip": "Confirmation dialog then delete"
         },
         {
           "id": "auto-promote-default",
-          "label": "If deleted was default, next address auto-promoted to default",
+          "title": "Auto-Promote Default",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "If deleted was default, next address auto-promoted to default"
         },
         {
           "id": "set-default",
-          "label": "Set default → PATCH /api/addresses/[id]/default",
+          "title": "Set Default Address",
+          "method": "PATCH",
           "layer": "server",
           "status": "built",
-          "route": "PATCH /api/addresses/[id]/default"
+          "route": "/api/addresses/[id]/default"
         }
       ]
     }

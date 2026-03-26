@@ -12,33 +12,38 @@
       "steps": [
         {
           "id": "check-context",
-          "label": "Check active context from Zustand store",
+          "title": "Check Active Context",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Read active context from Zustand store"
         },
         {
           "id": "member-context",
-          "label": "Member context: seller_id = user.id, member_id = user.id, shop_id = null",
+          "title": "Assign to Member",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "seller_id = user.id, member_id = user.id, shop_id = null"
         },
         {
           "id": "shop-context",
-          "label": "Shop context: seller_id = user.id, member_id = null, shop_id = activeShopId",
+          "title": "Assign to Shop",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "seller_id = user.id, member_id = null, shop_id = activeShopId"
         },
         {
           "id": "member-public",
-          "label": "Listing appears on member's public profile at /member/[slug]",
+          "title": "Show on Member Page",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Listing appears on member's public profile at /member/[slug]"
         },
         {
           "id": "shop-public",
-          "label": "Listing appears on shop's public page at /shop/[slug]",
+          "title": "Show on Shop Page",
           "layer": "client",
-          "status": "built"
+          "status": "built",
+          "tooltip": "Listing appears on shop's public page at /shop/[slug]"
         }
       ],
       "branches": [
@@ -46,8 +51,8 @@
           "afterStep": "check-context",
           "condition": "Active context?",
           "paths": [
-            { "label": "Member context", "goTo": "member-context" },
-            { "label": "Shop context", "goTo": "shop-context" }
+            { "label": "Member", "goTo": "member-context" },
+            { "label": "Shop", "goTo": "shop-context" }
           ]
         }
       ],
@@ -63,21 +68,24 @@
       "steps": [
         {
           "id": "send-header",
-          "label": "X-Nessi-Context header sent with every fetch",
+          "title": "Send Context Header",
           "layer": "background",
-          "status": "built"
+          "status": "built",
+          "tooltip": "X-Nessi-Context header sent with every fetch"
         },
         {
           "id": "validate-member",
-          "label": "member — API validates: user owns listing",
+          "title": "Validate as Member",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "member — API validates: user owns listing"
         },
         {
           "id": "validate-shop",
-          "label": "shop:{id} — API validates: user is member of shop",
+          "title": "Validate as Shop",
           "layer": "server",
-          "status": "built"
+          "status": "built",
+          "tooltip": "shop:{id} — API validates: user is member of shop"
         }
       ],
       "branches": [
@@ -85,8 +93,8 @@
           "afterStep": "send-header",
           "condition": "Header value?",
           "paths": [
-            { "label": "member", "goTo": "validate-member" },
-            { "label": "shop:{id}", "goTo": "validate-shop" }
+            { "label": "Member", "goTo": "validate-member" },
+            { "label": "Shop", "goTo": "validate-shop" }
           ]
         }
       ]
