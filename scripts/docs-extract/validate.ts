@@ -83,12 +83,14 @@ for (const filename of EXPECTED_FILES) {
   }
 
   // 4. All others — find main array and check non-empty
+  // roadmap.json is allowed to be empty (PAT may lack project scope)
+  const ALLOW_EMPTY = ['roadmap.json'];
   const obj = data as Record<string, unknown>;
   const arr = findMainArray(obj);
 
   if (!arr) {
     fail(`${filename} — no array found`);
-  } else if (arr.length === 0) {
+  } else if (arr.length === 0 && !ALLOW_EMPTY.includes(filename)) {
     fail(`${filename} — empty array`);
   } else {
     pass(`${filename} (${arr.length} items)`);
