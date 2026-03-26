@@ -64,9 +64,7 @@
           "layer": "server",
           "status": "built",
           "route": "POST /api/addresses",
-          "errorCases": [
-            { "condition": "Duplicate label", "result": "Error: label already used" }
-          ]
+          "errorCases": [{ "condition": "Duplicate label", "result": "Error: label already used" }]
         },
         {
           "id": "list-updates",

@@ -104,9 +104,7 @@ export async function fetchMergedPRs(): Promise<ChangelogEntry[]> {
     page++;
   }
 
-  entries.sort(
-    (a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime()
-  );
+  entries.sort((a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime());
 
   return entries;
 }

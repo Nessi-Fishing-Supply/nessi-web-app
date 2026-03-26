@@ -29,7 +29,11 @@
           "status": "built",
           "route": "POST /api/shops/[id]/ownership",
           "errorCases": [
-            { "condition": "Pending transfer already exists", "result": "409 — cancel existing first", "httpStatus": 409 }
+            {
+              "condition": "Pending transfer already exists",
+              "result": "409 — cancel existing first",
+              "httpStatus": 409
+            }
           ]
         },
         {

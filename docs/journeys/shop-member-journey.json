@@ -46,8 +46,14 @@
           "afterStep": "set-context-header",
           "condition": "Role?",
           "paths": [
-            { "label": "Owner/Manager — access shop settings, manage members, edit any listing", "goTo": "create-listing" },
-            { "label": "Contributor — edit own listings only, no settings/members access", "goTo": "create-listing" }
+            {
+              "label": "Owner/Manager — access shop settings, manage members, edit any listing",
+              "goTo": "create-listing"
+            },
+            {
+              "label": "Contributor — edit own listings only, no settings/members access",
+              "goTo": "create-listing"
+            }
           ]
         }
       ]

@@ -9,12 +9,12 @@ jobs:
   extract-and-sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: pnpm
@@ -31,7 +31,7 @@ jobs:
         run: pnpm tsx scripts/docs-extract/validate.ts
 
       - name: Checkout nessi-docs
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: nessi-fishing-supply/nessi-docs
           path: nessi-docs
@@ -44,6 +44,8 @@ jobs:
           mkdir -p nessi-docs/src/data/generated
           cp -r _docs-output/* nessi-docs/src/data/generated/
           cd nessi-docs
+          pnpm install --frozen-lockfile
+          pnpm format
           git config user.name "nessi-docs-sync[bot]"
           git config user.email "nessi-docs-sync[bot]@users.noreply.github.com"
           git add src/data/generated/

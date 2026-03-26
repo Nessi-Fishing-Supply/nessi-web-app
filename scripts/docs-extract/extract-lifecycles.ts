@@ -7,9 +7,7 @@ import { writeJson } from './utils/output.js';
 import type { Lifecycle, LifecycleState, LifecycleTransition } from './types.js';
 
 const __dir =
-  typeof __dirname !== 'undefined'
-    ? __dirname
-    : dirname(fileURLToPath(import.meta.url));
+  typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url));
 
 const ROOT = join(__dir, '..', '..');
 
@@ -64,13 +62,10 @@ function readMigrationFiles(): Array<{ filePath: string; content: string }> {
  * Parse `CREATE TYPE {name} AS ENUM ({values})` from SQL content.
  * Only captures types whose name contains 'status'.
  */
-function parseEnumTypes(
-  content: string
-): Array<{ enumName: string; values: string[] }> {
+function parseEnumTypes(content: string): Array<{ enumName: string; values: string[] }> {
   const results: Array<{ enumName: string; values: string[] }> = [];
   // Match CREATE TYPE <name> AS ENUM ( ... ) — values may span multiple lines
-  const enumRegex =
-    /CREATE\s+TYPE\s+(?:public\.)?(\w+)\s+AS\s+ENUM\s*\(([^)]+)\)/gi;
+  const enumRegex = /CREATE\s+TYPE\s+(?:public\.)?(\w+)\s+AS\s+ENUM\s*\(([^)]+)\)/gi;
 
   let match: RegExpExecArray | null;
   while ((match = enumRegex.exec(content)) !== null) {
@@ -95,9 +90,7 @@ function parseEnumTypes(
  * `status` column in `CREATE TABLE public.shop_ownership_transfers` becomes
  * the slug `ownership_transfer`.
  */
-function parseCheckConstraints(
-  content: string
-): Array<{ columnName: string; values: string[] }> {
+function parseCheckConstraints(content: string): Array<{ columnName: string; values: string[] }> {
   const results: Array<{ columnName: string; values: string[] }> = [];
   const checkRegex = /CHECK\s*\(\s*(\w+)\s+IN\s*\(([^)]+)\)\s*\)/gi;
 
@@ -117,13 +110,13 @@ function parseCheckConstraints(
     if (rawColumn === 'status') {
       const precedingText = content.slice(0, match.index);
       const tableMatch = precedingText.match(
-        /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?(\w+)\s*\(/gi
+        /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?(\w+)\s*\(/gi,
       );
       if (tableMatch) {
         // Use the last (nearest) match
         const lastTable = tableMatch[tableMatch.length - 1];
         const nameMatch = lastTable.match(
-          /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?(\w+)/i
+          /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?(\w+)/i,
         );
         if (nameMatch) {
           // e.g. shop_ownership_transfers -> ownership_transfer_status
@@ -145,9 +138,7 @@ function parseCheckConstraints(
  * Parse all *_STATUS_LABELS constants from TypeScript file content.
  * Returns a map of entity-slug -> (value -> label).
  */
-function parseStatusLabelsMap(
-  content: string
-): Map<string, Map<string, string>> {
+function parseStatusLabelsMap(content: string): Map<string, Map<string, string>> {
   const result = new Map<string, Map<string, string>>();
   const constRegex =
     /export\s+const\s+(\w+_STATUS_LABELS)\s*:\s*Record<[^,]+,\s*string>\s*=\s*\{([^}]+)\}/g;
@@ -204,7 +195,7 @@ function deriveSlug(name: string): string {
  */
 function buildStates(
   values: string[],
-  labelsMap: Map<string, string> | undefined
+  labelsMap: Map<string, string> | undefined,
 ): LifecycleState[] {
   return values.map((value) => ({
     id: value,
@@ -290,7 +281,7 @@ const lifecycles = extractLifecycles();
 console.log(`Found ${lifecycles.length} lifecycle(s)`);
 for (const lc of lifecycles) {
   console.log(
-    `  - ${lc.name} [${lc.source}]: ${lc.states.length} states, ${lc.transitions.length} transitions`
+    `  - ${lc.name} [${lc.source}]: ${lc.states.length} states, ${lc.transitions.length} transitions`,
   );
 }
 writeJson('lifecycles.json', { lifecycles });

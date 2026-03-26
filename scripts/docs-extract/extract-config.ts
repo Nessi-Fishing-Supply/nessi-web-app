@@ -15,9 +15,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir =
-  typeof __dirname !== 'undefined'
-    ? __dirname
-    : dirname(fileURLToPath(import.meta.url));
+  typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url));
 
 const MIGRATIONS_DIR = join(__dir, '..', '..', 'supabase', 'migrations');
 
@@ -151,8 +149,7 @@ function extractDbEnumConfigs(): ConfigEnum[] {
 
   // Regex to match: CREATE TYPE [schema.]name AS ENUM ( ... )
   // Handles optional schema prefix, multi-line enum bodies
-  const enumRe =
-    /CREATE\s+TYPE\s+(?:\w+\.)?(\w+)\s+AS\s+ENUM\s*\(([\s\S]*?)\)/gi;
+  const enumRe = /CREATE\s+TYPE\s+(?:\w+\.)?(\w+)\s+AS\s+ENUM\s*\(([\s\S]*?)\)/gi;
 
   for (const filename of migrationFiles) {
     let sql: string;
@@ -298,7 +295,10 @@ export function extractConfigs(): ConfigEnum[] {
   const deduplicatedConfigs: typeof configs = [];
   const seenValueKeys = new Set<string>();
   for (const config of configs) {
-    const valueKey = config.values.map((v) => v.value).sort().join('|');
+    const valueKey = config.values
+      .map((v) => v.value)
+      .sort()
+      .join('|');
     if (!seenValueKeys.has(valueKey)) {
       seenValueKeys.add(valueKey);
       deduplicatedConfigs.push(config);

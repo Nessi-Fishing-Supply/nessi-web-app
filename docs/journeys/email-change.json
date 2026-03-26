@@ -49,9 +49,7 @@
           "label": "verifyEmailChange(type='email_change')",
           "layer": "server",
           "status": "built",
-          "errorCases": [
-            { "condition": "Invalid/expired code", "result": "Show error" }
-          ]
+          "errorCases": [{ "condition": "Invalid/expired code", "result": "Show error" }]
         },
         {
           "id": "email-updated",

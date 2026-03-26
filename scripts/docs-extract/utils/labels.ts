@@ -1,7 +1,5 @@
 export function titleCase(str: string): string {
-  return str
-    .replace(/[_-]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return str.replace(/[_-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function singularize(word: string): string {
@@ -13,7 +11,10 @@ export function singularize(word: string): string {
 }
 
 export function endpointLabel(method: string, path: string): string {
-  const segments = path.replace(/^\/api\//, '').split('/').filter(Boolean);
+  const segments = path
+    .replace(/^\/api\//, '')
+    .split('/')
+    .filter(Boolean);
   const hasIdParam = segments.some((s) => s.startsWith('['));
   const resourceSegments = segments.filter((s) => !s.startsWith('['));
   const resource = resourceSegments[resourceSegments.length - 1] || 'Resource';
@@ -23,7 +24,9 @@ export function endpointLabel(method: string, path: string): string {
 
   if (isSubAction && method !== 'GET') {
     const action = titleCase(lastSegment);
-    const parentResource = titleCase(singularize(resourceSegments[resourceSegments.length - 2] || ''));
+    const parentResource = titleCase(
+      singularize(resourceSegments[resourceSegments.length - 2] || ''),
+    );
     return `${action} ${parentResource}`;
   }
 

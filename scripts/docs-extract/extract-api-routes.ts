@@ -48,9 +48,7 @@ function detectAuth(source: string): 'user' | 'admin' | 'none' {
 /**
  * Detect permission requirements from requireShopPermission calls.
  */
-function detectPermissions(
-  source: string,
-): { feature: string; level: string } | undefined {
+function detectPermissions(source: string): { feature: string; level: string } | undefined {
   const match = source.match(
     /requireShopPermission\(\s*\w+\s*,\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/,
   );
@@ -88,14 +86,19 @@ function extractRequestFields(source: string, method: string): RequestField[] {
   // Isolate source to just the handler block for this method.
   // Slice from the start of the export declaration to the start of the next export.
   const handlerStartRe = new RegExp(
-    String.raw`export\s+(?:async\s+)?function\s+` + method + String.raw`\b|export\s+const\s+` + method + String.raw`\s*=`,
+    String.raw`export\s+(?:async\s+)?function\s+` +
+      method +
+      String.raw`\b|export\s+const\s+` +
+      method +
+      String.raw`\s*=`,
   );
   const handlerMatch = handlerStartRe.exec(source);
   if (!handlerMatch) return fields;
 
   const afterHandler = source.slice(handlerMatch.index);
   // Find the next top-level export (for a different method) to terminate the slice
-  const nextExportRe = /\nexport\s+(?:async\s+)?(?:function|const)\s+(?:GET|POST|PATCH|PUT|DELETE)\b/;
+  const nextExportRe =
+    /\nexport\s+(?:async\s+)?(?:function|const)\s+(?:GET|POST|PATCH|PUT|DELETE)\b/;
   const nextExportMatch = nextExportRe.exec(afterHandler.slice(1)); // skip first char to avoid re-matching same export
   const handlerSource = nextExportMatch
     ? afterHandler.slice(0, nextExportMatch.index + 1)
@@ -186,7 +189,11 @@ function extractRequestFields(source: string, method: string): RequestField[] {
  */
 function extractDescription(source: string, method: string): string {
   const exportRe = new RegExp(
-    String.raw`export\s+(?:async\s+)?function\s+` + method + String.raw`\b|export\s+const\s+` + method + String.raw`\s*=`,
+    String.raw`export\s+(?:async\s+)?function\s+` +
+      method +
+      String.raw`\b|export\s+const\s+` +
+      method +
+      String.raw`\s*=`,
   );
   const exportMatch = exportRe.exec(source);
   if (!exportMatch) return '';

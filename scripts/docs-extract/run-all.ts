@@ -73,7 +73,9 @@ async function main(): Promise<void> {
     writeJson('roadmap.json', { items });
     counts.roadmapItems = items.length;
   } catch (err) {
-    console.warn(`  ⚠ Kanban fetch failed (${err instanceof Error ? err.message : err}), writing empty`);
+    console.warn(
+      `  ⚠ Kanban fetch failed (${err instanceof Error ? err.message : err}), writing empty`,
+    );
     writeJson('roadmap.json', { items: [] });
     counts.roadmapItems = 0;
   }
@@ -84,7 +86,9 @@ async function main(): Promise<void> {
     writeJson('changelog.json', { entries });
     counts.changelogEntries = entries.length;
   } catch (err) {
-    console.warn(`  ⚠ Changelog fetch failed (${err instanceof Error ? err.message : err}), writing empty`);
+    console.warn(
+      `  ⚠ Changelog fetch failed (${err instanceof Error ? err.message : err}), writing empty`,
+    );
     writeJson('changelog.json', { entries: [] });
     counts.changelogEntries = 0;
   }

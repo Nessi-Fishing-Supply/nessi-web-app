@@ -22,7 +22,10 @@
           "layer": "server",
           "status": "planned",
           "errorCases": [
-            { "condition": "Seller has no Stripe Connect", "result": "Cannot purchase from this seller" }
+            {
+              "condition": "Seller has no Stripe Connect",
+              "result": "Cannot purchase from this seller"
+            }
           ]
         },
         {

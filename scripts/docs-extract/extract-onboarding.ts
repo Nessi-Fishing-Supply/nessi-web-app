@@ -105,9 +105,7 @@ export function extractOnboarding(): {
   const sections = extractSections(markdown);
 
   // Find onboarding section(s)
-  const onboardingSections = sections.filter((s) =>
-    s.heading.toLowerCase().includes('onboarding'),
-  );
+  const onboardingSections = sections.filter((s) => s.heading.toLowerCase().includes('onboarding'));
 
   // Find seller precondition section(s)
   const sellerPreconditionSections = sections.filter((s) => {

@@ -158,15 +158,10 @@ function parseRowFields(body: string): EntityField[] {
     const nullable = rawType.includes('| null');
 
     // Clean up type for display
-    let type = rawType
-      .replace(/\s*\|\s*null/g, '')
-      .trim();
+    let type = rawType.replace(/\s*\|\s*null/g, '').trim();
 
     // Simplify Database["public"]["Enums"]["..."] or Database['public']['Enums']['...']
-    type = type.replace(
-      /Database\[['"]public['"]\]\[['"]Enums['"]\]\[['"](\w+)['"]\]/g,
-      'enum:$1',
-    );
+    type = type.replace(/Database\[['"]public['"]\]\[['"]Enums['"]\]\[['"](\w+)['"]\]/g, 'enum:$1');
 
     fields.push({ name, type, nullable });
   }
@@ -254,8 +249,7 @@ function scanMigrations(tableNames: string[]): MigrationData {
     // 1. Enum extraction
     // Parse: CREATE TYPE name AS ENUM (...) — both bare and inside DO $$ BEGIN blocks
     // -------------------------------------------------------------------------
-    const enumPattern =
-      /CREATE\s+TYPE\s+(?:public\.)?(\w+)\s+AS\s+ENUM\s*\(([^)]+)\)/gi;
+    const enumPattern = /CREATE\s+TYPE\s+(?:public\.)?(\w+)\s+AS\s+ENUM\s*\(([^)]+)\)/gi;
     let enumMatch: RegExpExecArray | null;
     while ((enumMatch = enumPattern.exec(content)) !== null) {
       const enumName = enumMatch[1];
@@ -275,9 +269,7 @@ function scanMigrations(tableNames: string[]): MigrationData {
     const lines = content.split('\n');
     for (const line of lines) {
       if (/ENABLE\s+ROW\s+LEVEL\s+SECURITY/i.test(line)) {
-        const tableMatch = line.match(
-          /ALTER\s+TABLE\s+(?:public\.)?(\w+)\s+ENABLE/i,
-        );
+        const tableMatch = line.match(/ALTER\s+TABLE\s+(?:public\.)?(\w+)\s+ENABLE/i);
         if (tableMatch) {
           const rawName = tableMatch[1];
           const resolved = TABLE_ALIASES[rawName] ?? rawName;
@@ -347,11 +339,7 @@ function scanMigrations(tableNames: string[]): MigrationData {
       const columns = columnsRaw
         .split(',')
         .map((c) => {
-          return c
-            .trim()
-            .split(/\s+/)[0]
-            .replace(/[()]/g, '')
-            .trim();
+          return c.trim().split(/\s+/)[0].replace(/[()]/g, '').trim();
         })
         .filter(Boolean);
 
@@ -412,7 +400,8 @@ function scanMigrations(tableNames: string[]): MigrationData {
       const colLines = tableBody.split('\n');
       for (const colLine of colLines) {
         const trimmedCol = colLine.trim();
-        if (!trimmedCol || trimmedCol.startsWith('--') || trimmedCol.startsWith('CONSTRAINT')) continue;
+        if (!trimmedCol || trimmedCol.startsWith('--') || trimmedCol.startsWith('CONSTRAINT'))
+          continue;
 
         const colNameMatch = trimmedCol.match(/^(\w+)\s+/);
         if (!colNameMatch) continue;
@@ -506,10 +495,7 @@ function extractParenExpr(text: string, startPattern: RegExp): string | undefine
 // Build entities
 // ---------------------------------------------------------------------------
 
-function buildEntities(
-  tables: ParsedTable[],
-  migData: MigrationData,
-): EnrichedEntity[] {
+function buildEntities(tables: ParsedTable[], migData: MigrationData): EnrichedEntity[] {
   return tables.map((table) => {
     const badges: string[] = [];
     if (migData.rls.has(table.name)) badges.push('RLS');
@@ -607,12 +593,7 @@ function buildErd(tables: ParsedTable[]): {
 
       const stem = field.name.replace(/_id$/, '');
 
-      const candidates = [
-        stem,
-        stem + 's',
-        stem + 'es',
-        stem.replace(/y$/, 'ies'),
-      ];
+      const candidates = [stem, stem + 's', stem + 'es', stem.replace(/y$/, 'ies')];
 
       for (const candidate of candidates) {
         if (tableNames.includes(candidate)) {
@@ -672,12 +653,8 @@ if (isMain) {
 
   console.log(`\n  Tables: ${entities.length}`);
   console.log(`  Enums: ${enums.length}`);
-  console.log(
-    `  With RLS: ${entities.filter((e) => e.badges.includes('RLS')).length}`,
-  );
-  console.log(
-    `  With Triggers: ${entities.filter((e) => e.badges.includes('Triggers')).length}`,
-  );
+  console.log(`  With RLS: ${entities.filter((e) => e.badges.includes('RLS')).length}`);
+  console.log(`  With Triggers: ${entities.filter((e) => e.badges.includes('Triggers')).length}`);
   console.log(`  ERD nodes: ${erd.nodes.length}`);
   console.log(`  ERD edges: ${erd.edges.length}`);
 }

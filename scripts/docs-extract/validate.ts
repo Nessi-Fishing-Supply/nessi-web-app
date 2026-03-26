@@ -8,9 +8,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dir =
-  typeof __dirname !== 'undefined'
-    ? __dirname
-    : dirname(fileURLToPath(import.meta.url));
+  typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url));
 
 const OUTPUT_DIR = join(__dir, '..', '..', '_docs-output');
 
@@ -138,9 +136,7 @@ for (const filename of EXPECTED_FILES) {
     if (!Array.isArray(nodes)) {
       fail(`${filename} — missing nodes array`);
     } else {
-      const withXY = (nodes as Record<string, unknown>[]).filter(
-        (n) => 'x' in n || 'y' in n
-      );
+      const withXY = (nodes as Record<string, unknown>[]).filter((n) => 'x' in n || 'y' in n);
       if (withXY.length > 0) {
         fail(`${filename} — ${withXY.length} node(s) have x/y properties (regression)`);
       } else {

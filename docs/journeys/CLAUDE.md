@@ -5,6 +5,7 @@ This directory contains structured JSON journey files that document every user-f
 ## Purpose
 
 Journey files power the **nessi-docs** app where they're extracted, parsed, and rendered for:
+
 - **Flow visualization** — interactive diagrams of every user path
 - **Coverage tracking** — which steps are built, planned, or tested
 - **Test planning** — each step maps to verifiable behavior
@@ -26,14 +27,14 @@ Every flow must reflect what the code actually does. Steps should map to real fu
 
 Each step declares its execution layer. A complete flow should trace the full stack:
 
-| Layer | What it covers | Examples |
-|-------|---------------|----------|
-| `client` | Visible browser UI — renders, interactions, navigation | Form submit, modal open, toast |
-| `server` | API routes, server actions, auth checks | POST /api/cart, verifyOtp() |
-| `database` | Triggers, RLS policies, cascades, direct DB ops | CASCADE delete, BEFORE DELETE trigger |
-| `background` | Silent client-side work — no visible UI change | Cart merge, context sync, localStorage |
-| `email` | Transactional email via Resend | Invite email, OTP code, welcome email |
-| `external` | Third-party service calls | Stripe Connect, shipping API |
+| Layer        | What it covers                                         | Examples                               |
+| ------------ | ------------------------------------------------------ | -------------------------------------- |
+| `client`     | Visible browser UI — renders, interactions, navigation | Form submit, modal open, toast         |
+| `server`     | API routes, server actions, auth checks                | POST /api/cart, verifyOtp()            |
+| `database`   | Triggers, RLS policies, cascades, direct DB ops        | CASCADE delete, BEFORE DELETE trigger  |
+| `background` | Silent client-side work — no visible UI change         | Cart merge, context sync, localStorage |
+| `email`      | Transactional email via Resend                         | Invite email, OTP code, welcome email  |
+| `external`   | Third-party service calls                              | Stripe Connect, shipping API           |
 
 ### Touchpoints
 
@@ -69,6 +70,7 @@ Use `"goTo": "END"` for terminal paths. Reference other journey files in `notes`
 ## Schema
 
 All journey files must validate against `schema.json` in this directory. The schema defines:
+
 - Required fields: `slug`, `title`, `persona`, `description`, `flows`
 - Valid personas: `guest`, `auth`, `onboarding`, `buyer`, `seller`, `shop-owner`, `shop-member`, `account`, `context`
 - Valid layers: `client`, `server`, `database`, `background`, `email`, `external`
@@ -81,6 +83,7 @@ Files use `{persona}-{feature}.json` naming (e.g., `buyer-cart.json`, `seller-li
 ## Extraction & Integration
 
 This directory is an **extraction location** for the nessi-docs pipeline. Files are:
+
 1. Read by the docs data extraction pipeline (`scripts/extract-docs-data.mjs`)
 2. Validated against `schema.json`
 3. Transformed into visualizations, coverage reports, and test matrices
@@ -91,6 +94,7 @@ This directory is an **extraction location** for the nessi-docs pipeline. Files 
 ## Maintenance
 
 Journey files are maintained by:
+
 - **`/journey` skill** — audit, enhance, or generate journey files
 - **Conductor pipeline** — automatically syncs journeys before PR creation when user-facing flows change
 - **Manual updates** — when making changes outside the conductor
@@ -98,6 +102,7 @@ Journey files are maintained by:
 ### When to Update
 
 Update journey files when code changes:
+
 - Add, remove, or modify an API route
 - Change auth, onboarding, or account flows
 - Modify listing states/transitions
@@ -108,15 +113,15 @@ Update journey files when code changes:
 
 ### File ↔ Code Mapping
 
-| Changed code path | Affected journey files |
-|---|---|
-| `src/app/api/auth/` or `src/features/auth/` | `signup.json`, `login.json`, `password-reset.json`, `email-change.json`, `logout.json` |
-| `src/app/api/listings/` or `src/features/listings/` | `seller-listings.json`, `buyer-search.json` |
-| `src/app/api/cart/` or `src/features/cart/` | `buyer-cart.json`, `guest-cart.json` |
-| `src/app/api/shops/` or `src/features/shops/` | `shop-create.json`, `shop-settings.json`, `shop-member-management.json`, `shop-ownership-transfer.json`, `shop-roles.json` |
-| `src/features/context/` | `context-switching.json` |
-| `src/features/members/` | `account-settings.json`, `onboarding.json` |
-| `src/app/api/recently-viewed/` or `src/features/recently-viewed/` | `buyer-recently-viewed.json`, `guest-recently-viewed.json` |
-| `src/app/api/addresses/` or `src/features/addresses/` | `buyer-addresses.json` |
-| `src/proxy.ts` | `route-protection.json` |
-| `src/features/email/` | Any journey with `"layer": "email"` steps |
+| Changed code path                                                 | Affected journey files                                                                                                     |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/api/auth/` or `src/features/auth/`                       | `signup.json`, `login.json`, `password-reset.json`, `email-change.json`, `logout.json`                                     |
+| `src/app/api/listings/` or `src/features/listings/`               | `seller-listings.json`, `buyer-search.json`                                                                                |
+| `src/app/api/cart/` or `src/features/cart/`                       | `buyer-cart.json`, `guest-cart.json`                                                                                       |
+| `src/app/api/shops/` or `src/features/shops/`                     | `shop-create.json`, `shop-settings.json`, `shop-member-management.json`, `shop-ownership-transfer.json`, `shop-roles.json` |
+| `src/features/context/`                                           | `context-switching.json`                                                                                                   |
+| `src/features/members/`                                           | `account-settings.json`, `onboarding.json`                                                                                 |
+| `src/app/api/recently-viewed/` or `src/features/recently-viewed/` | `buyer-recently-viewed.json`, `guest-recently-viewed.json`                                                                 |
+| `src/app/api/addresses/` or `src/features/addresses/`             | `buyer-addresses.json`                                                                                                     |
+| `src/proxy.ts`                                                    | `route-protection.json`                                                                                                    |
+| `src/features/email/`                                             | Any journey with `"layer": "email"` steps                                                                                  |

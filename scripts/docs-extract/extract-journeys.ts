@@ -79,9 +79,7 @@ function transformJourney(source: SourceJourney): Journey {
     });
 
     // Build a set of branch afterStep ids for this flow
-    const branchAfterSteps = new Set(
-      (flow.branches ?? []).map((b) => b.afterStep),
-    );
+    const branchAfterSteps = new Set((flow.branches ?? []).map((b) => b.afterStep));
 
     // Map step id → index for quick lookup
     const stepIds = flow.steps.map((s) => s.id);
@@ -120,9 +118,7 @@ function transformJourney(source: SourceJourney): Journey {
 
       // --- If this step has a branch, insert a decision node ---
       if (branchAfterSteps.has(step.id)) {
-        const branch = (flow.branches ?? []).find(
-          (b) => b.afterStep === step.id,
-        )!;
+        const branch = (flow.branches ?? []).find((b) => b.afterStep === step.id)!;
         const decisionId = `${flow.id}--decision-${step.id}`;
 
         const decisionNode: JourneyNode = {
@@ -202,10 +198,7 @@ export function extractJourneys(): { journeys: Journey[] } {
 /*  CLI entrypoint                                                     */
 /* ------------------------------------------------------------------ */
 
-if (
-  process.argv[1] &&
-  import.meta.url.endsWith('extract-journeys.ts')
-) {
+if (process.argv[1] && import.meta.url.endsWith('extract-journeys.ts')) {
   const { journeys } = extractJourneys();
   console.log(`Found ${journeys.length} journeys`);
   writeJson('journeys.json', { journeys });

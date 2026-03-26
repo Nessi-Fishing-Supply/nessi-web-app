@@ -31,9 +31,21 @@
           "layer": "server",
           "status": "built",
           "errorCases": [
-            { "condition": "Members + pending invites >= 5", "result": "MEMBER_LIMIT_REACHED", "httpStatus": 409 },
-            { "condition": "Already a member", "result": "409 already a member", "httpStatus": 409 },
-            { "condition": "Duplicate pending invite", "result": "409 duplicate invite", "httpStatus": 409 }
+            {
+              "condition": "Members + pending invites >= 5",
+              "result": "MEMBER_LIMIT_REACHED",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Already a member",
+              "result": "409 already a member",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Duplicate pending invite",
+              "result": "409 duplicate invite",
+              "httpStatus": 409
+            }
           ]
         },
         {

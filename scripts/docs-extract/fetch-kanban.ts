@@ -62,10 +62,7 @@ interface GraphQLResponse {
   errors?: { message: string }[];
 }
 
-function getCustomField(
-  fieldValues: FieldValueNode[],
-  fieldName: string,
-): string {
+function getCustomField(fieldValues: FieldValueNode[], fieldName: string): string {
   for (const fv of fieldValues) {
     if (fv.field?.name === fieldName) {
       return fv.text ?? fv.name ?? '';
@@ -128,9 +125,7 @@ export async function fetchKanban(): Promise<RoadmapItem[]> {
     const json = (await res.json()) as GraphQLResponse;
 
     if (json.errors?.length) {
-      throw new Error(
-        `GraphQL errors: ${json.errors.map((e) => e.message).join(', ')}`,
-      );
+      throw new Error(`GraphQL errors: ${json.errors.map((e) => e.message).join(', ')}`);
     }
 
     const { nodes, pageInfo } = json.data.organization.projectV2.items;

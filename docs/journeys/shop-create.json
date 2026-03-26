@@ -51,7 +51,11 @@
           "status": "built",
           "route": "POST /api/shops",
           "errorCases": [
-            { "condition": "Member at 5-shop limit", "result": "SHOP_LIMIT_REACHED", "httpStatus": 409 }
+            {
+              "condition": "Member at 5-shop limit",
+              "result": "SHOP_LIMIT_REACHED",
+              "httpStatus": 409
+            }
           ]
         },
         {
