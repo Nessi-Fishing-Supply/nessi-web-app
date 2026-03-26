@@ -105,6 +105,57 @@
       ]
     },
     {
+      "id": "display-strip",
+      "title": "Display Recently Viewed Strip",
+      "trigger": "User visits homepage or category browse page",
+      "steps": [
+        {
+          "id": "hook-reads-ids",
+          "label": "useRecentlyViewedListings() reads IDs from useRecentlyViewed()",
+          "layer": "background",
+          "status": "built",
+          "codeRef": "src/features/recently-viewed/hooks/use-recently-viewed-listings.ts"
+        },
+        {
+          "id": "batch-fetch",
+          "label": "GET /api/listings/batch?ids=... fetches full listing data",
+          "layer": "server",
+          "status": "built",
+          "route": "GET /api/listings/batch",
+          "notes": "Only returns active, non-deleted listings. Stale IDs silently filtered. Max 30 IDs.",
+          "errorCases": [
+            { "condition": "No IDs provided", "result": "400 Bad Request", "httpStatus": 400 },
+            { "condition": "More than 30 IDs", "result": "400 Bad Request", "httpStatus": 400 }
+          ]
+        },
+        {
+          "id": "render-strip",
+          "label": "RecentlyViewedStrip renders horizontal scroll of ListingCards",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/recently-viewed/components/recently-viewed-strip/index.tsx",
+          "notes": "CSS scroll-snap, 160px cards mobile / 220px desktop. Returns null when empty. role=region + aria-label."
+        },
+        {
+          "id": "strip-empty",
+          "label": "Strip returns null — nothing rendered",
+          "layer": "client",
+          "status": "built",
+          "notes": "No recently viewed items or all stale/deleted"
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "batch-fetch",
+          "condition": "Listings found?",
+          "paths": [
+            { "label": "Yes", "goTo": "render-strip" },
+            { "label": "No (empty/stale)", "goTo": "strip-empty" }
+          ]
+        }
+      ]
+    },
+    {
       "id": "clear-history",
       "title": "Clear History",
       "trigger": "User clicks clear recently viewed",
