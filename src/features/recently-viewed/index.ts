@@ -21,6 +21,9 @@ export {
 export { useRecentlyViewedMerge } from './hooks/use-recently-viewed-merge';
 export { useRecentlyViewedListings } from './hooks/use-recently-viewed-listings';
 
+// Components
+export { default as RecentlyViewedStrip } from './components/recently-viewed-strip';
+
 // Services
 export {
   getRecentlyViewedFromServer,
