@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 199,
+  "title": "feat(reports): #152.2 — feature scaffold, services, API routes, and validation",
+  "branch": "feat/199/reports-scaffold-services-api",
+  "status": "reviewing",
+  "phase": {
+    "current": 3,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3", "2.1", "2.2", "3.1", "3.2"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-26T12:00:00Z", "lastActivity": "2026-03-26T12:05:00Z" }
+}
