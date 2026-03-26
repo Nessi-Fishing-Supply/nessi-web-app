@@ -59,6 +59,35 @@ function detectPermissions(source: string): { feature: string; level: string } |
 }
 
 /**
+ * Derive the minimum role required for an endpoint.
+ * Priority: permissions level > auth heuristic > none.
+ *
+ * Permission levels from requireShopPermission map to roles:
+ *   'owner'       → Owner
+ *   'manage'      → Manager
+ *   'contribute'  → Contributor
+ *
+ * Auth heuristic fallback:
+ *   'admin' (createAdminClient) → Owner
+ *   'user'  (createServerClient) → Member
+ *   'none'  → None
+ */
+function detectRole(
+  auth: 'user' | 'admin' | 'none',
+  permissions?: { feature: string; level: string },
+): import('./types').ApiRole {
+  if (permissions) {
+    const level = permissions.level.toLowerCase();
+    if (level === 'owner') return 'Owner';
+    if (level === 'manage' || level === 'manager') return 'Manager';
+    if (level === 'contribute' || level === 'contributor') return 'Contributor';
+  }
+  if (auth === 'admin') return 'Owner';
+  if (auth === 'user') return 'Member';
+  return 'None';
+}
+
+/**
  * Detect error status codes (400+) from file contents.
  */
 function detectErrorCodes(source: string): number[] {
@@ -276,6 +305,7 @@ export function extractApiRoutes(): ApiGroup[] {
         path,
         label: endpointLabel(method, path),
         auth,
+        role: detectRole(auth, permissions),
         errorCodes,
         requestFields,
         description,
