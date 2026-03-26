@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiOutlineShoppingCart, HiOutlineX } from 'react-icons/hi';
+import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context';
+import AlsoLikedStrip from '@/features/listings/components/also-liked-strip';
 import {
   useCart,
   useRemoveFromCart,
@@ -85,6 +87,10 @@ export default function CartPage() {
   const [staleBannerItems, setStaleBannerItems] = useState<CartValidationResult['removed']>([]);
   const [showStaleBanner, setShowStaleBanner] = useState(false);
   const hasValidated = useRef(false);
+  const cartListingIds = useMemo(
+    () => (cartItems ?? []).map((item) => item.listing_id),
+    [cartItems],
+  );
 
   // Shops cannot purchase — redirect to home
   useEffect(() => {
@@ -300,6 +306,12 @@ export default function CartPage() {
           />
         </div>
       </div>
+
+      {user && (
+        <div className={styles.recommendations}>
+          <AlsoLikedStrip userId={user.id} excludeListingIds={cartListingIds} />
+        </div>
+      )}
 
       <div className={styles.stickyBar}>
         <div className={styles.stickyBarContent}>
