@@ -242,6 +242,16 @@
   color: var(--color-neutral-900);
 }
 
+// Similar items section
+.similarSection {
+  padding: var(--spacing-600) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+
+  &:empty {
+    display: none;
+  }
+}
+
 // Report
 .reportRow {
   padding: var(--spacing-600) var(--spacing-400);

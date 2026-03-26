@@ -9,6 +9,7 @@ import SellerStrip from '@/features/listings/components/seller-strip';
 import ExpandableSection from '@/features/listings/components/expandable-section';
 import ConditionBadge from '@/features/listings/components/condition-badge';
 import ShareButton from '@/features/listings/components/share-button';
+import SimilarItemsStrip from '@/features/listings/components/similar-items-strip';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/controls/button';
 import AddToCartButton from '@/features/cart/components/add-to-cart-button';
@@ -299,6 +300,15 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
             </ExpandableSection>
           </section>
         )}
+
+        {/* Similar items */}
+        <div className={styles.similarSection}>
+          <SimilarItemsStrip
+            listingId={listing.id}
+            category={listing.category}
+            condition={listing.condition}
+          />
+        </div>
 
         {/* Report */}
         <div className={styles.reportRow}>
