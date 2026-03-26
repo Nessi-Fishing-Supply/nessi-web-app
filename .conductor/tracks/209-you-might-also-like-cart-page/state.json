@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "issue": 209,
+  "title": "feat(recommendations): #154.5 — You Might Also Like section on cart page",
+  "branch": "feat/209/you-might-also-like-cart-page",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "1.2"], "current": null, "remaining": ["2.1", "2.2"] }
+  },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-26T17:30:00Z", "lastActivity": "2026-03-26T17:36:00Z" }
+}
