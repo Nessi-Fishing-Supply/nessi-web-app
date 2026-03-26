@@ -1,3 +1,5 @@
+'use client';
+
 import ListingCard from '@/features/listings/components/listing-card';
 import type { ListingWithPhotos } from '@/features/listings/types/listing';
 import styles from './listing-scroll-strip.module.scss';

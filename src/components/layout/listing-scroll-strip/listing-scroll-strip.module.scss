@@ -126,3 +126,12 @@ $shimmer-highlight: var(--color-neutral-200);
   height: var(--font-size-500);
   width: 40%;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonImage,
+  .skeletonLine,
+  .skeletonLineShort,
+  .skeletonLineShorter {
+    animation: none;
+  }
+}
