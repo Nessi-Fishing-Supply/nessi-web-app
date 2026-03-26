@@ -38,6 +38,6 @@ export function useReportTarget({ target_type, target_id }: UseReportTargetParam
     isOpen,
     close,
     isDuplicate: duplicateCheck.data?.exists ?? false,
-    isChecking: duplicateCheck.isLoading,
+    isChecking: duplicateCheck.isPending,
   };
 }

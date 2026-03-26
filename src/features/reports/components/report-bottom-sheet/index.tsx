@@ -148,7 +148,6 @@ export default function ReportBottomSheet({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Provide more context about your report..."
-          maxLength={MAX_DESCRIPTION_LENGTH + 1}
           rows={3}
           aria-required={isOther}
           aria-invalid={isOverLimit || undefined}
@@ -168,7 +167,6 @@ export default function ReportBottomSheet({
           type="button"
           className={styles.submitButton}
           disabled={isSubmitDisabled}
-          aria-disabled={isSubmitDisabled}
           aria-busy={submitReport.isPending}
           onClick={handleSubmit}
         >
