@@ -3,7 +3,7 @@
   "issue": 214,
   "title": "feat(follows): #155.4 — integrate FollowButton into member profile and shop pages",
   "branch": "feat/214/integrate-followbutton-member-shop-pages",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -13,7 +13,12 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-27T00:00:00Z", "lastActivity": "2026-03-27T00:05:00Z" }
+  "timestamps": {
+    "started": "2026-03-27T00:00:00Z",
+    "lastActivity": "2026-03-27T00:10:00Z"
+  },
+  "completedAt": "2026-03-27T00:10:00Z",
+  "pruneAfter": "2026-05-26T00:10:00Z"
 }
