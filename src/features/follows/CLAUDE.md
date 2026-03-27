@@ -83,6 +83,8 @@ import {
   FollowStatus,
   FollowerCount,
   FollowingItem,
+  FollowButtonProps,
+  FollowButton,
   useFollowStatus,
   useFollowerCount,
   useFollowToggle,
@@ -143,6 +145,57 @@ const { data } = useFollowing('shop'); // only shop follows
 }
 ```
 
+## Components
+
+### FollowButton
+
+Reusable follow/unfollow button with optimistic count updates, auth gate, and full ARIA support.
+
+**Props (`FollowButtonProps`):**
+
+| Prop                   | Type               | Required | Description                                          |
+| ---------------------- | ------------------ | -------- | ---------------------------------------------------- |
+| `targetType`           | `FollowTargetType` | Yes      | `'member'` or `'shop'`                               |
+| `targetId`             | `string`           | Yes      | UUID of the target member or shop                    |
+| `targetName`           | `string`           | Yes      | Display name (used in aria-label and toast messages) |
+| `initialFollowerCount` | `number`           | No       | SSR hydration value before the query resolves        |
+| `size`                 | `'sm' \| 'md'`     | No       | Button size (default: `'md'`)                        |
+| `className`            | `string`           | No       | Additional class on the wrapper element              |
+
+**Visual states:**
+
+1. **Follow** (default) — outline button with primary border/text, transparent background
+2. **Following** (active) — filled primary background with white text
+3. **Unfollow** (hover on Following) — filled destructive background with white text
+
+**Auth gate:** Unauthenticated users see a sign-in toast instead of triggering the follow mutation. No redirect — the user stays on the current page.
+
+**Toast messages:**
+
+- Follow success: "Following — You are now following {targetName}."
+- Unfollow success: "Unfollowed — You unfollowed {targetName}."
+- Auth gate: "Sign in to follow — Create an account or sign in to follow {targetName}."
+- Error: "Something went wrong — Please try again."
+
+**ARIA attributes:**
+
+- `aria-pressed` — reflects current follow state
+- `aria-label` — "Follow {targetName}" or "Following {targetName}, activate to unfollow"
+- `aria-busy` — true when mutation is in progress
+
+**Usage:**
+
+```tsx
+import { FollowButton } from '@/features/follows';
+
+<FollowButton
+  targetType="shop"
+  targetId={shop.id}
+  targetName={shop.shop_name}
+  initialFollowerCount={shop.follower_count}
+/>;
+```
+
 ## Key Patterns
 
 - **Server client** — All server services use `@/libs/supabase/server` (cookie-based auth, user JWT), not the admin client. The count endpoint does not require auth, so it omits auth headers.
@@ -151,23 +204,29 @@ const { data } = useFollowing('shop'); // only shop follows
 - **409/404 handling** — `useFollowToggle` checks `error instanceof FetchError && (error.status === 409 || error.status === 404)` and routes to `onSuccess` instead of `onError`. These are not user-facing errors — they indicate the state was already correct.
 - **DELETE via query params** — The unfollow endpoint (`DELETE /api/follows`) reads `target_type` and `target_id` from `searchParams` (not the request body) because `DELETE` requests with bodies are unreliable in some clients. `unfollowTarget` in the client service builds the query string accordingly.
 - **Self-follow guard** — Blocking self-follows for `target_type = 'member'` is enforced at both the DB level (CHECK constraint) and the application layer (`createFollowServer` throws before the Supabase insert).
+- **Auth gate pattern** — `FollowButton` checks `useAuth().isAuthenticated` before calling the follow mutation. Unauthenticated users see a toast instead of being redirected — they stay on the current page. This pattern is reusable for any social action that requires auth.
 
 ## Directory Structure
 
 ```
 src/features/follows/
 ├── CLAUDE.md
-├── index.ts                          # Barrel export (types + hooks)
+├── index.ts                          # Barrel export (types + hooks + components)
 ├── types/
-│   └── follow.ts                     # Follow, FollowInsert, FollowTargetType, FollowStatus, FollowerCount, FollowingItem
+│   ├── follow.ts                     # Follow, FollowInsert, FollowTargetType, FollowStatus, FollowerCount, FollowingItem
+│   └── follow-button.ts             # FollowButtonProps
 ├── services/
 │   ├── follow-server.ts              # Server-side Supabase queries
 │   └── follow.ts                     # Client-side fetch wrappers
-└── hooks/
-    ├── use-follow-status.ts          # Query: is the user following?
-    ├── use-follower-count.ts         # Query: follower count for a target
-    ├── use-follow-toggle.ts          # Mutation: follow/unfollow with optimistic updates
-    └── use-following.ts              # Query: list of targets the user follows
+├── hooks/
+│   ├── use-follow-status.ts          # Query: is the user following?
+│   ├── use-follower-count.ts         # Query: follower count for a target
+│   ├── use-follow-toggle.ts          # Mutation: follow/unfollow with optimistic updates
+│   └── use-following.ts              # Query: list of targets the user follows
+└── components/
+    └── follow-button/
+        ├── index.tsx                  # FollowButton component (use client)
+        └── follow-button.module.scss # Three-state styles (Follow/Following/Unfollow)
 
 src/app/api/follows/
 ├── route.ts                          # POST (follow), DELETE (unfollow)
