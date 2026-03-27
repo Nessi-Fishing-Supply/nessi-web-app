@@ -242,34 +242,6 @@
   color: var(--color-neutral-900);
 }
 
-// Report
-.reportRow {
-  padding: var(--spacing-600) var(--spacing-400);
-}
-
-.reportLink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-100);
-  color: var(--color-neutral-500);
-  font-size: var(--font-size-200);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-
-  &:hover,
-  &:focus-visible {
-    color: var(--color-neutral-600);
-    text-decoration: underline;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-primary-500);
-    outline-offset: 2px;
-  }
-}
-
 // Sticky bar — mobile only
 .stickyBar {
   position: fixed;
