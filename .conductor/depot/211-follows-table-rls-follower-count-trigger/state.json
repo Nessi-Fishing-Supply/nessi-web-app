@@ -3,7 +3,7 @@
   "issue": 211,
   "title": "follows table, RLS, follower_count columns, and trigger",
   "branch": "feat/211/follows-table-rls-follower-count-trigger",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -11,5 +11,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-26T12:00:00Z", "lastActivity": "2026-03-26T12:25:00Z" }
+  "timestamps": {
+    "started": "2026-03-26T12:00:00Z",
+    "lastActivity": "2026-03-26T12:28:00Z",
+    "completedAt": "2026-03-26T12:28:00Z",
+    "pruneAfter": "2026-05-25T12:28:00Z"
+  }
 }
