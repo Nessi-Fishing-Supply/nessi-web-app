@@ -12,7 +12,10 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: AUTH_CACHE_HEADERS });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: AUTH_CACHE_HEADERS },
+      );
     }
 
     const listings = await getFollowedSellerListingsServer(user.id);
