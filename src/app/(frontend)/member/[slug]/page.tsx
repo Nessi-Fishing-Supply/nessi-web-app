@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 import { getMemberBySlugServer } from '@/features/members/services/member-server';
 import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';
 import { getListingsByMemberServer } from '@/features/listings/services/listing-server';
+import { createClient } from '@/libs/supabase/server';
+import { ReportTrigger } from '@/features/reports';
 import ListingCard from '@/features/listings/components/listing-card';
 import Pill from '@/components/indicators/pill';
 import styles from './member-profile.module.scss';
@@ -43,6 +45,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   if (!member) {
     notFound();
   }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const currentUserId = user?.id ?? null;
+  const isOwnProfile = currentUserId === member.id;
 
   const listings = member.is_seller ? await getListingsByMemberServer(member.id) : [];
 
@@ -134,6 +143,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </section>
         </>
       )}
+
+      <ReportTrigger
+        currentUserId={currentUserId}
+        isOwnEntity={isOwnProfile}
+        targetType="member"
+        targetId={member.id}
+      />
     </div>
   );
 }

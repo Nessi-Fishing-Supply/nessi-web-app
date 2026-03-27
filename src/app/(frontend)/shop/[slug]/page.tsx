@@ -3,6 +3,8 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getShopBySlugServer } from '@/features/shops/services/shop-server';
 import { getListingsByShopServer } from '@/features/listings/services/listing-server';
+import { createClient } from '@/libs/supabase/server';
+import { ReportTrigger } from '@/features/reports';
 import ListingCard from '@/features/listings/components/listing-card';
 import styles from './shop-page.module.scss';
 
@@ -42,6 +44,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   if (!shop) {
     notFound();
   }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const currentUserId = user?.id ?? null;
+  const isOwnShop = currentUserId === shop.owner_id;
 
   const listings = await getListingsByShopServer(shop.id);
 
@@ -114,6 +123,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           <p className={styles.emptyState}>No listings yet</p>
         )}
       </section>
+
+      <ReportTrigger
+        currentUserId={currentUserId}
+        isOwnEntity={isOwnShop}
+        targetType="shop"
+        targetId={shop.id}
+      />
     </div>
   );
 }
