@@ -87,9 +87,9 @@ BEGIN
     RETURN NEW;
   ELSIF TG_OP = 'DELETE' THEN
     IF OLD.target_type = 'member' THEN
-      UPDATE public.members SET follower_count = follower_count - 1 WHERE id = OLD.target_id;
+      UPDATE public.members SET follower_count = GREATEST(follower_count - 1, 0) WHERE id = OLD.target_id;
     ELSIF OLD.target_type = 'shop' THEN
-      UPDATE public.shops SET follower_count = follower_count - 1 WHERE id = OLD.target_id;
+      UPDATE public.shops SET follower_count = GREATEST(follower_count - 1, 0) WHERE id = OLD.target_id;
     END IF;
     RETURN OLD;
   END IF;

@@ -26,14 +26,16 @@ Part of #155 (social/follows parent feature).
 
 ### Polymorphic Target Pattern
 
-`target_type` + `target_id` is a polymorphic reference — `target_id` points to either `members.id` or `shops.id` depending on `target_type`. This avoids separate follow tables for each entity type. The same pattern is used by `reports`.
+`target_type` + `target_id` is a polymorphic reference — `target_id` points to either `members.id` or `shops.id` depending on `target_type`. This avoids separate follow tables for each entity type. The same pattern is used by `flags`.
+
+The application layer must validate that `target_id` exists for the given `target_type` before inserting, since there is no FK constraint.
 
 ### Denormalized `follower_count`
 
 Both `members` and `shops` have a `follower_count INTEGER NOT NULL DEFAULT 0` column maintained by the `update_follower_count()` database trigger:
 
 - **INSERT** on `follows` → increments the target's `follower_count`
-- **DELETE** on `follows` → decrements the target's `follower_count`
+- **DELETE** on `follows` → decrements the target's `follower_count` (clamped to 0 via `GREATEST`)
 
 The trigger is `SECURITY DEFINER` to bypass RLS when updating the count.
 
