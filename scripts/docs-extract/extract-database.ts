@@ -96,15 +96,39 @@ interface ParsedTable {
 function parseTables(source: string): ParsedTable[] {
   const tables: ParsedTable[] = [];
 
-  // Find the Tables block
-  const tablesMatch = source.match(/Tables:\s*\{/);
+  // Scope to the `public: { Tables: { ... } }` block only.
+  // database.ts contains multiple schema blocks (graphql_public, public, etc.)
+  // and we only want tables from the public schema.
+  const publicMatch = source.match(/^\s{2}public:\s*\{/m);
+  if (!publicMatch || publicMatch.index === undefined) return tables;
+
+  const publicStart = publicMatch.index;
+
+  // Find the Tables block within the public schema
+  const afterPublic = source.slice(publicStart);
+  const tablesMatch = afterPublic.match(/Tables:\s*\{/);
   if (!tablesMatch || tablesMatch.index === undefined) return tables;
 
-  // Walk through each table definition
+  const tablesBlockStart = publicStart + tablesMatch.index + tablesMatch[0].length;
+
+  // Find the closing brace of the Tables block (balanced braces)
+  let depth = 1;
+  let pos = tablesBlockStart;
+  while (depth > 0 && pos < source.length) {
+    if (source[pos] === '{') depth++;
+    if (source[pos] === '}') depth--;
+    pos++;
+  }
+  const tablesBlockEnd = pos;
+
+  // Walk through each table definition within the scoped block
   const tablePattern = /^      (\w+):\s*\{$/gm;
   let match: RegExpExecArray | null;
 
   while ((match = tablePattern.exec(source)) !== null) {
+    // Skip tables outside the public.Tables block
+    if (match.index < tablesBlockStart || match.index >= tablesBlockEnd) continue;
+
     const tableName = match[1];
     const tableStart = match.index;
 
@@ -116,15 +140,15 @@ function parseTables(source: string): ParsedTable[] {
     const rowStart = tableStart + rowMatch.index + rowMatch[0].length;
 
     // Find the closing brace of Row (matching nesting)
-    let depth = 1;
-    let pos = rowStart;
-    while (depth > 0 && pos < source.length) {
-      if (source[pos] === '{') depth++;
-      if (source[pos] === '}') depth--;
-      pos++;
+    let rowDepth = 1;
+    let rowPos = rowStart;
+    while (rowDepth > 0 && rowPos < source.length) {
+      if (source[rowPos] === '{') rowDepth++;
+      if (source[rowPos] === '}') rowDepth--;
+      rowPos++;
     }
 
-    const rowBody = source.slice(rowStart, pos - 1);
+    const rowBody = source.slice(rowStart, rowPos - 1);
     const fields = parseRowFields(rowBody);
 
     // Find the Relationships block
