@@ -5,21 +5,41 @@ import AppLink from '@/components/controls/app-link';
 import Button from '@/components/controls/button';
 import Pill from '@/components/indicators/pill';
 import DateTimeDisplay from '@/components/indicators/date-time-display';
+import { useToast } from '@/components/indicators/toast/context';
+import { useFollowToggle } from '@/features/follows/hooks/use-follow-toggle';
 import type { FollowingItem } from '@/features/follows/types/follow';
 
 import styles from './following-card.module.scss';
 
 export interface FollowingCardProps {
   item: FollowingItem;
-  onUnfollow: (targetType: FollowingItem['target_type'], targetId: string) => void;
-  isUnfollowing: boolean;
 }
 
-export default function FollowingCard({ item, onUnfollow, isUnfollowing }: FollowingCardProps) {
+export default function FollowingCard({ item }: FollowingCardProps) {
+  const { showToast } = useToast();
   const profileHref =
     item.target_type === 'shop' ? `/shop/${item.target_id}` : `/member/${item.target_id}`;
 
   const typeLabel = item.target_type === 'shop' ? 'Shop' : 'Member';
+
+  const { mutate, isPending } = useFollowToggle({
+    targetType: item.target_type,
+    targetId: item.target_id,
+    onSuccess: () => {
+      showToast({
+        message: 'Unfollowed',
+        description: `You unfollowed ${item.name}.`,
+        type: 'success',
+      });
+    },
+    onError: () => {
+      showToast({
+        message: 'Something went wrong',
+        description: 'Please try again.',
+        type: 'error',
+      });
+    },
+  });
 
   return (
     <div className={styles.card}>
@@ -46,9 +66,9 @@ export default function FollowingCard({ item, onUnfollow, isUnfollowing }: Follo
         <Button
           style="danger"
           outline
-          loading={isUnfollowing}
-          disabled={isUnfollowing}
-          onClick={() => onUnfollow(item.target_type, item.target_id)}
+          loading={isPending}
+          disabled={isPending}
+          onClick={() => mutate(true)}
           ariaLabel={`Unfollow ${item.name}`}
         >
           Unfollow

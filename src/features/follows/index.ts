@@ -16,5 +16,4 @@ export { useFollowing } from '@/features/follows/hooks/use-following';
 
 export { default as FollowButton } from '@/features/follows/components/follow-button';
 
-export type { FollowingCardProps } from '@/features/follows/components/following-card';
 export { default as FollowingCard } from '@/features/follows/components/following-card';

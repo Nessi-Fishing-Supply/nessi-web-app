@@ -5,6 +5,7 @@ import styles from './side-nav.module.scss';
 import {
   HiOutlineHome,
   HiOutlineUserCircle,
+  HiOutlineHeart,
   HiOutlineShoppingBag,
   HiOutlineCog,
   HiOutlinePlusCircle,
@@ -99,6 +100,11 @@ const SideNav = () => {
             <li>
               <AppLink href="/dashboard/account" icon={<HiOutlineUserCircle />}>
                 Account
+              </AppLink>
+            </li>
+            <li>
+              <AppLink href="/dashboard/following" icon={<HiOutlineHeart />}>
+                Following
               </AppLink>
             </li>
             {isSeller && (
