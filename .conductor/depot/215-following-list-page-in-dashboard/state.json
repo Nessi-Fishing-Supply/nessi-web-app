@@ -3,7 +3,7 @@
   "issue": 215,
   "title": "feat(follows): #155.5 — Following list page in dashboard",
   "branch": "feat/215/following-list-page-in-dashboard",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-27T12:00:00Z", "lastActivity": "2026-03-27T12:50:00Z" }
+  "timestamps": {
+    "started": "2026-03-27T12:00:00Z",
+    "lastActivity": "2026-03-27T13:00:00Z",
+    "completedAt": "2026-03-27T13:00:00Z",
+    "pruneAfter": "2026-05-26T13:00:00Z"
+  }
 }
