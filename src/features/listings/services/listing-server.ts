@@ -114,6 +114,56 @@ export async function getActiveListingsServer(): Promise<ListingWithPhotos[]> {
   return (data ?? []) as ListingWithPhotos[];
 }
 
+export async function getFollowedSellerListingsServer(
+  userId: string,
+): Promise<ListingWithPhotos[]> {
+  const supabase = await createClient();
+
+  // Fetch the user's follows
+  const { data: follows, error: followsError } = await supabase
+    .from('follows')
+    .select('target_type, target_id')
+    .eq('follower_id', userId);
+
+  if (followsError) {
+    throw new Error(`Failed to fetch follows: ${followsError.message}`);
+  }
+
+  const memberIds = (follows ?? [])
+    .filter((f) => f.target_type === 'member')
+    .map((f) => f.target_id);
+  const shopIds = (follows ?? []).filter((f) => f.target_type === 'shop').map((f) => f.target_id);
+
+  if (memberIds.length === 0 && shopIds.length === 0) {
+    return [];
+  }
+
+  let query = supabase
+    .from('listings')
+    .select('*, listing_photos(*)')
+    .eq('status', 'active')
+    .is('deleted_at', null);
+
+  if (memberIds.length > 0 && shopIds.length > 0) {
+    query = query.or(`member_id.in.(${memberIds.join(',')}),shop_id.in.(${shopIds.join(',')})`);
+  } else if (memberIds.length > 0) {
+    query = query.in('member_id', memberIds);
+  } else {
+    query = query.in('shop_id', shopIds);
+  }
+
+  const { data, error } = await query
+    .order('published_at', { ascending: false })
+    .limit(20)
+    .order('position', { referencedTable: 'listing_photos', ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to fetch followed seller listings: ${error.message}`);
+  }
+
+  return (data ?? []) as ListingWithPhotos[];
+}
+
 export async function getListingsByIdsServer(ids: string[]): Promise<ListingWithPhotos[]> {
   if (ids.length === 0) return [];
 

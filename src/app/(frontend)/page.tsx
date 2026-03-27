@@ -5,6 +5,7 @@ import { useListings } from '@/features/listings/hooks/use-listings';
 import ListingCard from '@/features/listings/components/listing-card';
 import Grid from '@/components/layout/grid';
 import { RecentlyViewedStrip } from '@/features/recently-viewed';
+import FollowedSellersStrip from '@/features/listings/components/followed-sellers-strip';
 
 export default function Home() {
   const { data, isLoading } = useListings();
@@ -25,6 +26,7 @@ export default function Home() {
           ))}
         </Grid>
       )}
+      <FollowedSellersStrip />
       <RecentlyViewedStrip />
     </main>
   );

@@ -155,34 +155,37 @@ All listing API routes live in `src/app/api/listings/`:
 
 `POST /api/listings/[id]/duplicate` — Authenticated + ownership. Creates a new draft by copying fields from any non-deleted listing (active, sold, archived, or draft). Copies: title, description, category, condition, price_cents, shipping_paid_by, shipping_price_cents, weight_oz, brand, model, quantity, location_city, location_state. Does NOT copy: photos, cover_photo_url, published_at, sold_at, counts, search_vector. Uses `X-Nessi-Context` header for member/shop identity on the new draft. Returns 201 with the new `ListingWithPhotos` (empty photos array).
 
+`GET /api/listings/followed-sellers` — Authenticated. Returns up to 20 recent active listings from members and shops the user follows. Queries the `follows` table to find followed member/shop IDs, then fetches matching active listings ordered by `published_at` descending. Returns `{ listings: ListingWithPhotos[] }` with `AUTH_CACHE_HEADERS`. Returns 401 for unauthenticated requests, `{ listings: [] }` for users with no follows.
+
 `GET /api/listings/recommendations` — Public. Returns up to 12 recommended listings based on context mode. Params: `context` (required: `similar`, `seller`, or `also_liked`). **similar**: requires `listingId`, `category`, `condition` — returns same-category listings with adjacent condition tiers (using `CONDITION_TIERS` ordering). **seller**: requires `sellerId`, optional `shopId` — returns listings from the same seller/shop. **also_liked**: optional `listingIds` (comma-separated), optional `userId` — resolves recently viewed listings from DB when `userId` is provided (auth check: userId must match authenticated user), then returns listings in matching categories. All modes exclude source listing(s), filter `status='active'` + `deleted_at IS NULL`, and join `listing_photos`. Returns `{ listings, context }`.
 
 ## Hooks
 
-| Hook                                 | Query Key                                       | Purpose                                                                                        |
-| ------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `useListings(filters)`               | `['listings', filters]`                         | Paginated listing search with filters                                                          |
-| `useListing(id)`                     | `['listings', id]`                              | Fetch listing by ID with photos                                                                |
-| `useSellerListings(status?)`         | `['listings', 'seller', status]`                | Fetch authenticated user's listings                                                            |
-| `useDrafts()`                        | `['listings', 'drafts']`                        | Fetch user's draft listings                                                                    |
-| `useListingPhotos(listingId)`        | `['listings', listingId, 'photos']`             | Fetch ordered photos for a listing                                                             |
-| `useCreateListing()`                 | mutation, invalidates `['listings']`            | Create a new listing                                                                           |
-| `useCreateDraft()`                   | mutation, invalidates `['listings']`            | Create an empty draft                                                                          |
-| `useDuplicateListing()`              | mutation, invalidates `['listings']`            | Duplicate an existing listing as a new draft (copies all fields except photos)                 |
-| `useUpdateListing()`                 | mutation, invalidates `['listings']`            | Update listing fields                                                                          |
-| `useDeleteListing()`                 | mutation, invalidates `['listings']`            | Soft-delete a listing                                                                          |
-| `useDeleteDraft()`                   | mutation, invalidates `['listings']`            | Hard-delete a draft                                                                            |
-| `useUpdateListingStatus()`           | mutation, invalidates `['listings']`            | Change listing status                                                                          |
-| `useIncrementViewCount()`            | mutation (fire-and-forget)                      | Increment view count                                                                           |
-| `useUploadListingPhoto()`            | mutation, invalidates listing photos key        | Upload photo via `POST /api/listings/upload`                                                   |
-| `useDeleteListingPhoto()`            | mutation, invalidates listing photos key        | Delete photo via `DELETE /api/listings/upload/delete`                                          |
-| `useListingsInfinite(params)`        | `['listings', 'infinite', { category, sort }]`  | Infinite scroll listing feed with cursor-based pagination                                      |
-| `useSearchListingsInfinite(filters)` | `['listings', 'search', filters]`               | Infinite scroll search results with all filter params                                          |
-| `useAutocomplete(query)`             | `['autocomplete', debouncedQuery]`              | Debounced (200ms) autocomplete suggestions, enabled >= 2 chars                                 |
-| `useRecentSearches()`                | — (localStorage-backed, no query key)           | localStorage-backed recent searches (max 5, SSR-safe)                                          |
-| `useTrackSearchSuggestion()`         | mutation (fire-and-forget)                      | Increments search_suggestions popularity counter                                               |
-| `useSearchFilters()`                 | — (URL-based, no query key)                     | Reads/writes all filter state from URL params via `useSearchParams` + `useRouter`              |
-| `useRecommendations(args)`           | `['listings', 'recommendations', context, ...]` | Fetch recommendations by context (similar, seller, also_liked) with per-context enabled guards |
+| Hook                                 | Query Key                                       | Purpose                                                                                                           |
+| ------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `useListings(filters)`               | `['listings', filters]`                         | Paginated listing search with filters                                                                             |
+| `useListing(id)`                     | `['listings', id]`                              | Fetch listing by ID with photos                                                                                   |
+| `useSellerListings(status?)`         | `['listings', 'seller', status]`                | Fetch authenticated user's listings                                                                               |
+| `useDrafts()`                        | `['listings', 'drafts']`                        | Fetch user's draft listings                                                                                       |
+| `useListingPhotos(listingId)`        | `['listings', listingId, 'photos']`             | Fetch ordered photos for a listing                                                                                |
+| `useCreateListing()`                 | mutation, invalidates `['listings']`            | Create a new listing                                                                                              |
+| `useCreateDraft()`                   | mutation, invalidates `['listings']`            | Create an empty draft                                                                                             |
+| `useDuplicateListing()`              | mutation, invalidates `['listings']`            | Duplicate an existing listing as a new draft (copies all fields except photos)                                    |
+| `useUpdateListing()`                 | mutation, invalidates `['listings']`            | Update listing fields                                                                                             |
+| `useDeleteListing()`                 | mutation, invalidates `['listings']`            | Soft-delete a listing                                                                                             |
+| `useDeleteDraft()`                   | mutation, invalidates `['listings']`            | Hard-delete a draft                                                                                               |
+| `useUpdateListingStatus()`           | mutation, invalidates `['listings']`            | Change listing status                                                                                             |
+| `useIncrementViewCount()`            | mutation (fire-and-forget)                      | Increment view count                                                                                              |
+| `useUploadListingPhoto()`            | mutation, invalidates listing photos key        | Upload photo via `POST /api/listings/upload`                                                                      |
+| `useDeleteListingPhoto()`            | mutation, invalidates listing photos key        | Delete photo via `DELETE /api/listings/upload/delete`                                                             |
+| `useListingsInfinite(params)`        | `['listings', 'infinite', { category, sort }]`  | Infinite scroll listing feed with cursor-based pagination                                                         |
+| `useSearchListingsInfinite(filters)` | `['listings', 'search', filters]`               | Infinite scroll search results with all filter params                                                             |
+| `useAutocomplete(query)`             | `['autocomplete', debouncedQuery]`              | Debounced (200ms) autocomplete suggestions, enabled >= 2 chars                                                    |
+| `useRecentSearches()`                | — (localStorage-backed, no query key)           | localStorage-backed recent searches (max 5, SSR-safe)                                                             |
+| `useTrackSearchSuggestion()`         | mutation (fire-and-forget)                      | Increments search_suggestions popularity counter                                                                  |
+| `useSearchFilters()`                 | — (URL-based, no query key)                     | Reads/writes all filter state from URL params via `useSearchParams` + `useRouter`                                 |
+| `useRecommendations(args)`           | `['listings', 'recommendations', context, ...]` | Fetch recommendations by context (similar, seller, also_liked) with per-context enabled guards                    |
+| `useFollowedSellerListings()`        | `['listings', 'followed-sellers']`              | Fetch recent active listings from followed members/shops. Auth-gated (`enabled: isAuthenticated && !authLoading`) |
 
 ## Components
 
@@ -221,6 +224,7 @@ All listing API routes live in `src/app/api/listings/`:
 | `SimilarItemsStrip`     | `components/similar-items-strip/`     | Drop-in strip composing `useRecommendations(similar)` + `ListingScrollStrip`. Returns null on empty. Props: `listingId`, `category`, `condition`.                                                                       |
 | `AlsoLikedStrip`        | `components/also-liked-strip/`        | Drop-in strip composing `useRecommendations(also_liked)` + `ListingScrollStrip`. Client-side filters out `excludeListingIds`. Returns null on empty. Props: `userId`, `excludeListingIds?`.                             |
 | `MoreFromSellerStrip`   | `components/more-from-seller-strip/`  | Drop-in strip composing `useRecommendations(seller)` + `ListingScrollStrip`. Dynamic title `More From {name}` from `SellerIdentity`. Returns null on empty. Props: `sellerId`, `seller`, `shopId?`, `excludeListingId`. |
+| `FollowedSellersStrip`  | `components/followed-sellers-strip/`  | Drop-in strip composing `useFollowedSellerListings` + `ListingScrollStrip`. Title: "From Sellers You Follow". No props (self-contained). Returns null when empty. Auth-gated via hook.                                  |
 
 ## Create Wizard
 

@@ -83,5 +83,8 @@ export const incrementViewCount = async (id: string): Promise<{ success: boolean
 export const getListingsByIds = async (ids: string[]): Promise<ListingWithPhotos[]> =>
   get<ListingWithPhotos[]>(`${BASE_URL}/batch?ids=${ids.join(',')}`);
 
+export const getFollowedSellerListings = async (): Promise<{ listings: ListingWithPhotos[] }> =>
+  get<{ listings: ListingWithPhotos[] }>(`${BASE_URL}/followed-sellers`);
+
 // Re-export Listing type for consumers that only need to import from this module
 export type { Listing, ListingWithPhotos };
