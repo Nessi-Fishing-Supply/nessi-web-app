@@ -5,6 +5,7 @@ import { getShopBySlugServer } from '@/features/shops/services/shop-server';
 import { getListingsByShopServer } from '@/features/listings/services/listing-server';
 import { createClient } from '@/libs/supabase/server';
 import { FlagTrigger } from '@/features/flags';
+import { FollowButton } from '@/features/follows';
 import ListingCard from '@/features/listings/components/listing-card';
 import styles from './shop-page.module.scss';
 
@@ -97,6 +98,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           <p className={styles.handle}>@{shop.slug}</p>
           <p className={styles.shopSince}>Shop since {shopSince}</p>
           {shop.description && <p className={styles.description}>{shop.description}</p>}
+          {!isOwnShop && (
+            <FollowButton
+              targetType="shop"
+              targetId={shop.id}
+              targetName={shop.shop_name}
+              initialFollowerCount={shop.follower_count}
+              size="sm"
+            />
+          )}
         </div>
       </div>
 
@@ -108,6 +118,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <div className={styles.statItem}>
           <span className={styles.statValue}>{shop.review_count ?? 0}</span>
           <span className={styles.statLabel}>Reviews</span>
+        </div>
+        <div className={styles.statItem}>
+          <span className={styles.statValue}>{shop.follower_count ?? 0}</span>
+          <span className={styles.statLabel}>Followers</span>
         </div>
       </section>
 

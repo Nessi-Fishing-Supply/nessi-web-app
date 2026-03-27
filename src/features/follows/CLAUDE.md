@@ -238,6 +238,22 @@ src/app/api/follows/
     └── route.ts                      # GET following list
 ```
 
+## Integrations
+
+FollowButton is rendered on two public profile pages:
+
+| Page           | Path                                        | Hidden When                                   | Props                                                                                                                                            |
+| -------------- | ------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Member profile | `src/app/(frontend)/member/[slug]/page.tsx` | `isOwnProfile` (currentUserId === member.id)  | `targetType="member"`, `targetId={member.id}`, `targetName={formatMemberName(...)}`, `initialFollowerCount={member.follower_count}`, `size="sm"` |
+| Shop page      | `src/app/(frontend)/shop/[slug]/page.tsx`   | `isOwnShop` (currentUserId === shop.owner_id) | `targetType="shop"`, `targetId={shop.id}`, `targetName={shop.shop_name}`, `initialFollowerCount={shop.follower_count}`, `size="sm"`              |
+
+Both pages also display `follower_count` in their stats sections:
+
+- **Member profile** — Followers stat appears for all members (not gated behind `is_seller`). Sellers see Followers alongside Sales, Reviews, and Response Time.
+- **Shop page** — Followers stat appears alongside Sales and Reviews.
+
+The `initialFollowerCount` prop comes from the server-fetched entity (`member.follower_count` or `shop.follower_count`), which is the denormalized count maintained by the `update_follower_count()` database trigger. The client-side `useFollowerCount` hook takes over after hydration for real-time updates.
+
 ## Migration
 
 `supabase/migrations/20260326200000_create_follows.sql`
