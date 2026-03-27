@@ -4,7 +4,7 @@
   "title": "Follow / Unfollow",
   "persona": "buyer",
   "description": "Follow or unfollow members and shops to get updates on their activity.",
-  "relatedIssues": [212, 215],
+  "relatedIssues": [212, 215, 294],
   "flows": [
     {
       "id": "follow",
@@ -304,6 +304,70 @@
             {
               "label": "No",
               "detail": "Empty state: 'You are not following anyone yet'",
+              "goTo": "END"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "homepage-strip",
+      "title": "Browse Listings From Followed Sellers",
+      "trigger": "Authenticated user with at least one follow loads the homepage",
+      "steps": [
+        {
+          "id": "homepage-strip-1",
+          "title": "Load Homepage",
+          "action": "navigate",
+          "layer": "client",
+          "status": "built",
+          "tooltip": "FollowedSellersStrip mounts on the homepage (src/app/(frontend)/page.tsx). useFollowedSellerListings fires query when isAuthenticated && !authLoading. Strip is completely absent for guests — no empty state, no skeleton.",
+          "codeRef": "src/features/listings/components/followed-sellers-strip/index.tsx"
+        },
+        {
+          "id": "homepage-strip-2",
+          "title": "Fetch Followed Listings",
+          "method": "GET",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/listings/followed-sellers",
+          "tooltip": "Queries follows table for followed member/shop IDs, then fetches up to 20 recent active listings ordered by published_at descending. Returns { listings: ListingWithPhotos[] }. Returns { listings: [] } (not 404) when user has no follows.",
+          "codeRef": "src/app/api/listings/followed-sellers/route.ts",
+          "errorCases": [
+            {
+              "condition": "Not authenticated",
+              "result": "Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Server error",
+              "result": "Failed to fetch followed seller listings",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "homepage-strip-3",
+          "title": "Render Listings Strip",
+          "layer": "client",
+          "status": "built",
+          "tooltip": "ListingScrollStrip renders horizontally scrollable listing cards under the title 'From Sellers You Follow'. Component returns null when listings.length === 0 and isLoading is false — strip is invisible when the user follows no one or all followed sellers have no active listings.",
+          "codeRef": "src/features/listings/components/followed-sellers-strip/index.tsx"
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "homepage-strip-2",
+          "condition": "Has followed listings?",
+          "paths": [
+            {
+              "label": "Yes",
+              "detail": "Strip renders with up to 20 listing cards",
+              "goTo": "homepage-strip-3"
+            },
+            {
+              "label": "No",
+              "detail": "Component returns null — strip is hidden",
               "goTo": "END"
             }
           ]
