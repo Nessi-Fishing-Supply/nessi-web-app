@@ -32,8 +32,8 @@
 }
 
 .sm {
-  min-height: 36px;
-  min-width: 36px;
+  min-height: var(--min-touch-target);
+  min-width: var(--min-touch-target);
   padding: var(--spacing-100) var(--spacing-400);
   font-size: var(--font-size-500);
 }

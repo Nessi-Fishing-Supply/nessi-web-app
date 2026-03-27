@@ -31,21 +31,6 @@ export default function FollowButton({
   const { mutate, isPending } = useFollowToggle({
     targetType,
     targetId,
-    onSuccess: () => {
-      if (isFollowing) {
-        showToast({
-          message: 'Unfollowed',
-          description: `You unfollowed ${targetName}.`,
-          type: 'success',
-        });
-      } else {
-        showToast({
-          message: 'Following',
-          description: `You are now following ${targetName}.`,
-          type: 'success',
-        });
-      }
-    },
     onError: () => {
       showToast({
         message: 'Something went wrong',
@@ -64,16 +49,22 @@ export default function FollowButton({
       });
       return;
     }
+    const wasFollowing = isFollowing;
     mutate(isFollowing);
+    if (wasFollowing) {
+      showToast({
+        message: 'Unfollowed',
+        description: `You unfollowed ${targetName}.`,
+        type: 'success',
+      });
+    } else {
+      showToast({
+        message: 'Following',
+        description: `You are now following ${targetName}.`,
+        type: 'success',
+      });
+    }
   }, [isAuthenticated, isFollowing, mutate, showToast, targetName]);
-
-  const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-  }, []);
 
   const isDisabled = isPending || isAuthLoading || isStatusLoading;
 
@@ -101,8 +92,10 @@ export default function FollowButton({
         type="button"
         className={buttonClassName}
         onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsHovered(true)}
+        onBlur={() => setIsHovered(false)}
         disabled={isDisabled}
         aria-pressed={isFollowing}
         aria-label={ariaLabel}
