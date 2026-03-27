@@ -3,7 +3,7 @@
   "issue": 36,
   "title": "Watchlist + price drop alerts",
   "branch": "feat/36/watchlist-price-drop-alerts",
-  "status": "implementing",
+  "status": "complete",
   "phase": {
     "current": 4,
     "total": 4,
@@ -32,30 +32,13 @@
         "4.6"
       ],
       "current": null,
-      "remaining": [
-        "2.1",
-        "2.2",
-        "2.3",
-        "2.4",
-        "2.5",
-        "3.1",
-        "3.2",
-        "3.3",
-        "3.4",
-        "3.5",
-        "4.1",
-        "4.2",
-        "4.3",
-        "4.4",
-        "4.5",
-        "4.6"
-      ]
+      "remaining": []
     }
   },
   "health": {
-    "build": "unknown",
-    "lint": "unknown",
-    "tests": "unknown"
+    "build": "pass",
+    "lint": "pass",
+    "tests": "pass"
   },
   "failureCount": {
     "currentTask": 0

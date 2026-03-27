@@ -1,26 +1,26 @@
 @use '@/styles/mixins/breakpoints' as *;
 
 .page {
-  padding: var(--space-lg) var(--spacing-page-sm);
+  padding: var(--spacing-700) var(--spacing-page-sm);
 
   @include breakpoint(md) {
-    padding: var(--space-xl) var(--spacing-page-md);
+    padding: var(--spacing-800) var(--spacing-page-md);
   }
 
   @include breakpoint(lg) {
-    padding: var(--space-xl) var(--spacing-page-lg);
+    padding: var(--spacing-800) var(--spacing-page-lg);
   }
 }
 
 .heading {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-1000);
   font-weight: 700;
   color: var(--color-neutral-900);
-  margin: 0 0 var(--space-lg);
+  margin: 0 0 var(--spacing-700);
 
   @include breakpoint(md) {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-xl);
+    font-size: var(--font-size-1200);
+    margin-bottom: var(--spacing-800);
   }
 }
 
@@ -35,12 +35,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-300);
   pointer-events: none;
 }
 
 .soldLabel {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-800);
   font-weight: 700;
   color: var(--color-white);
   letter-spacing: 0.05em;
@@ -53,41 +53,41 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--space-3xl) var(--space-base);
-  gap: var(--space-sm);
+  padding: var(--spacing-1100) var(--spacing-400);
+  gap: var(--spacing-300);
 
   @include breakpoint(md) {
-    padding: var(--space-4xl) var(--space-md);
-    gap: var(--space-md);
+    padding: var(--spacing-1200) var(--spacing-600);
+    gap: var(--spacing-500);
   }
 }
 
 .emptyIcon {
-  width: 48px;
-  height: 48px;
+  width: var(--spacing-900);
+  height: var(--spacing-900);
   color: var(--color-neutral-400);
 }
 
 .emptyHeading {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-800);
   font-weight: 600;
   color: var(--color-neutral-800);
   margin: 0;
 
   @include breakpoint(md) {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-1000);
   }
 }
 
 .emptyText {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-600);
   color: var(--color-neutral-600);
   margin: 0;
-  max-width: 360px;
+  max-width: var(--spacing-1200);
 }
 
 .error {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-600);
   color: var(--color-error-500);
-  margin: var(--space-lg) 0 0;
+  margin: var(--spacing-700) 0 0;
 }

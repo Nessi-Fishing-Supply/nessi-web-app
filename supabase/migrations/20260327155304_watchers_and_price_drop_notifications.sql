@@ -52,10 +52,12 @@ CREATE TRIGGER watchers_update_count
   AFTER INSERT OR DELETE ON public.watchers
   FOR EACH ROW EXECUTE FUNCTION public.update_watcher_count();
 
--- 5. Trigger function: detect_price_drop
+-- 5. Trigger function: detect_price_drop (SECURITY DEFINER)
 CREATE OR REPLACE FUNCTION public.detect_price_drop()
 RETURNS trigger
 LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
 AS $$
 BEGIN
   IF NEW.price_cents < OLD.price_cents THEN
