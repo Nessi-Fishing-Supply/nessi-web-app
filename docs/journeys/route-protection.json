@@ -3,7 +3,7 @@
   "domain": "auth",
   "title": "Route Protection (proxy.ts)",
   "persona": "auth",
-  "description": "proxy.ts intercepts every request to enforce auth on /dashboard/* routes, redirect completed onboarding users, and refresh session cookies on public pages.",
+  "description": "proxy.ts intercepts every request to enforce auth on /dashboard/*, /shop/transfer, and /watchlist routes, redirect completed onboarding users, and refresh session cookies on public pages.",
   "relatedIssues": [],
   "flows": [
     {
@@ -38,14 +38,14 @@
           "title": "Verify JWT",
           "layer": "server",
           "status": "built",
-          "tooltip": "getUser() verifies JWT from cookies for /dashboard/* routes"
+          "tooltip": "getUser() verifies JWT from cookies for /dashboard/*, /shop/transfer, and /watchlist routes"
         },
         {
           "id": "redirect-unauthed",
           "title": "Redirect to Home",
           "layer": "server",
           "status": "built",
-          "tooltip": "Redirect unauthenticated users to /"
+          "tooltip": "Redirect unauthenticated users to / when accessing /dashboard/*, /shop/transfer, or /watchlist"
         },
         {
           "id": "check-onboarding",
@@ -87,8 +87,8 @@
               "goTo": "skip-auth"
             },
             {
-              "label": "Dashboard",
-              "detail": "/dashboard/*",
+              "label": "Protected",
+              "detail": "/dashboard/*, /shop/transfer, /watchlist",
               "goTo": "verify-jwt"
             },
             {

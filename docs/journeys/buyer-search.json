@@ -80,6 +80,15 @@
           "tooltip": "Infinite scroll pagination"
         },
         {
+          "id": "watch-from-card",
+          "title": "Watch from Card",
+          "action": "click",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/listings/components/listing-card/index.tsx",
+          "tooltip": "WatchButton overlaid on listing card image. Auth-gated — unauthenticated users are redirected to ?login=true. See member-watchlist.json for the full watch/unwatch flow."
+        },
+        {
           "id": "click-listing",
           "title": "Click Listing Card",
           "action": "click",

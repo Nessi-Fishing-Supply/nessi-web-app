@@ -23,7 +23,7 @@ Package manager is **pnpm** (v10.13.1). Do not use npm or yarn.
 
 ### Routing
 
-Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Router usage. Route protection handled by `proxy.ts` — unauthenticated users are redirected from `/dashboard/*` to `/`.
+Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Router usage. Route protection handled by `proxy.ts` — unauthenticated users are redirected from `/dashboard/*` and `/watchlist` to `/`.
 
 ### Authentication
 
@@ -119,6 +119,7 @@ DELETE /api/auth/delete-account
 - `src/features/listings/` — Listings domain: types, services, hooks, components for the full listing lifecycle — create wizard, edit wizard, photo management, status actions (see its CLAUDE.md)
 - `src/features/addresses/` — Addresses domain: saved shipping addresses with CRUD, 5-cap, default management (see its CLAUDE.md)
 - `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
+- `src/features/watchlist/` — Watchlist domain: watch/unwatch listings, price drop email alerts via Vercel Cron, optimistic UI (see its CLAUDE.md)
 - `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its CLAUDE.md)
 - `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
@@ -180,7 +181,7 @@ SCSS with CSS Modules for component-scoped styles. Global variables in `src/styl
 
 ## Environment Variables
 
-Required in `.env.local` (see `.env.local.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_APP_URL`.
+Required in `.env.local` (see `.env.local.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_APP_URL`, `CRON_SECRET`.
 
 ## Observability
 

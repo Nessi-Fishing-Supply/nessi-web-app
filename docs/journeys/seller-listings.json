@@ -260,6 +260,14 @@
           "tooltip": "Edit, Mark Sold, Archive, Quick Edit Price, Duplicate"
         },
         {
+          "id": "quick-edit-watcher-count",
+          "title": "View Watcher Count",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/listings/components/quick-edit-price/index.tsx",
+          "tooltip": "QuickEditPrice modal displays listings.watcher_count as a demand signal. Denormalized by a DB trigger on the watchers table — no extra fetch needed. See member-watchlist.json for the watcher count trigger."
+        },
+        {
           "id": "duplicate-listing",
           "title": "Duplicate Listing",
           "method": "POST",
