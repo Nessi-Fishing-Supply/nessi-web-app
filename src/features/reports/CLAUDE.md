@@ -80,7 +80,7 @@ There is intentionally **no FK constraint** on `target_id`. The application laye
 Consuming features (listings, members, shops) import from the barrel export:
 
 ```ts
-import { ReportBottomSheet, useReportTarget } from '@/features/reports';
+import { ReportBottomSheet, ReportTrigger, useReportTarget } from '@/features/reports';
 ```
 
 ### ReportBottomSheet
@@ -91,6 +91,19 @@ import { ReportBottomSheet, useReportTarget } from '@/features/reports';
 | onClose    | () => void       | Called when sheet should close |
 | targetType | ReportTargetType | What is being reported         |
 | targetId   | string           | UUID of the target entity      |
+
+### ReportTrigger
+
+Reusable client component that renders a flag button + ReportBottomSheet. Handles auth gating, self-entity hiding, and duplicate pre-check.
+
+| Prop          | Type             | Description                                |
+| ------------- | ---------------- | ------------------------------------------ |
+| currentUserId | string \| null   | Authenticated user ID (null = hidden)      |
+| isOwnEntity   | boolean          | Whether viewing own entity (true = hidden) |
+| targetType    | ReportTargetType | What is being reported                     |
+| targetId      | string           | UUID of the target entity                  |
+
+**Integrated on:** listing detail page, member profile page, shop profile page.
 
 ### useReportTarget
 
@@ -127,7 +140,6 @@ const { openReportSheet, isOpen, close, isDuplicate, isChecking } = useReportTar
 
 ## Future Work
 
-- Integration with listing detail, member profile, and shop pages (add "Report" buttons that use `useReportTarget`)
 - Admin dashboard for reviewing reports (bypasses RLS)
 - Report count badges on listings/members/shops
 - Automated moderation triggers (e.g., auto-hide after N reports)
