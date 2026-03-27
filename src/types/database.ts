@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.4"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       addresses: {
@@ -103,6 +128,71 @@ export type Database = {
           {
             foreignKeyName: "cart_items_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flags: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          reason: Database["public"]["Enums"]["flag_reason"]
+          reporter_id: string
+          status: Database["public"]["Enums"]["flag_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["flag_target_type"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason: Database["public"]["Enums"]["flag_reason"]
+          reporter_id: string
+          status?: Database["public"]["Enums"]["flag_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["flag_target_type"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason?: Database["public"]["Enums"]["flag_reason"]
+          reporter_id?: string
+          status?: Database["public"]["Enums"]["flag_status"]
+          target_id?: string
+          target_type?: Database["public"]["Enums"]["flag_target_type"]
+        }
+        Relationships: []
+      }
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          id: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          id?: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          id?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
             isOneToOne: false
             referencedRelation: "members"
             referencedColumns: ["id"]
@@ -279,6 +369,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           first_name: string
+          follower_count: number
           home_state: string | null
           id: string
           is_seller: boolean
@@ -305,6 +396,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           first_name: string
+          follower_count?: number
           home_state?: string | null
           id: string
           is_seller?: boolean
@@ -331,6 +423,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           first_name?: string
+          follower_count?: number
           home_state?: string | null
           id?: string
           is_seller?: boolean
@@ -387,39 +480,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      flags: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          reason: Database["public"]["Enums"]["flag_reason"]
-          reporter_id: string
-          status: Database["public"]["Enums"]["flag_status"]
-          target_id: string
-          target_type: Database["public"]["Enums"]["flag_target_type"]
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          reason: Database["public"]["Enums"]["flag_reason"]
-          reporter_id: string
-          status?: Database["public"]["Enums"]["flag_status"]
-          target_id: string
-          target_type: Database["public"]["Enums"]["flag_target_type"]
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          reason?: Database["public"]["Enums"]["flag_reason"]
-          reporter_id?: string
-          status?: Database["public"]["Enums"]["flag_status"]
-          target_id?: string
-          target_type?: Database["public"]["Enums"]["flag_target_type"]
-        }
-        Relationships: []
       }
       search_suggestions: {
         Row: {
@@ -653,6 +713,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           description: string | null
+          follower_count: number
           hero_banner_url: string | null
           id: string
           is_stripe_connected: boolean
@@ -676,6 +737,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           description?: string | null
+          follower_count?: number
           hero_banner_url?: string | null
           id?: string
           is_stripe_connected?: boolean
@@ -699,6 +761,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           description?: string | null
+          follower_count?: number
           hero_banner_url?: string | null
           id?: string
           is_stripe_connected?: boolean
@@ -773,6 +836,16 @@ export type Database = {
       }
     }
     Enums: {
+      flag_reason:
+        | "spam"
+        | "prohibited_item"
+        | "counterfeit"
+        | "inappropriate_content"
+        | "off_platform_transaction"
+        | "harassment"
+        | "other"
+      flag_status: "pending" | "reviewed" | "resolved" | "dismissed"
+      flag_target_type: "listing" | "member" | "shop" | "message"
       invite_status: "pending" | "accepted" | "expired" | "revoked"
       listing_category:
         | "rods"
@@ -799,16 +872,6 @@ export type Database = {
         | "sold"
         | "archived"
         | "deleted"
-      flag_reason:
-        | "spam"
-        | "prohibited_item"
-        | "counterfeit"
-        | "inappropriate_content"
-        | "off_platform_transaction"
-        | "harassment"
-        | "other"
-      flag_status: "pending" | "reviewed" | "resolved" | "dismissed"
-      flag_target_type: "listing" | "member" | "shop" | "message"
       shipping_paid_by: "seller" | "buyer" | "split"
     }
     CompositeTypes: {
@@ -935,8 +998,22 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
+      flag_reason: [
+        "spam",
+        "prohibited_item",
+        "counterfeit",
+        "inappropriate_content",
+        "off_platform_transaction",
+        "harassment",
+        "other",
+      ],
+      flag_status: ["pending", "reviewed", "resolved", "dismissed"],
+      flag_target_type: ["listing", "member", "shop", "message"],
       invite_status: ["pending", "accepted", "expired", "revoked"],
       listing_category: [
         "rods",
@@ -966,17 +1043,6 @@ export const Constants = {
         "archived",
         "deleted",
       ],
-      flag_reason: [
-        "spam",
-        "prohibited_item",
-        "counterfeit",
-        "inappropriate_content",
-        "off_platform_transaction",
-        "harassment",
-        "other",
-      ],
-      flag_status: ["pending", "reviewed", "resolved", "dismissed"],
-      flag_target_type: ["listing", "member", "shop", "message"],
       shipping_paid_by: ["seller", "buyer", "split"],
     },
   },
