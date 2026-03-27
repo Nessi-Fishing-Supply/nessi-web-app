@@ -53,16 +53,17 @@ export function useFollowToggle({
       return { previousStatus, previousCount };
     },
     onError: (error, _isCurrentlyFollowing, context) => {
+      // 409/404 means the server is already in the desired state — no rollback needed
+      if (error instanceof FetchError && (error.status === 409 || error.status === 404)) {
+        onSuccess?.();
+        return;
+      }
+
       if (context?.previousStatus !== undefined) {
         queryClient.setQueryData(statusKey, context.previousStatus);
       }
       if (context?.previousCount !== undefined) {
         queryClient.setQueryData(countKey, context.previousCount);
-      }
-
-      if (error instanceof FetchError && (error.status === 409 || error.status === 404)) {
-        onSuccess?.();
-        return;
       }
 
       onError?.(error instanceof Error ? error : new Error('Failed to toggle follow'));
