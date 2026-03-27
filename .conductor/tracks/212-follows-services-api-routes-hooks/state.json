@@ -3,7 +3,7 @@
   "issue": 212,
   "title": "feature scaffold, services, API routes, and hooks",
   "branch": "feat/212/follows-services-api-routes-hooks",
-  "status": "implementing",
+  "status": "complete",
   "phase": {
     "current": 4,
     "total": 4,
@@ -21,13 +21,14 @@
         "3.3",
         "3.4",
         "3.5",
-        "3.6"
+        "3.6",
+        "4.1"
       ],
-      "current": "4.1",
+      "current": null,
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-26T12:35:00Z", "lastActivity": "2026-03-26T13:15:00Z" }
+  "timestamps": { "started": "2026-03-26T12:35:00Z", "lastActivity": "2026-03-26T13:25:00Z" }
 }
