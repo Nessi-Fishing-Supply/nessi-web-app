@@ -1,0 +1,310 @@
+{
+  "slug": "member-follow",
+  "domain": "shopping",
+  "title": "Follow / Unfollow",
+  "persona": "buyer",
+  "description": "Follow or unfollow members and shops to get updates on their activity.",
+  "relatedIssues": [212],
+  "flows": [
+    {
+      "id": "follow",
+      "title": "Follow a Member or Shop",
+      "trigger": "User taps Follow button on a member profile or shop page",
+      "steps": [
+        {
+          "id": "follow-1",
+          "title": "View Profile Page",
+          "action": "navigate",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "User views a member profile or shop page with a Follow button and follower count"
+        },
+        {
+          "id": "follow-2",
+          "title": "Tap Follow Button",
+          "action": "click",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "useFollowToggle fires mutation with isCurrentlyFollowing=false, optimistically sets status to following and increments count cache",
+          "codeRef": "src/features/follows/hooks/use-follow-toggle.ts"
+        },
+        {
+          "id": "follow-3",
+          "title": "Create Follow",
+          "method": "POST",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/follows",
+          "tooltip": "Validates target_type (member|shop), target_id, checks auth, calls createFollowServer. Returns 201 on success.",
+          "codeRef": "src/app/api/follows/route.ts",
+          "errorCases": [
+            {
+              "condition": "Not authenticated",
+              "result": "Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Invalid or missing target_type",
+              "result": "Invalid target_type",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Missing target_id",
+              "result": "target_id is required",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Self-follow (member type)",
+              "result": "Cannot follow yourself",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Already following this target",
+              "result": "Already following",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Server error",
+              "result": "Failed to create follow",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "follow-4",
+          "title": "Insert Follow Row",
+          "layer": "database",
+          "status": "built",
+          "tooltip": "INSERT into follows table. update_follower_count() trigger increments target's follower_count column.",
+          "codeRef": "src/features/follows/services/follow-server.ts"
+        },
+        {
+          "id": "follow-5",
+          "title": "Show Following State",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "Button updates to 'Following' state, follower count increments. onSettled invalidates status, count, and following queries.",
+          "codeRef": "src/features/follows/hooks/use-follow-toggle.ts"
+        }
+      ]
+    },
+    {
+      "id": "unfollow",
+      "title": "Unfollow a Member or Shop",
+      "trigger": "User taps Following button on a member profile or shop page",
+      "steps": [
+        {
+          "id": "unfollow-1",
+          "title": "View Followed Entity",
+          "action": "navigate",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "User views a member or shop they already follow, seeing a 'Following' button"
+        },
+        {
+          "id": "unfollow-2",
+          "title": "Tap Following Button",
+          "action": "click",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "useFollowToggle fires mutation with isCurrentlyFollowing=true, optimistically sets status to not-following and decrements count cache",
+          "codeRef": "src/features/follows/hooks/use-follow-toggle.ts"
+        },
+        {
+          "id": "unfollow-3",
+          "title": "Delete Follow",
+          "method": "DELETE",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/follows",
+          "tooltip": "Reads target_type and target_id from query params (not body). Calls deleteFollowServer, returns 200 on success.",
+          "codeRef": "src/app/api/follows/route.ts",
+          "errorCases": [
+            {
+              "condition": "Not authenticated",
+              "result": "Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Invalid or missing target_type",
+              "result": "Invalid target_type",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Missing target_id",
+              "result": "target_id is required",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Not currently following",
+              "result": "Not following",
+              "httpStatus": 404
+            },
+            {
+              "condition": "Server error",
+              "result": "Failed to delete follow",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "unfollow-4",
+          "title": "Delete Follow Row",
+          "layer": "database",
+          "status": "built",
+          "tooltip": "DELETE from follows table. update_follower_count() trigger decrements target's follower_count (clamped to 0 via GREATEST).",
+          "codeRef": "src/features/follows/services/follow-server.ts"
+        },
+        {
+          "id": "unfollow-5",
+          "title": "Show Follow State",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "Button reverts to 'Follow' state, follower count decrements. onSettled invalidates status, count, and following queries.",
+          "codeRef": "src/features/follows/hooks/use-follow-toggle.ts"
+        }
+      ]
+    },
+    {
+      "id": "check-status",
+      "title": "Check Follow Status",
+      "trigger": "User navigates to a member or shop profile page",
+      "steps": [
+        {
+          "id": "check-status-1",
+          "title": "Navigate to Profile",
+          "action": "navigate",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "useFollowStatus hook fires query on mount with targetType and targetId"
+        },
+        {
+          "id": "check-status-2",
+          "title": "Fetch Follow Status",
+          "method": "GET",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/follows/status",
+          "tooltip": "Returns { is_following: boolean } via getFollowStatusServer using maybeSingle() lookup",
+          "codeRef": "src/app/api/follows/status/route.ts",
+          "errorCases": [
+            {
+              "condition": "Not authenticated",
+              "result": "Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Missing target_type or target_id",
+              "result": "target_type and target_id are required",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Invalid target_type",
+              "result": "Invalid target_type",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Server error",
+              "result": "Failed to check follow status",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "check-status-3",
+          "title": "Render Button State",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "Follow button renders as 'Follow' or 'Following' based on is_following response",
+          "codeRef": "src/features/follows/hooks/use-follow-status.ts"
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "check-status-2",
+          "condition": "Is following?",
+          "paths": [
+            {
+              "label": "Yes",
+              "detail": "Button shows 'Following' state",
+              "goTo": "check-status-3"
+            },
+            {
+              "label": "No",
+              "detail": "Button shows 'Follow' state",
+              "goTo": "check-status-3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "view-following",
+      "title": "View Following List",
+      "trigger": "User navigates to their following list page",
+      "steps": [
+        {
+          "id": "view-following-1",
+          "title": "Open Following Page",
+          "action": "navigate",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "useFollowing hook fires query on mount, optional targetType filter for member-only or shop-only views"
+        },
+        {
+          "id": "view-following-2",
+          "title": "Fetch Following List",
+          "method": "GET",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/follows/following",
+          "tooltip": "Returns FollowingItem[] with name and avatar_url resolved via batch queries on members and shops tables. Optional target_type filter.",
+          "codeRef": "src/app/api/follows/following/route.ts",
+          "errorCases": [
+            {
+              "condition": "Not authenticated",
+              "result": "Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Invalid target_type filter",
+              "result": "Invalid target_type",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Server error",
+              "result": "Failed to fetch following",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "view-following-3",
+          "title": "Render Following List",
+          "layer": "client",
+          "status": "planned",
+          "tooltip": "Display list of followed members and shops with names, avatars, and unfollow actions",
+          "codeRef": "src/features/follows/hooks/use-following.ts"
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "view-following-2",
+          "condition": "Has followed entities?",
+          "paths": [
+            {
+              "label": "Yes",
+              "detail": "Render list of followed members/shops",
+              "goTo": "view-following-3"
+            },
+            {
+              "label": "No",
+              "detail": "Empty state: 'You are not following anyone yet'",
+              "goTo": "END"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
