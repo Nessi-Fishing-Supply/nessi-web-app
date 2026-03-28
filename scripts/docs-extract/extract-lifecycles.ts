@@ -16,6 +16,21 @@ const ROOT = join(__dir, '..', '..');
  * These capture the real business rules that can't be inferred from labels alone.
  */
 const KNOWN_TRANSITIONS: Record<string, LifecycleTransition[]> = {
+  member: [
+    { from: 'onboarding', to: 'active', label: 'Complete onboarding' },
+    { from: 'active', to: 'suspended', label: 'Suspend account' },
+    { from: 'suspended', to: 'active', label: 'Reinstate account' },
+    { from: 'active', to: 'deleted', label: 'Delete account' },
+    { from: 'suspended', to: 'deleted', label: 'Delete account' },
+  ],
+  shop: [
+    { from: 'active', to: 'suspended', label: 'Suspend shop' },
+    { from: 'suspended', to: 'active', label: 'Reinstate shop' },
+    { from: 'active', to: 'archived', label: 'Archive shop' },
+    { from: 'archived', to: 'active', label: 'Reactivate shop' },
+    { from: 'suspended', to: 'deleted', label: 'Delete shop' },
+    { from: 'archived', to: 'deleted', label: 'Delete shop' },
+  ],
   listing: [
     { from: 'draft', to: 'active', label: 'Publish' },
     { from: 'active', to: 'sold', label: 'Mark as sold' },
@@ -30,6 +45,12 @@ const KNOWN_TRANSITIONS: Record<string, LifecycleTransition[]> = {
     { from: 'pending', to: 'accepted', label: 'Accept invite' },
     { from: 'pending', to: 'expired', label: 'Expire' },
     { from: 'pending', to: 'revoked', label: 'Revoke' },
+  ],
+  flag: [
+    { from: 'pending', to: 'reviewed', label: 'Begin review' },
+    { from: 'reviewed', to: 'resolved', label: 'Resolve flag' },
+    { from: 'reviewed', to: 'dismissed', label: 'Dismiss flag' },
+    { from: 'pending', to: 'dismissed', label: 'Dismiss flag' },
   ],
   // slug derived from table name shop_ownership_transfers -> ownership_transfers
   ownership_transfers: [
@@ -182,6 +203,30 @@ function collectStatusLabelMaps(): Map<string, Map<string, string>> {
 }
 
 /**
+ * Parse `ALTER TYPE {old} RENAME TO {new}` from SQL content.
+ * Returns a map of old_name -> new_name for status types.
+ */
+function parseTypeRenames(
+  migrations: Array<{ content: string }>,
+): Map<string, string> {
+  const renames = new Map<string, string>();
+  const renameRegex =
+    /ALTER\s+TYPE\s+(?:public\.)?(\w+)\s+RENAME\s+TO\s+(\w+)/gi;
+
+  for (const { content } of migrations) {
+    let match: RegExpExecArray | null;
+    while ((match = renameRegex.exec(content)) !== null) {
+      const oldName = match[1].toLowerCase();
+      const newName = match[2].toLowerCase();
+      if (oldName.includes('status') || newName.includes('status')) {
+        renames.set(oldName, newName);
+      }
+    }
+  }
+  return renames;
+}
+
+/**
  * Derive lifecycle slug from an enum name or column name.
  * e.g. listing_status -> listing, invite_status -> invite
  */
@@ -217,6 +262,7 @@ function buildStates(
 export function extractLifecycles(): Lifecycle[] {
   const migrations = readMigrationFiles();
   const labelMaps = collectStatusLabelMaps();
+  const typeRenames = parseTypeRenames(migrations);
 
   const seen = new Set<string>();
   const lifecycles: Lifecycle[] = [];
@@ -224,7 +270,9 @@ export function extractLifecycles(): Lifecycle[] {
   // Pass 1: ENUM types from migrations
   for (const { content } of migrations) {
     for (const { enumName, values } of parseEnumTypes(content)) {
-      const slug = deriveSlug(enumName);
+      // Apply rename if this enum was later renamed (e.g. report_status -> flag_status)
+      const resolvedName = typeRenames.get(enumName) ?? enumName;
+      const slug = deriveSlug(resolvedName);
       if (seen.has(slug)) continue;
       seen.add(slug);
 
