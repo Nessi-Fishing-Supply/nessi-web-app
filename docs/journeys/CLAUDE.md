@@ -144,16 +144,16 @@ Update journey files when code changes:
 
 ### File ↔ Code Mapping
 
-| Changed code path                                                 | Affected journey files                                                                                                     |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/api/auth/` or `src/features/auth/`                       | `signup.json`, `login.json`, `password-reset.json`, `email-change.json`, `logout.json`                                     |
-| `src/app/api/listings/` or `src/features/listings/`               | `seller-listings.json`, `browse-and-search.json`                                                                           |
-| `src/app/api/cart/` or `src/features/cart/`                       | `cart.json`                                                                                                                |
-| `src/app/api/shops/` or `src/features/shops/`                     | `shop-create.json`, `shop-settings.json`, `shop-members.json`, `shop-ownership-transfer.json`, `shop-roles.json`           |
-| `src/features/context/`                                           | `context-switching.json`                                                                                                   |
-| `src/features/members/`                                           | `account-settings.json`, `onboarding.json`                                                                                 |
-| `src/app/api/recently-viewed/` or `src/features/recently-viewed/` | `recently-viewed.json`                                                                                                     |
-| `src/app/api/addresses/` or `src/features/addresses/`             | `buyer-addresses.json`                                                                                                     |
-| `src/app/api/flags/` or `src/features/flags/`                     | `browse-and-search.json`                                                                                                   |
-| `src/proxy.ts`                                                    | `route-protection.json`                                                                                                    |
-| `src/features/email/`                                             | Any journey with `"layer": "email"` steps                                                                                  |
+| Changed code path                                                 | Affected journey files                                                                                           |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `src/app/api/auth/` or `src/features/auth/`                       | `signup.json`, `login.json`, `password-reset.json`, `email-change.json`, `logout.json`                           |
+| `src/app/api/listings/` or `src/features/listings/`               | `seller-listings.json`, `browse-and-search.json`                                                                 |
+| `src/app/api/cart/` or `src/features/cart/`                       | `cart.json`                                                                                                      |
+| `src/app/api/shops/` or `src/features/shops/`                     | `shop-create.json`, `shop-settings.json`, `shop-members.json`, `shop-ownership-transfer.json`, `shop-roles.json` |
+| `src/features/context/`                                           | `context-switching.json`                                                                                         |
+| `src/features/members/`                                           | `account-settings.json`, `onboarding.json`                                                                       |
+| `src/app/api/recently-viewed/` or `src/features/recently-viewed/` | `recently-viewed.json`                                                                                           |
+| `src/app/api/addresses/` or `src/features/addresses/`             | `buyer-addresses.json`                                                                                           |
+| `src/app/api/flags/` or `src/features/flags/`                     | `browse-and-search.json`                                                                                         |
+| `src/proxy.ts`                                                    | `route-protection.json`                                                                                          |
+| `src/features/email/`                                             | Any journey with `"layer": "email"` steps                                                                        |
