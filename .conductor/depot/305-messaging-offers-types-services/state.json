@@ -3,7 +3,7 @@
   "issue": 305,
   "title": "Messaging — Feature scaffold for offers types and services",
   "branch": "feat/305/messaging-offers-types-services",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-30T19:00:00Z", "lastActivity": "2026-03-30T19:20:00Z" }
+  "timestamps": {
+    "started": "2026-03-30T19:00:00Z",
+    "lastActivity": "2026-03-30T19:25:00Z"
+  },
+  "completedAt": "2026-03-30T19:25:00Z",
+  "pruneAfter": "2026-05-29T19:25:00Z"
 }
