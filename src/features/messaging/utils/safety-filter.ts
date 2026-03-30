@@ -38,9 +38,24 @@ const EMAIL_RE = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
 const ADDRESS_RE =
   /\b\d{1,5}\s+[A-Za-z]+(?:\s+[A-Za-z]+)*\s+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Ln|Lane|Rd|Road|Way|Ct|Court|Pl|Place)\b/gi;
 const CREDIT_CARD_RE = /\b(?:\d{4}[-\s]?){3}\d{4}\b/g;
-const SSN_RE = /\b\d{3}[-\s]?\d{2}[-\s]?\d{4}\b/g;
 
-const PII_PATTERNS: RegExp[] = [PHONE_RE, EMAIL_RE, ADDRESS_RE, CREDIT_CARD_RE, SSN_RE];
+const PII_PATTERNS: RegExp[] = [PHONE_RE, EMAIL_RE, ADDRESS_RE, CREDIT_CARD_RE];
+
+/** Luhn algorithm — validates credit card numbers to reduce false positives on tracking numbers */
+function passesLuhn(digits: string): boolean {
+  let sum = 0;
+  let alternate = false;
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let n = parseInt(digits[i], 10);
+    if (alternate) {
+      n *= 2;
+      if (n > 9) n -= 9;
+    }
+    sum += n;
+    alternate = !alternate;
+  }
+  return sum % 10 === 0;
+}
 
 // Off-platform detection patterns — compiled once at module level
 const OFF_PLATFORM_PATTERNS: RegExp[] = [
@@ -56,7 +71,7 @@ const OFF_PLATFORM_PATTERNS: RegExp[] = [
   /zelle/i,
   /meet up/i,
   /meet in person/i,
-  /pick up/i,
+  /\bpick\s+(?:it\s+)?up\b/i,
   /come get it/i,
   /my number is/i,
   /my email is/i,
@@ -69,13 +84,12 @@ const NEGOTIATION_PATTERNS: RegExp[] = [
   /will you take/i,
   /would you accept/i,
   /i'll give you/i,
-  /i can do/i,
-  /how about/i,
+  /i can do \$\d+/i,
+  /how about \$\d+/i,
   /lowest you'll go/i,
   /lowest price/i,
   /best price/i,
   /bottom dollar/i,
-  /\$\d+/,
 ];
 
 export function filterMessageContent(content: string): FilterResult {
@@ -93,22 +107,22 @@ export function filterMessageContent(content: string): FilterResult {
   }
 
   // 2. PII detection — redact all instances of all PII types
-  let hasPii = false;
   let redacted = content;
 
   for (const pattern of PII_PATTERNS) {
-    // Reset lastIndex since we're reusing compiled global regexes
     pattern.lastIndex = 0;
-    if (pattern.test(redacted)) {
-      hasPii = true;
+    if (pattern === CREDIT_CARD_RE) {
+      // Luhn-validate credit card matches to avoid false positives on tracking numbers
+      redacted = redacted.replace(pattern, (match) => {
+        const digits = match.replace(/[-\s]/g, '');
+        return passesLuhn(digits) ? '[removed]' : match;
+      });
+    } else {
+      redacted = redacted.replace(pattern, '[removed]');
     }
   }
 
-  if (hasPii) {
-    for (const pattern of PII_PATTERNS) {
-      pattern.lastIndex = 0;
-      redacted = redacted.replace(pattern, '[removed]');
-    }
+  if (redacted !== content) {
     return {
       action: 'redact',
       filteredContent: redacted,

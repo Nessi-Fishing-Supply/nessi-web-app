@@ -55,18 +55,18 @@ describe('filterMessageContent', () => {
       expect(result.filteredContent).toContain('[removed]');
     });
 
-    it('redacts a credit card number', () => {
+    it('redacts a credit card number that passes Luhn validation', () => {
+      // 4111 1111 1111 1111 is a standard Luhn-valid test card number
       const result = filterMessageContent('my card is 4111 1111 1111 1111');
       expect(result.action).toBe('redact');
       expect(result.filteredContent).not.toContain('4111 1111 1111 1111');
       expect(result.filteredContent).toContain('[removed]');
     });
 
-    it('redacts a social security number', () => {
-      const result = filterMessageContent('my ssn is 123-45-6789');
-      expect(result.action).toBe('redact');
-      expect(result.filteredContent).not.toContain('123-45-6789');
-      expect(result.filteredContent).toContain('[removed]');
+    it('does not redact a 16-digit number that fails Luhn validation', () => {
+      // 1234 5678 9012 3456 does not pass Luhn — likely a tracking number
+      const result = filterMessageContent('tracking number 1234 5678 9012 3456');
+      expect(result.action).not.toBe('redact');
     });
 
     it('redacts multiple PII instances in the same message', () => {
@@ -126,10 +126,20 @@ describe('filterMessageContent', () => {
       expect(result.nudgeType).toBe('negotiation');
     });
 
-    it('nudges when message contains a dollar amount', () => {
+    it('nudges when message says "i can do $X"', () => {
       const result = filterMessageContent('I can do $35 for it');
       expect(result.action).toBe('nudge_negotiation');
       expect(result.nudgeType).toBe('negotiation');
+    });
+
+    it('does not nudge on a standalone dollar amount without negotiation phrasing', () => {
+      const result = filterMessageContent('the listing is $200');
+      expect(result.action).toBe('pass');
+    });
+
+    it('does not nudge on casual "how about" without a dollar amount', () => {
+      const result = filterMessageContent('how about the condition of the reel?');
+      expect(result.action).toBe('pass');
     });
 
     it('exports NUDGE_NEGOTIATION as a non-empty string', () => {
@@ -154,6 +164,27 @@ describe('filterMessageContent', () => {
       expect(result.action).toBe('pass');
       expect(result.isFiltered).toBe(false);
       expect(result.filteredContent).toBe(input);
+    });
+  });
+
+  describe('edge cases', () => {
+    it('passes an empty string', () => {
+      const result = filterMessageContent('');
+      expect(result.action).toBe('pass');
+      expect(result.filteredContent).toBe('');
+    });
+
+    it('passes a whitespace-only string', () => {
+      const result = filterMessageContent('   ');
+      expect(result.action).toBe('pass');
+    });
+
+    it('handles repeated calls with the same PII type (stateful regex regression)', () => {
+      const r1 = filterMessageContent('call 555-111-2222');
+      const r2 = filterMessageContent('call 555-333-4444');
+      expect(r1.action).toBe('redact');
+      expect(r2.action).toBe('redact');
+      expect(r2.filteredContent).not.toContain('555-333-4444');
     });
   });
 

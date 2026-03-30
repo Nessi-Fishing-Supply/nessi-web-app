@@ -3,7 +3,7 @@
   "issue": 306,
   "title": "Messaging — Text safety filter utility",
   "branch": "feat/306/messaging-text-safety-filter",
-  "status": "reviewing",
+  "status": "complete",
   "phase": {
     "current": 2,
     "total": 2,
@@ -15,5 +15,5 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-30T12:00:00Z", "lastActivity": "2026-03-30T12:06:00Z" }
+  "timestamps": { "started": "2026-03-30T12:00:00Z", "lastActivity": "2026-03-30T12:10:00Z" }
 }
