@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 305,
+  "title": "Messaging — Feature scaffold for offers types and services",
+  "branch": "feat/305/messaging-offers-types-services",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 3,
+    "tasks": {
+      "completed": [],
+      "current": "1.1",
+      "remaining": ["1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "2.4", "3.1", "3.2"]
+    }
+  },
+  "health": { "build": "unknown", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-30T19:00:00Z", "lastActivity": "2026-03-30T19:02:00Z" }
+}

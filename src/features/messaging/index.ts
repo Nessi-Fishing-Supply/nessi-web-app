@@ -15,6 +15,15 @@ export type {
   MessageWithSender,
 } from '@/features/messaging/types/message';
 
+export type {
+  Offer,
+  OfferInsert,
+  OfferStatus,
+  OfferWithDetails,
+  CreateOfferParams,
+  CounterOfferParams,
+} from '@/features/messaging/types/offer';
+
 export {
   getThreads,
   getThread,
