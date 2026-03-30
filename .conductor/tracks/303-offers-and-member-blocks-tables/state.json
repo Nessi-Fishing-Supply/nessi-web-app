@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 303,
+  "title": "Messaging — Database migration for offers and member_blocks tables",
+  "branch": "feat/303/offers-and-member-blocks-tables",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 2,
+    "tasks": {
+      "completed": ["1.1"],
+      "current": null,
+      "remaining": ["2.1", "2.2"]
+    }
+  },
+  "health": { "build": "unknown", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-30T13:00:00Z", "lastActivity": "2026-03-30T13:06:00Z" }
+}
