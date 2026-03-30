@@ -81,6 +81,12 @@ export async function POST(req: Request) {
           { status: 403, headers: AUTH_CACHE_HEADERS },
         );
       }
+      if (error.message === 'Seller has blocked you') {
+        return NextResponse.json(
+          { error: 'You cannot purchase this listing' },
+          { status: 403, headers: AUTH_CACHE_HEADERS },
+        );
+      }
       if (error.message === 'Cart is full (maximum 25 items)') {
         return NextResponse.json(
           { error: error.message },

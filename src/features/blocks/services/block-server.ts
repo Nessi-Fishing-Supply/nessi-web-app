@@ -1,6 +1,26 @@
 import { createClient } from '@/libs/supabase/server';
 import type { BlockedMemberItem } from '@/features/blocks/types/block';
 
+export async function isBlockedByServer(
+  viewerId: string | null,
+  ownerId: string,
+): Promise<boolean> {
+  if (!viewerId || viewerId === ownerId) {
+    return false;
+  }
+
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from('member_blocks')
+    .select('id')
+    .eq('blocker_id', ownerId)
+    .eq('blocked_id', viewerId)
+    .maybeSingle();
+
+  return data !== null;
+}
+
 export async function getBlockedMembersServer(blockerId: string): Promise<BlockedMemberItem[]> {
   const supabase = await createClient();
 

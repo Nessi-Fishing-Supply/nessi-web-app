@@ -5,6 +5,7 @@ import { getMemberBySlugServer } from '@/features/members/services/member-server
 import { formatMemberName, getMemberInitials } from '@/features/members/utils/format-name';
 import { getListingsByMemberServer } from '@/features/listings/services/listing-server';
 import { createClient } from '@/libs/supabase/server';
+import { isBlockedByServer } from '@/features/blocks';
 import { FlagTrigger } from '@/features/flags';
 import { FollowButton } from '@/features/follows';
 import ListingCard from '@/features/listings/components/listing-card';
@@ -20,6 +21,16 @@ export async function generateMetadata({
   const member = await getMemberBySlugServer(slug);
 
   if (!member) {
+    return { title: 'Member Not Found' };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const blocked = await isBlockedByServer(user?.id ?? null, member.id);
+
+  if (blocked) {
     return { title: 'Member Not Found' };
   }
 
@@ -52,6 +63,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     data: { user },
   } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
+
+  const blocked = await isBlockedByServer(currentUserId, member.id);
+  if (blocked) {
+    notFound();
+  }
+
   const isOwnProfile = currentUserId === member.id;
 
   const listings = member.is_seller ? await getListingsByMemberServer(member.id) : [];

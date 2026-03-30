@@ -6,6 +6,7 @@ import type {
   GuestCartItem,
 } from '@/features/cart/types/cart';
 import type { SellerIdentity } from '@/features/listings/types/listing';
+import { isBlockedByServer } from '@/features/blocks';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_CART_SIZE = 25;
@@ -160,12 +161,18 @@ export async function addToCartServer(
     throw new Error('Listing not found or no longer active');
   }
 
-  // 2. Cannot add own member listing (shop listings are purchasable by the shop owner)
+  // 2. Check if seller has blocked the buyer
+  const blocked = await isBlockedByServer(userId, listing.seller_id);
+  if (blocked) {
+    throw new Error('Seller has blocked you');
+  }
+
+  // 3. Cannot add own member listing (shop listings are purchasable by the shop owner)
   if (listing.seller_id === userId && !listing.shop_id) {
     throw new Error('Cannot add your own listing to cart');
   }
 
-  // 3. Check for duplicate (better error than DB unique constraint)
+  // 4. Check for duplicate (better error than DB unique constraint)
   const { data: existing } = await supabase
     .from('cart_items')
     .select('id')
@@ -177,13 +184,13 @@ export async function addToCartServer(
     throw new Error('Item already in cart');
   }
 
-  // 4. Cart size cap
+  // 5. Cart size cap
   const currentCount = await getCartCountServer(userId);
   if (currentCount >= MAX_CART_SIZE) {
     throw new Error('Cart is full (maximum 25 items)');
   }
 
-  // 5. Insert with price snapshotted from DB (ignore client-provided price)
+  // 6. Insert with price snapshotted from DB (ignore client-provided price)
   const { data: inserted, error: insertError } = await supabase
     .from('cart_items')
     .insert({
@@ -256,11 +263,35 @@ export async function validateCartServer(userId: string): Promise<CartValidation
     priceChanged: [],
   };
 
+  // Batch block check — single query for all unique seller IDs
+  const sellerIds = [
+    ...new Set(items.map((i) => i.listing?.seller_id).filter(Boolean) as string[]),
+  ];
+  const blockedSellerIds = new Set<string>();
+
+  if (sellerIds.length > 0) {
+    const supabase = await createClient();
+    const { data: blocks } = await supabase
+      .from('member_blocks')
+      .select('blocker_id')
+      .in('blocker_id', sellerIds)
+      .eq('blocked_id', userId);
+
+    for (const block of blocks ?? []) {
+      blockedSellerIds.add(block.blocker_id);
+    }
+  }
+
   for (const item of items) {
     const { listing } = item;
 
     if (!listing) {
       result.removed.push({ item, reason: 'deleted' });
+      continue;
+    }
+
+    if (blockedSellerIds.has(listing.seller_id)) {
+      result.removed.push({ item, reason: 'blocked' });
       continue;
     }
 

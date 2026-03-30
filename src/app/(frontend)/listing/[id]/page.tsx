@@ -3,6 +3,7 @@ import { getListingWithSellerServer } from '@/features/listings/services/listing
 import { formatPrice } from '@/features/shared/utils/format';
 import { CONDITION_TIERS } from '@/features/listings/constants/condition';
 import { createClient } from '@/libs/supabase/server';
+import { isBlockedByServer } from '@/features/blocks';
 import ListingDetail from './listing-detail';
 import type { Metadata } from 'next';
 
@@ -15,6 +16,16 @@ export async function generateMetadata({
   const listing = await getListingWithSellerServer(id);
 
   if (!listing) {
+    return { title: 'Listing Not Found' };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const blocked = await isBlockedByServer(user?.id ?? null, listing.seller_id);
+
+  if (blocked) {
     return { title: 'Listing Not Found' };
   }
 
@@ -53,6 +64,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     data: { user },
   } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
+
+  const blocked = await isBlockedByServer(currentUserId, listing.seller_id);
+  if (blocked) {
+    notFound();
+  }
 
   const { seller, ...listingData } = listing;
 
