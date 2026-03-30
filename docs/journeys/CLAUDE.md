@@ -47,18 +47,20 @@ Flows should capture every user-facing touchpoint — moments where the system c
 - **State changes** — badge updates, button state changes, loading states
 - **Future: SMS, push notifications, notification center alerts**
 
-### Aspirational Enhancements
+### Architectural Context (Status Field)
 
-Journey files should include **planned improvements** with `"status": "planned"`. These capture opportunities we've identified but haven't built yet:
+Journey step nodes use `"status"` to indicate whether a code path exists in production:
+
+- `"built"` (default) — this step exists in production code
+- `"planned"` — this step does not exist yet but represents where it would fit architecturally
+- `"tested"` — this step exists and has test coverage
+
+This is **not progress tracking** — it's architectural context. A `"planned"` node on a canvas shows "this code path doesn't exist yet, here's where it would go." Use `"notes"` to explain the purpose of planned nodes:
 
 - Missing error handling (what happens if X fails silently?)
 - Missing user feedback (should there be a toast here?)
-- Missing views/renders (should we show a confirmation before this action?)
-- Missing data handling (should we cache this? validate that?)
 - Missing touchpoints (should the seller get an email when their item sells?)
 - Missing edge cases (what if the user has no payment method?)
-
-Mark these as `"status": "planned"` with descriptive `"notes"` explaining the improvement opportunity.
 
 ### Branches & Connections
 

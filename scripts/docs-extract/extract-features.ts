@@ -68,34 +68,6 @@ function countApiRoutes(slug: string): number {
 }
 
 /**
- * Detect feature status from CLAUDE.md content and directory structure.
- *
- * Priority:
- *   1. Explicit `status: planned|in-progress|stubbed` in CLAUDE.md
- *   2. TODO/WIP markers in CLAUDE.md → 'in-progress'
- *   3. No components/ AND no services/ dirs → 'planned'
- *   4. Otherwise → 'built'
- */
-function detectStatus(slug: string, claudeContent: string | null): string {
-  if (claudeContent) {
-    // 1. Explicit status declaration
-    const statusMatch = claudeContent.match(/\bstatus:\s*(planned|in-progress|stubbed)\b/i);
-    if (statusMatch) return statusMatch[1].toLowerCase();
-
-    // 2. TODO/WIP markers
-    if (/\b(TODO|WIP)\b/.test(claudeContent)) return 'in-progress';
-  }
-
-  // 3. No components/ and no services/ → planned
-  const hasComponents = existsSync(root('src', 'features', slug, 'components'));
-  const hasServices = existsSync(root('src', 'features', slug, 'services'));
-  if (!hasComponents && !hasServices) return 'planned';
-
-  // 4. Default
-  return 'built';
-}
-
-/**
  * Extract unique Supabase table names referenced in a feature's source files.
  * Matches patterns like .from('table_name') or .from("table_name").
  */
@@ -196,7 +168,6 @@ export function extractFeatures(): Feature[] {
     const serviceCount = countFiles(slug, 'services', /\.ts$/);
     const endpointCount = countApiRoutes(slug);
 
-    const status = detectStatus(slug, claudeContent);
     const entities = extractEntities(slug);
     const journeySlugs = Array.from(journeyRefs.get(slug) ?? []).sort();
 
@@ -219,7 +190,6 @@ export function extractFeatures(): Feature[] {
       slug,
       name,
       description,
-      status,
       componentCount,
       endpointCount,
       hookCount,

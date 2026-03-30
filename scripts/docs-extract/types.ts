@@ -84,7 +84,6 @@ export interface Feature {
   slug: string;
   name: string;
   description: string;
-  status: string;
   componentCount: number;
   endpointCount: number;
   hookCount: number;
