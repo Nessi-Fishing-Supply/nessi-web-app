@@ -11,12 +11,16 @@ export async function isBlockedByServer(
 
   const supabase = await createClient();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('member_blocks')
     .select('id')
     .eq('blocker_id', ownerId)
     .eq('blocked_id', viewerId)
     .maybeSingle();
+
+  if (error) {
+    console.error('[isBlockedByServer] query failed:', error.message);
+  }
 
   return data !== null;
 }

@@ -271,11 +271,15 @@ export async function validateCartServer(userId: string): Promise<CartValidation
 
   if (sellerIds.length > 0) {
     const supabase = await createClient();
-    const { data: blocks } = await supabase
+    const { data: blocks, error: blocksError } = await supabase
       .from('member_blocks')
       .select('blocker_id')
       .in('blocker_id', sellerIds)
       .eq('blocked_id', userId);
+
+    if (blocksError) {
+      console.error('[validateCartServer] block check failed:', blocksError.message);
+    }
 
     for (const block of blocks ?? []) {
       blockedSellerIds.add(block.blocker_id);
