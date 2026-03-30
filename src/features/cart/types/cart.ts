@@ -43,7 +43,7 @@ export type CartValidationResult = {
   valid: CartItemWithListing[];
   removed: {
     item: CartItemWithListing;
-    reason: 'sold' | 'deleted' | 'expired' | 'deactivated';
+    reason: 'sold' | 'deleted' | 'expired' | 'deactivated' | 'blocked';
   }[];
   priceChanged: {
     item: CartItemWithListing;

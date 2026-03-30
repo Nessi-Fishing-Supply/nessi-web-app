@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { getShopBySlugServer } from '@/features/shops/services/shop-server';
 import { getListingsByShopServer } from '@/features/listings/services/listing-server';
 import { createClient } from '@/libs/supabase/server';
+import { isBlockedByServer } from '@/features/blocks';
 import { FlagTrigger } from '@/features/flags';
 import { FollowButton } from '@/features/follows';
 import ListingCard from '@/features/listings/components/listing-card';
@@ -18,6 +19,16 @@ export async function generateMetadata({
   const shop = await getShopBySlugServer(slug);
 
   if (!shop) {
+    return { title: 'Shop Not Found' };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const blocked = await isBlockedByServer(user?.id ?? null, shop.owner_id);
+
+  if (blocked) {
     return { title: 'Shop Not Found' };
   }
 
@@ -51,6 +62,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     data: { user },
   } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
+
+  const blocked = await isBlockedByServer(currentUserId, shop.owner_id);
+  if (blocked) {
+    notFound();
+  }
+
   const isOwnShop = currentUserId === shop.owner_id;
 
   const listings = await getListingsByShopServer(shop.id);
