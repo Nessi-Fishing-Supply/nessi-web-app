@@ -15,7 +15,7 @@ The safety filter (`utils/safety-filter.ts`) intercepts outgoing message content
 | Column                 | Type        | Constraints                                         |
 | ---------------------- | ----------- | --------------------------------------------------- |
 | `id`                   | UUID        | PK, `gen_random_uuid()`                             |
-| `thread_type`          | ENUM        | NOT NULL — `thread_type` enum                       |
+| `type`                 | ENUM        | NOT NULL — `thread_type` enum                       |
 | `status`               | ENUM        | NOT NULL, DEFAULT `'active'` — `thread_status` enum |
 | `listing_id`           | UUID        | NULL, FK `listings(id) ON DELETE SET NULL`          |
 | `last_message_at`      | TIMESTAMPTZ | NULL — updated on each new message                  |
@@ -29,7 +29,7 @@ The safety filter (`utils/safety-filter.ts`) intercepts outgoing message content
 | -------------- | ----------- | ---------------------------------------------------- |
 | `id`           | UUID        | PK, `gen_random_uuid()`                              |
 | `thread_id`    | UUID        | NOT NULL, FK `message_threads(id) ON DELETE CASCADE` |
-| `user_id`      | UUID        | NOT NULL, FK `members(id) ON DELETE CASCADE`         |
+| `member_id`    | UUID        | NOT NULL, FK `members(id) ON DELETE CASCADE`         |
 | `role`         | ENUM        | NOT NULL — `participant_role` enum                   |
 | `unread_count` | INTEGER     | NOT NULL, DEFAULT `0`                                |
 | `joined_at`    | TIMESTAMPTZ | NOT NULL, DEFAULT `now()`                            |
@@ -45,7 +45,7 @@ The safety filter (`utils/safety-filter.ts`) intercepts outgoing message content
 | `id`               | UUID        | PK, `gen_random_uuid()`                               |
 | `thread_id`        | UUID        | NOT NULL, FK `message_threads(id) ON DELETE CASCADE`  |
 | `sender_id`        | UUID        | NOT NULL, FK `members(id) ON DELETE CASCADE`          |
-| `message_type`     | ENUM        | NOT NULL — `message_type` enum                        |
+| `type`             | ENUM        | NOT NULL — `message_type` enum                        |
 | `content`          | TEXT        | NULL — plain text body                                |
 | `metadata`         | JSONB       | NULL — structured payload for node types              |
 | `is_filtered`      | BOOLEAN     | NOT NULL, DEFAULT `false` — safety filter applied     |
@@ -95,16 +95,16 @@ Participants can only see threads and messages they belong to. Insert is gated t
 
 Uses `@/libs/supabase/server` (cookie-based auth, user JWT). Called by API route handlers only.
 
-| Function               | Signature                                                             | Description                                              |
-| ---------------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
-| `getThreadsServer`     | `(userId) => Promise<ThreadWithParticipants[]>`                       | List all threads where the user is a participant         |
-| `getThreadByIdServer`  | `(userId, threadId) => Promise<ThreadWithParticipants>`               | Fetch a single thread; throws if user is not participant |
-| `createThreadServer`   | `(params) => Promise<ThreadWithParticipants>`                         | Create thread + insert participant rows                  |
-| `getMessagesServer`    | `(userId, threadId, cursor?, limit?) => Promise<MessageWithSender[]>` | Paginated messages; oldest-first within a page           |
-| `createMessageServer`  | `(params) => Promise<Message>`                                        | Insert message; runs safety filter before persistence    |
-| `markThreadReadServer` | `(userId, threadId) => Promise<void>`                                 | Reset `unread_count` to 0 for the user's participant row |
-| `archiveThreadServer`  | `(userId, threadId) => Promise<void>`                                 | Set `thread_status = 'archived'`                         |
-| `getUnreadCountServer` | `(userId) => Promise<number>`                                         | Sum of `unread_count` across all active participant rows |
+| Function               | Signature                                                                | Description                                              |
+| ---------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `getThreadsServer`     | `(userId) => Promise<ThreadWithParticipants[]>`                          | List all threads where the user is a participant         |
+| `getThreadByIdServer`  | `(userId, threadId) => Promise<ThreadWithParticipants>`                  | Fetch a single thread; throws if user is not participant |
+| `createThreadServer`   | `(params) => Promise<ThreadWithParticipants>`                            | Create thread + insert participant rows                  |
+| `getMessagesServer`    | `(userId, threadId, cursor?, limit?) => Promise<{messages, nextCursor}>` | Paginated messages with cursor; newest-first             |
+| `createMessageServer`  | `(params) => Promise<MessageWithSender>`                                 | Insert message; updates thread metadata + unread counts  |
+| `markThreadReadServer` | `(userId, threadId) => Promise<void>`                                    | Reset `unread_count` to 0 for the user's participant row |
+| `archiveThreadServer`  | `(userId, threadId) => Promise<void>`                                    | Set `thread_status = 'archived'`                         |
+| `getUnreadCountServer` | `(userId) => Promise<number>`                                            | Sum of `unread_count` across all active participant rows |
 
 ### Client (`src/features/messaging/services/messaging.ts`)
 
@@ -117,8 +117,8 @@ Thin `fetch` wrappers using `@/libs/fetch` (`get`, `post`, `patch`). Called by T
 | `createThread`   | `(data: { type, participantIds, roles, listingId?, shopId? })` | `POST /api/messaging/threads`                               | `ThreadWithParticipants`                                        |
 | `getMessages`    | `(threadId: string, cursor?: string)`                          | `GET /api/messaging/threads/{threadId}/messages?cursor=...` | `{ messages: MessageWithSender[]; nextCursor: string \| null }` |
 | `sendMessage`    | `(threadId: string, content: string, type?: MessageType)`      | `POST /api/messaging/threads/{threadId}/messages`           | `MessageWithSender`                                             |
-| `markThreadRead` | `(threadId: string) => Promise<void>`                          | `PATCH /api/messaging/threads/{threadId}/read`              | `void`                                                          |
-| `archiveThread`  | `(threadId: string) => Promise<void>`                          | `PATCH /api/messaging/threads/{threadId}/archive`           | `void`                                                          |
+| `markThreadRead` | `(threadId: string) => Promise<{ success: boolean }>`          | `PATCH /api/messaging/threads/{threadId}/read`              | `{ success: boolean }`                                          |
+| `archiveThread`  | `(threadId: string) => Promise<{ success: boolean }>`          | `PATCH /api/messaging/threads/{threadId}/archive`           | `{ success: boolean }`                                          |
 | `getUnreadCount` | `() => Promise<{ count: number }>`                             | `GET /api/messaging/unread-count`                           | `{ count: number }`                                             |
 
 ## Hooks (Phase 2)
