@@ -108,18 +108,18 @@ Uses `@/libs/supabase/server` (cookie-based auth, user JWT). Called by API route
 
 ### Client (`src/features/messaging/services/messaging.ts`)
 
-Thin `fetch` wrappers using `@/libs/fetch` (`get`, `post`, `patch`, `del`). Called by Tanstack Query hooks.
+Thin `fetch` wrappers using `@/libs/fetch` (`get`, `post`, `patch`). Called by Tanstack Query hooks.
 
-| Function         | HTTP                                                        | Returns                    |
-| ---------------- | ----------------------------------------------------------- | -------------------------- |
-| `getThreads`     | `GET /api/messaging/threads`                                | `ThreadWithParticipants[]` |
-| `getThread`      | `GET /api/messaging/threads/{threadId}`                     | `ThreadWithParticipants`   |
-| `createThread`   | `POST /api/messaging/threads`                               | `ThreadWithParticipants`   |
-| `getMessages`    | `GET /api/messaging/threads/{threadId}/messages?cursor=...` | `MessageWithSender[]`      |
-| `sendMessage`    | `POST /api/messaging/threads/{threadId}/messages`           | `Message`                  |
-| `markThreadRead` | `PATCH /api/messaging/threads/{threadId}/read`              | `{ success: boolean }`     |
-| `archiveThread`  | `PATCH /api/messaging/threads/{threadId}/archive`           | `{ success: boolean }`     |
-| `getUnreadCount` | `GET /api/messaging/unread-count`                           | `{ count: number }`        |
+| Function         | Signature                                                      | HTTP                                                        | Returns                                                         |
+| ---------------- | -------------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------- |
+| `getThreads`     | `(type?: ThreadType) => Promise<ThreadWithParticipants[]>`     | `GET /api/messaging/threads`                                | `ThreadWithParticipants[]`                                      |
+| `getThread`      | `(threadId: string) => Promise<ThreadWithParticipants>`        | `GET /api/messaging/threads/{threadId}`                     | `ThreadWithParticipants`                                        |
+| `createThread`   | `(data: { type, participantIds, roles, listingId?, shopId? })` | `POST /api/messaging/threads`                               | `ThreadWithParticipants`                                        |
+| `getMessages`    | `(threadId: string, cursor?: string)`                          | `GET /api/messaging/threads/{threadId}/messages?cursor=...` | `{ messages: MessageWithSender[]; nextCursor: string \| null }` |
+| `sendMessage`    | `(threadId: string, content: string, type?: MessageType)`      | `POST /api/messaging/threads/{threadId}/messages`           | `MessageWithSender`                                             |
+| `markThreadRead` | `(threadId: string) => Promise<void>`                          | `PATCH /api/messaging/threads/{threadId}/read`              | `void`                                                          |
+| `archiveThread`  | `(threadId: string) => Promise<void>`                          | `PATCH /api/messaging/threads/{threadId}/archive`           | `void`                                                          |
+| `getUnreadCount` | `() => Promise<{ count: number }>`                             | `GET /api/messaging/unread-count`                           | `{ count: number }`                                             |
 
 ## Hooks (Phase 2)
 
@@ -192,6 +192,27 @@ import type {
   MessageType,
   MessageWithSender,
 } from '@/features/messaging';
+
+import {
+  getThreads,
+  getThread,
+  createThread,
+  getMessages,
+  sendMessage,
+  markThreadRead,
+  archiveThread,
+  getUnreadCount,
+} from '@/features/messaging';
+```
+
+Server services (`messaging-server.ts`) are **not** exported from the barrel — they are server-only and imported directly by API route handlers only:
+
+```ts
+import {
+  getThreadsServer,
+  getThreadByIdServer,
+  // ...
+} from '@/features/messaging/services/messaging-server';
 ```
 
 Components are imported directly from their component paths (not exported from the barrel):
@@ -206,7 +227,7 @@ import OfferBubble from '@/features/messaging/components/offer-bubble';
 ```
 src/features/messaging/
 ├── CLAUDE.md
-├── index.ts                                       # Barrel export (types only until Phase 2 hooks ship)
+├── index.ts                                       # Barrel export (types + client services)
 ├── types/
 │   ├── thread.ts                                  # MessageThread, ThreadType, ThreadStatus, ThreadParticipant, ParticipantRole, ThreadWithParticipants
 │   └── message.ts                                 # Message, MessageInsert, MessageType, MessageWithSender

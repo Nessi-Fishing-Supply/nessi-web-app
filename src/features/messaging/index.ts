@@ -14,3 +14,14 @@ export type {
   MessageType,
   MessageWithSender,
 } from '@/features/messaging/types/message';
+
+export {
+  getThreads,
+  getThread,
+  createThread,
+  getMessages,
+  sendMessage,
+  markThreadRead,
+  archiveThread,
+  getUnreadCount,
+} from '@/features/messaging/services/messaging';
