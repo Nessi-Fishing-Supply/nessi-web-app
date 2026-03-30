@@ -361,6 +361,42 @@ export type Database = {
           },
         ]
       }
+      member_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       members: {
         Row: {
           avatar_url: string | null
@@ -604,6 +640,84 @@ export type Database = {
           },
           {
             foreignKeyName: "messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "message_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          amount_cents: number
+          buyer_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          listing_id: string
+          parent_offer_id: string | null
+          seller_id: string
+          status: Database["public"]["Enums"]["offer_status"]
+          thread_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          buyer_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          listing_id: string
+          parent_offer_id?: string | null
+          seller_id: string
+          status?: Database["public"]["Enums"]["offer_status"]
+          thread_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          buyer_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          listing_id?: string
+          parent_offer_id?: string | null
+          seller_id?: string
+          status?: Database["public"]["Enums"]["offer_status"]
+          thread_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_parent_offer_id_fkey"
+            columns: ["parent_offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_thread_id_fkey"
             columns: ["thread_id"]
             isOneToOne: false
             referencedRelation: "message_threads"
@@ -1123,6 +1237,12 @@ export type Database = {
         | "custom_request_node"
         | "listing_node"
         | "nudge"
+      offer_status:
+        | "pending"
+        | "accepted"
+        | "declined"
+        | "countered"
+        | "expired"
       participant_role: "buyer" | "seller" | "initiator" | "recipient"
       shipping_paid_by: "seller" | "buyer" | "split"
       shop_status: "active" | "suspended" | "archived" | "deleted"
@@ -1307,6 +1427,7 @@ export const Constants = {
         "listing_node",
         "nudge",
       ],
+      offer_status: ["pending", "accepted", "declined", "countered", "expired"],
       participant_role: ["buyer", "seller", "initiator", "recipient"],
       shipping_paid_by: ["seller", "buyer", "split"],
       shop_status: ["active", "suspended", "archived", "deleted"],
