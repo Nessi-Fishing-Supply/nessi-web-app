@@ -29,9 +29,16 @@ interface GitHubPR {
   labels: { name: string }[];
 }
 
-function deriveArea(labels: string[]): string {
+function deriveArea(labels: string[], title: string): string {
   const lower = labels.map((l) => l.toLowerCase());
-  return AREA_LABELS.find((a) => lower.includes(a)) ?? 'full-stack';
+  const fromLabel = AREA_LABELS.find((a) => lower.includes(a));
+  if (fromLabel) return fromLabel;
+
+  // Derive from conventional commit scope: feat(scope): ... → scope
+  const scopeMatch = title.match(/^\w+\(([^)]+)\):/);
+  if (scopeMatch) return scopeMatch[1].toLowerCase();
+
+  return 'general';
 }
 
 function deriveType(labels: string[], title: string): string {
@@ -95,7 +102,7 @@ export async function fetchMergedPRs(): Promise<ChangelogEntry[]> {
         mergedAt: pr.merged_at,
         author: pr.user?.login ?? 'unknown',
         labels,
-        area: deriveArea(labels),
+        area: deriveArea(labels, pr.title),
         type: deriveType(labels, pr.title),
       });
     }
