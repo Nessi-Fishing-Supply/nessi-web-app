@@ -34,3 +34,11 @@ export {
   archiveThread,
   getUnreadCount,
 } from '@/features/messaging/services/messaging';
+
+export {
+  createOffer,
+  getOffer,
+  acceptOffer,
+  declineOffer,
+  counterOffer,
+} from '@/features/messaging/services/offers';

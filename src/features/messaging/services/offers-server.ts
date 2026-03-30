@@ -9,12 +9,14 @@ import {
   OFFER_EXPIRY_HOURS,
   OFFER_CHECKOUT_WINDOW_HOURS,
 } from '@/features/messaging/utils/offer-validation';
-import type { Offer, OfferWithDetails, CreateOfferParams, CounterOfferParams } from '@/features/messaging/types/offer';
+import type {
+  Offer,
+  OfferWithDetails,
+  CreateOfferParams,
+  CounterOfferParams,
+} from '@/features/messaging/types/offer';
 
-export async function createOfferServer(
-  userId: string,
-  params: CreateOfferParams,
-): Promise<Offer> {
+export async function createOfferServer(userId: string, params: CreateOfferParams): Promise<Offer> {
   const supabase = await createClient();
 
   const { data: listing, error: listingError } = await supabase
