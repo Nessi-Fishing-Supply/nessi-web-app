@@ -98,26 +98,30 @@ ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 -- 5. RLS Policies
 -- ============================================================
 
+-- Note: No INSERT policies on message_threads or message_thread_participants.
+-- Thread and participant creation is handled via server service (admin client)
+-- in API routes, not directly through client-side Supabase calls.
+
 DROP POLICY IF EXISTS "message_threads_select_participants" ON public.message_threads;
 CREATE POLICY "message_threads_select_participants"
   ON public.message_threads FOR SELECT
   TO authenticated
   USING (EXISTS (
     SELECT 1 FROM public.message_thread_participants
-    WHERE thread_id = message_threads.id AND member_id = auth.uid()
+    WHERE thread_id = message_threads.id AND member_id = (SELECT auth.uid())
   ));
 
 DROP POLICY IF EXISTS "message_thread_participants_select_own" ON public.message_thread_participants;
 CREATE POLICY "message_thread_participants_select_own"
   ON public.message_thread_participants FOR SELECT
   TO authenticated
-  USING (member_id = auth.uid());
+  USING (member_id = (SELECT auth.uid()));
 
 DROP POLICY IF EXISTS "message_thread_participants_update_own" ON public.message_thread_participants;
 CREATE POLICY "message_thread_participants_update_own"
   ON public.message_thread_participants FOR UPDATE
   TO authenticated
-  USING (member_id = auth.uid());
+  USING (member_id = (SELECT auth.uid()));
 
 DROP POLICY IF EXISTS "messages_select_participants" ON public.messages;
 CREATE POLICY "messages_select_participants"
@@ -125,7 +129,7 @@ CREATE POLICY "messages_select_participants"
   TO authenticated
   USING (EXISTS (
     SELECT 1 FROM public.message_thread_participants
-    WHERE thread_id = messages.thread_id AND member_id = auth.uid()
+    WHERE thread_id = messages.thread_id AND member_id = (SELECT auth.uid())
   ));
 
 DROP POLICY IF EXISTS "messages_insert_participants" ON public.messages;
@@ -133,10 +137,10 @@ CREATE POLICY "messages_insert_participants"
   ON public.messages FOR INSERT
   TO authenticated
   WITH CHECK (
-    sender_id = auth.uid()
+    sender_id = (SELECT auth.uid())
     AND EXISTS (
       SELECT 1 FROM public.message_thread_participants
-      WHERE thread_id = messages.thread_id AND member_id = auth.uid()
+      WHERE thread_id = messages.thread_id AND member_id = (SELECT auth.uid())
     )
   );
 
