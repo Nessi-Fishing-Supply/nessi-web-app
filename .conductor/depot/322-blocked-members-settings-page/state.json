@@ -3,7 +3,7 @@
   "issue": 322,
   "title": "Blocked Members — settings page with list and unblock",
   "branch": "feat/322/blocked-members-settings-page",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -13,7 +13,12 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-30T12:00:00Z", "lastActivity": "2026-03-30T13:15:00Z" }
+  "timestamps": {
+    "started": "2026-03-30T12:00:00Z",
+    "lastActivity": "2026-03-30T13:30:00Z"
+  },
+  "completedAt": "2026-03-30T13:30:00Z",
+  "pruneAfter": "2026-05-29T13:30:00Z"
 }
