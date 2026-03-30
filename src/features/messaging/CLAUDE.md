@@ -70,15 +70,16 @@ Participants can only see threads and messages they belong to. Insert is gated t
 
 **`src/features/messaging/types/thread.ts`**
 
-| Type                     | Description                                                                                     |
-| ------------------------ | ----------------------------------------------------------------------------------------------- |
-| `MessageThread`          | Database Row type from `message_threads` table                                                  |
-| `MessageThreadInsert`    | Insert type — omits `id`, `created_at`, `updated_at`, `last_message_at`, `last_message_preview` |
-| `ThreadType`             | `'inquiry' \| 'direct' \| 'offer' \| 'custom_request'`                                          |
-| `ThreadStatus`           | `'active' \| 'archived' \| 'closed'`                                                            |
-| `ThreadParticipant`      | Database Row type from `message_thread_participants` table                                      |
-| `ParticipantRole`        | `'buyer' \| 'seller' \| 'initiator' \| 'recipient'`                                             |
-| `ThreadWithParticipants` | `MessageThread` joined with participants (including member name/avatar) + `my_unread_count`     |
+| Type                     | Description                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `MessageThread`          | Database Row type from `message_threads` table                                                      |
+| `MessageThreadInsert`    | Insert type — omits `id`, `created_at`, `updated_at`, `last_message_at`, `last_message_preview`     |
+| `ThreadType`             | `'inquiry' \| 'direct' \| 'offer' \| 'custom_request'`                                              |
+| `ThreadStatus`           | `'active' \| 'archived' \| 'closed'`                                                                |
+| `ThreadParticipant`      | Database Row type from `message_thread_participants` table                                          |
+| `ParticipantRole`        | `'buyer' \| 'seller' \| 'initiator' \| 'recipient'`                                                 |
+| `ThreadWithParticipants` | `MessageThread` joined with participants (including member name/avatar) + `my_unread_count`         |
+| `CreateThreadResult`     | `{ thread: ThreadWithParticipants; existing: boolean }` — signals duplicate detection to API routes |
 
 **`src/features/messaging/types/message.ts`**
 
@@ -89,22 +90,22 @@ Participants can only see threads and messages they belong to. Insert is gated t
 | `MessageType`       | `'text' \| 'system' \| 'offer_node' \| 'custom_request_node' \| 'listing_node' \| 'nudge'` |
 | `MessageWithSender` | `Message` joined with sender `{ id, first_name, last_name, avatar_url }`                   |
 
-## Services (Phase 2)
+## Services
 
 ### Server (`src/features/messaging/services/messaging-server.ts`)
 
 Uses `@/libs/supabase/server` (cookie-based auth, user JWT). Called by API route handlers only.
 
-| Function               | Signature                                                                | Description                                              |
-| ---------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------- |
-| `getThreadsServer`     | `(userId) => Promise<ThreadWithParticipants[]>`                          | List all threads where the user is a participant         |
-| `getThreadByIdServer`  | `(userId, threadId) => Promise<ThreadWithParticipants>`                  | Fetch a single thread; throws if user is not participant |
-| `createThreadServer`   | `(params) => Promise<ThreadWithParticipants>`                            | Create thread + insert participant rows                  |
-| `getMessagesServer`    | `(userId, threadId, cursor?, limit?) => Promise<{messages, nextCursor}>` | Paginated messages with cursor; newest-first             |
-| `createMessageServer`  | `(params) => Promise<MessageWithSender>`                                 | Insert message; updates thread metadata + unread counts  |
-| `markThreadReadServer` | `(userId, threadId) => Promise<void>`                                    | Reset `unread_count` to 0 for the user's participant row |
-| `archiveThreadServer`  | `(userId, threadId) => Promise<void>`                                    | Set `thread_status = 'archived'`                         |
-| `getUnreadCountServer` | `(userId) => Promise<number>`                                            | Sum of `unread_count` across all active participant rows |
+| Function               | Signature                                                                | Description                                                                                                                                |
+| ---------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `getThreadsServer`     | `(userId) => Promise<ThreadWithParticipants[]>`                          | List all threads where the user is a participant                                                                                           |
+| `getThreadByIdServer`  | `(userId, threadId) => Promise<ThreadWithParticipants>`                  | Fetch a single thread; throws if user is not participant                                                                                   |
+| `createThreadServer`   | `(params) => Promise<CreateThreadResult>`                                | Create thread + insert participant rows; returns `{ thread, existing }` for duplicate detection                                            |
+| `getMessagesServer`    | `(userId, threadId, cursor?, limit?) => Promise<{messages, nextCursor}>` | Paginated messages with cursor; newest-first                                                                                               |
+| `createMessageServer`  | `(params) => Promise<MessageWithSender>`                                 | Insert message; updates thread metadata + unread counts. Accepts optional `isFiltered` and `originalContent` for safety filter audit trail |
+| `markThreadReadServer` | `(userId, threadId) => Promise<void>`                                    | Reset `unread_count` to 0 for the user's participant row                                                                                   |
+| `archiveThreadServer`  | `(userId, threadId) => Promise<void>`                                    | Set `thread_status = 'archived'`                                                                                                           |
+| `getUnreadCountServer` | `(userId) => Promise<number>`                                            | Sum of `unread_count` across all active participant rows                                                                                   |
 
 ### Client (`src/features/messaging/services/messaging.ts`)
 
@@ -121,7 +122,7 @@ Thin `fetch` wrappers using `@/libs/fetch` (`get`, `post`, `patch`). Called by T
 | `archiveThread`  | `(threadId: string) => Promise<{ success: boolean }>`          | `PATCH /api/messaging/threads/{threadId}/archive`           | `{ success: boolean }`                                          |
 | `getUnreadCount` | `() => Promise<{ count: number }>`                             | `GET /api/messaging/unread-count`                           | `{ count: number }`                                             |
 
-## Hooks (Phase 2)
+## Hooks
 
 Tanstack Query hooks will live in `src/features/messaging/hooks/`. Expected hooks:
 
@@ -330,19 +331,19 @@ src/features/messaging/
     ├── safety-filter.ts                           # Content safety: block / redact PII / nudge / pass
     └── offer-validation.ts                        # Offer amount validation, min/default calcs, expiry check
 
-src/app/api/messaging/                             # Phase 2
+src/app/api/messaging/
 ├── threads/
-│   ├── route.ts                                   # GET (list), POST (create)
+│   ├── route.ts                                   # GET (list with type filter), POST (create with 409 duplicate)
 │   └── [thread_id]/
-│       ├── route.ts                               # GET (single thread)
+│       ├── route.ts                               # GET (single thread with participants)
 │       ├── messages/
-│       │   └── route.ts                           # GET (paginated), POST (send)
+│       │   └── route.ts                           # GET (cursor-paginated), POST (send with safety filter + block check)
 │       ├── read/
-│       │   └── route.ts                           # PATCH (mark read)
+│       │   └── route.ts                           # PATCH (mark read, reset unread count)
 │       └── archive/
-│           └── route.ts                           # PATCH (archive)
+│           └── route.ts                           # PATCH (archive thread)
 └── unread-count/
-    └── route.ts                                   # GET (total unread)
+    └── route.ts                                   # GET (total unread across active threads)
 ```
 
 ## Key Patterns
