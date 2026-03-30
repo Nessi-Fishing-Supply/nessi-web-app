@@ -3,7 +3,7 @@
   "issue": 302,
   "title": "Messaging — Database migration for message_threads, participants, and messages tables",
   "branch": "feat/302/messaging-database-migration",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-30T12:00:00Z", "lastActivity": "2026-03-30T12:50:00Z" }
+  "timestamps": {
+    "started": "2026-03-30T12:00:00Z",
+    "lastActivity": "2026-03-30T12:55:00Z",
+    "completedAt": "2026-03-30T12:55:00Z",
+    "pruneAfter": "2026-05-29T12:55:00Z"
+  }
 }
