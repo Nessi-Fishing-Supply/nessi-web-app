@@ -66,7 +66,9 @@ export async function POST(request: NextRequest) {
 
     if (!type || !VALID_THREAD_TYPES.includes(type)) {
       return NextResponse.json(
-        { error: `Invalid or missing thread type. Must be one of: ${VALID_THREAD_TYPES.join(', ')}` },
+        {
+          error: `Invalid or missing thread type. Must be one of: ${VALID_THREAD_TYPES.join(', ')}`,
+        },
         { status: 400, headers: AUTH_CACHE_HEADERS },
       );
     }
