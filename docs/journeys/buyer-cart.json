@@ -3,8 +3,8 @@
   "domain": "cart",
   "title": "Authenticated Cart (DB-Backed)",
   "persona": "buyer",
-  "description": "Authenticated buyer adds items to DB-backed cart with price snapshots, 30-day expiry, seller grouping, and pre-checkout validation.",
-  "relatedIssues": [],
+  "description": "Authenticated buyer adds items to DB-backed cart with price snapshots, 30-day expiry, seller grouping, and pre-checkout validation. Block enforcement prevents adding items from sellers who have blocked the buyer.",
+  "relatedIssues": [324],
   "flows": [
     {
       "id": "add-to-cart",
@@ -39,7 +39,35 @@
           "layer": "server",
           "status": "built",
           "route": "/api/cart",
-          "tooltip": "Send listingId + priceCents"
+          "codeRef": "src/app/api/cart/route.ts",
+          "tooltip": "Send listingId + priceCents. Server checks: listing exists + active, block check (isBlockedByServer), not own listing, no duplicate, cart cap.",
+          "errorCases": [
+            {
+              "condition": "Seller has blocked the buyer",
+              "result": "Returns 403 'You cannot purchase this listing'",
+              "httpStatus": 403
+            },
+            {
+              "condition": "Listing not found or inactive",
+              "result": "Returns 404",
+              "httpStatus": 404
+            },
+            {
+              "condition": "Own listing",
+              "result": "Returns 403",
+              "httpStatus": 403
+            },
+            {
+              "condition": "Already in cart",
+              "result": "Returns 409",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Cart full (25 items)",
+              "result": "Returns 422",
+              "httpStatus": 422
+            }
+          ]
         },
         {
           "id": "price-snapshot",
@@ -165,7 +193,9 @@
           "method": "POST",
           "layer": "server",
           "status": "built",
-          "route": "/api/cart/validate"
+          "route": "/api/cart/validate",
+          "codeRef": "src/features/cart/services/cart-server.ts",
+          "tooltip": "Validates all cart items. Batch block check: single IN query on member_blocks for all unique seller IDs. Blocked items moved to removed[] with reason: 'blocked'."
         },
         {
           "id": "handle-result",
@@ -191,8 +221,8 @@
               "goTo": "END"
             },
             {
-              "label": "Removed",
-              "detail": "Items auto-removed from cart",
+              "label": "Removed (sold/deleted/deactivated/blocked)",
+              "detail": "Items auto-removed from cart. Blocked items show same UX as other removals.",
               "goTo": "END"
             }
           ]

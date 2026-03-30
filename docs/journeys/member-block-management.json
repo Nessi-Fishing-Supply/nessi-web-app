@@ -3,8 +3,8 @@
   "domain": "account",
   "title": "Blocked Members",
   "persona": "account",
-  "description": "View and manage blocked members — authenticated users can see who they have blocked and unblock them from the account settings page.",
-  "relatedIssues": [322],
+  "description": "View and manage blocked members — authenticated users can see who they have blocked and unblock them from the account settings page. Block enforcement prevents blocked users from viewing the blocker's profiles, shops, listings, and purchasing their items.",
+  "relatedIssues": [322, 324],
   "flows": [
     {
       "id": "view-blocked-members",
@@ -227,6 +227,215 @@
           "status": "planned",
           "route": "/member/[slug]",
           "notes": "When viewing a member profile from the blocked list (or any profile of a member you have blocked), show a 'Blocked' indicator. This would let users confirm the block is active and access the unblock action without navigating to account settings."
+        }
+      ]
+    },
+    {
+      "id": "block-enforcement-profile",
+      "title": "Block Enforcement — Profile Page",
+      "trigger": "Blocked user navigates to blocker's member profile",
+      "steps": [
+        {
+          "id": "navigate-member-profile",
+          "title": "Navigate to Member Profile",
+          "action": "navigate",
+          "layer": "client",
+          "status": "built",
+          "route": "/member/[slug]",
+          "codeRef": "src/app/(frontend)/member/[slug]/page.tsx"
+        },
+        {
+          "id": "fetch-member",
+          "title": "Fetch Member by Slug",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/members/services/member-server.ts",
+          "tooltip": "Server component calls getMemberBySlugServer(slug). If member not found, notFound() is called."
+        },
+        {
+          "id": "check-block-status",
+          "title": "Check Block Status",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/blocks/services/block-server.ts",
+          "tooltip": "Calls isBlockedByServer(currentUserId, member.id). Uses server client with RLS policy member_blocks_select_blocked (blocked_id = auth.uid()). Short-circuits to false for null viewer or self-view."
+        },
+        {
+          "id": "render-not-found",
+          "title": "Show Not Found Page",
+          "layer": "client",
+          "status": "built",
+          "tooltip": "If blocked, notFound() is called — identical to a non-existent member. No information leakage about the block."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "check-block-status",
+          "condition": "Is viewer blocked?",
+          "paths": [
+            {
+              "label": "Yes",
+              "goTo": "render-not-found"
+            },
+            {
+              "label": "No",
+              "detail": "Normal profile page renders",
+              "goTo": "END"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block-enforcement-shop",
+      "title": "Block Enforcement — Shop Page",
+      "trigger": "Blocked user navigates to blocker's shop page",
+      "steps": [
+        {
+          "id": "navigate-shop-page",
+          "title": "Navigate to Shop Page",
+          "action": "navigate",
+          "layer": "client",
+          "status": "built",
+          "route": "/shop/[slug]",
+          "codeRef": "src/app/(frontend)/shop/[slug]/page.tsx"
+        },
+        {
+          "id": "fetch-shop",
+          "title": "Fetch Shop by Slug",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/shops/services/shop-server.ts",
+          "tooltip": "Server component calls getShopBySlugServer(slug). Returns shop with owner_id. If shop not found, notFound() is called."
+        },
+        {
+          "id": "check-block-shop",
+          "title": "Check Block Status",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/blocks/services/block-server.ts",
+          "tooltip": "Calls isBlockedByServer(currentUserId, shop.owner_id). Block is checked against the shop owner, not the shop entity itself."
+        },
+        {
+          "id": "render-not-found-shop",
+          "title": "Show Not Found Page",
+          "layer": "client",
+          "status": "built",
+          "tooltip": "If blocked, notFound() is called — identical to a non-existent shop."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "check-block-shop",
+          "condition": "Is viewer blocked by shop owner?",
+          "paths": [
+            {
+              "label": "Yes",
+              "goTo": "render-not-found-shop"
+            },
+            {
+              "label": "No",
+              "detail": "Normal shop page renders",
+              "goTo": "END"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block-enforcement-listing",
+      "title": "Block Enforcement — Listing Page",
+      "trigger": "Blocked user navigates to blocker's listing detail",
+      "steps": [
+        {
+          "id": "navigate-listing-page",
+          "title": "Navigate to Listing Detail",
+          "action": "navigate",
+          "layer": "client",
+          "status": "built",
+          "route": "/listing/[id]",
+          "codeRef": "src/app/(frontend)/listing/[id]/page.tsx"
+        },
+        {
+          "id": "fetch-listing",
+          "title": "Fetch Listing with Seller",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/listings/services/listing-server.ts",
+          "tooltip": "Server component calls getListingWithSellerServer(id). Returns listing with seller_id. If listing not found or inactive, notFound() is called."
+        },
+        {
+          "id": "check-block-listing",
+          "title": "Check Block Status",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/blocks/services/block-server.ts",
+          "tooltip": "Calls isBlockedByServer(currentUserId, listing.seller_id). Block is checked against the listing's seller."
+        },
+        {
+          "id": "render-not-found-listing",
+          "title": "Show Not Found Page",
+          "layer": "client",
+          "status": "built",
+          "tooltip": "If blocked, notFound() is called — identical to a non-existent listing."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "check-block-listing",
+          "condition": "Is viewer blocked by seller?",
+          "paths": [
+            {
+              "label": "Yes",
+              "goTo": "render-not-found-listing"
+            },
+            {
+              "label": "No",
+              "detail": "Normal listing page renders",
+              "goTo": "END"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block-enforcement-cart",
+      "title": "Block Enforcement — Cart",
+      "trigger": "Blocked user attempts to add blocker's listing to cart or validates cart containing blocked items",
+      "steps": [
+        {
+          "id": "attempt-add-to-cart",
+          "title": "Add to Cart (Blocked Seller)",
+          "method": "POST",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/cart",
+          "codeRef": "src/features/cart/services/cart-server.ts",
+          "tooltip": "addToCartServer checks isBlockedByServer(userId, listing.seller_id) after fetching listing. If blocked, throws 'Seller has blocked you'.",
+          "errorCases": [
+            {
+              "condition": "Seller has blocked the buyer",
+              "result": "Returns 403 'You cannot purchase this listing'",
+              "httpStatus": 403
+            }
+          ]
+        },
+        {
+          "id": "validate-cart-blocked",
+          "title": "Validate Cart (Blocked Items)",
+          "method": "POST",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/cart/validate",
+          "codeRef": "src/features/cart/services/cart-server.ts",
+          "tooltip": "validateCartServer performs a single batch IN query on member_blocks for all unique seller IDs. Items from blocked sellers are moved to the 'removed' array with reason: 'blocked'."
+        },
+        {
+          "id": "show-blocked-removal",
+          "title": "Show Removed Items Banner",
+          "layer": "client",
+          "status": "built",
+          "tooltip": "Cart page stale items banner shows blocked items as removed. The 'blocked' reason is included in the CartValidationResult removed-item reason union type."
         }
       ]
     }
