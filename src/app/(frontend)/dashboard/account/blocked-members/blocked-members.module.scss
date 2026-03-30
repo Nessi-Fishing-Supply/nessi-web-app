@@ -24,7 +24,7 @@
 .heading {
   margin: 0;
   font-size: var(--font-size-1000);
-  font-weight: 700;
+  font-weight: var(--font-weight-700);
   color: var(--color-neutral-900);
 
   @include breakpoint(md) {

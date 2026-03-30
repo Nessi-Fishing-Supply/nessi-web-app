@@ -7,47 +7,46 @@ Blocked members management — lets authenticated users view and unblock members
 ## Architecture
 
 - **types/block.ts** — Database-derived types: `MemberBlock` (Row), `BlockedMemberItem` (denormalized with resolved name, avatar, and slug for display)
-- **services/block-server.ts** — Server-side Supabase queries (uses `@/libs/supabase/server`): `getBlockedMembersServer` (lists all blocks for the authenticated user, joins members to resolve name/avatar/slug), `deleteMemberBlockServer` (removes a block row by `blocked_id`)
+- **services/block-server.ts** — Server-side Supabase queries (uses `@/libs/supabase/server`): `getBlockedMembersServer` (lists all blocks for the authenticated user, joins members to resolve name/avatar/slug), `unblockMemberServer` (removes a block row by `blocked_id`)
 - **services/block.ts** — Client-side fetch wrappers: `getBlockedMembers` (GET `/api/blocks`), `unblockMember` (DELETE `/api/blocks?blocked_id={uuid}`)
-- **hooks/use-blocked-members.ts** — `useBlockedMembers()`: query key `['blocks']`, fetches the list of blocked members for the authenticated user
-- **hooks/use-unblock-member.ts** — `useUnblockMember()`: mutation that removes a member from the block list with optimistic cache removal; rolls back on error
+- **hooks/use-blocked-members.ts** — `useBlockedMembers()`: query key `['blocks', userId]`, fetches the list of blocked members for the authenticated user. `useUnblockMember()`: mutation that removes a member from the block list with optimistic cache removal; rolls back on error
 
 ## Database Schema
 
 ### `member_blocks` table
 
-| Column       | Type        | Notes                                        |
-| ------------ | ----------- | -------------------------------------------- |
-| `id`         | uuid        | Primary key, `gen_random_uuid()`             |
+| Column       | Type        | Notes                                         |
+| ------------ | ----------- | --------------------------------------------- |
+| `id`         | uuid        | Primary key, `gen_random_uuid()`              |
 | `blocker_id` | uuid        | FK → members.id (ON DELETE CASCADE), NOT NULL |
 | `blocked_id` | uuid        | FK → members.id (ON DELETE CASCADE), NOT NULL |
-| `created_at` | timestamptz | NOT NULL, DEFAULT `now()`                    |
+| `created_at` | timestamptz | NOT NULL, DEFAULT `now()`                     |
 
 **Constraints:** `UNIQUE (blocker_id, blocked_id)` — prevents duplicate blocks.
 
 **RLS Policies:**
 
-| Policy                  | Operation | Rule                                     |
-| ----------------------- | --------- | ---------------------------------------- |
-| Users can view own blocks | SELECT  | `USING (blocker_id = auth.uid())`        |
-| Users can insert own blocks | INSERT | `WITH CHECK (blocker_id = auth.uid())`  |
-| Users can delete own blocks | DELETE | `USING (blocker_id = auth.uid())`       |
+| Policy                      | Operation | Rule                                   |
+| --------------------------- | --------- | -------------------------------------- |
+| Users can view own blocks   | SELECT    | `USING (blocker_id = auth.uid())`      |
+| Users can insert own blocks | INSERT    | `WITH CHECK (blocker_id = auth.uid())` |
+| Users can delete own blocks | DELETE    | `USING (blocker_id = auth.uid())`      |
 
 ## API Routes
 
-| Method | Route                             | Auth Required | Status Codes        | Description                                                  |
-| ------ | --------------------------------- | ------------- | ------------------- | ------------------------------------------------------------ |
-| GET    | `/api/blocks`                     | Yes           | 200/401/500         | List all members blocked by the authenticated user           |
-| DELETE | `/api/blocks?blocked_id={uuid}`   | Yes           | 200/400/401/404/500 | Unblock a member (blocked_id via query param, 404 if not found) |
+| Method | Route                           | Auth Required | Status Codes        | Description                                                     |
+| ------ | ------------------------------- | ------------- | ------------------- | --------------------------------------------------------------- |
+| GET    | `/api/blocks`                   | Yes           | 200/401/500         | List all members blocked by the authenticated user              |
+| DELETE | `/api/blocks?blocked_id={uuid}` | Yes           | 200/400/401/404/500 | Unblock a member (blocked_id via query param, 404 if not found) |
 
 ## Hooks
 
-| Hook                   | Query Key   | Purpose                              | Optimistic                                    |
-| ---------------------- | ----------- | ------------------------------------ | --------------------------------------------- |
-| `useBlockedMembers()`  | `['blocks']` | List all blocked members            | —                                             |
-| `useUnblockMember()`   | mutation    | Remove a member from the block list  | Yes — removes from cache, rollback on error   |
+| Hook                  | Query Key            | Purpose                             | Optimistic                                  |
+| --------------------- | -------------------- | ----------------------------------- | ------------------------------------------- |
+| `useBlockedMembers()` | `['blocks', userId]` | List all blocked members            | —                                           |
+| `useUnblockMember()`  | mutation             | Remove a member from the block list | Yes — removes from cache, rollback on error |
 
-**Query key convention:** `['blocks']` is implicitly user-scoped (API route uses auth session). All mutations invalidate this key in `onSettled`.
+**Query key convention:** `['blocks', userId]` is user-scoped via `useAuth()`. All mutations invalidate this key in `onSettled`.
 
 ## Components
 
@@ -57,9 +56,9 @@ Displays a single blocked member in the `/dashboard/blocked` list. Self-containe
 
 **Props:**
 
-| Prop    | Type                 | Required | Description                          |
-| ------- | -------------------- | -------- | ------------------------------------ |
-| `item`  | `BlockedMemberItem`  | Yes      | The blocked member with resolved display data |
+| Prop   | Type                | Required | Description                                   |
+| ------ | ------------------- | -------- | --------------------------------------------- |
+| `item` | `BlockedMemberItem` | Yes      | The blocked member with resolved display data |
 
 **Features:**
 
@@ -89,8 +88,7 @@ src/features/blocks/
 │   ├── block-server.ts               # Server-side Supabase queries
 │   └── block.ts                      # Client-side fetch wrappers
 ├── hooks/
-│   ├── use-blocked-members.ts        # Query: list of blocked members
-│   └── use-unblock-member.ts         # Mutation: unblock with optimistic removal
+│   └── use-blocked-members.ts        # Query + mutation: useBlockedMembers, useUnblockMember
 └── components/
     └── blocked-member-card/
         ├── index.tsx                  # BlockedMemberCard component (use client)
