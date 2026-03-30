@@ -101,6 +101,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!participantIds.includes(user.id)) {
+      return NextResponse.json(
+        { error: 'You must be a participant in the thread' },
+        { status: 400, headers: AUTH_CACHE_HEADERS },
+      );
+    }
+
     const { thread, existing } = await createThreadServer({
       type,
       createdBy: user.id,

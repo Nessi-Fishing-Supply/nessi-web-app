@@ -143,7 +143,7 @@ export async function POST(
     let originalContent: string | undefined;
 
     if (filterResult.action === 'redact') {
-      messageContent = filterResult.filteredContent!;
+      messageContent = filterResult.filteredContent ?? content.trim();
       isFiltered = true;
       originalContent = filterResult.originalContent;
     }
@@ -153,7 +153,8 @@ export async function POST(
       senderId: user.id,
       content: messageContent,
       type: type ?? 'text',
-      metadata: isFiltered ? { is_filtered: true, original_content: originalContent } : undefined,
+      isFiltered,
+      originalContent,
     });
 
     // Insert nudge system message after the user's message
@@ -169,6 +170,7 @@ export async function POST(
         senderId: user.id,
         content: nudgeText,
         type: 'nudge',
+        metadata: { system_generated: true },
       });
     }
 

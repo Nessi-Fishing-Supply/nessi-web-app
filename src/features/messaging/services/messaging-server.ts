@@ -410,6 +410,8 @@ export async function createMessageServer(params: {
   content: string;
   type?: MessageType;
   metadata?: Record<string, unknown>;
+  isFiltered?: boolean;
+  originalContent?: string;
 }): Promise<MessageWithSender> {
   const supabase = await createClient();
 
@@ -437,6 +439,8 @@ export async function createMessageServer(params: {
       content: params.content,
       type: params.type ?? 'text',
       metadata: (params.metadata ?? null) as Json | null,
+      is_filtered: params.isFiltered ?? false,
+      original_content: params.originalContent ?? null,
     })
     .select()
     .single();
