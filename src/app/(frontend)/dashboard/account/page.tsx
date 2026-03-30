@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { HiExternalLink } from 'react-icons/hi';
+import { HiExternalLink, HiOutlineShieldExclamation } from 'react-icons/hi';
 import { useAuth } from '@/features/auth/context';
 import { useMember } from '@/features/members/hooks/use-member';
 import { logout } from '@/features/auth/services/auth';
@@ -119,6 +119,11 @@ export default function Account() {
               <MemberCompleteness member={member as Member} />
             </div>
           )}
+
+          <Link href="/dashboard/account/blocked-members" className={styles.sidebarLink}>
+            <HiOutlineShieldExclamation aria-hidden="true" />
+            Blocked Members
+          </Link>
 
           <div className={styles.sidebarFooter}>
             <div className={styles.footerActions}>
