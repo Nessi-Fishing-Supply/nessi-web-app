@@ -61,18 +61,18 @@ export default function CollapsibleHeader({
     otherParticipant?.role === 'buyer' ||
     thread.participants.find((p) => p.member.id === currentUserId)?.role === 'seller';
 
-  const [countdown, setCountdown] = useState(() =>
-    offer?.status === 'pending' ? getCountdown(offer.expires_at) : '',
-  );
+  // Tick counter forces re-render every 60s to update countdown display
+  const [, setTick] = useState(0);
 
   useEffect(() => {
     if (offer?.status !== 'pending') return;
-    setCountdown(getCountdown(offer.expires_at));
     const interval = setInterval(() => {
-      setCountdown(getCountdown(offer.expires_at));
+      setTick((t) => t + 1);
     }, 60_000);
     return () => clearInterval(interval);
-  }, [offer?.status, offer?.expires_at]);
+  }, [offer?.status]);
+
+  const countdown = offer?.status === 'pending' ? getCountdown(offer.expires_at) : '';
 
   return (
     <header className={styles.header} aria-expanded={!isCollapsed}>
