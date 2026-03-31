@@ -44,7 +44,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: message }, { status: 409, headers: AUTH_CACHE_HEADERS });
     }
 
-    if (message.includes('at least')) {
+    if (message.includes('at least') || message.includes('greater than zero')) {
       return NextResponse.json({ error: message }, { status: 400, headers: AUTH_CACHE_HEADERS });
     }
 

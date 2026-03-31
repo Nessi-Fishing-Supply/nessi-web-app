@@ -9,6 +9,7 @@ const BAD_REQUEST_MESSAGES = [
   'Listing is not active',
   'Seller does not match listing',
   'at least',
+  'greater than zero',
 ];
 
 // Submit a new offer on a listing

@@ -3,7 +3,7 @@
   "issue": 308,
   "title": "Messaging — API routes for offers",
   "branch": "feat/308/api-routes-for-offers",
-  "status": "reviewing",
+  "status": "complete",
   "phase": {
     "current": 2,
     "total": 2,
@@ -13,7 +13,7 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-31T12:00:00Z", "lastActivity": "2026-03-31T12:15:00Z" }
+  "timestamps": { "started": "2026-03-31T12:00:00Z", "lastActivity": "2026-03-31T12:20:00Z" }
 }
