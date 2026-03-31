@@ -5,6 +5,7 @@ import MessageNode from '@/features/messaging/components/message-node';
 import ListingNode from '@/features/messaging/components/message-node/listing-node';
 import OfferBubble from '@/features/messaging/components/offer-bubble';
 import type { MessageWithSender } from '@/features/messaging/types/message';
+import type { OfferStatus } from '@/features/messaging/types/offer';
 import styles from './message-thread.module.scss';
 
 export type { MessageWithSender };
@@ -87,7 +88,17 @@ export default function MessageThread({ messages, currentUserId, className }: Me
                 </div>
               )}
               <div className={styles.nodeRow}>
-                <ListingNode metadata={message.metadata as any} />
+                <ListingNode
+                  metadata={
+                    message.metadata as {
+                      listing_id?: string;
+                      title?: string;
+                      price_cents?: number;
+                      image_url?: string;
+                      status?: string;
+                    } | null
+                  }
+                />
               </div>
             </div>
           );
@@ -118,7 +129,7 @@ export default function MessageThread({ messages, currentUserId, className }: Me
                   amount={meta?.amount_cents ?? 0}
                   originalPrice={meta?.original_price_cents ?? 0}
                   expiresAt={meta?.expires_at ? new Date(meta.expires_at) : new Date()}
-                  status={(meta?.status as any) ?? 'expired'}
+                  status={(meta?.status as OfferStatus | undefined) ?? 'expired'}
                 />
               </div>
             </div>

@@ -206,7 +206,8 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
           currentUserId={user?.id ?? ''}
           offer={isOfferThread ? offer : undefined}
           onAcceptOffer={() => offerActions.accept.mutate()}
-          onCounterOffer={() => {}}
+          // Counter-offer requires a modal/input flow (separate ticket — out of scope)
+          onCounterOffer={undefined}
           onDeclineOffer={() => offerActions.decline.mutate()}
           isOfferPending={isOfferActionPending}
           isCollapsed={isHeaderCollapsed}

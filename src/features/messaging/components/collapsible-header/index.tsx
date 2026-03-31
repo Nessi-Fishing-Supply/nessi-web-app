@@ -80,10 +80,11 @@ export default function CollapsibleHeader({
                 )}
               </div>
             </div>
+            {/* TODO: Enhance to show listing title/thumbnail when ThreadWithParticipants carries listing details */}
             {thread.listing_id && (
               <p className={styles.listingRef}>
                 About:{' '}
-                <Link href={`/listings/${thread.listing_id}`} className={styles.listingLink}>
+                <Link href={`/listing/${thread.listing_id}`} className={styles.listingLink}>
                   Listing #{thread.listing_id.slice(0, 8)}
                 </Link>
               </p>
