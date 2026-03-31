@@ -1,0 +1,29 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  padding: var(--spacing-700) var(--spacing-page-sm);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-800) var(--spacing-page-md);
+  }
+
+  @include breakpoint(lg) {
+    padding: var(--spacing-800) var(--spacing-page-lg);
+  }
+}
+
+.heading {
+  font-size: var(--font-size-1000);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-500);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1200);
+    margin-bottom: var(--spacing-600);
+  }
+}
+
+.content {
+  margin-top: var(--spacing-500);
+}
