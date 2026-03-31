@@ -3,7 +3,7 @@
   "issue": 315,
   "title": "Messaging — Wire up entry points (Message Seller, profile Message buttons, navbar link)",
   "branch": "feat/315/messaging-wire-up-entry-points",
-  "status": "fixing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-31T12:00:00Z", "lastActivity": "2026-03-31T13:20:00Z" }
+  "timestamps": {
+    "started": "2026-03-31T12:00:00Z",
+    "lastActivity": "2026-03-31T13:35:00Z",
+    "completedAt": "2026-03-31T13:35:00Z",
+    "pruneAfter": "2026-05-30T13:35:00Z"
+  }
 }
