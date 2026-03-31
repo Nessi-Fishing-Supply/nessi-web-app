@@ -17,6 +17,29 @@
   }
 }
 
+// Infinite scroll — load more indicator
+
+.loadingMore {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-300) 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-neutral-200);
+  border-top-color: var(--color-neutral-500);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 // Skeleton loading state
 
 @keyframes shimmer {

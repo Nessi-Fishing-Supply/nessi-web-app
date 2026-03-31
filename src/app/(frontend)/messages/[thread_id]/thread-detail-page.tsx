@@ -1,15 +1,18 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context';
 import { useThread } from '@/features/messaging/hooks/use-thread';
 import { useMessages } from '@/features/messaging/hooks/use-messages';
 import { useMarkRead } from '@/features/messaging/hooks/use-mark-read';
+import { useOffer } from '@/features/messaging/hooks/use-offer';
+import { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
 import PageHeader from '@/components/layout/page-header';
 import ErrorState from '@/components/indicators/error-state';
 import ComposeBar from '@/features/messaging/components/compose-bar';
 import MessageThread from '@/features/messaging/components/message-thread';
+import CollapsibleHeader from '@/features/messaging/components/collapsible-header';
 import styles from './thread-detail-page.module.scss';
 
 interface ThreadDetailPageProps {
@@ -28,6 +31,7 @@ const SKELETON_ROWS = [
 export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
 
   const {
     data: thread,
@@ -41,15 +45,80 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
     isLoading: isMessagesLoading,
     isError: isMessagesError,
     refetch: refetchMessages,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useMessages(threadId);
 
-  const messageAreaRef = useRef<HTMLDivElement>(null);
+  // Extract offer_id from the latest offer_node message for offer threads
+  const latestOfferMessage = data?.pages
+    .flatMap((page) => page.messages)
+    .find((m) => m.type === 'offer_node' && m.metadata);
+  const latestOfferId =
+    latestOfferMessage?.metadata &&
+    typeof latestOfferMessage.metadata === 'object' &&
+    !Array.isArray(latestOfferMessage.metadata) &&
+    'offer_id' in latestOfferMessage.metadata
+      ? (latestOfferMessage.metadata.offer_id as string)
+      : undefined;
 
+  const isOfferThread = thread?.type === 'offer';
+  const { data: offer } = useOffer(isOfferThread ? latestOfferId : undefined);
+
+  const offerActions = useOfferActions({
+    offerId: latestOfferId ?? '',
+    onSuccess: () => {},
+  });
+  const isOfferActionPending =
+    offerActions.accept.isPending ||
+    offerActions.decline.isPending ||
+    offerActions.counter.isPending;
+
+  const messageAreaRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const previousScrollHeightRef = useRef(0);
+  const hasScrolledToBottomRef = useRef(false);
+
+  // Initial scroll to bottom on first load
   useEffect(() => {
-    if (messageAreaRef.current && data) {
+    if (messageAreaRef.current && data && !hasScrolledToBottomRef.current) {
       messageAreaRef.current.scrollTop = messageAreaRef.current.scrollHeight;
+      previousScrollHeightRef.current = messageAreaRef.current.scrollHeight;
+      hasScrolledToBottomRef.current = true;
     }
   }, [data]);
+
+  // Preserve scroll position when older messages load at the top
+  useEffect(() => {
+    const container = messageAreaRef.current;
+    if (!container || !data || !hasScrolledToBottomRef.current) return;
+    const newScrollHeight = container.scrollHeight;
+    const diff = newScrollHeight - previousScrollHeightRef.current;
+    if (diff > 0 && previousScrollHeightRef.current > 0) {
+      container.scrollTop += diff;
+    }
+    previousScrollHeightRef.current = newScrollHeight;
+  }, [data]);
+
+  // Infinite scroll sentinel — fires fetchNextPage when top sentinel enters viewport
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    const container = messageAreaRef.current;
+    if (!sentinel || !container || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          previousScrollHeightRef.current = container.scrollHeight;
+          fetchNextPage();
+        }
+      },
+      { root: container, threshold: 0.1 },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const markRead = useMarkRead();
 
@@ -124,7 +193,27 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
   return (
     <div className={styles.page}>
       <PageHeader title={title} onBack={() => router.push('/messages')} />
+      {thread && (
+        <CollapsibleHeader
+          thread={thread}
+          currentUserId={user?.id ?? ''}
+          offer={isOfferThread ? offer : undefined}
+          onAcceptOffer={() => offerActions.accept.mutate()}
+          onCounterOffer={() => {}}
+          onDeclineOffer={() => offerActions.decline.mutate()}
+          isOfferPending={isOfferActionPending}
+          isCollapsed={isHeaderCollapsed}
+          onToggle={() => setIsHeaderCollapsed((prev) => !prev)}
+        />
+      )}
       <div className={styles.messageArea} ref={messageAreaRef}>
+        <div ref={sentinelRef} />
+        {isFetchingNextPage && (
+          <div className={styles.loadingMore} role="status">
+            <span className="sr-only">Loading older messages</span>
+            <div className={styles.spinner} aria-hidden="true" />
+          </div>
+        )}
         <MessageThread messages={messages} currentUserId={user?.id ?? ''} />
       </div>
       <ComposeBar threadId={threadId} />

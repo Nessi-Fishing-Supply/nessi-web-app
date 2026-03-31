@@ -1,0 +1,136 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--surface-page);
+  border-bottom: 1px solid var(--color-neutral-100);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-200) var(--spacing-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  text-align: left;
+  color: inherit;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+  }
+
+  @include breakpoint(md) {
+    padding: var(--spacing-300) var(--spacing-500);
+  }
+}
+
+.toggleInner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+}
+
+.toggleName {
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-900);
+}
+
+.chevron {
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+  flex-shrink: 0;
+}
+
+.content {
+  overflow: hidden;
+  max-height: 600px;
+  transition: max-height 250ms ease, opacity 200ms ease;
+  opacity: 1;
+}
+
+.contentCollapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300) var(--spacing-400) var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-300) var(--spacing-500) var(--spacing-500);
+  }
+}
+
+.participantRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+}
+
+.participantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-50);
+  min-width: 0;
+}
+
+.participantName {
+  font-size: var(--font-size-600);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-900);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.listingRef {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+}
+
+.listingLink {
+  color: var(--color-primary-600);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.offerBubble {
+  max-width: 320px;
+}
+
+.customRequestNote {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  font-style: italic;
+}

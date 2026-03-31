@@ -5,15 +5,28 @@
   "branch": "feat/313/thread-detail-page",
   "status": "implementing",
   "phase": {
-    "current": 3,
+    "current": 4,
     "total": 4,
     "tasks": {
-      "completed": ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "2.4", "2.5"],
-      "current": "3.1",
-      "remaining": ["3.2", "3.3", "4.1", "4.2", "4.3", "4.4", "4.5"]
+      "completed": [
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5",
+        "3.1",
+        "3.2",
+        "3.3"
+      ],
+      "current": "4.1",
+      "remaining": ["4.2", "4.3", "4.4", "4.5"]
     }
   },
   "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-31T19:00:00Z", "lastActivity": "2026-03-31T19:40:00Z" }
+  "timestamps": { "started": "2026-03-31T19:00:00Z", "lastActivity": "2026-03-31T19:55:00Z" }
 }
