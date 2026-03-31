@@ -1,5 +1,6 @@
 import { get, post, patch } from '@/libs/fetch';
 import { FetchError } from '@/libs/fetch-error';
+import { handleContextRevocation } from '@/features/context/utils/handle-context-revocation';
 import useContextStore from '@/features/context/stores/context-store';
 import type {
   ThreadWithParticipants,
@@ -35,6 +36,10 @@ export const createThread = async (data: {
 
   if (res.status === 409 || res.ok) {
     return res.json() as Promise<ThreadWithParticipants>;
+  }
+
+  if (res.status === 403) {
+    handleContextRevocation();
   }
 
   let message = `Request failed with status ${res.status}`;
