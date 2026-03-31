@@ -134,14 +134,19 @@ Tanstack Query hooks live in `src/features/messaging/hooks/`.
 | `useThread(threadId)`   | `['messages', 'threads', threadId]`             | Single thread with participants; disabled when `threadId` is falsy                 |
 | `useMessages(threadId)` | `['messages', 'threads', threadId, 'messages']` | `useInfiniteQuery` with cursor-based pagination; disabled when `threadId` is falsy |
 | `useUnreadCount()`      | `['messages', 'unread-count']`                  | Total unread count; `refetchInterval: 60_000` for nav badge polling                |
+| `useOffer(offerId)`     | `['messages', 'offers', offerId]`               | Single offer with listing/buyer/seller details; disabled when `offerId` is falsy   |
 
 ### Mutation Hooks
 
-| Hook                                                 | Optimistic Update                                                 | Invalidates                                                                 |
-| ---------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `useSendMessage({ threadId, onSuccess?, onError? })` | Prepends message to first page of infinite query cache            | `['messages', 'threads', threadId, 'messages']` + `['messages', 'threads']` |
-| `useCreateThread({ onSuccess?, onError? })`          | None (navigates to new thread)                                    | `['messages', 'threads']`; 409 treated as success                           |
-| `useMarkRead()`                                      | Sets `my_unread_count` to 0 across all thread list cache variants | `['messages', 'threads']` + `['messages', 'unread-count']`                  |
+| Hook                                                         | Optimistic Update                                                         | Invalidates                                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `useSendMessage({ threadId, onSuccess?, onError? })`         | Prepends message to first page of infinite query cache                    | `['messages', 'threads', threadId, 'messages']` + `['messages', 'threads']` |
+| `useCreateThread({ onSuccess?, onError? })`                  | None (navigates to new thread)                                            | `['messages', 'threads']`; 409 treated as success                           |
+| `useMarkRead()`                                              | Sets `my_unread_count` to 0 across all thread list cache variants         | `['messages', 'threads']` + `['messages', 'unread-count']`                  |
+| `useCreateOffer({ onSuccess?, onError? })`                   | None                                                                      | `['messages', 'offers']` + `['messages', 'threads']`                        |
+| `useOfferActions({ offerId, onSuccess?, onError? }).accept`  | Sets offer status to `'accepted'`; reverts on error                       | `['messages', 'offers', offerId]` + `['messages', 'threads']`               |
+| `useOfferActions({ offerId, onSuccess?, onError? }).decline` | Sets offer status to `'declined'`; reverts on error                       | `['messages', 'offers', offerId]` + `['messages', 'threads']`               |
+| `useOfferActions({ offerId, onSuccess?, onError? }).counter` | Sets offer status to `'countered'`; writes new offer to its own cache key | `['messages', 'offers', offerId]` + `['messages', 'threads']`               |
 
 ## Components
 
@@ -330,6 +335,9 @@ import {
   counterOffer,
   blockMember,
   unblockMember,
+  useOffer,
+  useCreateOffer,
+  useOfferActions,
 } from '@/features/messaging';
 ```
 
@@ -375,7 +383,10 @@ src/features/messaging/
 │   ├── use-send-message.ts                        # Mutation: optimistic prepend to messages cache
 │   ├── use-create-thread.ts                       # Mutation: create thread, 409 = success
 │   ├── use-mark-read.ts                           # Mutation: optimistic unread count reset
-│   └── use-unread-count.ts                        # Query: polling (60s) — key: ['messages', 'unread-count']
+│   ├── use-unread-count.ts                        # Query: polling (60s) — key: ['messages', 'unread-count']
+│   ├── use-offer.ts                               # Query: single offer — key: ['messages', 'offers', offerId]
+│   ├── use-create-offer.ts                        # Mutation: create offer, invalidates offers + threads
+│   └── use-offer-actions.ts                       # Mutation: accept/decline/counter with optimistic updates
 ├── components/
 │   ├── message-thread/                            # Chat thread UI (scaffold)
 │   │   ├── index.tsx

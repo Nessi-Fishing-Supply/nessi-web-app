@@ -54,3 +54,6 @@ export { useSendMessage } from '@/features/messaging/hooks/use-send-message';
 export { useCreateThread } from '@/features/messaging/hooks/use-create-thread';
 export { useMarkRead } from '@/features/messaging/hooks/use-mark-read';
 export { useUnreadCount } from '@/features/messaging/hooks/use-unread-count';
+export { useOffer } from '@/features/messaging/hooks/use-offer';
+export { useCreateOffer } from '@/features/messaging/hooks/use-create-offer';
+export { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
