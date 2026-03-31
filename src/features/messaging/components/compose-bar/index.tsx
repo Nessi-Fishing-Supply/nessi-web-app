@@ -105,12 +105,10 @@ export default function ComposeBar({
     return () => document.removeEventListener('keydown', handleEsc);
   }, [menuOpen]);
 
-  // Close menu when compose bar becomes disabled
-  useEffect(() => {
-    if (disabled) setMenuOpen(false);
-  }, [disabled]);
-
   const showMakeOffer = threadType === 'inquiry' && currentUserRole === 'buyer' && !!onMakeOffer;
+
+  // Menu cannot be open while compose bar is disabled
+  const isMenuOpen = menuOpen && !disabled;
 
   const handleMakeOffer = useCallback(() => {
     setMenuOpen(false);
@@ -127,7 +125,7 @@ export default function ComposeBar({
           type="button"
           className={`${styles.actionBtn}${!disabled ? ` ${styles.actionBtnEnabled}` : ''}`}
           aria-label="Open action menu"
-          aria-expanded={menuOpen}
+          aria-expanded={isMenuOpen}
           aria-haspopup="menu"
           disabled={disabled}
           onClick={() => setMenuOpen((prev) => !prev)}
@@ -135,7 +133,7 @@ export default function ComposeBar({
           <HiPlus aria-hidden="true" />
         </button>
 
-        {menuOpen && (
+        {isMenuOpen && (
           <div ref={menuRef} className={styles.actionMenu} role="menu">
             {showMakeOffer && (
               <button
