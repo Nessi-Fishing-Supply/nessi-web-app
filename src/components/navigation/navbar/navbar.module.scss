@@ -177,6 +177,38 @@
   color: var(--color-neutral-900);
 }
 
+.messagesIconWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.unreadBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-error-500);
+  color: var(--color-white);
+  font-size: var(--font-size-100);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}
+
 .navAvatar {
   width: var(--spacing-700);
   height: var(--spacing-700);

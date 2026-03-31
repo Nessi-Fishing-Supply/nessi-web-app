@@ -14,7 +14,11 @@ type MessageButtonProps = {
   className?: string;
 };
 
-export default function MessageButton({ participantId, participantName, className }: MessageButtonProps) {
+export default function MessageButton({
+  participantId,
+  participantName,
+  className,
+}: MessageButtonProps) {
   const { user, isAuthenticated } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
