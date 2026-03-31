@@ -76,6 +76,17 @@
   flex-direction: column;
 }
 
+.profileActions {
+  display: flex;
+  gap: var(--spacing-200);
+  align-items: center;
+  justify-content: center;
+
+  @include breakpoint(md) {
+    justify-content: flex-start;
+  }
+}
+
 .shopName {
   font-size: var(--font-size-1000);
   margin-bottom: var(--spacing-50);

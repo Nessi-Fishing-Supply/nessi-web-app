@@ -7,6 +7,7 @@ import { createClient } from '@/libs/supabase/server';
 import { isBlockedByServer } from '@/features/blocks';
 import { FlagTrigger } from '@/features/flags';
 import { FollowButton } from '@/features/follows';
+import MessageButton from '@/features/messaging/components/message-button';
 import ListingCard from '@/features/listings/components/listing-card';
 import styles from './shop-page.module.scss';
 
@@ -116,13 +117,16 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           <p className={styles.shopSince}>Shop since {shopSince}</p>
           {shop.description && <p className={styles.description}>{shop.description}</p>}
           {!isOwnShop && (
-            <FollowButton
-              targetType="shop"
-              targetId={shop.id}
-              targetName={shop.shop_name}
-              initialFollowerCount={shop.follower_count}
-              size="sm"
-            />
+            <div className={styles.profileActions}>
+              <FollowButton
+                targetType="shop"
+                targetId={shop.id}
+                targetName={shop.shop_name}
+                initialFollowerCount={shop.follower_count}
+                size="sm"
+              />
+              <MessageButton participantId={shop.owner_id} participantName={shop.shop_name} />
+            </div>
           )}
         </div>
       </div>

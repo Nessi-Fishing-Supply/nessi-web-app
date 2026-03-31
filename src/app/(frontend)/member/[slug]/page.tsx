@@ -8,6 +8,7 @@ import { createClient } from '@/libs/supabase/server';
 import { isBlockedByServer } from '@/features/blocks';
 import { FlagTrigger } from '@/features/flags';
 import { FollowButton } from '@/features/follows';
+import MessageButton from '@/features/messaging/components/message-button';
 import ListingCard from '@/features/listings/components/listing-card';
 import Pill from '@/components/indicators/pill';
 import styles from './member-profile.module.scss';
@@ -108,13 +109,19 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <p className={styles.handle}>@{member.slug}</p>
         <p className={styles.memberSince}>Member since {memberSince}</p>
         {!isOwnProfile && (
-          <FollowButton
-            targetType="member"
-            targetId={member.id}
-            targetName={formatMemberName(member.first_name, member.last_name)}
-            initialFollowerCount={member.follower_count}
-            size="sm"
-          />
+          <div className={styles.profileActions}>
+            <FollowButton
+              targetType="member"
+              targetId={member.id}
+              targetName={formatMemberName(member.first_name, member.last_name)}
+              initialFollowerCount={member.follower_count}
+              size="sm"
+            />
+            <MessageButton
+              participantId={member.id}
+              participantName={formatMemberName(member.first_name, member.last_name)}
+            />
+          </div>
         )}
       </div>
 
