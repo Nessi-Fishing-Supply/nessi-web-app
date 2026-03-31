@@ -6,7 +6,6 @@ import styles from './navbar.module.scss';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  HiBell,
   HiOutlineShoppingBag,
   HiOutlineHome,
   HiOutlineUserCircle,
@@ -15,6 +14,7 @@ import {
   HiSwitchHorizontal,
   HiCheckCircle,
   HiOutlineX,
+  HiOutlineChatAlt2,
 } from 'react-icons/hi';
 
 // Components
@@ -40,6 +40,9 @@ import type { ListingCategory } from '@/features/listings/types/listing';
 import CartIcon from '@/features/cart/components/cart-icon';
 import { useCartMerge } from '@/features/cart/hooks/use-cart-merge';
 import { useRecentlyViewedMerge } from '@/features/recently-viewed/hooks/use-recently-viewed-merge';
+
+// Messaging
+import { useUnreadCount } from '@/features/messaging/hooks/use-unread-count';
 
 // Auth & Toast
 import { useAuth } from '@/features/auth/context';
@@ -77,6 +80,8 @@ export default function Navbar() {
   useCartMerge();
   useRecentlyViewedMerge();
   const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
+  const { data: unreadData } = useUnreadCount();
+  const unreadCount = isAuthenticated ? (unreadData?.count ?? 0) : 0;
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');
   const searchParams = useSearchParams();
@@ -340,7 +345,20 @@ export default function Navbar() {
           Sell Your Gear
         </button>
 
-        {mounted && isAuthenticated && <HiBell className={styles.icon} aria-hidden="true" />}
+        {mounted && isAuthenticated && (
+          <Link
+            href="/messages"
+            className={styles.messagesIconWrapper}
+            aria-label={unreadCount > 0 ? `Messages, ${unreadCount} unread` : 'Messages'}
+          >
+            <HiOutlineChatAlt2 className={styles.icon} aria-hidden="true" />
+            {unreadCount > 0 && (
+              <span className={styles.unreadBadge} aria-hidden="true">
+                {unreadCount}
+              </span>
+            )}
+          </Link>
+        )}
 
         {mounted && isAuthenticated && user ? (
           <Dropdown
@@ -371,6 +389,11 @@ export default function Navbar() {
             <DropdownItem>
               <AppLink href="/dashboard" icon={<HiOutlineHome />}>
                 Dashboard
+              </AppLink>
+            </DropdownItem>
+            <DropdownItem>
+              <AppLink href="/messages" icon={<HiOutlineChatAlt2 />}>
+                Messages
               </AppLink>
             </DropdownItem>
             <DropdownItem>
