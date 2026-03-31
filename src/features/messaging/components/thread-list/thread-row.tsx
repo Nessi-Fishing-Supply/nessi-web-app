@@ -49,7 +49,12 @@ export default function ThreadRow({ thread, currentUserId }: ThreadRowProps) {
         <time className={styles.timestamp} dateTime={thread.last_message_at ?? undefined}>
           {formatRelativeTime(thread.last_message_at)}
         </time>
-        {isUnread && <span className={styles.dot} aria-hidden="true" />}
+        {isUnread && (
+          <>
+            <span className={styles.dot} aria-hidden="true" />
+            <span className="sr-only">Unread</span>
+          </>
+        )}
       </div>
     </Link>
   );

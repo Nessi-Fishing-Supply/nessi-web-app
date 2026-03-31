@@ -2,6 +2,7 @@
 
 import type { ThreadWithParticipants } from '@/features/messaging/types/thread';
 import ThreadRow from './thread-row';
+import styles from './thread-list.module.scss';
 
 interface ThreadListProps {
   threads: ThreadWithParticipants[];
@@ -10,7 +11,7 @@ interface ThreadListProps {
 
 export default function ThreadList({ threads, currentUserId }: ThreadListProps) {
   return (
-    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+    <ul className={styles.list}>
       {threads.map((thread) => (
         <li key={thread.id}>
           <ThreadRow thread={thread} currentUserId={currentUserId} />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { HiOutlineChatAlt2 } from 'react-icons/hi';
 import { useAuth } from '@/features/auth/context';
 import { useThreads } from '@/features/messaging/hooks/use-threads';
@@ -34,12 +34,14 @@ const EMPTY_DESCRIPTIONS: Record<number, string> = {
 const SKELETON_COUNT = 5;
 
 export default function InboxPage() {
+  const router = useRouter();
   const { user } = useAuth();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const activeType = TAB_TYPES[activeTabIndex];
 
-  const { data: allThreads } = useThreads();
-  const { data: threads, isLoading, isError, refetch } = useThreads(activeType);
+  const { data: allThreads, isLoading, isError, refetch } = useThreads();
+
+  const threads = activeType ? allThreads?.filter((t) => t.type === activeType) : allThreads;
 
   const tabItems: TabItem[] = TAB_LABELS.map((label, index) => {
     const type = TAB_TYPES[index];
@@ -85,9 +87,9 @@ export default function InboxPage() {
           <HiOutlineChatAlt2 className={styles.emptyIcon} aria-hidden="true" />
           <h2 className={styles.emptyHeading}>No messages yet</h2>
           <p className={styles.emptyText}>{EMPTY_DESCRIPTIONS[activeTabIndex]}</p>
-          <Link href="/search">
-            <Button style="primary">Browse listings</Button>
-          </Link>
+          <Button style="primary" onClick={() => router.push('/search')}>
+            Browse listings
+          </Button>
         </div>
       );
     }
