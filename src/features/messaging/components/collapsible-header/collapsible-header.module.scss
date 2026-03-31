@@ -52,7 +52,9 @@
 .content {
   overflow: hidden;
   max-height: 600px;
-  transition: max-height 250ms ease, opacity 200ms ease;
+  transition:
+    max-height 250ms ease,
+    opacity 200ms ease;
   opacity: 1;
 }
 

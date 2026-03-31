@@ -53,14 +53,19 @@ export default function CollapsibleHeader({
       >
         <div className={styles.toggleInner}>
           <TypeBadge type={thread.type} />
-          <span className={styles.toggleName}>{otherParticipant?.member.first_name ?? 'Unknown'}</span>
+          <span className={styles.toggleName}>
+            {otherParticipant?.member.first_name ?? 'Unknown'}
+          </span>
         </div>
         <span className={styles.chevron} aria-hidden="true">
           {isCollapsed ? '▾' : '▴'}
         </span>
       </button>
 
-      <div className={`${styles.content} ${isCollapsed ? styles.contentCollapsed : ''}`} aria-hidden={isCollapsed}>
+      <div
+        className={`${styles.content} ${isCollapsed ? styles.contentCollapsed : ''}`}
+        aria-hidden={isCollapsed}
+      >
         {thread.type === 'inquiry' && (
           <div className={styles.section}>
             <div className={styles.participantRow}>
