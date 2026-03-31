@@ -24,7 +24,7 @@ export async function blockMemberServer(
     throw new Error(`Failed to block member: ${error.message}`);
   }
 
-  return block as MemberBlock;
+  return block;
 }
 
 export async function unblockMemberServer(
@@ -45,37 +45,4 @@ export async function unblockMemberServer(
   }
 
   return { success: Array.isArray(data) && data.length > 0 };
-}
-
-export async function isBlockedServer(blockerId: string, blockedId: string): Promise<boolean> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('member_blocks')
-    .select('id')
-    .eq('blocker_id', blockerId)
-    .eq('blocked_id', blockedId)
-    .maybeSingle();
-
-  if (error) {
-    console.error('[isBlockedServer] query failed:', error.message);
-  }
-
-  return data !== null;
-}
-
-export async function getBlockedMembersServer(blockerId: string): Promise<MemberBlock[]> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('member_blocks')
-    .select()
-    .eq('blocker_id', blockerId)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    throw new Error(`Failed to get blocked members: ${error.message}`);
-  }
-
-  return (data ?? []) as MemberBlock[];
 }
