@@ -3,7 +3,7 @@
   "issue": 310,
   "title": "Messaging — Tanstack Query hooks for threads and messages",
   "branch": "feat/310/messaging-tanstack-query-hooks",
-  "status": "reviewing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-31T16:00:00Z", "lastActivity": "2026-03-31T16:22:00Z" }
+  "timestamps": {
+    "started": "2026-03-31T16:00:00Z",
+    "lastActivity": "2026-03-31T16:28:00Z",
+    "completedAt": "2026-03-31T16:28:00Z",
+    "pruneAfter": "2026-05-30T16:28:00Z"
+  }
 }
