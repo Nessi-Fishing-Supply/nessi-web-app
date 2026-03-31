@@ -3,7 +3,7 @@
   "issue": 309,
   "title": "Messaging — API routes for member blocking",
   "branch": "feat/309/api-routes-member-blocking",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -15,5 +15,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-03-31T12:00:00Z", "lastActivity": "2026-03-31T12:15:00Z" }
+  "timestamps": {
+    "started": "2026-03-31T12:00:00Z",
+    "lastActivity": "2026-03-31T12:20:00Z"
+  },
+  "completedAt": "2026-03-31T12:20:00Z",
+  "pruneAfter": "2026-05-30T12:20:00Z"
 }
