@@ -124,14 +124,24 @@ Thin `fetch` wrappers using `@/libs/fetch` (`get`, `post`, `patch`). Called by T
 
 ## Hooks
 
-Tanstack Query hooks will live in `src/features/messaging/hooks/`. Expected hooks:
+Tanstack Query hooks live in `src/features/messaging/hooks/`.
 
-- `useThreads()` — query key `['messaging', 'threads']`
-- `useThread(threadId)` — query key `['messaging', 'threads', threadId]`
-- `useMessages(threadId)` — infinite query for paginated messages; key `['messaging', 'messages', threadId]`
-- `useSendMessage({ threadId })` — mutation; optimistic insert before server confirm
-- `useMarkThreadRead(threadId)` — mutation; updates unread badge immediately
-- `useUnreadCount()` — query key `['messaging', 'unread']`; drives the inbox badge in navigation
+### Query Hooks
+
+| Hook                    | Query Key                                       | Description                                                                        |
+| ----------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `useThreads(type?)`     | `['messages', 'threads', type]`                 | List threads; optional `ThreadType` filter for independent caching per type        |
+| `useThread(threadId)`   | `['messages', 'threads', threadId]`             | Single thread with participants; disabled when `threadId` is falsy                 |
+| `useMessages(threadId)` | `['messages', 'threads', threadId, 'messages']` | `useInfiniteQuery` with cursor-based pagination; disabled when `threadId` is falsy |
+| `useUnreadCount()`      | `['messages', 'unread-count']`                  | Total unread count; `refetchInterval: 60_000` for nav badge polling                |
+
+### Mutation Hooks
+
+| Hook                                                 | Optimistic Update                                                 | Invalidates                                                                 |
+| ---------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `useSendMessage({ threadId, onSuccess?, onError? })` | Prepends message to first page of infinite query cache            | `['messages', 'threads', threadId, 'messages']` + `['messages', 'threads']` |
+| `useCreateThread({ onSuccess?, onError? })`          | None (navigates to new thread)                                    | `['messages', 'threads']`; 409 treated as success                           |
+| `useMarkRead()`                                      | Sets `my_unread_count` to 0 across all thread list cache variants | `['messages', 'threads']` + `['messages', 'unread-count']`                  |
 
 ## Components
 
@@ -358,13 +368,14 @@ src/features/messaging/
 │   ├── offers.ts                                  # Client-side offer fetch wrappers
 │   ├── blocks-server.ts                           # Server-side block operations (cookie auth)
 │   └── blocks.ts                                  # Client-side block fetch wrappers
-├── hooks/                                         # Phase 2
-│   ├── use-threads.ts                             # Query: thread list — key: ['messaging', 'threads']
-│   ├── use-thread.ts                              # Query: single thread — key: ['messaging', 'threads', threadId]
-│   ├── use-messages.ts                            # Infinite query: paginated messages
-│   ├── use-send-message.ts                        # Mutation: optimistic message send
-│   ├── use-mark-thread-read.ts                    # Mutation: reset unread count
-│   └── use-unread-count.ts                        # Query: total unread — drives nav badge
+├── hooks/
+│   ├── use-threads.ts                             # Query: thread list — key: ['messages', 'threads', type]
+│   ├── use-thread.ts                              # Query: single thread — key: ['messages', 'threads', threadId]
+│   ├── use-messages.ts                            # Infinite query: cursor-based — key: ['messages', 'threads', threadId, 'messages']
+│   ├── use-send-message.ts                        # Mutation: optimistic prepend to messages cache
+│   ├── use-create-thread.ts                       # Mutation: create thread, 409 = success
+│   ├── use-mark-read.ts                           # Mutation: optimistic unread count reset
+│   └── use-unread-count.ts                        # Query: polling (60s) — key: ['messages', 'unread-count']
 ├── components/
 │   ├── message-thread/                            # Chat thread UI (scaffold)
 │   │   ├── index.tsx
