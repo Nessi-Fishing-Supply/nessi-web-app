@@ -226,12 +226,12 @@ Member blocking prevents a blocked member from sending messages or initiating th
 
 Uses `@/libs/supabase/server` (cookie-based auth). Called by API route handlers only.
 
-| Function                  | Signature                                                 | Description                                                                                   |
-| ------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `blockMemberServer`       | `(blockerId, blockedId) => Promise<MemberBlock>`          | Insert block row. Validates blocker != blocked. Throws `'Already blocked'` on 23505 duplicate |
-| `unblockMemberServer`     | `(blockerId, blockedId) => Promise<{ success: boolean }>` | Delete block row. Returns `{ success: false }` if not found                                   |
-| `isBlockedServer`         | `(blockerId, blockedId) => Promise<boolean>`              | Check if blocker has blocked blockedId via `.maybeSingle()`                                   |
-| `getBlockedMembersServer` | `(blockerId) => Promise<MemberBlock[]>`                   | List all blocked members, ordered by `created_at DESC`                                        |
+| Function              | Signature                                                 | Description                                                                                   |
+| --------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `blockMemberServer`   | `(blockerId, blockedId) => Promise<MemberBlock>`          | Insert block row. Validates blocker != blocked. Throws `'Already blocked'` on 23505 duplicate |
+| `unblockMemberServer` | `(blockerId, blockedId) => Promise<{ success: boolean }>` | Delete block row. Returns `{ success: false }` if not found                                   |
+
+**Note:** For block checks (`isBlockedByServer`) and block list with member details (`getBlockedMembersServer`), use `src/features/blocks/services/block-server.ts` — the blocks feature is the canonical owner of enforcement and management queries.
 
 ### Client Services (`src/features/messaging/services/blocks.ts`)
 

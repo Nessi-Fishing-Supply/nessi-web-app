@@ -42,10 +42,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
 
-    if (message === 'Cannot block yourself') {
-      return NextResponse.json({ error: message }, { status: 400, headers: AUTH_CACHE_HEADERS });
-    }
-
     if (message === 'Already blocked') {
       return NextResponse.json({ error: message }, { status: 409, headers: AUTH_CACHE_HEADERS });
     }
