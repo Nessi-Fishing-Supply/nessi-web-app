@@ -80,8 +80,8 @@ export default function Navbar() {
   useCartMerge();
   useRecentlyViewedMerge();
   const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
-  const { data: unreadData } = useUnreadCount();
-  const unreadCount = isAuthenticated ? (unreadData?.count ?? 0) : 0;
+  const { data: unreadData } = useUnreadCount(isAuthenticated);
+  const unreadCount = unreadData?.count ?? 0;
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');
   const searchParams = useSearchParams();
