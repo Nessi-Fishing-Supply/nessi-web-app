@@ -12,8 +12,9 @@ import ConditionBadge from '@/features/listings/components/condition-badge';
 import ShareButton from '@/features/listings/components/share-button';
 import SimilarItemsStrip from '@/features/listings/components/similar-items-strip';
 import MoreFromSellerStrip from '@/features/listings/components/more-from-seller-strip';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Button from '@/components/controls/button';
+import OfferSheet from '@/features/messaging/components/offer-sheet';
 import AddToCartButton from '@/features/cart/components/add-to-cart-button';
 import WatchButton from '@/features/watchlist/components/watch-button';
 import { formatPrice } from '@/features/shared/utils/format';
@@ -22,6 +23,8 @@ import { getCategoryLabel } from '@/features/listings/constants/category';
 import { useIncrementViewCount, useDuplicateListing } from '@/features/listings/hooks/use-listings';
 import { addRecentlyViewed } from '@/features/recently-viewed';
 import { useToast } from '@/components/indicators/toast/context';
+import { useAuth } from '@/features/auth/context';
+import { useCreateThread } from '@/features/messaging/hooks/use-create-thread';
 import useContextStore from '@/features/context/stores/context-store';
 import type { ListingWithPhotos, SellerIdentity } from '@/features/listings/types/listing';
 import styles from './listing-detail.module.scss';
@@ -34,12 +37,27 @@ type Props = {
 
 export default function ListingDetail({ listing, seller, currentUserId }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const { showToast } = useToast();
+  const { isAuthenticated, user } = useAuth();
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [isOfferSheetOpen, setIsOfferSheetOpen] = useState(false);
 
   const { mutate: incrementView } = useIncrementViewCount();
   const duplicateMutation = useDuplicateListing();
+  const { mutate: createThread, isPending: isThreadPending } = useCreateThread({
+    onSuccess: (thread) => {
+      router.push(`/messages/${thread.id}`);
+    },
+    onError: () => {
+      showToast({
+        type: 'error',
+        message: 'Could not open conversation',
+        description: 'Please try again.',
+      });
+    },
+  });
 
   useEffect(() => {
     incrementView(listing.id);
@@ -79,6 +97,27 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
           description: 'Please try again.',
         }),
     });
+  }
+
+  function handleMessageSeller() {
+    if (!isAuthenticated) {
+      router.push(`${pathname}?login=true`);
+      return;
+    }
+    createThread({
+      type: 'inquiry',
+      participantIds: [user!.id, listing.seller_id],
+      roles: ['buyer', 'seller'],
+      listingId: listing.id,
+    });
+  }
+
+  function handleMakeOffer() {
+    if (!isAuthenticated) {
+      router.push(`${pathname}?login=true`);
+      return;
+    }
+    setIsOfferSheetOpen(true);
   }
 
   function handlePhotoTap(index: number) {
@@ -198,13 +237,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
                   shopId={listing.shop_id}
                   fullWidth
                 />
-                <Button
-                  style="secondary"
-                  fullWidth
-                  disabled
-                  outline
-                  ariaLabel="Make Offer — Coming Soon"
-                >
+                <Button style="secondary" fullWidth outline onClick={handleMakeOffer}>
                   Make Offer
                 </Button>
               </div>
@@ -228,17 +261,17 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
                 shopId={listing.shop_id}
                 fullWidth
               />
-              <Button
-                style="secondary"
-                fullWidth
-                disabled
-                outline
-                ariaLabel="Make Offer — Coming Soon"
-              >
+              <Button style="secondary" fullWidth outline onClick={handleMakeOffer}>
                 Make Offer
               </Button>
-              <button type="button" className={styles.messageLink} disabled aria-disabled="true">
-                Message Seller
+              <button
+                type="button"
+                className={styles.messageLink}
+                onClick={handleMessageSeller}
+                disabled={isThreadPending}
+                aria-busy={isThreadPending}
+              >
+                {isThreadPending ? 'Opening chat...' : 'Message Seller'}
               </button>
             </div>
           )}
@@ -351,6 +384,17 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
           />
         </div>
       )}
+
+      <OfferSheet
+        isOpen={isOfferSheetOpen}
+        onClose={() => setIsOfferSheetOpen(false)}
+        listingId={listing.id}
+        listingTitle={listing.title}
+        listingPriceCents={listing.price_cents}
+        sellerId={listing.seller_id}
+        mode="create"
+        onOfferCreated={({ thread_id }) => router.push(`/messages/${thread_id}`)}
+      />
 
       <PhotoLightbox
         photos={photos}

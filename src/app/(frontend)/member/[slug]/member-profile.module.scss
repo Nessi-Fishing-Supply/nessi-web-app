@@ -69,6 +69,13 @@
   font-size: var(--font-size-500);
 }
 
+.profileActions {
+  display: flex;
+  gap: var(--spacing-200);
+  align-items: center;
+  justify-content: center;
+}
+
 .preferences {
   margin-bottom: var(--spacing-700);
 
