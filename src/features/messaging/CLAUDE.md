@@ -162,17 +162,41 @@ Small colored pill displaying the thread type. Wraps the `Pill` component with t
 
 Thread list container and individual thread row for the `/messages` inbox page. ThreadList wraps threads in semantic `<ul>`/`<li>`. ThreadRow displays avatar, name (bold if unread), TypeBadge, message preview (truncated), relative timestamp, and unread dot indicator. Each row links to `/messages/{thread_id}`.
 
-### MessageThread (scaffold)
+### CollapsibleHeader
+
+**File:** `src/features/messaging/components/collapsible-header/index.tsx`
+
+Thread context header that collapses to a slim bar on scroll. Props: `{ thread: ThreadWithParticipants, currentUserId: string, offer?: OfferWithDetails, onAcceptOffer?, onCounterOffer?, onDeclineOffer?, isOfferPending?: boolean, isCollapsed: boolean, onToggle: () => void }`. Renders thread-type-specific context: inquiry threads show a listing reference card, offer threads show an OfferBubble with accept/counter/decline actions, direct threads show participant info. When collapsed, renders a slim bar with TypeBadge and the other participant's name.
+
+### ComposeBar
+
+**File:** `src/features/messaging/components/compose-bar/index.tsx`
+
+Message input bar at the bottom of the thread view. Props: `{ threadId: string, disabled?: boolean }`. Features an auto-expanding textarea that grows with content, Enter to send, and Shift+Enter for a newline. Calls `useSendMessage` internally and clears the input on successful send.
+
+### MessageNode
+
+**File:** `src/features/messaging/components/message-node/index.tsx`
+
+Handles non-bubble message types. Props: `{ message: MessageWithSender }`. System messages (`message_type = 'system'`) render as centered muted text. Nudge messages (`message_type = 'nudge'`) render as an `InlineBanner` with contextual guidance. See also `listing-node.tsx` in the same directory for listing preview cards.
+
+### ListingNode
+
+**File:** `src/features/messaging/components/message-node/listing-node.tsx`
+
+Compact inline listing card rendered when `message_type = 'listing_node'`. Props: `{ metadata: { listing_id?, title?, price_cents?, image_url?, status? } | null }`. Displays a thumbnail, listing title, formatted price, and a link to the listing detail page. Handles null/missing metadata gracefully.
+
+### MessageThread
 
 **File:** `src/features/messaging/components/message-thread/index.tsx`
 
-Chat thread UI — renders the message list, input field, and participant header for a single thread. Full implementation in Phase 3.
+Full production chat thread UI. Props: `{ messages: MessageWithSender[], currentUserId: string, className? }`. Renders each message according to its type: plain text as chat bubbles (sender right, receiver left), system/nudge messages via `MessageNode`, `listing_node` messages via `ListingNode`, and `offer_node` messages via `OfferBubble`. Inserts date separator labels between messages from different calendar days. Has `role="log"` and `aria-live="polite"` for screen reader announcements.
 
-### OfferBubble (scaffold)
+### OfferBubble
 
 **File:** `src/features/messaging/components/offer-bubble/index.tsx`
 
-Inline offer display rendered inside the message thread when `message_type = 'offer_node'`. Displays offer amount, status, and accept/decline actions. Full implementation in Phase 3.
+Inline offer display rendered inside the message thread when `message_type = 'offer_node'`. Handles all five offer statuses: `pending`, `accepted`, `declined`, `countered`, and `expired`. Displays offer amount, status badge, and buyer/seller context. Accept/counter/decline action buttons are shown to the seller when status is `pending`. Accepts an `isPending` prop (used for `aria-busy`) to indicate an in-flight offer action.
 
 ## Offers
 
@@ -370,6 +394,10 @@ import MessageThread from '@/features/messaging/components/message-thread';
 import OfferBubble from '@/features/messaging/components/offer-bubble';
 import TypeBadge from '@/features/messaging/components/type-badge';
 import ThreadList from '@/features/messaging/components/thread-list';
+import CollapsibleHeader from '@/features/messaging/components/collapsible-header';
+import ComposeBar from '@/features/messaging/components/compose-bar';
+import MessageNode from '@/features/messaging/components/message-node';
+import ListingNode from '@/features/messaging/components/message-node/listing-node';
 ```
 
 ## Directory Structure
@@ -410,10 +438,20 @@ src/features/messaging/
 │   │   ├── thread-row.tsx                         # Single thread row with avatar, badge, preview, timestamp
 │   │   ├── thread-row.module.scss
 │   │   └── thread-list.module.scss
-│   ├── message-thread/                            # Chat thread UI (scaffold)
+│   ├── collapsible-header/                        # Thread context header (collapses on scroll)
+│   │   ├── index.tsx
+│   │   └── collapsible-header.module.scss
+│   ├── compose-bar/                               # Message input with auto-expanding textarea
+│   │   ├── index.tsx
+│   │   └── compose-bar.module.scss
+│   ├── message-node/                              # Non-bubble message types
+│   │   ├── index.tsx                              # System + nudge messages
+│   │   ├── listing-node.tsx                       # Inline listing card
+│   │   └── message-node.module.scss
+│   ├── message-thread/                            # Production chat thread UI
 │   │   ├── index.tsx
 │   │   └── message-thread.module.scss
-│   └── offer-bubble/                              # Inline offer display (scaffold)
+│   └── offer-bubble/                              # Inline offer display — all 5 offer statuses
 │       ├── index.tsx
 │       └── offer-bubble.module.scss
 └── utils/

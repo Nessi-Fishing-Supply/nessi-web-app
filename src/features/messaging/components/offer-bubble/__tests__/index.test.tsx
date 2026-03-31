@@ -73,6 +73,36 @@ describe('OfferBubble', () => {
     expect(screen.queryByRole('button', { name: /decline/i })).not.toBeInTheDocument();
   });
 
+  it('hides action buttons when status is countered', () => {
+    render(
+      <OfferBubble
+        {...baseProps}
+        status="countered"
+        onAccept={vi.fn()}
+        onCounter={vi.fn()}
+        onDecline={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /accept/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /counter/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /decline/i })).not.toBeInTheDocument();
+  });
+
+  it('hides action buttons when status is expired', () => {
+    render(
+      <OfferBubble
+        {...baseProps}
+        status="expired"
+        onAccept={vi.fn()}
+        onCounter={vi.fn()}
+        onDecline={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /accept/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /counter/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /decline/i })).not.toBeInTheDocument();
+  });
+
   it('shows Accepted badge when status is accepted', () => {
     render(<OfferBubble {...baseProps} status="accepted" />);
     expect(screen.getByText('Accepted')).toBeInTheDocument();
@@ -81,6 +111,16 @@ describe('OfferBubble', () => {
   it('shows Declined badge when status is declined', () => {
     render(<OfferBubble {...baseProps} status="declined" />);
     expect(screen.getByText('Declined')).toBeInTheDocument();
+  });
+
+  it('shows Countered badge when status is countered', () => {
+    render(<OfferBubble {...baseProps} status="countered" />);
+    expect(screen.getByText('Countered')).toBeInTheDocument();
+  });
+
+  it('shows Expired badge when status is expired', () => {
+    render(<OfferBubble {...baseProps} status="expired" />);
+    expect(screen.getByText('Expired')).toBeInTheDocument();
   });
 
   it('calls onAccept when Accept button is clicked', () => {
@@ -106,5 +146,10 @@ describe('OfferBubble', () => {
   it('shows an expiry countdown when status is pending', () => {
     render(<OfferBubble {...baseProps} />);
     expect(screen.getByText(/expires in/i)).toBeInTheDocument();
+  });
+
+  it('does not show expiry countdown when status is not pending', () => {
+    render(<OfferBubble {...baseProps} status="accepted" />);
+    expect(screen.queryByText(/expires in/i)).not.toBeInTheDocument();
   });
 });

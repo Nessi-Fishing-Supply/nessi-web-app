@@ -10,6 +10,7 @@ import { useOffer } from '@/features/messaging/hooks/use-offer';
 import { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
 import PageHeader from '@/components/layout/page-header';
 import ErrorState from '@/components/indicators/error-state';
+import InlineBanner from '@/components/indicators/inline-banner';
 import ComposeBar from '@/features/messaging/components/compose-bar';
 import MessageThread from '@/features/messaging/components/message-thread';
 import CollapsibleHeader from '@/features/messaging/components/collapsible-header';
@@ -149,6 +150,7 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
         <div className={styles.messageArea}>
           <div className={styles.skeleton} role="status" aria-live="polite">
             <span className="sr-only">Loading conversation</span>
+            <div className={styles.skeletonHeader} />
             {SKELETON_ROWS.map((row, i) => (
               <div
                 key={i}
@@ -190,6 +192,11 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
         .flatMap((page) => [...page.messages].reverse())
     : [];
 
+  const isEmpty = messages.length === 0;
+  const isThreadInactive = thread?.status === 'archived' || thread?.status === 'closed';
+  const inactiveLabel =
+    thread?.status === 'archived' ? 'This conversation is archived' : 'This conversation is closed';
+
   return (
     <div className={styles.page}>
       <PageHeader title={title} onBack={() => router.push('/messages')} />
@@ -214,9 +221,20 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
             <div className={styles.spinner} aria-hidden="true" />
           </div>
         )}
-        <MessageThread messages={messages} currentUserId={user?.id ?? ''} />
+        {isEmpty ? (
+          <div className={styles.emptyThread}>
+            <p className={styles.emptyThreadText}>Send a message to get started</p>
+          </div>
+        ) : (
+          <MessageThread messages={messages} currentUserId={user?.id ?? ''} />
+        )}
       </div>
-      <ComposeBar threadId={threadId} />
+      {isThreadInactive && (
+        <div className={styles.inactiveBanner}>
+          <InlineBanner variant="info" title={inactiveLabel} />
+        </div>
+      )}
+      <ComposeBar threadId={threadId} disabled={isThreadInactive} />
     </div>
   );
 }

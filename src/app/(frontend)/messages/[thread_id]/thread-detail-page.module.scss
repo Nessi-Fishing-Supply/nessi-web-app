@@ -17,6 +17,33 @@
   }
 }
 
+// Empty thread state
+
+.emptyThread {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+}
+
+.emptyThreadText {
+  color: var(--color-neutral-400);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+// Inactive thread banner (archived / closed)
+
+.inactiveBanner {
+  padding: var(--spacing-300) var(--spacing-page-sm);
+  border-top: 1px solid var(--color-neutral-100);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-300) var(--spacing-page-md);
+  }
+}
+
 // Infinite scroll — load more indicator
 
 .loadingMore {
@@ -69,6 +96,16 @@
   flex-direction: column;
   gap: var(--spacing-500);
   padding: var(--spacing-400) 0;
+}
+
+.skeletonHeader {
+  @extend %shimmer;
+
+  height: var(--spacing-700);
+  width: 55%;
+  border-radius: var(--radius-100);
+  align-self: center;
+  margin-bottom: var(--spacing-300);
 }
 
 .skeletonBubbleRow {
