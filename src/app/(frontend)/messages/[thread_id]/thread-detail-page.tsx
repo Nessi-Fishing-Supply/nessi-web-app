@@ -11,9 +11,11 @@ import { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
 import PageHeader from '@/components/layout/page-header';
 import ErrorState from '@/components/indicators/error-state';
 import InlineBanner from '@/components/indicators/inline-banner';
+import ConfirmationDialog from '@/components/layout/confirmation-dialog';
 import ComposeBar from '@/features/messaging/components/compose-bar';
 import MessageThread from '@/features/messaging/components/message-thread';
 import CollapsibleHeader from '@/features/messaging/components/collapsible-header';
+import OfferSheet from '@/features/messaging/components/offer-sheet';
 import styles from './thread-detail-page.module.scss';
 
 interface ThreadDetailPageProps {
@@ -33,6 +35,9 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
   const router = useRouter();
   const { user } = useAuth();
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
+  const [isDeclineDialogOpen, setIsDeclineDialogOpen] = useState(false);
+  const [isOfferSheetOpen, setIsOfferSheetOpen] = useState(false);
+  const [offerSheetMode, setOfferSheetMode] = useState<'create' | 'counter'>('create');
 
   const {
     data: thread,
@@ -138,9 +143,42 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
     ? `${otherParticipant.member.first_name} ${otherParticipant.member.last_name}`
     : 'Messages';
 
+  const currentUserParticipant = thread?.participants.find((p) => p.member.id === user?.id);
+  const currentUserRole = currentUserParticipant?.role;
+
   const handleRetry = () => {
     refetchThread();
     refetchMessages();
+  };
+
+  const isThreadInactive = thread?.status === 'archived' || thread?.status === 'closed';
+
+  // Offer sheet handlers
+  const handleMakeOffer = () => {
+    if (isThreadInactive) return;
+    setOfferSheetMode('create');
+    setIsOfferSheetOpen(true);
+  };
+
+  const handleCounterOffer = () => {
+    if (!offer || offer.status !== 'pending' || isThreadInactive) return;
+    setOfferSheetMode('counter');
+    setIsOfferSheetOpen(true);
+  };
+
+  const handleDeclineOffer = () => {
+    setIsDeclineDialogOpen(true);
+  };
+
+  const handleConfirmDecline = () => {
+    offerActions.decline.mutate();
+    setIsDeclineDialogOpen(false);
+  };
+
+  const handleOfferCreated = (newOffer: { thread_id: string }) => {
+    if (newOffer.thread_id) {
+      router.push(`/messages/${newOffer.thread_id}`);
+    }
   };
 
   if (isLoading) {
@@ -193,9 +231,15 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
     : [];
 
   const isEmpty = messages.length === 0;
-  const isThreadInactive = thread?.status === 'archived' || thread?.status === 'closed';
   const inactiveLabel =
     thread?.status === 'archived' ? 'This conversation is archived' : 'This conversation is closed';
+
+  // Listing context for offer sheet (from thread or offer)
+  const listingId = thread?.listing_id ?? offer?.listing?.id ?? '';
+  const listingTitle = offer?.listing?.title ?? `Listing #${listingId.slice(0, 8)}`;
+  const listingPriceCents = offer?.listing?.price_cents ?? 0;
+  const sellerId =
+    offer?.seller?.id ?? thread?.participants.find((p) => p.role === 'seller')?.member.id ?? '';
 
   return (
     <div className={styles.page}>
@@ -206,9 +250,8 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
           currentUserId={user?.id ?? ''}
           offer={isOfferThread ? offer : undefined}
           onAcceptOffer={() => offerActions.accept.mutate()}
-          // Counter-offer requires a modal/input flow (separate ticket — out of scope)
-          onCounterOffer={undefined}
-          onDeclineOffer={() => offerActions.decline.mutate()}
+          onCounterOffer={handleCounterOffer}
+          onDeclineOffer={handleDeclineOffer}
           isOfferPending={isOfferActionPending}
           isCollapsed={isHeaderCollapsed}
           onToggle={() => setIsHeaderCollapsed((prev) => !prev)}
@@ -235,7 +278,38 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
           <InlineBanner variant="info" title={inactiveLabel} />
         </div>
       )}
-      <ComposeBar threadId={threadId} disabled={isThreadInactive} />
+      <ComposeBar
+        threadId={threadId}
+        disabled={isThreadInactive}
+        threadType={thread?.type}
+        currentUserRole={currentUserRole}
+        onMakeOffer={handleMakeOffer}
+      />
+
+      <ConfirmationDialog
+        isOpen={isDeclineDialogOpen}
+        onClose={() => setIsDeclineDialogOpen(false)}
+        onConfirm={handleConfirmDecline}
+        title="Decline Offer"
+        message="Are you sure you want to decline this offer? This action cannot be undone."
+        confirmLabel="Decline"
+        variant="destructive"
+      />
+
+      {listingPriceCents > 0 && (
+        <OfferSheet
+          isOpen={isOfferSheetOpen}
+          onClose={() => setIsOfferSheetOpen(false)}
+          listingId={listingId}
+          listingTitle={listingTitle}
+          listingPriceCents={listingPriceCents}
+          sellerId={sellerId}
+          mode={offerSheetMode}
+          currentOfferAmountCents={offer?.amount_cents}
+          offerId={latestOfferId}
+          onOfferCreated={handleOfferCreated}
+        />
+      )}
     </div>
   );
 }

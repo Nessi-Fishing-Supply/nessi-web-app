@@ -1,12 +1,31 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Avatar from '@/components/controls/avatar';
+import Pill from '@/components/indicators/pill';
 import TypeBadge from '@/features/messaging/components/type-badge';
 import OfferBubble from '@/features/messaging/components/offer-bubble';
 import type { ThreadWithParticipants } from '@/features/messaging/types/thread';
-import type { OfferWithDetails } from '@/features/messaging/types/offer';
+import type { OfferWithDetails, OfferStatus } from '@/features/messaging/types/offer';
 import styles from './collapsible-header.module.scss';
+
+const OFFER_STATUS_PILL_COLOR: Record<OfferStatus, 'warning' | 'success' | 'error' | 'default'> = {
+  pending: 'warning',
+  accepted: 'success',
+  declined: 'error',
+  countered: 'warning',
+  expired: 'default',
+};
+
+function getCountdown(expiresAt: string): string {
+  const diff = new Date(expiresAt).getTime() - Date.now();
+  if (diff <= 0) return 'Expired';
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  if (hours > 0) return `Expires in ${hours}h ${minutes}m`;
+  return `Expires in ${minutes}m`;
+}
 
 interface CollapsibleHeaderProps {
   thread: ThreadWithParticipants;
@@ -42,6 +61,19 @@ export default function CollapsibleHeader({
     otherParticipant?.role === 'buyer' ||
     thread.participants.find((p) => p.member.id === currentUserId)?.role === 'seller';
 
+  const [countdown, setCountdown] = useState(() =>
+    offer?.status === 'pending' ? getCountdown(offer.expires_at) : '',
+  );
+
+  useEffect(() => {
+    if (offer?.status !== 'pending') return;
+    setCountdown(getCountdown(offer.expires_at));
+    const interval = setInterval(() => {
+      setCountdown(getCountdown(offer.expires_at));
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [offer?.status, offer?.expires_at]);
+
   return (
     <header className={styles.header} aria-expanded={!isCollapsed}>
       <button
@@ -53,6 +85,11 @@ export default function CollapsibleHeader({
       >
         <div className={styles.toggleInner}>
           <TypeBadge type={thread.type} />
+          {offer && (
+            <Pill color={OFFER_STATUS_PILL_COLOR[offer.status]}>
+              {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
+            </Pill>
+          )}
           <span className={styles.toggleName}>
             {otherParticipant?.member.first_name ?? 'Unknown'}
           </span>
@@ -105,6 +142,9 @@ export default function CollapsibleHeader({
               isPending={isOfferPending}
               className={styles.offerBubble}
             />
+            {offer.status === 'pending' && countdown && (
+              <p className={styles.countdown}>{countdown}</p>
+            )}
           </div>
         )}
 

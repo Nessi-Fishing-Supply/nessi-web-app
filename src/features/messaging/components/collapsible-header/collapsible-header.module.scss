@@ -130,6 +130,13 @@
   max-width: 320px;
 }
 
+.countdown {
+  margin: 0;
+  font-size: var(--font-size-400);
+  color: var(--color-warning-600);
+  font-weight: var(--font-weight-500);
+}
+
 .customRequestNote {
   margin: 0;
   font-size: var(--font-size-500);
