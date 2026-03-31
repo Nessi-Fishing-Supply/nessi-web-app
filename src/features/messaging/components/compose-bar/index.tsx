@@ -22,6 +22,7 @@ export default function ComposeBar({ threadId, disabled = false }: ComposeBarPro
       setValue('');
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
+        textareaRef.current.focus();
       }
     },
   });

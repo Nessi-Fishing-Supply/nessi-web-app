@@ -1,25 +1,45 @@
 /// <reference types="@testing-library/jest-dom" />
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
-import MessageThread, { type MessageItem } from '../index';
+import MessageThread from '../index';
+import type { MessageWithSender } from '../index';
 
 const SENDER_ID = 'user-sender';
 const RECEIVER_ID = 'user-receiver';
 
-const baseMessages: MessageItem[] = [
+const makeSender = (id: string) => ({
+  id,
+  first_name: id === SENDER_ID ? 'Alice' : 'Bob',
+  last_name: 'Smith',
+  avatar_url: null,
+});
+
+const baseMessages: MessageWithSender[] = [
   {
     id: 'msg-1',
-    senderId: RECEIVER_ID,
-    content: 'Hey, is this still available?',
-    timestamp: new Date('2025-06-01T10:00:00Z'),
+    thread_id: 'thread-1',
+    sender_id: RECEIVER_ID,
     type: 'text',
+    content: 'Hey, is this still available?',
+    metadata: null,
+    is_filtered: false,
+    original_content: null,
+    edited_at: null,
+    created_at: '2025-06-01T10:00:00.000Z',
+    sender: makeSender(RECEIVER_ID),
   },
   {
     id: 'msg-2',
-    senderId: SENDER_ID,
-    content: 'Yes, still available!',
-    timestamp: new Date('2025-06-01T10:05:00Z'),
+    thread_id: 'thread-1',
+    sender_id: SENDER_ID,
     type: 'text',
+    content: 'Yes, still available!',
+    metadata: null,
+    is_filtered: false,
+    original_content: null,
+    edited_at: null,
+    created_at: '2025-06-01T10:05:00.000Z',
+    sender: makeSender(SENDER_ID),
   },
 ];
 
@@ -64,11 +84,10 @@ describe('MessageThread', () => {
     const { container } = render(
       <MessageThread messages={baseMessages} currentUserId={SENDER_ID} />,
     );
-    // Avatar elements (aria-hidden divs wrapping images)
-    const avatarWrappers = container.querySelectorAll('[aria-hidden="true"]');
-    // 2 messages × 1 avatar each = 2, but sent messages also show avatar on the right
-    // The scaffold shows avatar for both sent and received — verify at least 2 avatars rendered
-    expect(avatarWrappers.length).toBeGreaterThanOrEqual(2);
+    // Only received messages have an avatarWrap div (aria-hidden wrapper)
+    const avatarWrappers = container.querySelectorAll('[class*="avatarWrap"]');
+    // msg-1 is received (has avatar), msg-2 is sent (no avatar)
+    expect(avatarWrappers).toHaveLength(1);
   });
 
   it('applies optional className to root element', () => {
@@ -76,5 +95,96 @@ describe('MessageThread', () => {
       <MessageThread messages={baseMessages} currentUserId={SENDER_ID} className="custom-class" />,
     );
     expect(container.firstChild).toHaveClass('custom-class');
+  });
+
+  it('renders system messages centered with no bubble', () => {
+    const messages: MessageWithSender[] = [
+      {
+        id: 'msg-sys',
+        thread_id: 'thread-1',
+        sender_id: SENDER_ID,
+        type: 'system',
+        content: 'Offer accepted',
+        metadata: null,
+        is_filtered: false,
+        original_content: null,
+        edited_at: null,
+        created_at: '2025-06-01T11:00:00.000Z',
+        sender: makeSender(SENDER_ID),
+      },
+    ];
+    render(<MessageThread messages={messages} currentUserId={SENDER_ID} />);
+    const systemEl = screen.getByText('Offer accepted');
+    expect(systemEl).toBeInTheDocument();
+    // System messages do not render inside a row bubble — no time element
+    expect(screen.queryByRole('time')).not.toBeInTheDocument();
+  });
+
+  it('renders nudge messages as InlineBanner', () => {
+    const messages: MessageWithSender[] = [
+      {
+        id: 'msg-nudge',
+        thread_id: 'thread-1',
+        sender_id: SENDER_ID,
+        type: 'nudge',
+        content: 'Keep your transactions on Nessi for buyer protection.',
+        metadata: null,
+        is_filtered: false,
+        original_content: null,
+        edited_at: null,
+        created_at: '2025-06-01T11:30:00.000Z',
+        sender: makeSender(SENDER_ID),
+      },
+    ];
+    render(<MessageThread messages={messages} currentUserId={SENDER_ID} />);
+    expect(
+      screen.getByText('Keep your transactions on Nessi for buyer protection.'),
+    ).toBeInTheDocument();
+    // Nudge messages do not render a time element
+    expect(screen.queryByRole('time')).not.toBeInTheDocument();
+  });
+
+  it('renders a date separator between messages on different days', () => {
+    const messages: MessageWithSender[] = [
+      {
+        id: 'msg-day1',
+        thread_id: 'thread-1',
+        sender_id: RECEIVER_ID,
+        type: 'text',
+        content: 'First day message',
+        metadata: null,
+        is_filtered: false,
+        original_content: null,
+        edited_at: null,
+        created_at: '2025-06-01T10:00:00.000Z',
+        sender: makeSender(RECEIVER_ID),
+      },
+      {
+        id: 'msg-day2',
+        thread_id: 'thread-1',
+        sender_id: SENDER_ID,
+        type: 'text',
+        content: 'Second day message',
+        metadata: null,
+        is_filtered: false,
+        original_content: null,
+        edited_at: null,
+        created_at: '2025-06-02T09:00:00.000Z',
+        sender: makeSender(SENDER_ID),
+      },
+    ];
+    const { container } = render(<MessageThread messages={messages} currentUserId={SENDER_ID} />);
+    // Two separators: one for each day
+    const separators = container.querySelectorAll('[role="separator"]');
+    expect(separators).toHaveLength(2);
+  });
+
+  it('does not render a date separator between messages on the same day', () => {
+    const { container } = render(
+      <MessageThread messages={baseMessages} currentUserId={SENDER_ID} />,
+    );
+    // Both messages are on the same day so only one separator (the first)
+    const separators = container.querySelectorAll('[role="separator"]');
+    expect(separators).toHaveLength(1);
   });
 });
