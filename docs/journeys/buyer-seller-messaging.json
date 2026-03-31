@@ -4,7 +4,7 @@
   "title": "Buyer-Seller Messaging",
   "persona": "buyer",
   "description": "Buyers and sellers exchange messages in typed threads (inquiry, direct, offer, custom request) with safety filtering, unread tracking, and archiving.",
-  "relatedIssues": [307, 312],
+  "relatedIssues": [307, 312, 313],
   "flows": [
     {
       "id": "messaging-hub",
@@ -319,11 +319,95 @@
           ]
         },
         {
+          "id": "thread-loading",
+          "title": "Show Thread Loading Skeleton",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/app/(frontend)/messages/[thread_id]/thread-detail-page.tsx",
+          "tooltip": "Rendered while useThread() or useMessages() isPending. Shows a skeleton header block and 6 alternating left/right bubble rows (3 left, 3 right) with avatar placeholders. Has role=\"status\" aria-live=\"polite\" and sr-only \"Loading conversation\". ComposeBar is rendered disabled during load."
+        },
+        {
+          "id": "thread-error",
+          "title": "Show Thread Error State",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/app/(frontend)/messages/[thread_id]/thread-detail-page.tsx",
+          "tooltip": "Rendered when useThread() or useMessages() isError is true. Shows ErrorState banner variant with message \"Something went wrong loading this conversation\" and a Retry button that calls refetchThread() and refetchMessages() together. ComposeBar is rendered disabled."
+        },
+        {
+          "id": "collapsible-header",
+          "title": "Render Collapsible Header",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/messaging/components/collapsible-header/index.tsx",
+          "tooltip": "Thread context header above the message area. Renders thread-type-specific content: inquiry threads show participant avatar, name link (/member/{slug}), and a link to the listing (\"About: Listing #{id}\"); offer threads show an OfferBubble with accept/decline actions if the current user is the seller and the offer is pending (counter is out of scope for this PR); direct and custom_request threads show participant avatar and name link. When collapsed, renders a slim bar showing TypeBadge + participant first name. Toggle is aria-expanded and aria-label aware."
+        },
+        {
           "id": "thread-view",
           "title": "Render Thread View",
           "layer": "client",
-          "status": "planned",
-          "notes": "MessageThread component scaffold exists at src/features/messaging/components/message-thread/index.tsx. Full UI is Phase 3. Should render participant header, paginated message list (infinite scroll via useMessages hook), and the compose input."
+          "status": "built",
+          "codeRef": "src/app/(frontend)/messages/[thread_id]/thread-detail-page.tsx",
+          "tooltip": "Full thread detail page at /messages/[thread_id]. Composed of: CollapsibleHeader (thread context), a scrollable message area with MessageThread (chat bubbles, system/nudge nodes, listing/offer nodes, date separators), and ComposeBar at the bottom. On initial data load, scrolls to the bottom of the message area. useMarkRead() fires on mount to clear the unread count."
+        },
+        {
+          "id": "thread-empty",
+          "title": "Show Empty Thread State",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/app/(frontend)/messages/[thread_id]/thread-detail-page.tsx",
+          "tooltip": "Rendered when messages array has zero items after a successful load. Shows centered paragraph: \"Send a message to get started\". ComposeBar remains enabled so the user can send the first message."
+        },
+        {
+          "id": "thread-inactive",
+          "title": "Show Archived/Closed Banner",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/app/(frontend)/messages/[thread_id]/thread-detail-page.tsx",
+          "tooltip": "Rendered when thread.status is 'archived' or 'closed'. Shows an InlineBanner (info variant) above the ComposeBar with label \"This conversation is archived\" or \"This conversation is closed\". ComposeBar is rendered with disabled=true so the user cannot send new messages."
+        },
+        {
+          "id": "infinite-scroll",
+          "title": "Load Older Messages",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/app/(frontend)/messages/[thread_id]/thread-detail-page.tsx",
+          "tooltip": "IntersectionObserver on a sentinel div pinned to the top of the message area. When the sentinel enters the viewport and hasNextPage is true, fetchNextPage() is called (useMessages infinite query). Scroll position is preserved after new pages append: previousScrollHeight is captured before fetch and the container.scrollTop is adjusted by the height diff after the new messages render."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "fetch-thread",
+          "condition": "Load result?",
+          "paths": [
+            { "label": "Loading", "goTo": "thread-loading" },
+            { "label": "Error", "goTo": "thread-error" },
+            { "label": "Success", "goTo": "fetch-messages" }
+          ]
+        },
+        {
+          "afterStep": "fetch-messages",
+          "condition": "Has messages?",
+          "paths": [
+            { "label": "Yes", "goTo": "thread-view" },
+            { "label": "No", "goTo": "thread-empty" }
+          ]
+        },
+        {
+          "afterStep": "thread-view",
+          "condition": "Thread status?",
+          "paths": [
+            { "label": "Active", "goTo": "compose-message" },
+            { "label": "Archived or closed", "goTo": "thread-inactive" }
+          ]
+        },
+        {
+          "afterStep": "thread-view",
+          "condition": "User scrolls to top?",
+          "paths": [
+            { "label": "More pages available", "goTo": "infinite-scroll" },
+            { "label": "No more pages", "goTo": "thread-view" }
+          ]
         }
       ]
     },
@@ -337,8 +421,9 @@
           "title": "Compose Message",
           "action": "type",
           "layer": "client",
-          "status": "planned",
-          "notes": "Message compose input in the thread view. Phase 3 UI. Should show character count and send button. Optimistic insert via useSendMessage hook — message appears immediately before server confirm."
+          "status": "built",
+          "codeRef": "src/features/messaging/components/compose-bar/index.tsx",
+          "tooltip": "Auto-expanding textarea at the bottom of the thread view. Grows up to 5 rows then scrolls. Enter submits the message; Shift+Enter inserts a newline. Send button is disabled when input is empty or a send is in-flight (aria-busy). The +/attachment button is present but non-functional (disabled, tabIndex=-1) — attachment upload is out of scope."
         },
         {
           "id": "send-message-api",
@@ -402,15 +487,17 @@
           "id": "message-delivered",
           "title": "Message Appears",
           "layer": "client",
-          "status": "planned",
-          "notes": "On 201: optimistic message confirmed, cache invalidated. On 422: show inline error 'Message blocked — violates community guidelines'. On 403 (block): show inline error 'You cannot send messages to this user'. useSendMessage hook handles rollback on error."
+          "status": "built",
+          "codeRef": "src/features/messaging/components/compose-bar/index.tsx",
+          "tooltip": "useSendMessage uses optimistic updates: the message is prepended to the first page of the infinite query cache immediately on mutate, before the server responds. On success: input clears, textarea height resets, and focus returns to the textarea. On error: the optimistic message is rolled back via the onError context snapshot. The mutation settles by invalidating both the messages query and the threads list query."
         },
         {
           "id": "nudge-system-message",
           "title": "Show Nudge Message",
           "layer": "client",
-          "status": "planned",
-          "notes": "When the safety filter returns nudge_off_platform or nudge_negotiation, the API inserts a second message with type='nudge' after the user's message. The UI should render nudge messages distinctly (system message style, not attributed to the sender) to guide the user back to platform-native flows like the offer system."
+          "status": "built",
+          "codeRef": "src/features/messaging/components/message-node/index.tsx",
+          "tooltip": "When the safety filter returns nudge_off_platform or nudge_negotiation, the API inserts a second message with type='nudge' immediately after the user's message. MessageNode renders nudge-type messages as an InlineBanner (info variant) centered in the thread — not attributed to a sender. This guides the user toward platform-native flows (e.g. the offer system) without blocking their original message."
         }
       ],
       "branches": [
@@ -494,7 +581,7 @@
           "action": "click",
           "layer": "client",
           "status": "planned",
-          "notes": "Offer entry UI is Phase 3. OfferBubble component scaffold exists at src/features/messaging/components/offer-bubble/index.tsx. Should show listing price, min offer floor (70% of price), default prefill (80%), and offer amount input. Uses calculateMinOffer() and calculateDefaultOffer() from offer-validation.ts."
+          "notes": "Offer entry UI is Phase 3. OfferBubble component is production-ready and handles all 5 statuses (pending, accepted, declined, countered, expired) — see src/features/messaging/components/offer-bubble/index.tsx. The form/modal to create an offer is not yet built. Should show listing price, min offer floor (70% of price), default prefill (80%), and offer amount input. Uses calculateMinOffer() and calculateDefaultOffer() from offer-validation.ts."
         },
         {
           "id": "validate-offer-amount",
@@ -523,8 +610,9 @@
           "id": "seller-reviews-offer",
           "title": "Seller Reviews Offer",
           "layer": "client",
-          "status": "planned",
-          "notes": "Seller sees the offer_node message in the thread. OfferBubble renders offer amount, listing thumbnail, and Accept / Decline / Counter actions. acceptOfferServer(), declineOfferServer(), and counterOfferServer() are built in offers-server.ts but the API routes (/api/offers/[id]/accept etc.) are Phase 3."
+          "status": "built",
+          "codeRef": "src/features/messaging/components/collapsible-header/index.tsx",
+          "tooltip": "CollapsibleHeader shows an OfferBubble for offer-type threads when offer data is loaded. Accept and Decline action buttons are rendered to the seller when offer.status is 'pending' (isSeller check via participant role). Counter-offer is explicitly out of scope for this PR — onCounterOffer is passed as undefined. Accept/decline trigger useOfferActions mutations with optimistic status updates. OfferBubble handles all 5 statuses: pending, accepted, declined, countered, expired."
         },
         {
           "id": "offer-expires",
