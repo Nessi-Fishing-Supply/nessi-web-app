@@ -28,7 +28,8 @@
             { "label": "View Inbox", "goTo": "fetch-threads" },
             { "label": "Start Thread", "goTo": "create-thread" },
             { "label": "Open Thread", "goTo": "fetch-thread" },
-            { "label": "Send Message", "goTo": "compose-message" }
+            { "label": "Send Message", "goTo": "compose-message" },
+            { "label": "Block User", "goTo": "trigger-block-from-thread" }
           ]
         }
       ]
@@ -484,6 +485,88 @@
           "layer": "external",
           "status": "planned",
           "notes": "expirePendingOffersServer() is built but the cron route /api/cron/expire-offers is not yet created. Pending offers expire after 24h; accepted offers (awaiting checkout) expire after 4h. The cron should run every 15 minutes via vercel.json."
+        }
+      ]
+    },
+    {
+      "id": "block-from-messaging",
+      "title": "Block a User from Thread",
+      "trigger": "User clicks Block in a thread header or participant context menu",
+      "steps": [
+        {
+          "id": "trigger-block-from-thread",
+          "title": "Click Block User",
+          "action": "click",
+          "layer": "client",
+          "status": "planned",
+          "codeRef": "src/features/messaging/services/blocks.ts",
+          "notes": "Block entry point from a messaging thread — e.g., kebab menu in the thread header with a 'Block this user' option. Client calls blockMember(memberId) from src/features/messaging/services/blocks.ts. Thread UI is Phase 3; this step is planned alongside it."
+        },
+        {
+          "id": "post-block-from-thread",
+          "title": "Create Block Record",
+          "method": "POST",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/members/block",
+          "codeRef": "src/app/api/members/block/route.ts",
+          "tooltip": "Body: { memberId }. Auth check via Supabase session. Self-block guard (400). Calls blockMemberServer() which inserts into member_blocks. Returns 201 MemberBlock. Returns 409 if already blocked.",
+          "errorCases": [
+            {
+              "condition": "User is not authenticated",
+              "result": "Returns 401 Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "memberId is missing from request body",
+              "result": "Returns 400 Bad Request",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Attempting to block yourself",
+              "result": "Returns 400 — Cannot block yourself",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Already blocked this member",
+              "result": "Returns 409 — Already blocked",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Database error",
+              "result": "Returns 500 Internal Server Error",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "thread-block-confirmed",
+          "title": "Show Block Feedback",
+          "layer": "client",
+          "status": "planned",
+          "notes": "On 201 or 409: show success toast (e.g., 'Blocked — You can no longer receive messages from this user.'). Thread should archive or close. The blocked user will receive 403 on any further message sends to this thread. Invalidate ['blocks', userId] so the account settings blocked-members list stays in sync. See member-block-management.json for the full block management flow."
+        },
+        {
+          "id": "thread-block-error",
+          "title": "Show Block Error",
+          "layer": "client",
+          "status": "planned",
+          "notes": "On 400 or 500: show error toast (e.g., 'Could not block this user. Please try again.'). Thread remains open."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "post-block-from-thread",
+          "condition": "Block succeeded?",
+          "paths": [
+            { "label": "Yes", "goTo": "thread-block-confirmed" },
+            {
+              "label": "Already blocked",
+              "detail": "409 — treat as success",
+              "goTo": "thread-block-confirmed"
+            },
+            { "label": "Error", "detail": "400 or 500 — toast shown", "goTo": "thread-block-error" }
+          ]
         }
       ]
     },

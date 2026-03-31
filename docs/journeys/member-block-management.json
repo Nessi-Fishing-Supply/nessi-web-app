@@ -7,6 +7,96 @@
   "relatedIssues": [322, 324],
   "flows": [
     {
+      "id": "block-a-member",
+      "title": "Block a Member",
+      "trigger": "User blocks a member from a messaging thread, profile page, or other surface",
+      "steps": [
+        {
+          "id": "trigger-block",
+          "title": "Trigger Block Action",
+          "action": "click",
+          "layer": "client",
+          "status": "planned",
+          "codeRef": "src/features/messaging/services/blocks.ts",
+          "notes": "The block action client service (blockMember) is built, but the UI entry point is planned. Expected surfaces: message thread header (block this user), member profile page (block button). Calls blockMember(memberId) which posts to /api/members/block."
+        },
+        {
+          "id": "post-block",
+          "title": "Create Block Record",
+          "method": "POST",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/members/block",
+          "codeRef": "src/app/api/members/block/route.ts",
+          "tooltip": "Body: { memberId }. Auth check via Supabase session. Validates memberId is present and is not the requesting user (self-block guard). Calls blockMemberServer(user.id, memberId). Returns 201 MemberBlock on success.",
+          "errorCases": [
+            {
+              "condition": "User is not authenticated",
+              "result": "Returns 401 Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "memberId is missing from request body",
+              "result": "Returns 400 Bad Request",
+              "httpStatus": 400
+            },
+            {
+              "condition": "memberId equals the authenticated user's own ID",
+              "result": "Returns 400 — Cannot block yourself",
+              "httpStatus": 400
+            },
+            {
+              "condition": "Block already exists (unique constraint violation 23505)",
+              "result": "Returns 409 — Already blocked",
+              "httpStatus": 409
+            },
+            {
+              "condition": "Database insert fails",
+              "result": "Returns 500 Internal Server Error",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "insert-block-row",
+          "title": "Insert Block Row",
+          "layer": "database",
+          "status": "built",
+          "codeRef": "src/features/messaging/services/blocks-server.ts",
+          "tooltip": "INSERT into member_blocks (blocker_id, blocked_id). DB-level UNIQUE (blocker_id, blocked_id) constraint and CHECK (blocker_id != blocked_id) constraint enforce integrity. RLS policy member_blocks_insert_own enforces blocker_id = auth.uid()."
+        },
+        {
+          "id": "block-confirmed",
+          "title": "Show Block Confirmation",
+          "layer": "client",
+          "status": "planned",
+          "notes": "On 201: show success toast confirming the block (e.g., 'Blocked — You blocked {name}.'). On 409: silently succeed or show 'Already blocked'. UI should update immediately — e.g., disable the Message button in a thread header, or replace the block button with an unblock option. Cache for ['blocks', userId] should be invalidated so the blocked members list reflects the new entry."
+        },
+        {
+          "id": "block-error",
+          "title": "Show Block Error",
+          "layer": "client",
+          "status": "planned",
+          "notes": "On 400 or 500: show error toast (e.g., 'Could not block this member. Please try again.'). No cache changes — optimistic update should not be applied for the block action given its low frequency."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "post-block",
+          "condition": "Block succeeded?",
+          "paths": [
+            { "label": "Yes", "goTo": "insert-block-row" },
+            {
+              "label": "Already blocked",
+              "detail": "409 — client treats as success",
+              "goTo": "block-confirmed"
+            },
+            { "label": "Error", "detail": "400 or 500 — show error toast", "goTo": "block-error" }
+          ]
+        }
+      ]
+    },
+    {
       "id": "view-blocked-members",
       "title": "View Blocked Members List",
       "trigger": "User navigates to /dashboard/account/blocked-members",
@@ -122,7 +212,7 @@
           "status": "built",
           "route": "/api/blocks",
           "codeRef": "src/app/api/blocks/route.ts",
-          "tooltip": "blocked_id passed as query param (?blocked_id={uuid}). Auth check via session. Deletes from member_blocks where blocker_id = current user AND blocked_id = param. Returns 404 if no matching row found.",
+          "tooltip": "Used by the account-settings unblock UI. blocked_id passed as query param (?blocked_id={uuid}). Auth check via session. Deletes from member_blocks where blocker_id = current user AND blocked_id = param. Returns 404 if no matching row found. Note: a second unblock route exists at DELETE /api/members/block/[member_id] — used from messaging surfaces via blockMember/unblockMember in src/features/messaging/services/blocks.ts.",
           "errorCases": [
             {
               "condition": "User is not authenticated",
