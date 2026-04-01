@@ -308,6 +308,19 @@ Thin `fetch` wrappers using `@/libs/fetch`.
 
 ## Utils
 
+### notification-email.ts
+
+**File:** `src/features/messaging/utils/notification-email.ts`
+
+Two helper functions for email notifications in messaging and offer API routes:
+
+| Function                | Signature                                                                      | Description                                                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `sendNotificationEmail` | `({ recipientId, subject, html }) => Promise<void>`                            | Checks `notification_preferences.email.community_messages` (defaults to true), fetches recipient email via admin client, calls `sendEmail`. Silently catches all errors. |
+| `getOfferEmailContext`  | `({ senderId, listingId, supabase }) => Promise<{ senderName, listingTitle }>` | Fetches sender name and listing title for offer email templates. Returns fallback values (`'A user'`, `'a listing'`) on any error.                                       |
+
+**Usage in API routes:** Both functions are dynamically imported inside fire-and-forget `void (async () => { ... })()` blocks to avoid loading email modules on every request. Email dispatch never blocks the API response.
+
 ### safety-filter.ts
 
 **File:** `src/features/messaging/utils/safety-filter.ts`
@@ -466,7 +479,8 @@ src/features/messaging/
 │       └── offer-bubble.module.scss
 └── utils/
     ├── safety-filter.ts                           # Content safety: block / redact PII / nudge / pass
-    └── offer-validation.ts                        # Offer amount validation, min/default calcs, expiry check
+    ├── offer-validation.ts                        # Offer amount validation, min/default calcs, expiry check
+    └── notification-email.ts                      # Email notification helpers: pref check, send, offer context
 
 src/app/api/messaging/
 ├── threads/
@@ -499,5 +513,5 @@ src/app/api/members/block/
 ## Related Features
 
 - `src/features/listings/` — `listing_id` FK on threads; `listing_node` message type links to a listing card
-- `src/features/email/` — Unread message digest emails (Phase 3)
+- `src/features/email/` — Email templates for new message notifications and offer lifecycle events (`new-message.ts`, `offer-notification.ts`)
 - `src/features/context/` — Context switching (member vs. shop identity) affects which participant role is assigned on thread creation

@@ -10,9 +10,13 @@ email/
 │   ├── client.ts          ← Singleton Resend client + env validation (server-only)
 │   └── send-email.ts      ← Generic sendEmail({ to, subject, html }) → { data, error }
 ├── templates/
-│   ├── layout.ts          ← Branded Nessi shell (header/footer) — all templates use this
-│   ├── utils.ts           ← escapeHtml() for safe interpolation
-│   └── invite-to-shop.ts  ← Shop invitation email template
+│   ├── layout.ts              ← Branded Nessi shell (header/footer) — all templates use this
+│   ├── utils.ts               ← escapeHtml() for safe interpolation
+│   ├── invite-to-shop.ts      ← Shop invitation email template
+│   ├── new-message.ts         ← New message notification (sender name, preview, thread CTA)
+│   ├── offer-notification.ts  ← Offer lifecycle emails (received/accepted/declined/countered/expiring)
+│   ├── ownership-transfer.ts  ← Shop ownership transfer email template
+│   └── price-drop.ts          ← Watchlist price drop alert email template
 └── types/
     └── index.ts           ← EmailTemplate, SendEmailParams
 ```

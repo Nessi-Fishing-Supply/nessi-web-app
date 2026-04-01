@@ -202,10 +202,9 @@ export async function POST(
         const { sendNotificationEmail } =
           await import('@/features/messaging/utils/notification-email');
 
-        const preview = messageContent.length > 200 ? messageContent.slice(0, 200) : messageContent;
         const { subject, html } = newMessage({
           senderName,
-          messagePreview: preview,
+          messagePreview: messageContent,
           threadId: thread_id,
         });
 
