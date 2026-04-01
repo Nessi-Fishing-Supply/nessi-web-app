@@ -493,6 +493,15 @@
           "notes": "Dispatched inside a void async IIFE after the 201 response is already queued — never blocks the API. Checks notification_preferences.email.community_messages before sending (defaults to true if unset). Fetches recipient email via admin client. Silently catches all errors."
         },
         {
+          "id": "new-message-in-app",
+          "title": "In-App Notification",
+          "layer": "background",
+          "status": "built",
+          "codeRef": "src/app/api/messaging/threads/[thread_id]/messages/route.ts",
+          "tooltip": "Fire-and-forget: dispatched for text-type messages only (type === 'text'). Fetches sender name from members table, truncates message content to 100 chars for the notification body, then calls dispatchNotification() for each non-sender participant. type: 'new_message', link: /messages/{thread_id}. Runs in a separate void async IIFE after the email notification block — never blocks the API response.",
+          "notes": "Uses dispatchNotification() from src/features/notifications/utils/dispatch-notification.ts — fire-and-forget wrapper that silently catches errors. Nudge-type system messages are excluded (type check skips non-text). See notifications.json for the full notification center flow."
+        },
+        {
           "id": "message-delivered",
           "title": "Message Appears",
           "layer": "client",

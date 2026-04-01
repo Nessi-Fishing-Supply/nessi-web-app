@@ -1,0 +1,321 @@
+{
+  "slug": "notifications",
+  "domain": "account",
+  "title": "Notification Center",
+  "persona": "auth",
+  "description": "Bell icon in navbar with unread count badge, activity feed dropdown with notification list, mark-as-read, and notification creation via messaging integration.",
+  "relatedIssues": [51],
+  "flows": [
+    {
+      "id": "notifications-hub",
+      "title": "Notification Bell",
+      "trigger": "Authenticated user sees the navbar",
+      "steps": [
+        {
+          "id": "bell-in-navbar",
+          "title": "Show Bell Icon",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-bell/index.tsx",
+          "tooltip": "NotificationBell renders in the navbar for all authenticated users. Displays a HiOutlineBell icon. When unread count > 0, a badge overlays the icon showing the count (capped at '9+' for counts above 9). aria-label is contextual: 'Notifications, N unread' or 'Notifications'. aria-expanded and aria-haspopup=\"dialog\" are set on the toggle button."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "bell-in-navbar",
+          "condition": "What action?",
+          "paths": [
+            { "label": "Click bell", "goTo": "open-panel" },
+            { "label": "Background poll", "goTo": "poll-unread-count" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "view-notifications",
+      "title": "View Notifications",
+      "trigger": "User clicks the notification bell",
+      "steps": [
+        {
+          "id": "open-panel",
+          "title": "Open Notification Panel",
+          "action": "click",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-bell/index.tsx",
+          "tooltip": "Clicking the bell toggles isOpen state. NotificationPanel is dynamically imported (ssr: false) and rendered when isOpen is true. Clicking outside the container (mousedown on document) closes the panel. Escape key also closes the panel via keydown handler inside NotificationPanel."
+        },
+        {
+          "id": "fetch-notifications",
+          "title": "Fetch Notifications",
+          "method": "GET",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/notifications",
+          "codeRef": "src/app/api/notifications/route.ts",
+          "tooltip": "Returns paginated notifications for the authenticated user. Query params: ?limit={1-100, default 20}&offset={default 0}. Ordered newest-first. Response: { notifications: Notification[], total: number }.",
+          "errorCases": [
+            {
+              "condition": "No authenticated session",
+              "result": "Returns 401 Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Database error",
+              "result": "Returns 500 Internal Server Error",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "panel-loading",
+          "title": "Show Loading Skeleton",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-panel/index.tsx",
+          "tooltip": "While useNotifications() isPending, renders 4 skeleton rows. Each row has a circle placeholder (icon) and two line placeholders (title + body). Has no explicit aria-live but the panel itself has role=\"dialog\"."
+        },
+        {
+          "id": "panel-empty",
+          "title": "Show Empty State",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-panel/index.tsx",
+          "tooltip": "When notifications array is empty after a successful load, shows a HiCheckCircle icon and the text \"You're all caught up!\". No action buttons are shown."
+        },
+        {
+          "id": "panel-list",
+          "title": "Render Notification List",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-panel/index.tsx",
+          "tooltip": "Maps over the notifications array and renders a NotificationItem for each. Header shows 'Notifications' title, a close button (X), and a 'Mark all as read' button that only appears when hasUnread is true. The panel has role=\"dialog\" and aria-label=\"Notifications\". A focus trap handles Tab/Shift+Tab cycling within the panel."
+        }
+      ],
+      "branches": [
+        {
+          "afterStep": "fetch-notifications",
+          "condition": "Load result?",
+          "paths": [
+            { "label": "Loading", "goTo": "panel-loading" },
+            { "label": "Empty", "goTo": "panel-empty" },
+            { "label": "Has items", "goTo": "panel-list" }
+          ]
+        },
+        {
+          "afterStep": "panel-list",
+          "condition": "What action?",
+          "paths": [
+            { "label": "Click item", "goTo": "click-notification" },
+            { "label": "Mark all read", "goTo": "mark-all-read-api" },
+            { "label": "Close panel", "goTo": "panel-closed" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mark-single-read",
+      "title": "Mark Single as Read",
+      "trigger": "User clicks a notification item in the panel",
+      "steps": [
+        {
+          "id": "click-notification",
+          "title": "Click Notification",
+          "action": "click",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-item/index.tsx",
+          "tooltip": "NotificationItem is a button. On click: if is_read is false, markAsRead(notification.id) is called. Then if notification.link is set, router.push(link) navigates to the target. The item renders: a type-specific colored icon circle, title (bold when unread), body text, relative timestamp (Just now / Xm / Xh / Xd / MMM D), and an unread dot indicator."
+        },
+        {
+          "id": "mark-single-read-optimistic",
+          "title": "Optimistic Mark Read",
+          "layer": "background",
+          "status": "built",
+          "codeRef": "src/features/notifications/hooks/use-mark-notification-read.ts",
+          "tooltip": "onMutate: cancels in-flight queries for ['notifications'] and ['notifications', 'unread-count']. Snapshots previous cache state. Updates cache: sets is_read=true on the matched notification, decrements unread count by 1 (floor 0). If the API call fails, onError restores both snapshots."
+        },
+        {
+          "id": "mark-single-read-api",
+          "title": "Mark Notification Read",
+          "method": "PATCH",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/notifications/[id]/read",
+          "codeRef": "src/app/api/notifications/[id]/read/route.ts",
+          "tooltip": "Sets is_read=true on the notification row. Ownership enforced via .eq('user_id', userId) — a notification not owned by the requesting user returns 404 (treated as not found).",
+          "errorCases": [
+            {
+              "condition": "No authenticated session",
+              "result": "Returns 401 Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Notification not found or not owned by user",
+              "result": "Returns 404 Not Found",
+              "httpStatus": 404
+            },
+            {
+              "condition": "Database error",
+              "result": "Returns 500 Internal Server Error",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "navigate-to-link",
+          "title": "Navigate to Target",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-item/index.tsx",
+          "tooltip": "After markAsRead fires (regardless of in-flight state), if notification.link is set, router.push(link) navigates the user. For new_message and offer notifications, link is /messages/{thread_id}. For order and review notifications, link is /dashboard/orders/{id} or /dashboard/reviews."
+        }
+      ]
+    },
+    {
+      "id": "mark-all-read",
+      "title": "Mark All as Read",
+      "trigger": "User clicks 'Mark all as read' in the panel header",
+      "steps": [
+        {
+          "id": "mark-all-read-api",
+          "title": "Mark All Read",
+          "method": "PATCH",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/notifications/read-all",
+          "codeRef": "src/app/api/notifications/read-all/route.ts",
+          "tooltip": "Bulk updates all unread notifications for the authenticated user: sets is_read=true where user_id matches and is_read=false. Returns { success: true }.",
+          "errorCases": [
+            {
+              "condition": "No authenticated session",
+              "result": "Returns 401 Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Database error",
+              "result": "Returns 500 Internal Server Error",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "mark-all-read-optimistic",
+          "title": "Optimistic Clear All",
+          "layer": "background",
+          "status": "built",
+          "codeRef": "src/features/notifications/hooks/use-mark-all-notifications-read.ts",
+          "tooltip": "onMutate: cancels in-flight queries, snapshots cache. Optimistically sets is_read=true on every notification in the list and sets unread count to 0. Button is disabled while isPending. On error, both snapshots are restored. onSettled invalidates both ['notifications'] and ['notifications', 'unread-count'] queries."
+        },
+        {
+          "id": "mark-all-read-done",
+          "title": "Panel Refreshed",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-panel/index.tsx",
+          "tooltip": "After mutation settles, the 'Mark all as read' button disappears (hasUnread becomes false). All notification items lose their unread dot and bold title styling. The badge on the bell icon drops to 0 and disappears."
+        }
+      ]
+    },
+    {
+      "id": "unread-count-polling",
+      "title": "Unread Count Polling",
+      "trigger": "Authenticated user has the app open",
+      "steps": [
+        {
+          "id": "poll-unread-count",
+          "title": "Poll Unread Count",
+          "method": "GET",
+          "layer": "server",
+          "status": "built",
+          "route": "/api/notifications/unread-count",
+          "codeRef": "src/app/api/notifications/unread-count/route.ts",
+          "tooltip": "useUnreadNotificationCount() runs with refetchInterval: 30000 — polls every 30 seconds while the app is open. Returns { count: number }. Query key: ['notifications', 'unread-count']. Supabase Realtime to replace polling is tracked in issue #56.",
+          "errorCases": [
+            {
+              "condition": "No authenticated session",
+              "result": "Returns 401 Unauthorized",
+              "httpStatus": 401
+            },
+            {
+              "condition": "Database error",
+              "result": "Returns 500 Internal Server Error",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "update-badge",
+          "title": "Update Bell Badge",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-bell/index.tsx",
+          "tooltip": "useUnreadNotificationCount() drives the badge count displayed on the bell. Badge shows numeric count capped at '9+'. Badge is hidden entirely when count is 0. aria-label on the bell button updates to include the count when unread > 0."
+        }
+      ]
+    },
+    {
+      "id": "notification-dispatch",
+      "title": "Dispatch Notification",
+      "trigger": "Server-side event occurs (message sent, offer received, etc.)",
+      "steps": [
+        {
+          "id": "dispatch-notification",
+          "title": "Fire Dispatch",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/notifications/utils/dispatch-notification.ts",
+          "tooltip": "dispatchNotification({ userId, type, title, body?, data?, link? }) is a fire-and-forget wrapper. Dynamically imports createNotificationServer to avoid loading the module on every request. Calls void on the async IIFE — never blocks the parent API response. Silently catches and console.errors all failures so notifications never break the triggering operation."
+        },
+        {
+          "id": "create-notification-db",
+          "title": "Create Notification Row",
+          "layer": "server",
+          "status": "built",
+          "codeRef": "src/features/notifications/services/notifications-server.ts",
+          "tooltip": "createNotificationServer() inserts a row into the notifications table using the admin client (bypasses RLS, required for cross-user notification creation). After insert, counts all notifications for the user. If count > 100, fetches the oldest (count - 100) rows and deletes them — enforcing the 100-notification cap per user.",
+          "errorCases": [
+            {
+              "condition": "Insert fails",
+              "result": "Throws — caught by dispatchNotification wrapper, silently logged",
+              "httpStatus": 500
+            },
+            {
+              "condition": "Count query fails",
+              "result": "Throws — caught by dispatchNotification wrapper, silently logged",
+              "httpStatus": 500
+            },
+            {
+              "condition": "Prune query fails",
+              "result": "Throws — caught by dispatchNotification wrapper, silently logged",
+              "httpStatus": 500
+            }
+          ]
+        },
+        {
+          "id": "notification-available",
+          "title": "Notification Appears",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/hooks/use-unread-notification-count.ts",
+          "tooltip": "The new notification becomes visible to the recipient on the next 30-second poll cycle. When the user opens the panel, useNotifications() fetches the list which now includes the new item. Real-time delivery via Supabase Realtime is planned for issue #56."
+        }
+      ]
+    },
+    {
+      "id": "panel-close",
+      "title": "Close Panel",
+      "trigger": "User dismisses the notification panel",
+      "steps": [
+        {
+          "id": "panel-closed",
+          "title": "Close Notification Panel",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/components/notification-bell/index.tsx",
+          "tooltip": "Panel closes via: (1) clicking the X close button in the panel header, (2) pressing Escape (handled by keydown listener in NotificationPanel), or (3) clicking outside the container div (mousedown on document, checked via containerRef.current.contains). Sets isOpen to false, unmounting NotificationPanel."
+        }
+      ]
+    }
+  ]
+}
