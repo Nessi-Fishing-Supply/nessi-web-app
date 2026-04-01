@@ -221,15 +221,15 @@ Inline offer display rendered inside the message thread when `message_type = 'of
 
 Uses `@/libs/supabase/server` (cookie-based auth). Called by API route handlers only.
 
-| Function                    | Signature                                                         | Description                                                                                               |
-| --------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `createOfferServer`         | `(userId, params: CreateOfferParams) => Promise<Offer>`           | Validates listing active, not seller, 70% min, seller match; expires stale offers; creates thread + offer |
-| `getOfferByIdServer`        | `(userId, offerId) => Promise<OfferWithDetails \| null>`          | Returns enriched offer or null if user is not buyer/seller                                                |
-| `acceptOfferServer`         | `(userId, offerId) => Promise<Offer>`                             | Seller-only, pending-only; sets accepted; inserts system message                                          |
-| `declineOfferServer`        | `(userId, offerId) => Promise<Offer>`                             | Seller-only, pending-only; sets declined; inserts system message                                          |
-| `counterOfferServer`        | `(userId, offerId, params: CounterOfferParams) => Promise<Offer>` | Seller-only; marks original as countered; creates new offer with swapped buyer/seller + parent_offer_id   |
-| `getOffersForListingServer` | `(userId, listingId) => Promise<Offer[]>`                         | All offers for a listing where user is buyer or seller, newest first                                      |
-| `expirePendingOffersServer` | `() => Promise<{ expired: number }>`                              | Cron: expires pending (24h) and accepted (4h checkout window) offers. Uses admin client.                  |
+| Function                    | Signature                                                              | Description                                                                                                       |
+| --------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `createOfferServer`         | `(userId, params: CreateOfferParams) => Promise<Offer>`                | Validates listing active, not seller, 70% min, seller match; expires stale offers; creates thread + offer         |
+| `getOfferByIdServer`        | `(userId, offerId) => Promise<OfferWithDetails \| null>`               | Returns enriched offer or null if user is not buyer/seller                                                        |
+| `acceptOfferServer`         | `(userId, offerId) => Promise<Offer>`                                  | Seller-only, pending-only; sets accepted; inserts system message                                                  |
+| `declineOfferServer`        | `(userId, offerId) => Promise<Offer>`                                  | Seller-only, pending-only; sets declined; inserts system message                                                  |
+| `counterOfferServer`        | `(userId, offerId, params: CounterOfferParams) => Promise<Offer>`      | Seller-only; marks original as countered; creates new offer with swapped buyer/seller + parent_offer_id           |
+| `getOffersForListingServer` | `(userId, listingId) => Promise<Offer[]>`                              | All offers for a listing where user is buyer or seller, newest first                                              |
+| `expirePendingOffersServer` | `() => Promise<{ expired_pending: number, expired_checkout: number }>` | Cron: expires pending (24h) and accepted (4h checkout window) offers; inserts system messages. Uses admin client. |
 
 ### Client Services (`src/features/messaging/services/offers.ts`)
 

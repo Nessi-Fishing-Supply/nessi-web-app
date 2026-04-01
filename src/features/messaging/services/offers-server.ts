@@ -337,7 +337,10 @@ export async function getOffersForListingServer(
   return data ?? [];
 }
 
-export async function expirePendingOffersServer(): Promise<{ expired: number }> {
+export async function expirePendingOffersServer(): Promise<{
+  expired_pending: number;
+  expired_checkout: number;
+}> {
   const supabase = createAdminClient();
 
   const { data: pendingExpired, error: pendingError } = await supabase
@@ -345,7 +348,8 @@ export async function expirePendingOffersServer(): Promise<{ expired: number }> 
     .update({ status: 'expired' })
     .eq('status', 'pending')
     .lt('expires_at', new Date().toISOString())
-    .select();
+    .select()
+    .limit(100);
 
   if (pendingError) {
     throw new Error(`Failed to expire pending offers: ${pendingError.message}`);
@@ -360,11 +364,39 @@ export async function expirePendingOffersServer(): Promise<{ expired: number }> 
     .update({ status: 'expired' })
     .eq('status', 'accepted')
     .lt('updated_at', checkoutCutoff)
-    .select();
+    .select()
+    .limit(100);
 
   if (acceptedError) {
     throw new Error(`Failed to expire accepted offers: ${acceptedError.message}`);
   }
 
-  return { expired: (pendingExpired?.length ?? 0) + (acceptedExpired?.length ?? 0) };
+  const now = new Date().toISOString();
+  const allExpired = [...(pendingExpired ?? []), ...(acceptedExpired ?? [])];
+
+  for (const offer of allExpired) {
+    try {
+      await supabase.from('messages').insert({
+        thread_id: offer.thread_id,
+        sender_id: offer.buyer_id,
+        type: 'system',
+        content: 'This offer has expired.',
+      });
+
+      await supabase
+        .from('message_threads')
+        .update({
+          last_message_at: now,
+          last_message_preview: 'This offer has expired.',
+        })
+        .eq('id', offer.thread_id);
+    } catch {
+      // do not block remaining offers if one message insertion fails
+    }
+  }
+
+  return {
+    expired_pending: pendingExpired?.length ?? 0,
+    expired_checkout: acceptedExpired?.length ?? 0,
+  };
 }
