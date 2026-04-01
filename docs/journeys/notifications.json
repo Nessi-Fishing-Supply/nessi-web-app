@@ -3,8 +3,8 @@
   "domain": "account",
   "title": "Notification Center",
   "persona": "auth",
-  "description": "Bell icon in navbar with unread count badge, activity feed dropdown with notification list, mark-as-read, and notification creation via messaging integration.",
-  "relatedIssues": [51],
+  "description": "Bell icon in navbar with unread count badge, activity feed dropdown with notification list, mark-as-read, realtime delivery via Supabase Realtime, and browser push notifications.",
+  "relatedIssues": [51, 56],
   "flows": [
     {
       "id": "notifications-hub",
@@ -26,7 +26,7 @@
           "condition": "What action?",
           "paths": [
             { "label": "Click bell", "goTo": "open-panel" },
-            { "label": "Background poll", "goTo": "poll-unread-count" }
+            { "label": "New event arrives", "goTo": "realtime-notification-insert" }
           ]
         }
       ]
@@ -218,31 +218,17 @@
       ]
     },
     {
-      "id": "unread-count-polling",
-      "title": "Unread Count Polling",
-      "trigger": "Authenticated user has the app open",
+      "id": "realtime-delivery",
+      "title": "Realtime Notification Delivery",
+      "trigger": "Authenticated user has the app open when a notification is created for them",
       "steps": [
         {
-          "id": "poll-unread-count",
-          "title": "Poll Unread Count",
-          "method": "GET",
-          "layer": "server",
+          "id": "realtime-notification-insert",
+          "title": "Receive Realtime Event",
+          "layer": "background",
           "status": "built",
-          "route": "/api/notifications/unread-count",
-          "codeRef": "src/app/api/notifications/unread-count/route.ts",
-          "tooltip": "useUnreadNotificationCount() runs with refetchInterval: 30000 — polls every 30 seconds while the app is open. Returns { count: number }. Query key: ['notifications', 'unread-count']. Supabase Realtime to replace polling is tracked in issue #56.",
-          "errorCases": [
-            {
-              "condition": "No authenticated session",
-              "result": "Returns 401 Unauthorized",
-              "httpStatus": 401
-            },
-            {
-              "condition": "Database error",
-              "result": "Returns 500 Internal Server Error",
-              "httpStatus": 500
-            }
-          ]
+          "codeRef": "src/features/notifications/hooks/use-realtime-notifications.ts",
+          "tooltip": "useRealtimeNotifications(userId) subscribes to INSERT events on the notifications table filtered by user_id via Supabase Realtime. On any new row, it invalidates both ['notifications'] and ['notifications', 'unread-count'] query keys, which triggers a refetch of the notification list and badge count. Replaces the previous 30-second polling interval on useUnreadNotificationCount."
         },
         {
           "id": "update-badge",
@@ -250,7 +236,24 @@
           "layer": "client",
           "status": "built",
           "codeRef": "src/features/notifications/components/notification-bell/index.tsx",
-          "tooltip": "useUnreadNotificationCount() drives the badge count displayed on the bell. Badge shows numeric count capped at '9+'. Badge is hidden entirely when count is 0. aria-label on the bell button updates to include the count when unread > 0."
+          "tooltip": "useUnreadNotificationCount() drives the badge count displayed on the bell. No polling — count stays fresh via the Realtime invalidation from useRealtimeNotifications. Badge shows numeric count capped at '9+'. Badge is hidden entirely when count is 0. aria-label on the bell button updates to include the count when unread > 0."
+        },
+        {
+          "id": "browser-notification",
+          "title": "Fire Browser Notification",
+          "layer": "client",
+          "status": "built",
+          "codeRef": "src/features/notifications/utils/browser-notifications.ts",
+          "tooltip": "Inside the Realtime onPayload handler, showBrowserNotification(title, body) is called if the notification row has a title. Uses the Web Notifications API: checks Notification.permission === 'granted' before calling new Notification(title, { body }). Silently no-ops if the API is unavailable (SSR guard) or permission is not granted. Browser permission must be requested separately via requestNotificationPermission().",
+          "notes": "requestNotificationPermission() calls Notification.requestPermission() — the permission prompt is a planned UX step not yet wired into the app. Currently the browser notification only fires if the user already granted permission at the OS level."
+        },
+        {
+          "id": "permission-prompt",
+          "title": "Request Notification Permission",
+          "layer": "client",
+          "status": "planned",
+          "codeRef": "src/features/notifications/utils/browser-notifications.ts",
+          "notes": "requestNotificationPermission() is implemented but not yet called from the UI. A permission prompt should be surfaced at an appropriate moment (e.g., first time the user opens the notification panel, or after they receive their first notification) to improve browser notification opt-in rates. Should only prompt once and store the result."
         }
       ]
     },
@@ -273,7 +276,7 @@
           "layer": "server",
           "status": "built",
           "codeRef": "src/features/notifications/services/notifications-server.ts",
-          "tooltip": "createNotificationServer() inserts a row into the notifications table using the admin client (bypasses RLS, required for cross-user notification creation). After insert, counts all notifications for the user. If count > 100, fetches the oldest (count - 100) rows and deletes them — enforcing the 100-notification cap per user.",
+          "tooltip": "createNotificationServer() inserts a row into the notifications table using the admin client (bypasses RLS, required for cross-user notification creation). After insert, counts all notifications for the user. If count > 100, fetches the oldest (count - 100) rows and deletes them — enforcing the 100-notification cap per user. The INSERT event on the notifications table triggers the Supabase Realtime subscription in useRealtimeNotifications on the recipient's client.",
           "errorCases": [
             {
               "condition": "Insert fails",
@@ -297,8 +300,8 @@
           "title": "Notification Appears",
           "layer": "client",
           "status": "built",
-          "codeRef": "src/features/notifications/hooks/use-unread-notification-count.ts",
-          "tooltip": "The new notification becomes visible to the recipient on the next 30-second poll cycle. When the user opens the panel, useNotifications() fetches the list which now includes the new item. Real-time delivery via Supabase Realtime is planned for issue #56."
+          "codeRef": "src/features/notifications/hooks/use-realtime-notifications.ts",
+          "tooltip": "The new notification row INSERT triggers the Realtime subscription in useRealtimeNotifications. Both ['notifications'] and ['notifications', 'unread-count'] are invalidated, causing the badge count to increment and the notification list to include the new item the next time the panel is opened. If the user already has the panel open, useNotifications() refetches and the new item appears in the list."
         }
       ]
     },
