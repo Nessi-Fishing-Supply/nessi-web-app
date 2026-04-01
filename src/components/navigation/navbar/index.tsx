@@ -10,6 +10,7 @@ import {
   HiOutlineHome,
   HiOutlineUserCircle,
   HiOutlineHeart,
+  HiOutlineBell,
   HiSearch,
   HiSwitchHorizontal,
   HiCheckCircle,
@@ -399,6 +400,11 @@ export default function Navbar() {
             <DropdownItem>
               <AppLink href="/messages" icon={<HiOutlineChatAlt2 />}>
                 Messages
+              </AppLink>
+            </DropdownItem>
+            <DropdownItem>
+              <AppLink href="/dashboard/notifications" icon={<HiOutlineBell />}>
+                Notifications
               </AppLink>
             </DropdownItem>
             <DropdownItem>

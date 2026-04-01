@@ -216,6 +216,41 @@ export async function POST(
       }
     })();
 
+    // Fire-and-forget in-app notification for text messages
+    if ((type ?? 'text') === 'text') {
+      void (async () => {
+        try {
+          const { data: senderMember } = await supabase
+            .from('members')
+            .select('first_name, last_name')
+            .eq('id', user.id)
+            .single();
+
+          const senderName = senderMember
+            ? `${senderMember.first_name} ${senderMember.last_name}`.trim()
+            : 'Someone';
+
+          const preview =
+            messageContent.length > 100 ? messageContent.slice(0, 100) + '...' : messageContent;
+
+          const { dispatchNotification } =
+            await import('@/features/notifications/utils/dispatch-notification');
+
+          for (const p of participants.filter((p) => p.member_id !== user.id)) {
+            dispatchNotification({
+              userId: p.member_id,
+              type: 'new_message',
+              title: senderName,
+              body: preview,
+              link: `/messages/${thread_id}`,
+            });
+          }
+        } catch (err) {
+          console.error('[message-in-app-notification] failed:', err);
+        }
+      })();
+    }
+
     return NextResponse.json(message, { status: 201, headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to send message';

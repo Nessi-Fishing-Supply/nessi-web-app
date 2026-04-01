@@ -120,6 +120,7 @@ DELETE /api/auth/delete-account
 - `src/features/addresses/` — Addresses domain: saved shipping addresses with CRUD, 5-cap, default management (see its CLAUDE.md)
 - `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
 - `src/features/messaging/` — Messaging domain: buyer-seller threads, direct messages, offer negotiations, safety filter, types + server/client services (see its CLAUDE.md)
+- `src/features/notifications/` — Notifications domain: bell icon, activity feed, unread badges, server-side dispatch, 30s polling (see its CLAUDE.md)
 - `src/features/blocks/` — Blocks domain: view and unblock blocked members from account settings, optimistic unblock (see its CLAUDE.md)
 - `src/features/watchlist/` — Watchlist domain: watch/unwatch listings, price drop email alerts via Vercel Cron, optimistic UI (see its CLAUDE.md)
 - `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its CLAUDE.md)
