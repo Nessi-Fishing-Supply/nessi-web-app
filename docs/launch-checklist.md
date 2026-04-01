@@ -31,6 +31,7 @@ Items to address before Nessi goes to production. Organized by priority.
 ## Post-Launch Infrastructure
 
 - [ ] **Supabase branching** — Create dev/preview branches for database isolation. Branches auto-provision per git branch, giving each Vercel preview deploy its own database. ~$10/month per active branch. Requires Pro plan ($25/month). Valuable once there's a team or real user data to protect from dev testing.
+- [ ] **Offer expiry cron frequency** — Upgrade `offers-expiry` cron from daily (`0 0 * * *`) to hourly or every 15 minutes on Vercel Pro plan. Daily frequency means expired offers can sit in stale state up to 24h. See `vercel.json` and `src/app/api/cron/offers-expiry/route.ts`.
 
 ## Nice to Have (post-launch is fine)
 
