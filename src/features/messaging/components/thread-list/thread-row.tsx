@@ -5,6 +5,7 @@ import { HiCamera } from 'react-icons/hi';
 import Avatar from '@/components/controls/avatar';
 import TypeBadge from '@/features/messaging/components/type-badge';
 import { isOnline } from '@/features/messaging/hooks/use-online-status';
+import { IMAGE_MESSAGE_PREVIEW } from '@/features/messaging/utils/constants';
 import type { ThreadWithParticipants } from '@/features/messaging/types/thread';
 import styles from './thread-row.module.scss';
 
@@ -47,7 +48,7 @@ export default function ThreadRow({ thread, currentUserId }: ThreadRowProps) {
           <TypeBadge type={thread.type} />
         </div>
         <p className={styles.preview}>
-          {thread.last_message_preview === 'Sent a photo' && (
+          {thread.last_message_preview === IMAGE_MESSAGE_PREVIEW && (
             <HiCamera aria-hidden="true" className={styles.previewIcon} />
           )}
           {thread.last_message_preview ?? ''}

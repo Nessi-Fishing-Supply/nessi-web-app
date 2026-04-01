@@ -5,6 +5,7 @@ import type { NextRequest } from 'next/server';
 import { createMessageServer } from '@/features/messaging/services/messaging-server';
 import { scanImage } from '@/features/messaging/utils/image-moderation';
 import type { ImageAttachment } from '@/features/messaging/types/message';
+import { IMAGE_MESSAGE_PREVIEW } from '@/features/messaging/utils/constants';
 
 export const runtime = 'nodejs';
 
@@ -174,66 +175,51 @@ export async function POST(
     const message = await createMessageServer({
       threadId: thread_id,
       senderId: user.id,
-      content: 'Sent a photo',
+      content: IMAGE_MESSAGE_PREVIEW,
       type: 'image',
       metadata: { images: uploadedImages },
     });
 
-    // Fire-and-forget email notification for first unread message
+    // Fire-and-forget notifications (email + in-app)
     void (async () => {
       try {
+        const { data: senderMember } = await supabase
+          .from('members')
+          .select('first_name, last_name')
+          .eq('id', user.id)
+          .single();
+
+        const senderName = senderMember
+          ? `${senderMember.first_name} ${senderMember.last_name}`.trim()
+          : 'Someone';
+
+        // Email notification for first unread message
         const { data: updatedParticipants } = await supabase
           .from('message_thread_participants')
           .select('member_id, unread_count')
           .eq('thread_id', thread_id)
           .neq('member_id', user.id);
 
-        if (!updatedParticipants) return;
+        if (updatedParticipants) {
+          const recipientsToNotify = updatedParticipants.filter((p) => p.unread_count === 1);
+          if (recipientsToNotify.length > 0) {
+            const { newMessage } = await import('@/features/email/templates/new-message');
+            const { sendNotificationEmail } =
+              await import('@/features/messaging/utils/notification-email');
 
-        const recipientsToNotify = updatedParticipants.filter((p) => p.unread_count === 1);
-        if (recipientsToNotify.length === 0) return;
+            const { subject, html } = newMessage({
+              senderName,
+              messagePreview: IMAGE_MESSAGE_PREVIEW,
+              threadId: thread_id,
+            });
 
-        const { data: senderMember } = await supabase
-          .from('members')
-          .select('first_name, last_name')
-          .eq('id', user.id)
-          .single();
-
-        const senderName = senderMember
-          ? `${senderMember.first_name} ${senderMember.last_name}`.trim()
-          : 'Someone';
-
-        const { newMessage } = await import('@/features/email/templates/new-message');
-        const { sendNotificationEmail } =
-          await import('@/features/messaging/utils/notification-email');
-
-        const { subject, html } = newMessage({
-          senderName,
-          messagePreview: 'Sent a photo',
-          threadId: thread_id,
-        });
-
-        for (const p of recipientsToNotify) {
-          sendNotificationEmail({ recipientId: p.member_id, subject, html });
+            for (const p of recipientsToNotify) {
+              sendNotificationEmail({ recipientId: p.member_id, subject, html });
+            }
+          }
         }
-      } catch (err) {
-        console.error('[image-upload-email-notification] failed:', err);
-      }
-    })();
 
-    // Fire-and-forget in-app notification
-    void (async () => {
-      try {
-        const { data: senderMember } = await supabase
-          .from('members')
-          .select('first_name, last_name')
-          .eq('id', user.id)
-          .single();
-
-        const senderName = senderMember
-          ? `${senderMember.first_name} ${senderMember.last_name}`.trim()
-          : 'Someone';
-
+        // In-app notification
         const { dispatchNotification } =
           await import('@/features/notifications/utils/dispatch-notification');
 
@@ -242,12 +228,12 @@ export async function POST(
             userId: p.member_id,
             type: 'new_message',
             title: senderName,
-            body: 'Sent a photo',
+            body: IMAGE_MESSAGE_PREVIEW,
             link: `/messages/${thread_id}`,
           });
         }
       } catch (err) {
-        console.error('[image-upload-in-app-notification] failed:', err);
+        console.error('[image-upload-notification] failed:', err);
       }
     })();
 

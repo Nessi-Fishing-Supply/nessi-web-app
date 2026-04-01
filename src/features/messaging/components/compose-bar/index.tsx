@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect, type KeyboardEvent } from 'react';
 import { HiPaperAirplane, HiPlus, HiTag, HiShare, HiCamera } from 'react-icons/hi';
+import { useAuth } from '@/features/auth/context';
 import { useSendMessage } from '@/features/messaging/hooks/use-send-message';
 import { useSendImages } from '@/features/messaging/hooks/use-send-images';
 import ImagePreviewStrip from '@/features/messaging/components/image-preview-strip';
@@ -31,6 +32,7 @@ export default function ComposeBar({
   onMakeOffer,
   onTyping,
 }: ComposeBarProps) {
+  const { user } = useAuth();
   const [value, setValue] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -54,6 +56,7 @@ export default function ComposeBar({
 
   const { mutate: sendImages, isPending: isUploadPending } = useSendImages({
     threadId,
+    currentUserId: user?.id ?? '',
     onSuccess: () => {
       setSelectedFiles([]);
       setImageError(null);
