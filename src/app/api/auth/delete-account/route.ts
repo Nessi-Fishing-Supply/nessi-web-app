@@ -117,6 +117,56 @@ async function cleanupStorage(
   }
 }
 
+/**
+ * Delete all message images from threads the user participated in.
+ * Removes the entire thread folder contents from the message-images bucket.
+ * Path structure: threads/{thread_id}/{message_id}/{uuid}.webp
+ */
+async function cleanupMessageImages(
+  admin: ReturnType<typeof createAdminClient>,
+  userId: string,
+): Promise<void> {
+  const { data: participantRows } = await admin
+    .from('message_thread_participants')
+    .select('thread_id')
+    .eq('member_id', userId);
+
+  if (!participantRows || participantRows.length === 0) return;
+
+  for (const { thread_id } of participantRows) {
+    // List message_id folders under threads/{thread_id}/
+    const { data: messageFolders } = await admin.storage
+      .from('message-images')
+      .list(`threads/${thread_id}`);
+
+    if (!messageFolders || messageFolders.length === 0) continue;
+
+    const pathsToDelete: string[] = [];
+
+    for (const folder of messageFolders) {
+      if (folder.id === null) {
+        // It's a folder (message_id) — list its files
+        const { data: files } = await admin.storage
+          .from('message-images')
+          .list(`threads/${thread_id}/${folder.name}`);
+
+        if (files && files.length > 0) {
+          for (const file of files) {
+            pathsToDelete.push(`threads/${thread_id}/${folder.name}/${file.name}`);
+          }
+        }
+      } else {
+        // It's a file directly under threads/{thread_id}/
+        pathsToDelete.push(`threads/${thread_id}/${folder.name}`);
+      }
+    }
+
+    if (pathsToDelete.length > 0) {
+      await admin.storage.from('message-images').remove(pathsToDelete);
+    }
+  }
+}
+
 // Permanently deletes the user's account, listings, and all associated data.
 export async function DELETE() {
   try {
@@ -190,6 +240,13 @@ export async function DELETE() {
       await cleanupStorage(admin, storagePaths);
     } catch (storageError) {
       console.error('Post-deletion storage cleanup error (non-blocking):', storageError);
+    }
+
+    // Clean up message images AFTER successful auth deletion (best-effort)
+    try {
+      await cleanupMessageImages(admin, user.id);
+    } catch (messageImageError) {
+      console.error('Post-deletion message image cleanup error (non-blocking):', messageImageError);
     }
 
     return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });

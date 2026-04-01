@@ -3,9 +3,9 @@
   "issue": 319,
   "title": "Messaging — Image and media attachment support",
   "branch": "feat/319/messaging-image-media-attachment",
-  "status": "implementing",
+  "status": "reviewing",
   "phase": {
-    "current": 3,
+    "current": 4,
     "total": 4,
     "tasks": {
       "completed": [
@@ -21,13 +21,17 @@
         "3.2",
         "3.3",
         "3.4",
-        "3.5"
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4"
       ],
       "current": null,
-      "remaining": ["4.1", "4.2", "4.3", "4.4"]
+      "remaining": []
     }
   },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-04-01T12:00:00Z", "lastActivity": "2026-04-01T12:20:00Z" }
+  "timestamps": { "started": "2026-04-01T12:00:00Z", "lastActivity": "2026-04-01T12:30:00Z" }
 }

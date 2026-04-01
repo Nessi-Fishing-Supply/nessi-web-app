@@ -55,16 +55,24 @@ The safety filter (`utils/safety-filter.ts`) intercepts outgoing message content
 
 ### Database Enums
 
-| Enum               | Values                                                                                     |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| `thread_type`      | `'inquiry'`, `'direct'`, `'offer'`, `'custom_request'`                                     |
-| `thread_status`    | `'active'`, `'archived'`, `'closed'`                                                       |
-| `participant_role` | `'buyer'`, `'seller'`, `'initiator'`, `'recipient'`                                        |
-| `message_type`     | `'text'`, `'system'`, `'offer_node'`, `'custom_request_node'`, `'listing_node'`, `'nudge'` |
+| Enum               | Values                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| `thread_type`      | `'inquiry'`, `'direct'`, `'offer'`, `'custom_request'`                                                |
+| `thread_status`    | `'active'`, `'archived'`, `'closed'`                                                                  |
+| `participant_role` | `'buyer'`, `'seller'`, `'initiator'`, `'recipient'`                                                   |
+| `message_type`     | `'text'`, `'system'`, `'offer_node'`, `'custom_request_node'`, `'listing_node'`, `'nudge'`, `'image'` |
 
 ### RLS Policies
 
 Participants can only see threads and messages they belong to. Insert is gated to authenticated users who are participants in the target thread.
+
+### Storage
+
+| Bucket           | Path Pattern                                   | Purpose                   |
+| ---------------- | ---------------------------------------------- | ------------------------- |
+| `message-images` | `threads/{thread_id}/{message_id}/{uuid}.webp` | Image attachments in chat |
+
+RLS policies enforce per-thread-participant access. Only thread participants can upload and read images within their thread paths.
 
 ## Types
 
@@ -83,12 +91,14 @@ Participants can only see threads and messages they belong to. Insert is gated t
 
 **`src/features/messaging/types/message.ts`**
 
-| Type                | Description                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| `Message`           | Database Row type from `messages` table                                                    |
-| `MessageInsert`     | Insert type — omits `id`, `created_at`, `edited_at`, `is_filtered`, `original_content`     |
-| `MessageType`       | `'text' \| 'system' \| 'offer_node' \| 'custom_request_node' \| 'listing_node' \| 'nudge'` |
-| `MessageWithSender` | `Message` joined with sender `{ id, first_name, last_name, avatar_url }`                   |
+| Type                   | Description                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `Message`              | Database Row type from `messages` table                                                               |
+| `MessageInsert`        | Insert type — omits `id`, `created_at`, `edited_at`, `is_filtered`, `original_content`                |
+| `MessageType`          | `'text' \| 'system' \| 'offer_node' \| 'custom_request_node' \| 'listing_node' \| 'nudge' \| 'image'` |
+| `MessageWithSender`    | `Message` joined with sender `{ id, first_name, last_name, avatar_url }`                              |
+| `ImageAttachment`      | `{ url: string; width: number; height: number; alt?: string }`                                        |
+| `ImageMessageMetadata` | `{ images: ImageAttachment[] }` — stored in `messages.metadata` for `type: 'image'` messages          |
 
 ## Services
 
@@ -111,16 +121,17 @@ Uses `@/libs/supabase/server` (cookie-based auth, user JWT). Called by API route
 
 Thin `fetch` wrappers using `@/libs/fetch` (`get`, `post`, `patch`). Called by Tanstack Query hooks.
 
-| Function         | Signature                                                      | HTTP                                                        | Returns                                                                     |
-| ---------------- | -------------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `getThreads`     | `(type?: ThreadType) => Promise<ThreadWithParticipants[]>`     | `GET /api/messaging/threads`                                | `ThreadWithParticipants[]`                                                  |
-| `getThread`      | `(threadId: string) => Promise<ThreadWithParticipants>`        | `GET /api/messaging/threads/{threadId}`                     | `ThreadWithParticipants`                                                    |
-| `createThread`   | `(data: { type, participantIds, roles, listingId?, shopId? })` | `POST /api/messaging/threads`                               | `ThreadWithParticipants` (409 treated as success — returns existing thread) |
-| `getMessages`    | `(threadId: string, cursor?: string)`                          | `GET /api/messaging/threads/{threadId}/messages?cursor=...` | `{ messages: MessageWithSender[]; nextCursor: string \| null }`             |
-| `sendMessage`    | `(threadId: string, content: string, type?: MessageType)`      | `POST /api/messaging/threads/{threadId}/messages`           | `MessageWithSender`                                                         |
-| `markThreadRead` | `(threadId: string) => Promise<{ success: boolean }>`          | `PATCH /api/messaging/threads/{threadId}/read`              | `{ success: boolean }`                                                      |
-| `archiveThread`  | `(threadId: string) => Promise<{ success: boolean }>`          | `PATCH /api/messaging/threads/{threadId}/archive`           | `{ success: boolean }`                                                      |
-| `getUnreadCount` | `() => Promise<{ count: number }>`                             | `GET /api/messaging/unread-count`                           | `{ count: number }`                                                         |
+| Function         | Signature                                                         | HTTP                                                        | Returns                                                                     |
+| ---------------- | ----------------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `getThreads`     | `(type?: ThreadType) => Promise<ThreadWithParticipants[]>`        | `GET /api/messaging/threads`                                | `ThreadWithParticipants[]`                                                  |
+| `getThread`      | `(threadId: string) => Promise<ThreadWithParticipants>`           | `GET /api/messaging/threads/{threadId}`                     | `ThreadWithParticipants`                                                    |
+| `createThread`   | `(data: { type, participantIds, roles, listingId?, shopId? })`    | `POST /api/messaging/threads`                               | `ThreadWithParticipants` (409 treated as success — returns existing thread) |
+| `getMessages`    | `(threadId: string, cursor?: string)`                             | `GET /api/messaging/threads/{threadId}/messages?cursor=...` | `{ messages: MessageWithSender[]; nextCursor: string \| null }`             |
+| `sendMessage`    | `(threadId: string, content: string, type?: MessageType)`         | `POST /api/messaging/threads/{threadId}/messages`           | `MessageWithSender`                                                         |
+| `markThreadRead` | `(threadId: string) => Promise<{ success: boolean }>`             | `PATCH /api/messaging/threads/{threadId}/read`              | `{ success: boolean }`                                                      |
+| `archiveThread`  | `(threadId: string) => Promise<{ success: boolean }>`             | `PATCH /api/messaging/threads/{threadId}/archive`           | `{ success: boolean }`                                                      |
+| `getUnreadCount` | `() => Promise<{ count: number }>`                                | `GET /api/messaging/unread-count`                           | `{ count: number }`                                                         |
+| `uploadImages`   | `(threadId: string, files: File[]) => Promise<MessageWithSender>` | `POST /api/messaging/threads/{threadId}/upload`             | `MessageWithSender` with `type: 'image'` and image metadata                 |
 
 ## Hooks
 
@@ -150,6 +161,7 @@ Tanstack Query hooks live in `src/features/messaging/hooks/`.
 | Hook                                                         | Optimistic Update                                                         | Invalidates                                                                 |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `useSendMessage({ threadId, onSuccess?, onError? })`         | Prepends message to first page of infinite query cache                    | `['messages', 'threads', threadId, 'messages']` + `['messages', 'threads']` |
+| `useSendImages({ threadId, onSuccess?, onError? })`          | Prepends optimistic image message to first page of infinite query cache   | `['messages', 'threads', threadId, 'messages']` + `['messages', 'threads']` |
 | `useCreateThread({ onSuccess?, onError? })`                  | None (navigates to new thread)                                            | `['messages', 'threads']`; 409 treated as success                           |
 | `useMarkRead()`                                              | Sets `my_unread_count` to 0 across all thread list cache variants         | `['messages', 'threads']` + `['messages', 'unread-count']`                  |
 | `useCreateOffer({ onSuccess?, onError? })`                   | None                                                                      | `['messages', 'offers']` + `['messages', 'threads']`                        |
@@ -187,13 +199,31 @@ Thread context header that collapses to a slim bar on scroll. Props: `{ thread: 
 
 **File:** `src/features/messaging/components/compose-bar/index.tsx`
 
-Message input bar at the bottom of the thread view. Props: `{ threadId: string, disabled?: boolean }`. Features an auto-expanding textarea that grows with content, Enter to send, and Shift+Enter for a newline. Calls `useSendMessage` internally and clears the input on successful send.
+Message input bar at the bottom of the thread view. Props: `{ threadId: string, disabled?: boolean }`. Features an auto-expanding textarea that grows with content, Enter to send, and Shift+Enter for a newline. Calls `useSendMessage` internally and clears the input on successful send. The `+` action menu includes "Send Photo" (opens file picker for up to 4 images) and "Make an Offer" (for inquiry threads). Selected images show in an `ImagePreviewStrip` above the compose bar with client-side validation (MIME type, 5MB limit, max 4 files).
+
+### ImagePreviewStrip
+
+**File:** `src/features/messaging/components/image-preview-strip/index.tsx`
+
+Horizontal thumbnail strip shown above the compose bar when images are selected for sending. Props: `{ files: File[], onRemove, onSend, isPending, maxFiles? }`. Displays thumbnails via `URL.createObjectURL` (cleaned up on unmount), per-image remove buttons, count indicator (e.g., "2/4"), and a send button. Returns `null` when no files are selected.
 
 ### MessageNode
 
 **File:** `src/features/messaging/components/message-node/index.tsx`
 
-Handles non-bubble message types. Props: `{ message: MessageWithSender }`. System messages (`message_type = 'system'`) render as centered muted text. Nudge messages (`message_type = 'nudge'`) render as an `InlineBanner` with contextual guidance. See also `listing-node.tsx` in the same directory for listing preview cards.
+Handles non-bubble message types. Props: `{ message: MessageWithSender }`. System messages (`message_type = 'system'`) render as centered muted text. Nudge messages (`message_type = 'nudge'`) render as an `InlineBanner` with contextual guidance. See also `listing-node.tsx` and `image-node.tsx` in the same directory.
+
+### ImageNode
+
+**File:** `src/features/messaging/components/message-node/image-node.tsx`
+
+Inline image grid for `type: 'image'` messages. Props: `{ images: ImageAttachment[], onImageClick: (index) => void }`. Renders 1-4 images in an adaptive grid (1=full width, 2=side by side, 3-4=2x2). Uses `next/image` with `fill` and `object-fit: cover`. Each image is a clickable button that triggers the lightbox.
+
+### ImageLightbox
+
+**File:** `src/features/messaging/components/image-lightbox/index.tsx`
+
+Full-screen image viewer overlay. Props: `{ isOpen, onClose, images: ImageAttachment[], initialIndex? }`. Uses `ReactDOM.createPortal` to `#modal-root`. Features: arrow key and button navigation, image counter, focus trap, Escape to close, body scroll lock. Uses `next/image` with `object-fit: contain` for full-resolution display.
 
 ### ListingNode
 
@@ -205,7 +235,7 @@ Compact inline listing card rendered when `message_type = 'listing_node'`. Props
 
 **File:** `src/features/messaging/components/message-thread/index.tsx`
 
-Full production chat thread UI. Props: `{ messages: MessageWithSender[], currentUserId: string, className? }`. Renders each message according to its type: plain text as chat bubbles (sender right, receiver left), system/nudge messages via `MessageNode`, `listing_node` messages via `ListingNode`, and `offer_node` messages via `OfferBubble`. Inserts date separator labels between messages from different calendar days. Has `role="log"` and `aria-live="polite"` for screen reader announcements.
+Full production chat thread UI. Props: `{ messages: MessageWithSender[], currentUserId: string, className? }`. Renders each message according to its type: plain text as chat bubbles (sender right, receiver left), system/nudge messages via `MessageNode`, `listing_node` messages via `ListingNode`, `offer_node` messages via `OfferBubble`, and `image` messages via `ImageNode` with `ImageLightbox`. Inserts date separator labels between messages from different calendar days. Has `role="log"` and `aria-live="polite"` for screen reader announcements.
 
 ### OfferBubble
 
@@ -341,6 +371,12 @@ Two helper functions for email notifications in messaging and offer API routes:
 | `getOfferEmailContext`  | `({ senderId, listingId, supabase }) => Promise<{ senderName, listingTitle }>` | Fetches sender name and listing title for offer email templates. Returns fallback values (`'A user'`, `'a listing'`) on any error.                                       |
 
 **Usage in API routes:** Both functions are dynamically imported inside fire-and-forget `void (async () => { ... })()` blocks to avoid loading email modules on every request. Email dispatch never blocks the API response.
+
+### image-moderation.ts
+
+**File:** `src/features/messaging/utils/image-moderation.ts`
+
+Moderation stub for image attachments. Exports `scanImage(buffer: Buffer): Promise<ImageScanResult>` where `ImageScanResult = { passed: boolean; reason?: string }`. Currently a pass-through stub that always returns `{ passed: true }`. Will be wired to the real image-scanner when #318 (platform-wide content moderation) lands.
 
 ### safety-filter.ts
 

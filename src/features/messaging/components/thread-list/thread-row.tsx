@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { HiCamera } from 'react-icons/hi';
 import Avatar from '@/components/controls/avatar';
 import TypeBadge from '@/features/messaging/components/type-badge';
 import { isOnline } from '@/features/messaging/hooks/use-online-status';
@@ -45,7 +46,12 @@ export default function ThreadRow({ thread, currentUserId }: ThreadRowProps) {
           <span className={`${styles.name}${isUnread ? ` ${styles.unread}` : ''}`}>{name}</span>
           <TypeBadge type={thread.type} />
         </div>
-        <p className={styles.preview}>{thread.last_message_preview ?? ''}</p>
+        <p className={styles.preview}>
+          {thread.last_message_preview === 'Sent a photo' && (
+            <HiCamera aria-hidden="true" className={styles.previewIcon} />
+          )}
+          {thread.last_message_preview ?? ''}
+        </p>
       </div>
       <div className={styles.meta}>
         <time className={styles.timestamp} dateTime={thread.last_message_at ?? undefined}>

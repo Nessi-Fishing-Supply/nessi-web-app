@@ -55,12 +55,20 @@
 }
 
 .preview {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
   margin: 0;
   font-size: var(--font-size-500);
   color: var(--color-neutral-500);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.previewIcon {
+  flex-shrink: 0;
+  font-size: var(--font-size-600);
 }
 
 .meta {
