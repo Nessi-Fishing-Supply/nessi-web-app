@@ -1273,6 +1273,7 @@ export type Database = {
         | "custom_request_node"
         | "listing_node"
         | "nudge"
+        | "image"
       offer_status:
         | "pending"
         | "accepted"
@@ -1462,6 +1463,7 @@ export const Constants = {
         "custom_request_node",
         "listing_node",
         "nudge",
+        "image",
       ],
       offer_status: ["pending", "accepted", "declined", "countered", "expired"],
       participant_role: ["buyer", "seller", "initiator", "recipient"],

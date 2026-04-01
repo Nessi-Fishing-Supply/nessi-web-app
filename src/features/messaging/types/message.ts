@@ -12,3 +12,14 @@ export type MessageType = Database['public']['Enums']['message_type'];
 export type MessageWithSender = Message & {
   sender: { id: string; first_name: string; last_name: string; avatar_url: string | null };
 };
+
+export type ImageAttachment = {
+  url: string;
+  width: number;
+  height: number;
+  alt?: string;
+};
+
+export type ImageMessageMetadata = {
+  images: ImageAttachment[];
+};
