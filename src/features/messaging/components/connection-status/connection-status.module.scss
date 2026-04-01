@@ -1,0 +1,32 @@
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-200) var(--spacing-400);
+  font-size: var(--font-size-400);
+  text-align: center;
+  animation: slideDown 0.2s ease-out;
+}
+
+.disconnected {
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
+}
+
+.connected {
+  background-color: var(--color-success-100);
+  color: var(--color-success-700);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
