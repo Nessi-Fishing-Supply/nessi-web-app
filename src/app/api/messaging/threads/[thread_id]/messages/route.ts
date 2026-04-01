@@ -174,6 +174,49 @@ export async function POST(
       });
     }
 
+    // Fire-and-forget email notification for first unread message
+    void (async () => {
+      try {
+        const { data: updatedParticipants } = await supabase
+          .from('message_thread_participants')
+          .select('member_id, unread_count')
+          .eq('thread_id', thread_id)
+          .neq('member_id', user.id);
+
+        if (!updatedParticipants) return;
+
+        const recipientsToNotify = updatedParticipants.filter((p) => p.unread_count === 1);
+        if (recipientsToNotify.length === 0) return;
+
+        const { data: senderMember } = await supabase
+          .from('members')
+          .select('first_name, last_name')
+          .eq('id', user.id)
+          .single();
+
+        const senderName = senderMember
+          ? `${senderMember.first_name} ${senderMember.last_name}`.trim()
+          : 'Someone';
+
+        const { newMessage } = await import('@/features/email/templates/new-message');
+        const { sendNotificationEmail } =
+          await import('@/features/messaging/utils/notification-email');
+
+        const preview = messageContent.length > 200 ? messageContent.slice(0, 200) : messageContent;
+        const { subject, html } = newMessage({
+          senderName,
+          messagePreview: preview,
+          threadId: thread_id,
+        });
+
+        for (const p of recipientsToNotify) {
+          sendNotificationEmail({ recipientId: p.member_id, subject, html });
+        }
+      } catch (err) {
+        console.error('[message-email-notification] failed:', err);
+      }
+    })();
+
     return NextResponse.json(message, { status: 201, headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to send message';
