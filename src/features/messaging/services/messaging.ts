@@ -76,3 +76,11 @@ export const archiveThread = async (threadId: string): Promise<{ success: boolea
 
 export const getUnreadCount = async (): Promise<{ count: number }> =>
   get<{ count: number }>('/api/messaging/unread-count');
+
+export const uploadImages = async (threadId: string, files: File[]): Promise<MessageWithSender> => {
+  const formData = new FormData();
+  for (const file of files) {
+    formData.append('files', file);
+  }
+  return post<MessageWithSender>(`/api/messaging/threads/${threadId}/upload`, formData);
+};

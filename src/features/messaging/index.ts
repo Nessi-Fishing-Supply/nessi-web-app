@@ -13,6 +13,8 @@ export type {
   MessageInsert,
   MessageType,
   MessageWithSender,
+  ImageAttachment,
+  ImageMessageMetadata,
 } from '@/features/messaging/types/message';
 
 export type {
@@ -33,6 +35,7 @@ export {
   markThreadRead,
   archiveThread,
   getUnreadCount,
+  uploadImages,
 } from '@/features/messaging/services/messaging';
 
 export {
@@ -57,3 +60,4 @@ export { useUnreadCount } from '@/features/messaging/hooks/use-unread-count';
 export { useOffer } from '@/features/messaging/hooks/use-offer';
 export { useCreateOffer } from '@/features/messaging/hooks/use-create-offer';
 export { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
+export { useSendImages } from '@/features/messaging/hooks/use-send-images';
