@@ -5,7 +5,6 @@ export function useUnreadNotificationCount(enabled = true) {
   return useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: getUnreadCount,
-    refetchInterval: 30_000,
     enabled,
   });
 }

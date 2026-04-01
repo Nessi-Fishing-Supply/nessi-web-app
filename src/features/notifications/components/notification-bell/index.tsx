@@ -3,7 +3,9 @@
 import { useRef, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { HiOutlineBell } from 'react-icons/hi';
+import { useAuth } from '@/features/auth/context';
 import { useUnreadNotificationCount } from '@/features/notifications/hooks/use-unread-notification-count';
+import { useRealtimeNotifications } from '@/features/notifications/hooks/use-realtime-notifications';
 import styles from './notification-bell.module.scss';
 
 const NotificationPanel = dynamic(
@@ -14,7 +16,9 @@ const NotificationPanel = dynamic(
 export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
   const { data: unreadData } = useUnreadNotificationCount();
+  useRealtimeNotifications(user?.id ?? null, true);
   const unreadCount = unreadData?.count ?? 0;
 
   const badgeText = unreadCount > 9 ? '9+' : String(unreadCount);

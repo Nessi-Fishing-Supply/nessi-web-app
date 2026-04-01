@@ -6,6 +6,7 @@ import type { ThreadType } from '@/features/messaging/types/thread';
 import {
   getThreadsServer,
   createThreadServer,
+  hasTransactionHistoryServer,
 } from '@/features/messaging/services/messaging-server';
 
 const VALID_THREAD_TYPES: ThreadType[] = ['inquiry', 'direct', 'offer', 'custom_request'];
@@ -106,6 +107,19 @@ export async function POST(request: NextRequest) {
         { error: 'You must be a participant in the thread' },
         { status: 400, headers: AUTH_CACHE_HEADERS },
       );
+    }
+
+    if (type === 'direct' && !listingId) {
+      const otherParticipantId = participantIds.find((id: string) => id !== user.id);
+      if (otherParticipantId) {
+        const hasHistory = await hasTransactionHistoryServer(user.id, otherParticipantId);
+        if (!hasHistory) {
+          return NextResponse.json(
+            { error: 'Direct messaging requires a prior transaction with this user.' },
+            { status: 403, headers: AUTH_CACHE_HEADERS },
+          );
+        }
+      }
     }
 
     const { thread, existing } = await createThreadServer({

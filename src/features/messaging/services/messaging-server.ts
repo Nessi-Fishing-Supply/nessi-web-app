@@ -560,6 +560,23 @@ export async function archiveThreadServer(userId: string, threadId: string): Pro
   }
 }
 
+// TODO: Replace with actual order table lookup once orders are implemented
+export async function hasTransactionHistoryServer(
+  userIdA: string,
+  userIdB: string,
+): Promise<boolean> {
+  const supabase = await createClient();
+
+  const { data: members, error } = await supabase
+    .from('members')
+    .select('id, total_transactions')
+    .in('id', [userIdA, userIdB]);
+
+  if (error || !members || members.length < 2) return false;
+
+  return members.every((m) => (m.total_transactions ?? 0) > 0);
+}
+
 export async function getUnreadCountServer(userId: string): Promise<number> {
   const supabase = await createClient();
 
