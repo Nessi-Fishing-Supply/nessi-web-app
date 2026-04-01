@@ -39,6 +39,33 @@ export async function POST(request: NextRequest) {
 
     const offer = await createOfferServer(user.id, { listingId, sellerId, amountCents });
 
+    // Fire-and-forget email notification to seller
+    void (async () => {
+      try {
+        const { getOfferEmailContext, sendNotificationEmail } =
+          await import('@/features/messaging/utils/notification-email');
+        const { offerNotification } = await import('@/features/email/templates/offer-notification');
+
+        const { senderName, listingTitle } = await getOfferEmailContext({
+          senderId: user.id,
+          listingId,
+          supabase,
+        });
+
+        const { subject, html } = offerNotification({
+          type: 'received',
+          listingTitle,
+          amount: amountCents,
+          senderName,
+          threadId: offer.thread_id,
+        });
+
+        await sendNotificationEmail({ recipientId: sellerId, subject, html });
+      } catch (err) {
+        console.error('[offer-creation-email] failed:', err);
+      }
+    })();
+
     return NextResponse.json(offer, { status: 201, headers: AUTH_CACHE_HEADERS });
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
