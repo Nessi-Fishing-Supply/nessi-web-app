@@ -80,7 +80,8 @@ Thin fetch wrappers using `@/libs/fetch` helpers:
 ### Hooks (`hooks/`)
 
 - `useNotifications(limit?)` — paginated query, key: `['notifications']`
-- `useUnreadNotificationCount(enabled?)` — polling query (30s), key: `['notifications', 'unread-count']`
+- `useUnreadNotificationCount(enabled?)` — query, key: `['notifications', 'unread-count']`; no polling — driven by `useRealtimeNotifications`
+- `useRealtimeNotifications(userId)` — Supabase Realtime subscription on the `notifications` table; invalidates `['notifications']` and `['notifications', 'unread-count']` on INSERT/UPDATE for the current user
 - `useMarkNotificationRead()` — optimistic mutation
 - `useMarkAllNotificationsRead()` — optimistic mutation
 
@@ -94,12 +95,13 @@ Thin fetch wrappers using `@/libs/fetch` helpers:
 
 - `notification-config.ts` — Maps NotificationType → icon + color
 - `dispatch-notification.ts` — Fire-and-forget wrapper for cross-feature use
+- `browser-notifications.ts` — Wrapper for the Web Notifications API; requests permission and dispatches native browser push notifications for new in-app events
 
 ## Key Patterns
 
 - **Admin client for inserts:** Notifications are created for other users, bypassing RLS
 - **Fire-and-forget dispatch:** `void dispatchNotification(...)` pattern — never blocks parent operation
-- **30-second polling:** Unread count refreshes via `refetchInterval`, no Supabase Realtime (deferred to #56)
+- **Supabase Realtime (replaced polling):** `useRealtimeNotifications` subscribes to the `notifications` table and invalidates query keys on new events. The previous 30-second `refetchInterval` polling on `useUnreadNotificationCount` has been removed.
 - **Optimistic UI:** Mark-read mutations update cache immediately, revert on error
 - **100-notification cap:** Enforced at application layer in `createNotificationServer`
 
@@ -117,6 +119,7 @@ src/features/notifications/
 ├── hooks/
 │   ├── use-notifications.ts
 │   ├── use-unread-notification-count.ts
+│   ├── use-realtime-notifications.ts
 │   ├── use-mark-notification-read.ts
 │   └── use-mark-all-notifications-read.ts
 ├── components/
@@ -125,11 +128,12 @@ src/features/notifications/
 │   └── notification-item/
 └── utils/
     ├── notification-config.ts
-    └── dispatch-notification.ts
+    ├── dispatch-notification.ts
+    └── browser-notifications.ts
 ```
 
 ## Related Features
 
 - **Messaging (#33)** — `new_message` notifications dispatched from message send route
 - **Watchlist (#36)** — `price_drop` notifications (future integration)
-- **Real-time (#56)** — Supabase Realtime will replace 30s polling (future)
+- **Real-time (#56)** — Supabase Realtime replaced 30s polling; `useRealtimeNotifications` is the live subscription hook

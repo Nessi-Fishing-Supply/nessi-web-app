@@ -103,7 +103,7 @@ Uses `@/libs/supabase/server` (cookie-based auth, user JWT). Called by API route
 | `createThreadServer`   | `(params) => Promise<CreateThreadResult>`                                | Create thread + insert participant rows; returns `{ thread, existing }` for duplicate detection                                            |
 | `getMessagesServer`    | `(userId, threadId, cursor?, limit?) => Promise<{messages, nextCursor}>` | Paginated messages with cursor; newest-first                                                                                               |
 | `createMessageServer`  | `(params) => Promise<MessageWithSender>`                                 | Insert message; updates thread metadata + unread counts. Accepts optional `isFiltered` and `originalContent` for safety filter audit trail |
-| `markThreadReadServer` | `(userId, threadId) => Promise<void>`                                    | Reset `unread_count` to 0 for the user's participant row                                                                                   |
+| `markThreadReadServer` | `(userId, threadId) => Promise<void>`                                    | Reset `unread_count` to 0 and set `last_read_at` to now for the user's participant row                                                     |
 | `archiveThreadServer`  | `(userId, threadId) => Promise<void>`                                    | Set `thread_status = 'archived'`                                                                                                           |
 | `getUnreadCountServer` | `(userId) => Promise<number>`                                            | Sum of `unread_count` across all active participant rows                                                                                   |
 
@@ -128,13 +128,22 @@ Tanstack Query hooks live in `src/features/messaging/hooks/`.
 
 ### Query Hooks
 
-| Hook                       | Query Key                                       | Description                                                                                                         |
-| -------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `useThreads(type?)`        | `['messages', 'threads', type]`                 | List threads; optional `ThreadType` filter for independent caching per type                                         |
-| `useThread(threadId)`      | `['messages', 'threads', threadId]`             | Single thread with participants; disabled when `threadId` is falsy                                                  |
-| `useMessages(threadId)`    | `['messages', 'threads', threadId, 'messages']` | `useInfiniteQuery` with cursor-based pagination; disabled when `threadId` is falsy                                  |
-| `useUnreadCount(enabled?)` | `['messages', 'unread-count']`                  | Total unread count; `refetchInterval: 60_000` for nav badge polling; pass `enabled=false` for unauthenticated users |
-| `useOffer(offerId)`        | `['messages', 'offers', offerId]`               | Single offer with listing/buyer/seller details; disabled when `offerId` is falsy                                    |
+| Hook                       | Query Key                                       | Description                                                                                                                                  |
+| -------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useThreads(type?)`        | `['messages', 'threads', type]`                 | List threads; optional `ThreadType` filter for independent caching per type                                                                  |
+| `useThread(threadId)`      | `['messages', 'threads', threadId]`             | Single thread with participants; disabled when `threadId` is falsy                                                                           |
+| `useMessages(threadId)`    | `['messages', 'threads', threadId, 'messages']` | `useInfiniteQuery` with cursor-based pagination; disabled when `threadId` is falsy                                                           |
+| `useUnreadCount(enabled?)` | `['messages', 'unread-count']`                  | Total unread count; no polling — driven by `useRealtimeUnreadCount` Supabase Realtime subscription; pass `enabled=false` for unauthenticated |
+| `useOffer(offerId)`        | `['messages', 'offers', offerId]`               | Single offer with listing/buyer/seller details; disabled when `offerId` is falsy                                                             |
+
+### Realtime Hooks
+
+| Hook                                    | Description                                                                                                                                                                   |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useRealtimeMessages(threadId, userId)` | Subscribes to new messages on a thread via Supabase Realtime. Prepends incoming messages to the `useMessages` infinite query cache, deduplicating against optimistic inserts. |
+| `useTypingIndicator(threadId, userId)`  | Broadcasts and receives typing presence on a thread channel. Returns `{ startTyping, isOtherTyping }`. Typing state auto-clears after 3 seconds of inactivity.                |
+| `useOnlineStatus(userId)`               | Broadcasts and tracks online presence for a member. Updates `last_seen_at` on disconnect.                                                                                     |
+| `useRealtimeUnreadCount(userId)`        | Subscribes to `message_thread_participants` changes for the current user and invalidates the `['messages', 'unread-count']` query key when unread counts change.              |
 
 ### Mutation Hooks
 
@@ -203,6 +212,18 @@ Full production chat thread UI. Props: `{ messages: MessageWithSender[], current
 **File:** `src/features/messaging/components/offer-bubble/index.tsx`
 
 Inline offer display rendered inside the message thread when `message_type = 'offer_node'`. Handles all five offer statuses: `pending`, `accepted`, `declined`, `countered`, and `expired`. Displays offer amount, status badge, and buyer/seller context. Accept/counter/decline action buttons are shown to the seller when status is `pending`. Accepts an `isPending` prop (used for `aria-busy`) to indicate an in-flight offer action.
+
+### TypingIndicator
+
+**File:** `src/features/messaging/components/typing-indicator/index.tsx`
+
+Animated "is typing" indicator shown below the message area when the other participant is actively typing. Props: `{ name: string }`. Renders three animated dots with the participant's first name. Uses `role="status"` and `aria-live="polite"`.
+
+### ConnectionStatus
+
+**File:** `src/features/messaging/components/connection-status/index.tsx`
+
+Connection state banner displayed at the top of the message area. Props: `{ status: 'connected' | 'disconnected' | 'hidden' }`. When `disconnected`, shows a warning-styled banner ("Connection lost. Reconnecting..."). When `connected`, shows a brief success-styled confirmation. When `hidden`, renders nothing. Uses `role="status"` and `aria-live="polite"`. Ready for wiring into the thread detail page once Supabase Realtime channel status callbacks are exposed via the realtime utility.
 
 ## Offers
 
@@ -445,7 +466,11 @@ src/features/messaging/
 │   ├── use-send-message.ts                        # Mutation: optimistic prepend to messages cache
 │   ├── use-create-thread.ts                       # Mutation: create thread, 409 = success
 │   ├── use-mark-read.ts                           # Mutation: optimistic unread count reset
-│   ├── use-unread-count.ts                        # Query: polling (60s) — key: ['messages', 'unread-count']
+│   ├── use-unread-count.ts                        # Query: no polling — key: ['messages', 'unread-count']
+│   ├── use-realtime-messages.ts                   # Realtime: subscribes to new messages, prepends to cache
+│   ├── use-typing-indicator.ts                    # Realtime: broadcast + receive typing presence per thread
+│   ├── use-online-status.ts                       # Realtime: broadcast + track member online presence
+│   ├── use-realtime-unread-count.ts               # Realtime: invalidates unread-count key on participant changes
 │   ├── use-offer.ts                               # Query: single offer — key: ['messages', 'offers', offerId]
 │   ├── use-create-offer.ts                        # Mutation: create offer, invalidates offers + threads
 │   └── use-offer-actions.ts                       # Mutation: accept/decline/counter with optimistic updates
@@ -474,9 +499,15 @@ src/features/messaging/
 │   ├── message-thread/                            # Production chat thread UI
 │   │   ├── index.tsx
 │   │   └── message-thread.module.scss
-│   └── offer-bubble/                              # Inline offer display — all 5 offer statuses
+│   ├── offer-bubble/                              # Inline offer display — all 5 offer statuses
+│   │   ├── index.tsx
+│   │   └── offer-bubble.module.scss
+│   ├── typing-indicator/                          # Animated "is typing" indicator
+│   │   ├── index.tsx
+│   │   └── typing-indicator.module.scss
+│   └── connection-status/                         # Realtime connection state banner (ready for wiring)
 │       ├── index.tsx
-│       └── offer-bubble.module.scss
+│       └── connection-status.module.scss
 └── utils/
     ├── safety-filter.ts                           # Content safety: block / redact PII / nudge / pass
     ├── offer-validation.ts                        # Offer amount validation, min/default calcs, expiry check

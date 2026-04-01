@@ -41,6 +41,7 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
   const [isDeclineDialogOpen, setIsDeclineDialogOpen] = useState(false);
   const [isOfferSheetOpen, setIsOfferSheetOpen] = useState(false);
   const [offerSheetMode, setOfferSheetMode] = useState<'create' | 'counter'>('create');
+  const [showNewMessagePill, setShowNewMessagePill] = useState(false);
 
   const {
     data: thread,
@@ -111,6 +112,29 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
     }
     previousScrollHeightRef.current = newScrollHeight;
   }, [data]);
+
+  // Check if the user is scrolled near the bottom of the message area
+  function isNearBottom() {
+    const el = messageAreaRef.current;
+    if (!el) return true;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+  }
+
+  // Detect new incoming messages and show pill or auto-scroll
+  const latestMessageId = data?.pages[0]?.messages[0]?.id;
+  useEffect(() => {
+    if (!latestMessageId || !hasScrolledToBottomRef.current) return;
+    if (isNearBottom()) {
+      messageAreaRef.current?.scrollTo({
+        top: messageAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+      setShowNewMessagePill(false);
+    } else {
+      setShowNewMessagePill(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [latestMessageId]);
 
   // Infinite scroll sentinel — fires fetchNextPage when top sentinel enters viewport
   useEffect(() => {
@@ -281,6 +305,21 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
             currentUserId={user?.id ?? ''}
             otherParticipantLastReadAt={otherParticipant?.last_read_at}
           />
+        )}
+        {showNewMessagePill && (
+          <button
+            className={styles.newMessagePill}
+            onClick={() => {
+              messageAreaRef.current?.scrollTo({
+                top: messageAreaRef.current.scrollHeight,
+                behavior: 'smooth',
+              });
+              setShowNewMessagePill(false);
+            }}
+            aria-label="Scroll to new message"
+          >
+            New message
+          </button>
         )}
       </div>
       {isOtherTyping && <TypingIndicator name={otherParticipant?.member.first_name ?? 'Someone'} />}
