@@ -375,23 +375,28 @@ export async function expirePendingOffersServer(): Promise<{
   const allExpired = [...(pendingExpired ?? []), ...(acceptedExpired ?? [])];
 
   for (const offer of allExpired) {
-    try {
-      await supabase.from('messages').insert({
-        thread_id: offer.thread_id,
-        sender_id: offer.buyer_id,
-        type: 'system',
-        content: 'This offer has expired.',
-      });
+    const { error: msgError } = await supabase.from('messages').insert({
+      thread_id: offer.thread_id,
+      sender_id: offer.buyer_id,
+      type: 'system',
+      content: 'This offer has expired.',
+    });
 
-      await supabase
-        .from('message_threads')
-        .update({
-          last_message_at: now,
-          last_message_preview: 'This offer has expired.',
-        })
-        .eq('id', offer.thread_id);
-    } catch {
-      // do not block remaining offers if one message insertion fails
+    if (msgError) {
+      console.error(`Failed to insert expiry message for offer ${offer.id}:`, msgError.message);
+      continue;
+    }
+
+    const { error: threadError } = await supabase
+      .from('message_threads')
+      .update({
+        last_message_at: now,
+        last_message_preview: 'This offer has expired.',
+      })
+      .eq('id', offer.thread_id);
+
+    if (threadError) {
+      console.error(`Failed to update thread ${offer.thread_id}:`, threadError.message);
     }
   }
 
