@@ -51,14 +51,14 @@ export function subscribeToTable<T extends TableName>({
   };
 }
 
-interface BroadcastChannelOptions<T extends Record<string, unknown>> {
+interface BroadcastChannelOptions<T extends object> {
   channelName: string;
   event: string;
   onMessage: (payload: T) => void;
   self?: boolean;
 }
 
-interface BroadcastChannelResult<T extends Record<string, unknown>> {
+interface BroadcastChannelResult<T extends object> {
   send: (payload: T) => Promise<void>;
   cleanup: () => void;
 }
@@ -67,7 +67,7 @@ interface BroadcastChannelResult<T extends Record<string, unknown>> {
  * Create a Broadcast channel for ephemeral events (typing indicators, cursor positions).
  * Broadcast events are NOT persisted — they are peer-to-peer via the Supabase Realtime server.
  */
-export function createBroadcastChannel<T extends Record<string, unknown>>({
+export function createBroadcastChannel<T extends object>({
   channelName,
   event,
   onMessage,
