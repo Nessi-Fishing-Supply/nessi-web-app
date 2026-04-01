@@ -45,12 +45,13 @@ Next.js App Router with a `(frontend)` route group for all UI pages. No Pages Ro
 
 Two Supabase Storage buckets (both public):
 
-| Bucket           | Path Pattern                        | API Route                                | Purpose                                |
-| ---------------- | ----------------------------------- | ---------------------------------------- | -------------------------------------- |
-| `listing-images` | `listings/{listing_id}/{uuid}.webp` | `src/app/api/listings/upload/route.ts`   | Listing photos (max 1200x1200 WebP)    |
-| `profile-assets` | `members/{user_id}/avatar.webp`     | `src/app/api/members/avatar/route.ts`    | Member avatar (200x200 WebP via Sharp) |
-| `profile-assets` | `shops/{shop_id}/avatar.webp`       | `src/app/api/shops/avatar/route.ts`      | Shop avatar (200x200 WebP via Sharp)   |
-| `profile-assets` | `shops/{shop_id}/hero-banner.webp`  | `src/app/api/shops/hero-banner/route.ts` | Shop hero banner (max 1200x400 WebP)   |
+| Bucket           | Path Pattern                               | API Route                                                   | Purpose                                        |
+| ---------------- | ------------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------- |
+| `listing-images` | `listings/{listing_id}/{uuid}.webp`        | `src/app/api/listings/upload/route.ts`                      | Listing photos (max 1200x1200 WebP)            |
+| `profile-assets` | `members/{user_id}/avatar.webp`            | `src/app/api/members/avatar/route.ts`                       | Member avatar (200x200 WebP via Sharp)         |
+| `profile-assets` | `shops/{shop_id}/avatar.webp`              | `src/app/api/shops/avatar/route.ts`                         | Shop avatar (200x200 WebP via Sharp)           |
+| `profile-assets` | `shops/{shop_id}/hero-banner.webp`         | `src/app/api/shops/hero-banner/route.ts`                    | Shop hero banner (max 1200x400 WebP)           |
+| `message-images` | `threads/{thread_id}/{msg_id}/{uuid}.webp` | `src/app/api/messaging/threads/[thread_id]/upload/route.ts` | Message image attachments (max 1200x1200 WebP) |
 
 RLS policies enforce per-user access. Member assets use user JWT (RLS checks `members/{uid}/*`). Shop assets use admin client in API routes (ownership verified in handler). 5MB limit, JPEG/PNG/WebP/GIF only.
 
