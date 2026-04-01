@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Avatar from '@/components/controls/avatar';
 import Pill from '@/components/indicators/pill';
 import TypeBadge from '@/features/messaging/components/type-badge';
+import { isOnline } from '@/features/messaging/hooks/use-online-status';
 import OfferBubble from '@/features/messaging/components/offer-bubble';
 import type { ThreadWithParticipants } from '@/features/messaging/types/thread';
 import type { OfferWithDetails, OfferStatus } from '@/features/messaging/types/offer';
@@ -56,6 +57,7 @@ export default function CollapsibleHeader({
     : 'Unknown';
   const otherAvatarUrl = otherParticipant?.member.avatar_url ?? undefined;
   const otherSlug = otherParticipant?.member.slug ?? null;
+  const otherIsOnline = isOnline(otherParticipant?.member.last_seen_at ?? null);
 
   const isSeller =
     otherParticipant?.role === 'buyer' ||
@@ -106,7 +108,12 @@ export default function CollapsibleHeader({
         {thread.type === 'inquiry' && (
           <div className={styles.section}>
             <div className={styles.participantRow}>
-              <Avatar size="md" name={otherName} imageUrl={otherAvatarUrl} />
+              <Avatar
+                size="md"
+                name={otherName}
+                imageUrl={otherAvatarUrl}
+                isOnline={otherIsOnline}
+              />
               <div className={styles.participantInfo}>
                 {otherSlug ? (
                   <Link href={`/member/${otherSlug}`} className={styles.participantName}>
@@ -151,7 +158,12 @@ export default function CollapsibleHeader({
         {thread.type === 'direct' && (
           <div className={styles.section}>
             <div className={styles.participantRow}>
-              <Avatar size="md" name={otherName} imageUrl={otherAvatarUrl} />
+              <Avatar
+                size="md"
+                name={otherName}
+                imageUrl={otherAvatarUrl}
+                isOnline={otherIsOnline}
+              />
               <div className={styles.participantInfo}>
                 {otherSlug ? (
                   <Link href={`/member/${otherSlug}`} className={styles.participantName}>
@@ -168,7 +180,12 @@ export default function CollapsibleHeader({
         {thread.type === 'custom_request' && (
           <div className={styles.section}>
             <div className={styles.participantRow}>
-              <Avatar size="md" name={otherName} imageUrl={otherAvatarUrl} />
+              <Avatar
+                size="md"
+                name={otherName}
+                imageUrl={otherAvatarUrl}
+                isOnline={otherIsOnline}
+              />
               <div className={styles.participantInfo}>
                 {otherSlug ? (
                   <Link href={`/member/${otherSlug}`} className={styles.participantName}>

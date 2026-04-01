@@ -14,6 +14,7 @@ interface MessageThreadProps {
   messages: MessageWithSender[];
   currentUserId: string;
   className?: string;
+  otherParticipantLastReadAt?: string | null;
 }
 
 function formatDateSeparator(dateStr: string): string {
@@ -43,7 +44,15 @@ function formatTime(dateStr: string): string {
   return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export default function MessageThread({ messages, currentUserId, className }: MessageThreadProps) {
+export default function MessageThread({
+  messages,
+  currentUserId,
+  className,
+  otherParticipantLastReadAt,
+}: MessageThreadProps) {
+  const lastSentMessageIndex = messages.reduce((last, m, i) => {
+    return m.sender_id === currentUserId && m.type === 'text' ? i : last;
+  }, -1);
   return (
     <div
       className={`${styles.thread}${className ? ` ${className}` : ''}`}
@@ -190,6 +199,12 @@ export default function MessageThread({ messages, currentUserId, className }: Me
                 <time className={styles.timestamp} dateTime={message.created_at}>
                   {formatTime(message.created_at)}
                 </time>
+                {isSent &&
+                  index === lastSentMessageIndex &&
+                  otherParticipantLastReadAt &&
+                  new Date(otherParticipantLastReadAt) > new Date(message.created_at) && (
+                    <span className={styles.readReceipt}>Read</span>
+                  )}
               </div>
             </div>
           </div>

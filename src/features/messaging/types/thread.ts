@@ -18,6 +18,7 @@ export type ThreadWithParticipants = MessageThread & {
       last_name: string;
       avatar_url: string | null;
       slug: string | null;
+      last_seen_at: string | null;
     };
   })[];
   my_unread_count: number;

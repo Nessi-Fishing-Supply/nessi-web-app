@@ -6,6 +6,8 @@ import { useAuth } from '@/features/auth/context';
 import { useThread } from '@/features/messaging/hooks/use-thread';
 import { useMessages } from '@/features/messaging/hooks/use-messages';
 import { useMarkRead } from '@/features/messaging/hooks/use-mark-read';
+import { useRealtimeMessages } from '@/features/messaging/hooks/use-realtime-messages';
+import { useTypingIndicator } from '@/features/messaging/hooks/use-typing-indicator';
 import { useOffer } from '@/features/messaging/hooks/use-offer';
 import { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
 import PageHeader from '@/components/layout/page-header';
@@ -14,6 +16,7 @@ import InlineBanner from '@/components/indicators/inline-banner';
 import ConfirmationDialog from '@/components/layout/confirmation-dialog';
 import ComposeBar from '@/features/messaging/components/compose-bar';
 import MessageThread from '@/features/messaging/components/message-thread';
+import TypingIndicator from '@/features/messaging/components/typing-indicator';
 import CollapsibleHeader from '@/features/messaging/components/collapsible-header';
 import OfferSheet from '@/features/messaging/components/offer-sheet';
 import styles from './thread-detail-page.module.scss';
@@ -55,6 +58,9 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
     hasNextPage,
     isFetchingNextPage,
   } = useMessages(threadId);
+
+  useRealtimeMessages(threadId, user?.id ?? null);
+  const { startTyping, isOtherTyping } = useTypingIndicator(threadId, user?.id ?? null);
 
   // Extract offer_id from the latest offer_node message for offer threads
   const latestOfferMessage = data?.pages
@@ -270,9 +276,14 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
             <p className={styles.emptyThreadText}>Send a message to get started</p>
           </div>
         ) : (
-          <MessageThread messages={messages} currentUserId={user?.id ?? ''} />
+          <MessageThread
+            messages={messages}
+            currentUserId={user?.id ?? ''}
+            otherParticipantLastReadAt={otherParticipant?.last_read_at}
+          />
         )}
       </div>
+      {isOtherTyping && <TypingIndicator name={otherParticipant?.member.first_name ?? 'Someone'} />}
       {isThreadInactive && (
         <div className={styles.inactiveBanner}>
           <InlineBanner variant="info" title={inactiveLabel} />
@@ -284,6 +295,7 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
         threadType={thread?.type}
         currentUserRole={currentUserRole}
         onMakeOffer={handleMakeOffer}
+        onTyping={startTyping}
       />
 
       <ConfirmationDialog

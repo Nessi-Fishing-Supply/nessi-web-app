@@ -11,6 +11,7 @@ interface AvatarProps {
   imageUrl?: string;
   isShop?: boolean;
   colorSeed?: string;
+  isOnline?: boolean;
 }
 
 const SIZE_PX: Record<AvatarSize, number> = {
@@ -53,6 +54,7 @@ export default function Avatar({
   imageUrl,
   isShop = false,
   colorSeed,
+  isOnline,
 }: AvatarProps) {
   const px = SIZE_PX[size];
   const initials = getInitials(name);
@@ -79,6 +81,7 @@ export default function Avatar({
           {initials}
         </span>
       )}
+      {isOnline && <span className={styles.onlineDot} aria-label="Online" role="status" />}
     </span>
   );
 }

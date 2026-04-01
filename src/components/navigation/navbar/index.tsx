@@ -44,6 +44,8 @@ import { useRecentlyViewedMerge } from '@/features/recently-viewed/hooks/use-rec
 
 // Messaging
 import { useUnreadCount } from '@/features/messaging/hooks/use-unread-count';
+import { useRealtimeUnreadCount } from '@/features/messaging/hooks/use-realtime-unread-count';
+import { useOnlineStatus } from '@/features/messaging/hooks/use-online-status';
 
 // Notifications
 import NotificationBell from '@/features/notifications/components/notification-bell';
@@ -86,6 +88,8 @@ export default function Navbar() {
   const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
   const { data: unreadData } = useUnreadCount(isAuthenticated);
   const unreadCount = unreadData?.count ?? 0;
+  useRealtimeUnreadCount(user?.id ?? null, isAuthenticated);
+  useOnlineStatus(isAuthenticated);
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
   const { data: activeShop } = useShop(activeShopId, activeContext.type === 'shop');
   const searchParams = useSearchParams();

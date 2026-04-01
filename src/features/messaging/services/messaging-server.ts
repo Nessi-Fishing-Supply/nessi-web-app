@@ -20,7 +20,7 @@ async function buildThreadsWithParticipants(
 
   const { data: participants, error: participantsError } = await supabase
     .from('message_thread_participants')
-    .select('*, members(id, first_name, last_name, avatar_url, slug)')
+    .select('*, members(id, first_name, last_name, avatar_url, slug, last_seen_at)')
     .in('thread_id', threadIds);
 
   if (participantsError) {
@@ -47,6 +47,7 @@ async function buildThreadsWithParticipants(
           last_name: string;
           avatar_url: string | null;
           slug: string | null;
+          last_seen_at: string | null;
         } | null;
 
         return {
@@ -64,6 +65,7 @@ async function buildThreadsWithParticipants(
             last_name: memberData?.last_name ?? '',
             avatar_url: memberData?.avatar_url ?? null,
             slug: memberData?.slug ?? null,
+            last_seen_at: memberData?.last_seen_at ?? null,
           },
         };
       }),

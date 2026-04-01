@@ -5,7 +5,6 @@ export function useUnreadCount(enabled = true) {
   return useQuery({
     queryKey: ['messages', 'unread-count'],
     queryFn: getUnreadCount,
-    refetchInterval: 60_000,
     enabled,
   });
 }

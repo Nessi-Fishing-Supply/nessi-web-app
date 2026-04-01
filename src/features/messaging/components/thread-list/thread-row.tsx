@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Avatar from '@/components/controls/avatar';
 import TypeBadge from '@/features/messaging/components/type-badge';
+import { isOnline } from '@/features/messaging/hooks/use-online-status';
 import type { ThreadWithParticipants } from '@/features/messaging/types/thread';
 import styles from './thread-row.module.scss';
 
@@ -32,11 +33,12 @@ export default function ThreadRow({ thread, currentUserId }: ThreadRowProps) {
   const name = other ? `${other.member.first_name} ${other.member.last_name}` : 'Unknown';
   const avatarUrl = other?.member.avatar_url ?? undefined;
   const isUnread = thread.my_unread_count > 0;
+  const otherIsOnline = isOnline(other?.member.last_seen_at ?? null);
 
   return (
     <Link href={`/messages/${thread.id}`} className={styles.row}>
       <div className={styles.avatarWrap}>
-        <Avatar name={name} imageUrl={avatarUrl} size="md" />
+        <Avatar name={name} imageUrl={avatarUrl} size="md" isOnline={otherIsOnline} />
       </div>
       <div className={styles.content}>
         <div className={styles.header}>

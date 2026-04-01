@@ -13,6 +13,7 @@ interface ComposeBarProps {
   threadType?: ThreadType;
   currentUserRole?: ParticipantRole;
   onMakeOffer?: () => void;
+  onTyping?: () => void;
 }
 
 const MAX_ROWS = 5;
@@ -23,6 +24,7 @@ export default function ComposeBar({
   threadType,
   currentUserRole,
   onMakeOffer,
+  onTyping,
 }: ComposeBarProps) {
   const [value, setValue] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,8 +57,9 @@ export default function ComposeBar({
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setValue(e.target.value);
       adjustHeight();
+      onTyping?.();
     },
-    [adjustHeight],
+    [adjustHeight, onTyping],
   );
 
   const handleSend = useCallback(() => {
