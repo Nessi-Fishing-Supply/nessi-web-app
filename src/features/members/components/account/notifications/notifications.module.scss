@@ -46,3 +46,19 @@
   color: var(--color-neutral-500);
   line-height: 1.4;
 }
+
+.sectionHeading {
+  font-size: var(--font-size-500);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--spacing-300) var(--spacing-200) var(--spacing-100);
+  list-style: none;
+
+  &:not(:first-child) {
+    margin-top: var(--spacing-200);
+    border-top: 1px solid var(--color-neutral-200);
+    padding-top: var(--spacing-300);
+  }
+}
