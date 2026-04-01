@@ -13,7 +13,10 @@ const TYPING_TIMEOUT_MS = 3000;
 export function useTypingIndicator(threadId: string | null, currentUserId: string | null) {
   const [isOtherTyping, setIsOtherTyping] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const channelRef = useRef<{ send: (payload: TypingPayload) => Promise<void>; cleanup: () => void } | null>(null);
+  const channelRef = useRef<{
+    send: (payload: TypingPayload) => Promise<void>;
+    cleanup: () => void;
+  } | null>(null);
 
   useEffect(() => {
     if (!threadId || !currentUserId) return;

@@ -86,10 +86,10 @@
   cursor: pointer;
   box-shadow: var(--shadow-200);
   z-index: 10;
-  animation: fadeIn 0.2s ease-out;
+  animation: fade-in 0.2s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(8px);

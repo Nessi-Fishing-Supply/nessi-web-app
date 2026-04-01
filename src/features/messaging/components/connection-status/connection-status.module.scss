@@ -6,7 +6,7 @@
   padding: var(--spacing-200) var(--spacing-400);
   font-size: var(--font-size-400);
   text-align: center;
-  animation: slideDown 0.2s ease-out;
+  animation: slide-down 0.2s ease-out;
 }
 
 .disconnected {
@@ -19,7 +19,7 @@
   color: var(--color-success-700);
 }
 
-@keyframes slideDown {
+@keyframes slide-down {
   from {
     transform: translateY(-100%);
     opacity: 0;

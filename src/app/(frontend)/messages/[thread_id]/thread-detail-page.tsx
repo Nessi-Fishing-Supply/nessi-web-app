@@ -133,7 +133,6 @@ export default function ThreadDetailPage({ threadId }: ThreadDetailPageProps) {
     } else {
       setShowNewMessagePill(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestMessageId]);
 
   // Infinite scroll sentinel — fires fetchNextPage when top sentinel enters viewport

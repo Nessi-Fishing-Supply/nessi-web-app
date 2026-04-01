@@ -53,9 +53,7 @@ export function useRealtimeMessages(threadId: string | null, currentUserId: stri
           return {
             ...old,
             pages: old.pages.map((page: any, index: number) =>
-              index === 0
-                ? { ...page, messages: [realtimeMessage, ...page.messages] }
-                : page,
+              index === 0 ? { ...page, messages: [realtimeMessage, ...page.messages] } : page,
             ),
           };
         });
