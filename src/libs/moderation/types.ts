@@ -1,4 +1,9 @@
-export type TextScanAction = 'pass' | 'block' | 'redact' | 'nudge_off_platform' | 'nudge_negotiation';
+export type TextScanAction =
+  | 'pass'
+  | 'block'
+  | 'redact'
+  | 'nudge_off_platform'
+  | 'nudge_negotiation';
 
 export type ModerationContext = 'listing' | 'member' | 'shop' | 'message';
 

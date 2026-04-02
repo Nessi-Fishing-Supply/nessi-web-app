@@ -28,27 +28,27 @@ Server-side only. Inserts a row into `moderation_flags` using the admin client. 
 
 ### `moderation_flags` table
 
-| Column             | Type        | Constraints                                    |
-| ------------------ | ----------- | ---------------------------------------------- |
-| `id`               | UUID        | PK, `gen_random_uuid()`                        |
-| `member_id`        | UUID        | NOT NULL, FK `members(id) ON DELETE CASCADE`   |
+| Column             | Type        | Constraints                                               |
+| ------------------ | ----------- | --------------------------------------------------------- |
+| `id`               | UUID        | PK, `gen_random_uuid()`                                   |
+| `member_id`        | UUID        | NOT NULL, FK `members(id) ON DELETE CASCADE`              |
 | `context`          | TEXT        | NOT NULL — `'listing'`, `'member'`, `'shop'`, `'message'` |
-| `action`           | TEXT        | NOT NULL — `'block'` or `'redact'`             |
-| `original_content` | TEXT        | NOT NULL                                       |
-| `filtered_content` | TEXT        | NULL — post-redaction content when applicable  |
-| `source_id`        | UUID        | NULL — ID of the source record (listing, message, etc.) |
-| `created_at`       | TIMESTAMPTZ | NOT NULL, DEFAULT `now()`                      |
+| `action`           | TEXT        | NOT NULL — `'block'` or `'redact'`                        |
+| `original_content` | TEXT        | NOT NULL                                                  |
+| `filtered_content` | TEXT        | NULL — post-redaction content when applicable             |
+| `source_id`        | UUID        | NULL — ID of the source record (listing, message, etc.)   |
+| `created_at`       | TIMESTAMPTZ | NOT NULL, DEFAULT `now()`                                 |
 
 RLS: insert via service role only (admin client). No user-facing reads.
 
 ## Integration Points
 
-| Route | Context | block | redact | nudge |
-| ----- | ------- | ----- | ------ | ----- |
-| `POST /api/listings` / `PATCH /api/listings/[id]` | `'listing'` | 400 error, reject save | save redacted content, log flag | treated as `pass` — content saved as-is |
-| `PATCH /api/members/[id]` | `'member'` | 400 error | save redacted content, log flag | treated as `pass` |
-| `PATCH /api/shops/[id]` | `'shop'` | 400 error | save redacted content, log flag | treated as `pass` |
-| `POST /api/messaging/threads/[id]/messages` | `'message'` | 400 error, message not sent | save redacted content, log flag | insert a system nudge message into the thread, still deliver the user's message |
+| Route                                             | Context     | block                       | redact                          | nudge                                                                           |
+| ------------------------------------------------- | ----------- | --------------------------- | ------------------------------- | ------------------------------------------------------------------------------- |
+| `POST /api/listings` / `PATCH /api/listings/[id]` | `'listing'` | 400 error, reject save      | save redacted content, log flag | treated as `pass` — content saved as-is                                         |
+| `PATCH /api/members/[id]`                         | `'member'`  | 400 error                   | save redacted content, log flag | treated as `pass`                                                               |
+| `PATCH /api/shops/[id]`                           | `'shop'`    | 400 error                   | save redacted content, log flag | treated as `pass`                                                               |
+| `POST /api/messaging/threads/[id]/messages`       | `'message'` | 400 error, message not sent | save redacted content, log flag | insert a system nudge message into the thread, still deliver the user's message |
 
 ### Nudge behavior in messaging
 

@@ -66,7 +66,13 @@ export function scanText(content: string, context: ModerationContext): TextScanR
   for (const term of EXPLICIT_BLOCKLIST) {
     const pattern = new RegExp(`\\b${term}\\b`, 'i');
     if (pattern.test(content)) {
-      return { action: 'block', filteredContent: null, originalContent: content, isFiltered: true, context };
+      return {
+        action: 'block',
+        filteredContent: null,
+        originalContent: content,
+        isFiltered: true,
+        context,
+      };
     }
   }
 
