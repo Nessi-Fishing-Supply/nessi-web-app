@@ -5,7 +5,12 @@ vi.mock('@/libs/supabase/client', () => ({
   createClient: vi.fn(),
 }));
 
+vi.mock('@/libs/fetch', () => ({
+  post: vi.fn(),
+}));
+
 import { createClient } from '@/libs/supabase/client';
+import { post } from '@/libs/fetch';
 import {
   getMember,
   getMemberBySlug,
@@ -151,8 +156,22 @@ describe('getMemberBySlug', () => {
 });
 
 describe('updateMember', () => {
-  it('returns the updated member on success', async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('routes text fields through API and returns updated member', async () => {
     const updatedMember = { ...mockMember, bio: 'I love fishing' };
+    vi.mocked(post).mockResolvedValueOnce(updatedMember);
+
+    const result = await updateMember('user-123', { bio: 'I love fishing' });
+
+    expect(result).toEqual(updatedMember);
+    expect(post).toHaveBeenCalledWith('/api/members/profile', { bio: 'I love fishing' });
+  });
+
+  it('uses direct Supabase for non-text fields', async () => {
+    const updatedMember = { ...mockMember, home_state: 'TX' };
     const mockSingle = vi.fn().mockResolvedValue({ data: updatedMember, error: null });
     const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
     const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
@@ -160,15 +179,24 @@ describe('updateMember', () => {
     const mockFrom = vi.fn().mockReturnValue({ update: mockUpdate });
     vi.mocked(createClient).mockReturnValue({ from: mockFrom } as any);
 
-    const result = await updateMember('user-123', { bio: 'I love fishing' });
+    const result = await updateMember('user-123', { home_state: 'TX' });
 
     expect(result).toEqual(updatedMember);
     expect(mockFrom).toHaveBeenCalledWith('members');
-    expect(mockUpdate).toHaveBeenCalledWith({ bio: 'I love fishing' });
+    expect(mockUpdate).toHaveBeenCalledWith({ home_state: 'TX' });
     expect(mockEq).toHaveBeenCalledWith('id', 'user-123');
+    expect(post).not.toHaveBeenCalled();
   });
 
-  it('throws an error when the update fails', async () => {
+  it('throws when API call fails for text fields', async () => {
+    vi.mocked(post).mockRejectedValueOnce(new Error('Update rejected'));
+
+    await expect(updateMember('user-123', { bio: 'I love fishing' })).rejects.toThrow(
+      'Update rejected',
+    );
+  });
+
+  it('throws when Supabase fails for non-text fields', async () => {
     const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: null, error: { message: 'Update rejected' } });
@@ -178,7 +206,7 @@ describe('updateMember', () => {
     const mockFrom = vi.fn().mockReturnValue({ update: mockUpdate });
     vi.mocked(createClient).mockReturnValue({ from: mockFrom } as any);
 
-    await expect(updateMember('user-123', { bio: 'I love fishing' })).rejects.toThrow(
+    await expect(updateMember('user-123', { home_state: 'TX' })).rejects.toThrow(
       'Failed to update member: Update rejected',
     );
   });

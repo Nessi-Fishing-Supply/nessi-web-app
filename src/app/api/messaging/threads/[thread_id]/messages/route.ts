@@ -7,10 +7,11 @@ import {
   createMessageServer,
 } from '@/features/messaging/services/messaging-server';
 import {
-  filterMessageContent,
+  scanText,
+  logModerationFlag,
   NUDGE_OFF_PLATFORM,
   NUDGE_NEGOTIATION,
-} from '@/features/messaging/utils/safety-filter';
+} from '@/libs/moderation';
 
 // List messages in a thread with cursor-based pagination
 export async function GET(
@@ -129,9 +130,16 @@ export async function POST(
     }
 
     // Run safety filter
-    const filterResult = filterMessageContent(content.trim());
+    const filterResult = scanText(content.trim(), 'message');
 
     if (filterResult.action === 'block') {
+      void logModerationFlag({
+        memberId: user.id,
+        context: 'message',
+        action: 'block',
+        originalContent: filterResult.originalContent,
+        sourceId: thread_id,
+      });
       return NextResponse.json(
         { error: 'This message contains content that violates our community guidelines.' },
         { status: 422, headers: AUTH_CACHE_HEADERS },
@@ -146,6 +154,14 @@ export async function POST(
       messageContent = filterResult.filteredContent ?? content.trim();
       isFiltered = true;
       originalContent = filterResult.originalContent;
+      void logModerationFlag({
+        memberId: user.id,
+        context: 'message',
+        action: 'redact',
+        originalContent: filterResult.originalContent,
+        filteredContent: filterResult.filteredContent,
+        sourceId: thread_id,
+      });
     }
 
     const message = await createMessageServer({

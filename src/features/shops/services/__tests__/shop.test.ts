@@ -7,11 +7,13 @@ vi.mock('@/libs/supabase/client', () => ({
 
 vi.mock('@/libs/fetch', () => ({
   del: vi.fn(),
+  get: vi.fn(),
+  patch: vi.fn(),
   post: vi.fn(),
 }));
 
 import { createClient } from '@/libs/supabase/client';
-import { del } from '@/libs/fetch';
+import { del, patch } from '@/libs/fetch';
 import {
   getShop,
   getShopBySlug,
@@ -298,8 +300,20 @@ describe('updateShop', () => {
     vi.clearAllMocks();
   });
 
-  it('returns the updated shop on success', async () => {
+  it('routes text fields through API and returns updated shop', async () => {
     const updatedShop = { ...mockShop, shop_name: 'Updated Tackle Box' };
+    vi.mocked(patch).mockResolvedValueOnce(updatedShop);
+
+    const result = await updateShop('shop-1', { shop_name: 'Updated Tackle Box' });
+
+    expect(result).toEqual(updatedShop);
+    expect(patch).toHaveBeenCalledWith('/api/shops/shop-1/profile', {
+      shop_name: 'Updated Tackle Box',
+    });
+  });
+
+  it('uses direct Supabase for non-text fields', async () => {
+    const updatedShop = { ...mockShop, avatar_url: 'https://example.com/avatar.webp' };
     const mockSingle = vi.fn().mockResolvedValue({ data: updatedShop, error: null });
     const mockSelect = vi.fn(() => ({ single: mockSingle }));
     const mockEq = vi.fn(() => ({ select: mockSelect }));
@@ -307,15 +321,20 @@ describe('updateShop', () => {
     const mockFrom = vi.fn(() => ({ update: mockUpdate }));
     vi.mocked(createClient).mockReturnValue({ from: mockFrom } as any);
 
-    const result = await updateShop('shop-1', { shop_name: 'Updated Tackle Box' });
+    const result = await updateShop('shop-1', { avatar_url: 'https://example.com/avatar.webp' });
 
     expect(result).toEqual(updatedShop);
     expect(mockFrom).toHaveBeenCalledWith('shops');
-    expect(mockUpdate).toHaveBeenCalledWith({ shop_name: 'Updated Tackle Box' });
-    expect(mockEq).toHaveBeenCalledWith('id', 'shop-1');
+    expect(patch).not.toHaveBeenCalled();
   });
 
-  it('throws when Supabase returns an error', async () => {
+  it('throws when API call fails for text fields', async () => {
+    vi.mocked(patch).mockRejectedValueOnce(new Error('Row not found'));
+
+    await expect(updateShop('shop-1', { shop_name: 'New Name' })).rejects.toThrow('Row not found');
+  });
+
+  it('throws when Supabase fails for non-text fields', async () => {
     const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: null, error: { message: 'Row not found' } });
@@ -325,9 +344,9 @@ describe('updateShop', () => {
     const mockFrom = vi.fn(() => ({ update: mockUpdate }));
     vi.mocked(createClient).mockReturnValue({ from: mockFrom } as any);
 
-    await expect(updateShop('shop-1', { shop_name: 'New Name' })).rejects.toThrow(
-      'Failed to update shop: Row not found',
-    );
+    await expect(
+      updateShop('shop-1', { avatar_url: 'https://example.com/avatar.webp' }),
+    ).rejects.toThrow('Failed to update shop: Row not found');
   });
 });
 
