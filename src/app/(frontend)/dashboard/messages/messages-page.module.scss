@@ -21,8 +21,13 @@
   min-height: 0;
 
   @include breakpoint(lg) {
-    flex: 0 0 360px;
+    flex: none;
+    width: 280px;
     border-right: 1px solid var(--color-neutral-200);
+  }
+
+  @include breakpoint(xl) {
+    width: 320px;
   }
 }
 

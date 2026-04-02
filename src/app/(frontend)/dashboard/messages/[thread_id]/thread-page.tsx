@@ -183,7 +183,7 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
   useEffect(() => {
     if (threadId) markRead.mutate(threadId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [threadId]);
+  }, [threadId, latestMessageId]);
 
   const otherParticipant = thread?.participants.find((p) => p.member.id !== user?.id);
   const currentUserParticipant = thread?.participants.find((p) => p.member.id === user?.id);
@@ -289,26 +289,79 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
         {/* Desktop chat header */}
         <div className={styles.chatHeader}>
           {otherParticipant && (
-            <div className={styles.chatHeaderInner}>
-              <Avatar
-                size="md"
-                name={`${otherParticipant.member.first_name} ${otherParticipant.member.last_name}`}
-                imageUrl={otherParticipant.member.avatar_url ?? undefined}
-                isOnline={isOnline(otherParticipant.member.last_seen_at ?? null)}
-              />
-              <div className={styles.chatHeaderMeta}>
-                <span className={styles.chatHeaderName}>
-                  {otherParticipant.member.first_name} {otherParticipant.member.last_name}
-                </span>
-                <span className={styles.chatHeaderStatus}>
-                  {isOnline(otherParticipant.member.last_seen_at ?? null)
-                    ? 'Active now'
-                    : 'Offline'}
-                </span>
+            <>
+              <div className={styles.chatHeaderInner}>
+                <Avatar
+                  size="md"
+                  name={`${otherParticipant.member.first_name} ${otherParticipant.member.last_name}`}
+                  imageUrl={otherParticipant.member.avatar_url ?? undefined}
+                  isOnline={isOnline(otherParticipant.member.last_seen_at ?? null)}
+                />
+                <div className={styles.chatHeaderMeta}>
+                  <span className={styles.chatHeaderName}>
+                    {otherParticipant.member.first_name} {otherParticipant.member.last_name}
+                  </span>
+                  <span className={styles.chatHeaderStatus}>
+                    {isOnline(otherParticipant.member.last_seen_at ?? null)
+                      ? 'Active now'
+                      : 'Offline'}
+                  </span>
+                </div>
               </div>
-            </div>
+              {otherParticipant.member.slug && (
+                <Link
+                  href={`/member/${otherParticipant.member.slug}`}
+                  className={styles.chatHeaderProfileLink}
+                >
+                  View profile
+                </Link>
+              )}
+            </>
           )}
         </div>
+
+        {/* Thread context bar — listing reference + offer status */}
+        {thread && (thread.listing || offer) && (
+          <div className={styles.contextBar}>
+            {thread.listing && (
+              <Link href={`/listing/${thread.listing.id}`} className={styles.contextBarListing}>
+                {thread.listing.image_url && (
+                  <div className={styles.contextBarThumb}>
+                    <Image
+                      src={thread.listing.image_url}
+                      alt={thread.listing.title}
+                      fill
+                      sizes="32px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+                <span className={styles.contextBarListingTitle}>{thread.listing.title}</span>
+                <span className={styles.contextBarListingPrice}>
+                  $
+                  {(thread.listing.price_cents / 100).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                  })}
+                </span>
+              </Link>
+            )}
+            {offer && (
+              <div className={styles.contextBarOffer}>
+                <span className={styles.contextBarOfferAmount}>
+                  Offer: $
+                  {(offer.amount_cents / 100).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                  })}
+                </span>
+                <span
+                  className={`${styles.contextBarOfferStatus} ${styles[`offerStatus_${offer.status}`] ?? ''}`}
+                >
+                  {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Messages area */}
         {isLoading ? (
@@ -394,11 +447,6 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
         />
       </div>
 
-      {/* ─── Right: Context panel (desktop only) ─── */}
-      <div className={styles.contextPanel}>
-        <ContextPanel thread={thread} otherParticipant={otherParticipant} offer={offer} />
-      </div>
-
       {/* Dialogs */}
       <ConfirmationDialog
         isOpen={isDeclineDialogOpen}
@@ -426,92 +474,6 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
           offerId={latestOfferId}
           onOfferCreated={handleOfferCreated}
         />
-      )}
-    </div>
-  );
-}
-
-// ─── Context panel content ───────────────────────────
-
-function ContextPanel({
-  thread,
-  otherParticipant,
-  offer,
-}: {
-  thread?: ThreadWithParticipants | null;
-  otherParticipant?: ThreadWithParticipants['participants'][number];
-  offer?: { amount_cents: number; status: string } | null;
-}) {
-  if (!thread) return null;
-
-  const otherName = otherParticipant
-    ? `${otherParticipant.member.first_name} ${otherParticipant.member.last_name}`
-    : 'Unknown';
-  const otherSlug = otherParticipant?.member.slug;
-  const otherIsOnline = isOnline(otherParticipant?.member.last_seen_at ?? null);
-
-  return (
-    <div className={styles.contextContent}>
-      {/* Participant card */}
-      <div className={styles.contextSection}>
-        <div className={styles.contextParticipant}>
-          <Avatar
-            size="lg"
-            name={otherName}
-            imageUrl={otherParticipant?.member.avatar_url ?? undefined}
-            isOnline={otherIsOnline}
-          />
-          <span className={styles.contextName}>{otherName}</span>
-          {otherSlug && (
-            <Link href={`/member/${otherSlug}`} className={styles.contextProfileLink}>
-              View profile
-            </Link>
-          )}
-        </div>
-      </div>
-
-      {/* Listing card */}
-      {thread.listing && (
-        <div className={styles.contextSection}>
-          <h3 className={styles.contextSectionTitle}>Listing</h3>
-          <Link href={`/listing/${thread.listing.id}`} className={styles.contextListing}>
-            {thread.listing.image_url && (
-              <div className={styles.contextListingImage}>
-                <Image
-                  src={thread.listing.image_url}
-                  alt={thread.listing.title}
-                  fill
-                  sizes="120px"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
-            )}
-            <span className={styles.contextListingTitle}>{thread.listing.title}</span>
-            <span className={styles.contextListingPrice}>
-              $
-              {(thread.listing.price_cents / 100).toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-              })}
-            </span>
-          </Link>
-        </div>
-      )}
-
-      {/* Offer status */}
-      {offer && (
-        <div className={styles.contextSection}>
-          <h3 className={styles.contextSectionTitle}>Current Offer</h3>
-          <div className={styles.contextOffer}>
-            <span className={styles.contextOfferAmount}>
-              ${(offer.amount_cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-            </span>
-            <span
-              className={`${styles.contextOfferStatus} ${styles[`offerStatus_${offer.status}`] ?? ''}`}
-            >
-              {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
-            </span>
-          </div>
-        </div>
       )}
     </div>
   );

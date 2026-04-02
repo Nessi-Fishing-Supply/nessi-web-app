@@ -148,6 +148,8 @@ export default function MessageThread({
           const originalPriceCents = (meta?.original_price_cents as number | undefined) ?? 0;
           const status = (meta?.status as string | undefined) ?? 'expired';
           const expiresAt = meta?.expires_at as string | undefined;
+          const isSent = message.sender_id === currentUserId;
+          const senderName = `${message.sender.first_name} ${message.sender.last_name}`;
 
           return (
             <div key={message.id}>
@@ -160,13 +162,27 @@ export default function MessageThread({
                   <span>{separatorLabel}</span>
                 </div>
               )}
-              <div className={styles.nodeRow}>
-                <OfferBubble
-                  amount={amountCents}
-                  originalPrice={originalPriceCents}
-                  expiresAt={expiresAt ? new Date(expiresAt) : new Date()}
-                  status={(status as OfferStatus | undefined) ?? 'expired'}
-                />
+              <div className={`${styles.row} ${isSent ? styles.sent : styles.received}`}>
+                {!isSent && (
+                  <div className={styles.avatarWrap} aria-hidden="true">
+                    <Avatar
+                      size="sm"
+                      name={senderName}
+                      imageUrl={message.sender.avatar_url ?? undefined}
+                    />
+                  </div>
+                )}
+                <div className={styles.bubbleGroup}>
+                  <OfferBubble
+                    amount={amountCents}
+                    originalPrice={originalPriceCents}
+                    expiresAt={expiresAt ? new Date(expiresAt) : new Date()}
+                    status={(status as OfferStatus | undefined) ?? 'expired'}
+                  />
+                  <time className={styles.timestamp} dateTime={message.created_at}>
+                    {formatTime(message.created_at)}
+                  </time>
+                </div>
               </div>
             </div>
           );

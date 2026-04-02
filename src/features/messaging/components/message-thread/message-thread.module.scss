@@ -15,7 +15,7 @@
 .row {
   display: flex;
   align-items: flex-end;
-  gap: var(--spacing-150);
+  gap: var(--spacing-300);
 
   &.sent {
     flex-direction: row-reverse;
@@ -28,7 +28,7 @@
 
 .avatarWrap {
   flex-shrink: 0;
-  margin-bottom: var(--spacing-50);
+  align-self: flex-end;
 }
 
 .bubbleGroup {
@@ -71,6 +71,7 @@
 }
 
 .timestamp {
+  order: -1;
   font-size: var(--font-size-200);
   color: var(--color-neutral-500);
   padding: 0 var(--spacing-50);

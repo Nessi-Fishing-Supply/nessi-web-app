@@ -6,19 +6,24 @@
   gap: var(--spacing-300);
   padding: var(--spacing-300) var(--spacing-400);
   min-height: 44px;
-  border-bottom: 1px solid var(--color-neutral-100);
+  border-bottom: 1px solid var(--color-neutral-200);
   text-decoration: none;
   color: inherit;
-  background-color: var(--surface-page);
+  background-color: var(--color-white);
   transition: background-color 150ms ease;
 
+  cursor: pointer;
+
   &:hover {
-    background-color: var(--color-neutral-50);
+    background-color: var(--color-neutral-100);
   }
 
   &.active {
-    background-color: var(--color-primary-100);
-    border-left: 3px solid var(--color-primary-500);
+    background-color: var(--color-neutral-100);
+
+    &:hover {
+      background-color: var(--color-neutral-150, var(--color-neutral-200));
+    }
   }
 
   &:focus-visible {
@@ -60,9 +65,7 @@
 }
 
 .preview {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-100);
+  display: block;
   margin: 0;
   font-size: var(--font-size-500);
   color: var(--color-neutral-500);
