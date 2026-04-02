@@ -32,6 +32,12 @@ interface ShopNavItem {
 const SHOP_NAV_ITEMS: ShopNavItem[] = [
   { href: '/dashboard', icon: <HiOutlineHome />, label: 'Dashboard' },
   {
+    href: '/dashboard/messages',
+    icon: <HiOutlineChatAlt2 />,
+    label: 'Messages',
+    requiredFeature: 'messaging',
+  },
+  {
     href: '/dashboard/listings',
     icon: <HiOutlineShoppingBag />,
     label: 'Listings',
