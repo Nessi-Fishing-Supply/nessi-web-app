@@ -43,12 +43,12 @@ RLS: insert via service role only (admin client). No user-facing reads.
 
 ## Integration Points
 
-| Route                                             | Context     | block                       | redact                          | nudge                                                                           |
-| ------------------------------------------------- | ----------- | --------------------------- | ------------------------------- | ------------------------------------------------------------------------------- |
-| `POST /api/listings` / `PATCH /api/listings/[id]` | `'listing'` | 400 error, reject save      | save redacted content, log flag | treated as `pass` — content saved as-is                                         |
-| `PATCH /api/members/[id]`                         | `'member'`  | 400 error                   | save redacted content, log flag | treated as `pass`                                                               |
-| `PATCH /api/shops/[id]`                           | `'shop'`    | 400 error                   | save redacted content, log flag | treated as `pass`                                                               |
-| `POST /api/messaging/threads/[id]/messages`       | `'message'` | 400 error, message not sent | save redacted content, log flag | insert a system nudge message into the thread, still deliver the user's message |
+| Route                                              | Context     | block                       | redact                          | nudge                                                                           |
+| -------------------------------------------------- | ----------- | --------------------------- | ------------------------------- | ------------------------------------------------------------------------------- |
+| `POST /api/listings` / `PUT /api/listings/[id]`    | `'listing'` | 422 error, reject save      | save redacted content, log flag | treated as `pass` — content saved as-is                                         |
+| `POST /api/members/profile`                        | `'member'`  | 422 error                   | save redacted content, log flag | treated as `pass`                                                               |
+| `PATCH /api/shops/[id]/profile`                    | `'shop'`    | 422 error                   | save redacted content, log flag | treated as `pass`                                                               |
+| `POST /api/messaging/threads/[thread_id]/messages` | `'message'` | 422 error, message not sent | save redacted content, log flag | insert a system nudge message into the thread, still deliver the user's message |
 
 ### Nudge behavior in messaging
 

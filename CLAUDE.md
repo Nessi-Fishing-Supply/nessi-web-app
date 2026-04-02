@@ -131,7 +131,7 @@ DELETE /api/auth/delete-account
 - `src/app/(frontend)/` — UI pages (App Router with route group)
 - `src/components/` — Shared React components: controls, layout, navigation, indicators
 - `src/types/` — Generated/infra types (database.ts)
-- `src/libs/` — Infrastructure: Supabase clients (`supabase/`), query client (`query-client.ts`), providers (`providers.tsx`), Zustand utilities (`create-selectors.ts`)
+- `src/libs/` — Infrastructure: Supabase clients (`supabase/`), query client (`query-client.ts`), providers (`providers.tsx`), Zustand utilities (`create-selectors.ts`), text moderation (`moderation/` — see its CLAUDE.md)
 - `src/styles/` — SCSS with variables, mixins, and utilities
 - `src/assets/` — Brand assets only (logos). UI icons use `react-icons`.
 
