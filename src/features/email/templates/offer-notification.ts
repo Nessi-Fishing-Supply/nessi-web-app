@@ -49,7 +49,7 @@ export function offerNotification({
   const safeTitle = escapeHtml(listingTitle);
   const safeSender = escapeHtml(senderName);
   const formattedPrice = formatPrice(amount);
-  const threadUrl = `${process.env.NEXT_PUBLIC_APP_URL}/messages/${threadId}`;
+  const threadUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/messages/${threadId}`;
   const subject = subjects[type](safeTitle);
   const copy = bodyCopy[type](safeSender, formattedPrice, safeTitle);
   const ctaLabel = ctaLabels[type];

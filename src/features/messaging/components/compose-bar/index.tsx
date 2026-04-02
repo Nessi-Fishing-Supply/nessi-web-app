@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback, useEffect, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { HiPaperAirplane, HiPlus, HiTag, HiShare, HiCamera } from 'react-icons/hi';
 import { useAuth } from '@/features/auth/context';
 import { useSendMessage } from '@/features/messaging/hooks/use-send-message';
@@ -35,6 +36,7 @@ export default function ComposeBar({
   const { user } = useAuth();
   const [value, setValue] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState<{ bottom: number; left: number } | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -236,45 +238,68 @@ export default function ComposeBar({
           aria-expanded={isMenuOpen}
           aria-haspopup="menu"
           disabled={disabled}
-          onClick={() => setMenuOpen((prev) => !prev)}
+          onClick={() => {
+            setMenuOpen((prev) => {
+              if (!prev && actionBtnRef.current) {
+                const rect = actionBtnRef.current.getBoundingClientRect();
+                setMenuPosition({
+                  bottom: window.innerHeight - rect.top + 8,
+                  left: rect.left,
+                });
+              }
+              return !prev;
+            });
+          }}
         >
           <HiPlus aria-hidden="true" />
         </button>
 
-        {isMenuOpen && (
-          <div ref={menuRef} className={styles.actionMenu} role="menu">
-            {showMakeOffer && (
+        {isMenuOpen &&
+          menuPosition &&
+          createPortal(
+            <div
+              ref={menuRef}
+              className={styles.actionMenu}
+              role="menu"
+              style={{
+                position: 'fixed',
+                bottom: menuPosition.bottom,
+                left: menuPosition.left,
+              }}
+            >
+              {showMakeOffer && (
+                <button
+                  type="button"
+                  className={styles.menuItem}
+                  role="menuitem"
+                  onClick={handleMakeOffer}
+                >
+                  <HiTag aria-hidden="true" className={styles.menuItemIcon} />
+                  Make an Offer
+                </button>
+              )}
               <button
                 type="button"
                 className={styles.menuItem}
                 role="menuitem"
-                onClick={handleMakeOffer}
+                onClick={handlePhotoSelect}
               >
-                <HiTag aria-hidden="true" className={styles.menuItemIcon} />
-                Make an Offer
+                <HiCamera aria-hidden="true" className={styles.menuItemIcon} />
+                Send Photo
               </button>
-            )}
-            <button
-              type="button"
-              className={styles.menuItem}
-              role="menuitem"
-              onClick={handlePhotoSelect}
-            >
-              <HiCamera aria-hidden="true" className={styles.menuItemIcon} />
-              Send Photo
-            </button>
-            <button
-              type="button"
-              className={styles.menuItem}
-              role="menuitem"
-              disabled
-              aria-disabled="true"
-            >
-              <HiShare aria-hidden="true" className={styles.menuItemIcon} />
-              Share a Listing
-            </button>
-          </div>
-        )}
+              <button
+                type="button"
+                className={styles.menuItem}
+                role="menuitem"
+                disabled
+                aria-disabled="true"
+              >
+                <HiShare aria-hidden="true" className={styles.menuItemIcon} />
+                Share a Listing
+              </button>
+            </div>,
+            document.getElementById('modal-root') ?? document.body,
+          )}
       </div>
 
       <textarea

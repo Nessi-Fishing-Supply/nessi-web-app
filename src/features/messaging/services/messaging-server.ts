@@ -5,6 +5,7 @@ import type {
   MessageThread,
   ThreadType,
   ThreadWithParticipants,
+  ThreadListingDetails,
   ParticipantRole,
 } from '@/features/messaging/types/thread';
 import type { MessageType, MessageWithSender } from '@/features/messaging/types/message';
@@ -32,6 +33,26 @@ async function buildThreadsWithParticipants(
     const existing = participantsByThread.get(p.thread_id) ?? [];
     existing.push(p);
     participantsByThread.set(p.thread_id, existing);
+  }
+
+  // Fetch listing details for threads that reference a listing
+  const listingIds = [...new Set(threads.map((t) => t.listing_id).filter(Boolean) as string[])];
+  const listingsByIdMap = new Map<string, ThreadListingDetails>();
+  if (listingIds.length > 0) {
+    const { data: listings } = await supabase
+      .from('listings')
+      .select('id, title, price_cents, condition, cover_photo_url')
+      .in('id', listingIds);
+
+    for (const l of listings ?? []) {
+      listingsByIdMap.set(l.id, {
+        id: l.id,
+        title: l.title,
+        price_cents: l.price_cents,
+        image_url: l.cover_photo_url ?? null,
+        condition: l.condition ?? null,
+      });
+    }
   }
 
   return threads.map((thread) => {
@@ -70,6 +91,7 @@ async function buildThreadsWithParticipants(
         };
       }),
       my_unread_count: myParticipant?.unread_count ?? 0,
+      listing: thread.listing_id ? (listingsByIdMap.get(thread.listing_id) ?? null) : null,
     };
   });
 }
@@ -464,21 +486,8 @@ export async function createMessageServer(params: {
     throw new Error(`Failed to update thread metadata: ${threadUpdateError.message}`);
   }
 
-  // Increment unread count for all other participants
-  const { data: otherParticipants, error: fetchParticipantsError } = await supabase
-    .from('message_thread_participants')
-    .select('id, unread_count')
-    .eq('thread_id', params.threadId)
-    .neq('member_id', params.senderId);
-
-  if (!fetchParticipantsError && otherParticipants) {
-    for (const p of otherParticipants) {
-      await supabase
-        .from('message_thread_participants')
-        .update({ unread_count: p.unread_count + 1 })
-        .eq('id', p.id);
-    }
-  }
+  // Unread count is incremented by DB trigger (trg_increment_unread_count)
+  // on message INSERT — no application-level increment needed
 
   // [B5] Fetch sender and return MessageWithSender
   const { data: sender, error: senderError } = await supabase

@@ -18,7 +18,6 @@ const GUARDED_ROUTES: {
 }[] = [
   { pathPrefix: '/dashboard/shop/settings', feature: 'shop_settings', level: 'view' },
   { pathPrefix: '/dashboard/shop/roles', feature: 'members', level: 'view' },
-  { pathPrefix: '/dashboard/listings', feature: 'listings', level: 'view' },
 ];
 
 interface ShopRouteGuardProps {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Avatar from '@/components/controls/avatar';
 import Pill from '@/components/indicators/pill';
@@ -124,12 +125,39 @@ export default function CollapsibleHeader({
                 )}
               </div>
             </div>
-            {/* TODO: Enhance to show listing title/thumbnail when ThreadWithParticipants carries listing details */}
-            {thread.listing_id && (
+            {thread.listing && (
+              <Link
+                href={`/listing/${thread.listing.id}`}
+                className={styles.listingCard}
+                aria-label={`View listing: ${thread.listing.title}`}
+              >
+                {thread.listing.image_url && (
+                  <div className={styles.listingThumb}>
+                    <Image
+                      src={thread.listing.image_url}
+                      alt={thread.listing.title}
+                      fill
+                      sizes="48px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+                <div className={styles.listingMeta}>
+                  <span className={styles.listingTitle}>{thread.listing.title}</span>
+                  <span className={styles.listingPrice}>
+                    $
+                    {(thread.listing.price_cents / 100).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+              </Link>
+            )}
+            {!thread.listing && thread.listing_id && (
               <p className={styles.listingRef}>
                 About:{' '}
                 <Link href={`/listing/${thread.listing_id}`} className={styles.listingLink}>
-                  Listing #{thread.listing_id.slice(0, 8)}
+                  View listing
                 </Link>
               </p>
             )}

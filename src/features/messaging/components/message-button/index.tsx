@@ -26,7 +26,7 @@ export default function MessageButton({
 
   const { mutate, isPending } = useCreateThread({
     onSuccess: (thread) => {
-      router.push(`/messages/${thread.id}`);
+      router.push(`/dashboard/messages/${thread.id}`);
     },
     onError: (error) => {
       if (error instanceof FetchError && error.status === 403) {

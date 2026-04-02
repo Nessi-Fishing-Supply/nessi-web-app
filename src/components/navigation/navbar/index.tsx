@@ -10,7 +10,6 @@ import {
   HiOutlineHome,
   HiOutlineUserCircle,
   HiOutlineHeart,
-  HiOutlineBell,
   HiSearch,
   HiSwitchHorizontal,
   HiCheckCircle,
@@ -43,7 +42,7 @@ import { useCartMerge } from '@/features/cart/hooks/use-cart-merge';
 import { useRecentlyViewedMerge } from '@/features/recently-viewed/hooks/use-recently-viewed-merge';
 
 // Messaging
-import { useUnreadCount } from '@/features/messaging/hooks/use-unread-count';
+// Message unread count removed from navbar — notifications handle it now
 import { useRealtimeUnreadCount } from '@/features/messaging/hooks/use-realtime-unread-count';
 import { useOnlineStatus } from '@/features/messaging/hooks/use-online-status';
 
@@ -86,8 +85,7 @@ export default function Navbar() {
   useCartMerge();
   useRecentlyViewedMerge();
   const { data: shops } = useShopsByMember(user?.id ?? '', !!user);
-  const { data: unreadData } = useUnreadCount(isAuthenticated);
-  const unreadCount = unreadData?.count ?? 0;
+  // Message unread count removed from navbar — use notification center instead
   useRealtimeUnreadCount(user?.id ?? null, isAuthenticated);
   useOnlineStatus(isAuthenticated);
   const activeShopId = activeContext.type === 'shop' ? activeContext.shopId : '';
@@ -353,21 +351,6 @@ export default function Navbar() {
           Sell Your Gear
         </button>
 
-        {mounted && isAuthenticated && (
-          <Link
-            href="/messages"
-            className={styles.messagesIconWrapper}
-            aria-label={unreadCount > 0 ? `Messages, ${unreadCount} unread` : 'Messages'}
-          >
-            <HiOutlineChatAlt2 className={styles.icon} aria-hidden="true" />
-            {unreadCount > 0 && (
-              <span className={styles.unreadBadge} aria-hidden="true">
-                {unreadCount}
-              </span>
-            )}
-          </Link>
-        )}
-
         {mounted && isAuthenticated && <NotificationBell />}
 
         {mounted && isAuthenticated && user ? (
@@ -402,17 +385,12 @@ export default function Navbar() {
               </AppLink>
             </DropdownItem>
             <DropdownItem>
-              <AppLink href="/messages" icon={<HiOutlineChatAlt2 />}>
+              <AppLink href="/dashboard/messages" icon={<HiOutlineChatAlt2 />}>
                 Messages
               </AppLink>
             </DropdownItem>
             <DropdownItem>
-              <AppLink href="/dashboard/notifications" icon={<HiOutlineBell />}>
-                Notifications
-              </AppLink>
-            </DropdownItem>
-            <DropdownItem>
-              <AppLink href="/watchlist" icon={<HiOutlineHeart />}>
+              <AppLink href="/dashboard/watchlist" icon={<HiOutlineHeart />}>
                 Watchlist
               </AppLink>
             </DropdownItem>

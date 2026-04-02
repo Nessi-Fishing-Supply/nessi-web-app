@@ -242,7 +242,7 @@ export async function POST(
               type: 'new_message',
               title: senderName,
               body: preview,
-              link: `/messages/${thread_id}`,
+              link: `/dashboard/messages/${thread_id}`,
             });
           }
         } catch (err) {

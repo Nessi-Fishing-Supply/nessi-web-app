@@ -12,6 +12,8 @@ import styles from './thread-row.module.scss';
 interface ThreadRowProps {
   thread: ThreadWithParticipants;
   currentUserId: string;
+  isActive?: boolean;
+  basePath?: string;
 }
 
 function formatRelativeTime(dateStr: string | null): string {
@@ -30,15 +32,16 @@ function formatRelativeTime(dateStr: string | null): string {
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export default function ThreadRow({ thread, currentUserId }: ThreadRowProps) {
+export default function ThreadRow({ thread, currentUserId, isActive, basePath }: ThreadRowProps) {
   const other = thread.participants.find((p) => p.member.id !== currentUserId);
   const name = other ? `${other.member.first_name} ${other.member.last_name}` : 'Unknown';
   const avatarUrl = other?.member.avatar_url ?? undefined;
   const isUnread = thread.my_unread_count > 0;
   const otherIsOnline = isOnline(other?.member.last_seen_at ?? null);
+  const href = basePath ? `${basePath}/${thread.id}` : `/dashboard/messages/${thread.id}`;
 
   return (
-    <Link href={`/messages/${thread.id}`} className={styles.row}>
+    <Link href={href} className={`${styles.row}${isActive ? ` ${styles.active}` : ''}`}>
       <div className={styles.avatarWrap}>
         <Avatar name={name} imageUrl={avatarUrl} size="md" isOnline={otherIsOnline} />
       </div>

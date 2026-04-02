@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAvailableHeight } from '@/features/shared/hooks/use-available-height';
 import { useRouter } from 'next/navigation';
 import { HiOutlineChatAlt2 } from 'react-icons/hi';
 import { useAuth } from '@/features/auth/context';
@@ -11,7 +12,7 @@ import type { TabItem } from '@/components/controls/tabs';
 import ThreadList from '@/features/messaging/components/thread-list';
 import Button from '@/components/controls/button';
 import ErrorState from '@/components/indicators/error-state';
-import styles from './inbox-page.module.scss';
+import styles from './messages-page.module.scss';
 
 const TAB_TYPES: (ThreadType | undefined)[] = [
   undefined,
@@ -21,7 +22,7 @@ const TAB_TYPES: (ThreadType | undefined)[] = [
   'direct',
 ];
 
-const TAB_LABELS = ['All', 'Inquiries', 'Offers', 'Custom Requests', 'Direct'];
+const TAB_LABELS = ['All', 'Inquiries', 'Offers', 'Custom', 'Direct'];
 
 const EMPTY_DESCRIPTIONS: Record<number, string> = {
   0: 'Start a conversation by inquiring about a listing',
@@ -31,13 +32,15 @@ const EMPTY_DESCRIPTIONS: Record<number, string> = {
   4: 'No direct messages yet',
 };
 
-const SKELETON_COUNT = 5;
+const SKELETON_COUNT = 6;
 
-export default function InboxPage() {
+export default function MessagesPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const activeType = TAB_TYPES[activeTabIndex];
+
+  const { ref: shellRef, height: shellHeight } = useAvailableHeight();
 
   const { data: allThreads, isLoading, isError, refetch } = useThreads();
 
@@ -50,11 +53,11 @@ export default function InboxPage() {
     return { label, count: unreadCount > 0 ? unreadCount : undefined };
   });
 
-  const renderContent = () => {
+  const renderThreadList = () => {
     if (isLoading) {
       return (
         <div className={styles.skeleton} role="status">
-          <span className="sr-only" role="status" aria-live="polite">
+          <span className="sr-only" aria-live="polite">
             Loading your messages
           </span>
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
@@ -64,7 +67,6 @@ export default function InboxPage() {
                 <div className={styles.skeletonLine} />
                 <div className={styles.skeletonLineShort} />
               </div>
-              <div className={styles.skeletonTimestamp} />
             </div>
           ))}
         </div>
@@ -95,17 +97,34 @@ export default function InboxPage() {
     }
 
     if (user) {
-      return <ThreadList threads={threads} currentUserId={user.id} />;
+      return (
+        <ThreadList threads={threads} currentUserId={user.id} basePath="/dashboard/messages" />
+      );
     }
 
     return null;
   };
 
   return (
-    <div className={styles.page}>
-      <h1 className={styles.heading}>Messages</h1>
-      <Tabs items={tabItems} activeIndex={activeTabIndex} onChange={setActiveTabIndex} />
-      <div className={styles.content}>{renderContent()}</div>
+    <div className={styles.shell} ref={shellRef} style={{ height: shellHeight }}>
+      {/* Thread list panel */}
+      <div className={styles.listPanel}>
+        <div className={styles.listHeader}>
+          <h1 className={styles.heading}>Messages</h1>
+        </div>
+        <div className={styles.tabsWrap}>
+          <Tabs items={tabItems} activeIndex={activeTabIndex} onChange={setActiveTabIndex} />
+        </div>
+        <div className={styles.listContent}>{renderThreadList()}</div>
+      </div>
+
+      {/* Empty state for desktop — no thread selected */}
+      <div className={styles.chatPanel}>
+        <div className={styles.noThreadSelected}>
+          <HiOutlineChatAlt2 className={styles.noThreadIcon} aria-hidden="true" />
+          <p className={styles.noThreadText}>Select a conversation</p>
+        </div>
+      </div>
     </div>
   );
 }

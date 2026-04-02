@@ -17,7 +17,7 @@ export function newMessage({
   const rawPreview =
     messagePreview.length > 200 ? messagePreview.slice(0, 200) + '...' : messagePreview;
   const safePreview = escapeHtml(rawPreview);
-  const threadUrl = `${process.env.NEXT_PUBLIC_APP_URL}/messages/${threadId}`;
+  const threadUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/messages/${threadId}`;
 
   const body = `
     <h2 style="margin: 0 0 16px; color: #111827; font-size: 20px; font-weight: 700; line-height: 1.3;">New message from ${safeSender}</h2>

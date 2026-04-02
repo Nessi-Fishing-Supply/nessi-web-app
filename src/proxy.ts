@@ -54,9 +54,7 @@ export async function proxy(request: NextRequest) {
   if (
     !user &&
     (request.nextUrl.pathname.startsWith('/dashboard') ||
-      request.nextUrl.pathname.startsWith('/shop/transfer') ||
-      request.nextUrl.pathname.startsWith('/watchlist') ||
-      request.nextUrl.pathname.startsWith('/messages'))
+      request.nextUrl.pathname.startsWith('/shop/transfer'))
   ) {
     return NextResponse.redirect(new URL('/', request.url));
   }

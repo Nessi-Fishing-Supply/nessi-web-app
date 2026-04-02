@@ -48,7 +48,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
   const duplicateMutation = useDuplicateListing();
   const { mutate: createThread, isPending: isThreadPending } = useCreateThread({
     onSuccess: (thread) => {
-      router.push(`/messages/${thread.id}`);
+      router.push(`/dashboard/messages/${thread.id}`);
     },
     onError: () => {
       showToast({
@@ -393,7 +393,7 @@ export default function ListingDetail({ listing, seller, currentUserId }: Props)
         listingPriceCents={listing.price_cents}
         sellerId={listing.seller_id}
         mode="create"
-        onOfferCreated={({ thread_id }) => router.push(`/messages/${thread_id}`)}
+        onOfferCreated={({ thread_id }) => router.push(`/dashboard/messages/${thread_id}`)}
       />
 
       <PhotoLightbox

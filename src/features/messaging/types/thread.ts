@@ -10,6 +10,14 @@ export type ThreadStatus = Database['public']['Enums']['thread_status'];
 export type ThreadParticipant = Database['public']['Tables']['message_thread_participants']['Row'];
 export type ParticipantRole = Database['public']['Enums']['participant_role'];
 
+export type ThreadListingDetails = {
+  id: string;
+  title: string;
+  price_cents: number;
+  image_url: string | null;
+  condition: string | null;
+};
+
 export type ThreadWithParticipants = MessageThread & {
   participants: (ThreadParticipant & {
     member: {
@@ -22,6 +30,7 @@ export type ThreadWithParticipants = MessageThread & {
     };
   })[];
   my_unread_count: number;
+  listing?: ThreadListingDetails | null;
 };
 
 export type CreateThreadResult = {

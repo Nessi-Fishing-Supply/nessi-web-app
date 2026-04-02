@@ -4,16 +4,18 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: var(--spacing-200);
-  padding: var(--spacing-300) var(--spacing-300);
-  background-color: var(--surface-page);
-  border-top: 1px solid var(--color-neutral-100);
+  gap: var(--spacing-150);
+  padding: var(--spacing-200) var(--spacing-300);
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-neutral-200);
   position: sticky;
   bottom: 0;
   z-index: 10;
+  overflow: visible;
 
   @include breakpoint(md) {
-    padding: var(--spacing-300) var(--spacing-400);
+    padding: var(--spacing-250) var(--spacing-500);
+    gap: var(--spacing-200);
   }
 }
 
@@ -29,7 +31,7 @@
   background-color: transparent;
   color: var(--color-neutral-400);
   cursor: not-allowed;
-  transition: var(--transition-basic);
+  transition: all 150ms ease;
   font-size: var(--font-size-700);
 
   &:focus-visible {
@@ -38,19 +40,33 @@
   }
 }
 
+.actionBtnEnabled {
+  color: var(--color-primary-500);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-primary-600);
+    background-color: var(--color-primary-100);
+  }
+}
+
 .textarea {
   flex: 1;
   min-height: 44px;
-  padding: var(--spacing-250) var(--spacing-300);
-  border: 1px solid var(--color-neutral-200);
+  max-height: 120px;
+  padding: var(--spacing-250) var(--spacing-350);
+  border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-500);
-  background-color: var(--color-neutral-50);
+  background-color: var(--color-neutral-100);
   color: var(--color-neutral-900);
-  font-size: var(--font-size-600);
+  font-size: var(--font-size-500);
   line-height: 1.5;
   resize: none;
   overflow: hidden;
-  transition: border-color var(--transition-basic);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    box-shadow 150ms ease;
   display: block;
   width: 100%;
 
@@ -62,6 +78,7 @@
     outline: none;
     border-color: var(--color-primary-400);
     background-color: var(--color-white);
+    box-shadow: 0 0 0 3px rgb(30 74 64 / 8%);
   }
 
   &:disabled {
@@ -82,10 +99,15 @@
   background-color: var(--color-primary-500);
   color: var(--color-white);
   cursor: pointer;
-  transition: var(--transition-basic);
+  transition: all 150ms ease;
 
   &:hover:not(:disabled) {
     background-color: var(--color-primary-600);
+    transform: scale(1.04);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
   }
 
   &:focus-visible {
@@ -94,14 +116,14 @@
   }
 
   &:disabled {
-    background-color: var(--color-neutral-200);
+    background-color: var(--color-neutral-300);
     color: var(--color-neutral-400);
     cursor: not-allowed;
   }
 }
 
 .sendIcon {
-  font-size: var(--font-size-700);
+  font-size: var(--font-size-600);
   transform: rotate(90deg);
 }
 
@@ -111,13 +133,10 @@
 }
 
 .actionMenu {
-  position: absolute;
-  bottom: calc(100% + var(--spacing-200));
-  left: 0;
   min-width: 200px;
   background-color: var(--color-white);
   border: 1px solid var(--color-neutral-200);
-  border-radius: var(--radius-400);
+  border-radius: var(--radius-300);
   box-shadow: var(--shadow-400);
   padding: var(--spacing-100) 0;
   z-index: 20;
@@ -140,10 +159,10 @@
   color: var(--color-neutral-900);
   cursor: pointer;
   text-align: left;
-  transition: background-color var(--transition-basic);
+  transition: background-color 150ms ease;
 
   &:hover:not(:disabled) {
-    background-color: var(--color-neutral-50);
+    background-color: var(--color-neutral-100);
   }
 
   &:focus-visible {
@@ -158,18 +177,9 @@
 }
 
 .menuItemIcon {
-  font-size: var(--font-size-700);
+  font-size: var(--font-size-600);
   flex-shrink: 0;
-}
-
-.actionBtnEnabled {
-  color: var(--color-neutral-700);
-  cursor: pointer;
-
-  &:hover {
-    color: var(--color-primary-500);
-    background-color: var(--color-neutral-50);
-  }
+  color: var(--color-neutral-600);
 }
 
 .hiddenFileInput {
@@ -185,6 +195,6 @@
   width: 100%;
   margin: 0;
   padding: var(--spacing-100) var(--spacing-300);
-  font-size: var(--font-size-400);
-  color: var(--color-red-600);
+  font-size: var(--font-size-300);
+  color: var(--color-error-500);
 }

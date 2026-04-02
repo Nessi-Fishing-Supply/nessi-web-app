@@ -3,18 +3,19 @@
 .thread {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-300);
-  padding: var(--spacing-400);
-  background-color: var(--surface-page);
+  gap: var(--spacing-100);
+  padding: var(--spacing-300) var(--spacing-300);
   min-height: 0;
-  flex: 1;
-  overflow-y: auto;
+
+  @include breakpoint(md) {
+    padding: var(--spacing-400) var(--spacing-500);
+  }
 }
 
 .row {
   display: flex;
   align-items: flex-end;
-  gap: var(--spacing-200);
+  gap: var(--spacing-150);
 
   &.sent {
     flex-direction: row-reverse;
@@ -27,13 +28,18 @@
 
 .avatarWrap {
   flex-shrink: 0;
+  margin-bottom: var(--spacing-50);
 }
 
 .bubbleGroup {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-50);
-  max-width: 72%;
+  max-width: 75%;
+
+  @include breakpoint(md) {
+    max-width: 65%;
+  }
 
   .sent & {
     align-items: flex-end;
@@ -45,8 +51,8 @@
 }
 
 .bubble {
-  padding: var(--spacing-300) var(--spacing-400);
-  font-size: var(--font-size-600);
+  padding: var(--spacing-200) var(--spacing-300);
+  font-size: var(--font-size-500);
   line-height: var(--line-height-300);
   overflow-wrap: break-word;
 }
@@ -54,46 +60,44 @@
 .bubbleReceived {
   background-color: var(--color-white);
   color: var(--color-neutral-900);
-  border-radius: var(--radius-500) var(--radius-500) var(--radius-500) var(--radius-100);
-  box-shadow: var(--shadow-100);
+  border-radius: var(--radius-400) var(--radius-400) var(--radius-400) var(--radius-100);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
 }
 
 .bubbleSent {
   background-color: var(--color-primary-500);
   color: var(--color-white);
-  border-radius: var(--radius-500) var(--radius-500) var(--radius-100) var(--radius-500);
+  border-radius: var(--radius-400) var(--radius-400) var(--radius-100) var(--radius-400);
 }
 
 .timestamp {
-  font-size: var(--font-size-300);
+  font-size: var(--font-size-200);
   color: var(--color-neutral-500);
-  padding: 0 var(--spacing-100);
+  padding: 0 var(--spacing-50);
 }
 
 .nodeRow {
   display: flex;
   justify-content: center;
   width: 100%;
+  padding: var(--spacing-100) 0;
 }
 
 .dateSeparator {
   display: flex;
   align-items: center;
-  gap: var(--spacing-300);
-  margin: var(--spacing-200) 0;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background-color: var(--color-neutral-200);
-  }
+  justify-content: center;
+  padding: var(--spacing-300) 0 var(--spacing-200);
 
   span {
-    font-size: var(--font-size-300);
+    font-size: var(--font-size-200);
+    font-weight: var(--font-weight-500);
     color: var(--color-neutral-500);
-    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background-color: var(--color-neutral-200);
+    padding: var(--spacing-50) var(--spacing-250);
+    border-radius: var(--radius-pill);
   }
 }
 
@@ -104,7 +108,8 @@
 }
 
 .readReceipt {
-  font-size: var(--font-size-300);
-  color: var(--color-neutral-400);
-  padding: 0 var(--spacing-100);
+  font-size: var(--font-size-200);
+  color: var(--color-primary-400);
+  padding: 0 var(--spacing-50);
+  font-weight: var(--font-weight-500);
 }

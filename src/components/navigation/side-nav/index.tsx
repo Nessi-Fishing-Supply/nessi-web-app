@@ -6,6 +6,8 @@ import {
   HiOutlineHome,
   HiOutlineUserCircle,
   HiOutlineHeart,
+  HiOutlineEye,
+  HiOutlineChatAlt2,
   HiOutlineShoppingBag,
   HiOutlineCog,
   HiOutlinePlusCircle,
@@ -100,6 +102,16 @@ const SideNav = () => {
             <li>
               <AppLink href="/dashboard/account" icon={<HiOutlineUserCircle />}>
                 Account
+              </AppLink>
+            </li>
+            <li>
+              <AppLink href="/dashboard/messages" icon={<HiOutlineChatAlt2 />}>
+                Messages
+              </AppLink>
+            </li>
+            <li>
+              <AppLink href="/dashboard/watchlist" icon={<HiOutlineEye />}>
+                Watchlist
               </AppLink>
             </li>
             <li>

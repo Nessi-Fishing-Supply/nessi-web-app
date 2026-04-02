@@ -1,0 +1,186 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+// Shell — the full messaging dashboard layout
+.shell {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-white);
+
+  @include breakpoint(lg) {
+    flex-direction: row;
+  }
+}
+
+// ─── Thread list panel ───────────────────────────────
+
+.listPanel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  @include breakpoint(lg) {
+    flex: 0 0 360px;
+    border-right: 1px solid var(--color-neutral-200);
+  }
+}
+
+.listHeader {
+  padding: var(--spacing-400) var(--spacing-400) var(--spacing-200);
+
+  @include breakpoint(lg) {
+    padding: var(--spacing-500) var(--spacing-400) var(--spacing-200);
+  }
+}
+
+.heading {
+  font-size: var(--font-size-900);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.tabsWrap {
+  padding: 0 var(--spacing-400);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.listContent {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+// ─── Chat panel (desktop empty state) ────────────────
+
+.chatPanel {
+  display: none;
+
+  @include breakpoint(lg) {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    background-color: var(--color-neutral-100);
+  }
+}
+
+.noThreadSelected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--spacing-300);
+}
+
+.noThreadIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-neutral-300);
+}
+
+.noThreadText {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-400);
+  margin: 0;
+}
+
+// ─── Skeleton ────────────────────────────────────────
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+%shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-100) 25%,
+    var(--color-neutral-200) 50%,
+    var(--color-neutral-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-100);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300) var(--spacing-400);
+  border-bottom: 1px solid var(--color-neutral-100);
+}
+
+.skeletonAvatar {
+  @extend %shimmer;
+
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeletonBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-150);
+  flex: 1;
+  min-width: 0;
+}
+
+.skeletonLine {
+  @extend %shimmer;
+
+  height: 14px;
+  width: 55%;
+}
+
+.skeletonLineShort {
+  @extend %shimmer;
+
+  height: 12px;
+  width: 75%;
+}
+
+// ─── Empty state ─────────────────────────────────────
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-1000) var(--spacing-400);
+  gap: var(--spacing-300);
+}
+
+.emptyIcon {
+  width: 40px;
+  height: 40px;
+  color: var(--color-neutral-300);
+}
+
+.emptyHeading {
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-neutral-800);
+  margin: 0;
+}
+
+.emptyText {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
