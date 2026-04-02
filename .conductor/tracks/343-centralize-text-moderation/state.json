@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "issue": 343,
+  "title": "Centralize text moderation and wire into all user-generated content routes",
+  "branch": "feat/343/centralize-text-moderation",
+  "status": "implementing",
+  "phase": { "current": 2, "total": 4, "tasks": { "completed": ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6"], "current": "2.1", "remaining": ["2.2", "3.1", "3.2", "3.3", "3.4", "4.1", "4.2", "4.3"] } },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-04-02T12:00:00Z", "lastActivity": "2026-04-02T12:00:00Z" }
+}
