@@ -31,5 +31,10 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-04-02T12:00:00Z", "lastActivity": "2026-04-02T13:00:00Z", "completedAt": "2026-04-02T13:00:00Z", "pruneAfter": "2026-06-01T13:00:00Z" }
+  "timestamps": {
+    "started": "2026-04-02T12:00:00Z",
+    "lastActivity": "2026-04-02T13:00:00Z",
+    "completedAt": "2026-04-02T13:00:00Z",
+    "pruneAfter": "2026-06-01T13:00:00Z"
+  }
 }
