@@ -1,6 +1,7 @@
 import { createClient } from '@/libs/supabase/server';
 import type { ListingWithPhotos } from '@/features/listings/types/listing';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
+import { scanText, logModerationFlag } from '@/libs/moderation';
 import { NextResponse } from 'next/server';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -171,6 +172,42 @@ export async function POST(req: Request) {
       if (key in body) {
         filteredBody[key] = body[key];
       }
+    }
+
+    // Text moderation: scan title and description
+    const textFields = ['title', 'description'] as const;
+    for (const field of textFields) {
+      const value = filteredBody[field];
+      if (typeof value !== 'string' || value.trim().length === 0) continue;
+
+      const scanResult = scanText(value, 'listing');
+
+      if (scanResult.action === 'block') {
+        // Fire-and-forget log
+        void logModerationFlag({
+          memberId: user.id,
+          context: 'listing',
+          action: 'block',
+          originalContent: scanResult.originalContent,
+        });
+        return NextResponse.json(
+          { error: `The ${field} contains content that violates our community guidelines.` },
+          { status: 422, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+
+      if (scanResult.action === 'redact') {
+        filteredBody[field] = scanResult.filteredContent;
+        // Fire-and-forget log
+        void logModerationFlag({
+          memberId: user.id,
+          context: 'listing',
+          action: 'redact',
+          originalContent: scanResult.originalContent,
+          filteredContent: scanResult.filteredContent,
+        });
+      }
+      // nudge_off_platform and nudge_negotiation are treated as 'pass' for listings
     }
 
     const { data: listing, error: insertError } = await supabase

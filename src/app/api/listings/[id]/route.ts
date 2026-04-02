@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/supabase/server';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
+import { scanText, logModerationFlag } from '@/libs/moderation';
 import { NextResponse } from 'next/server';
 
 function parseStoragePath(publicUrl: string): string | null {
@@ -122,6 +123,42 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         { error: 'No valid fields to update' },
         { status: 400, headers: AUTH_CACHE_HEADERS },
       );
+    }
+
+    // Text moderation: scan title and description if present
+    const textFields = ['title', 'description'] as const;
+    for (const field of textFields) {
+      const value = filteredBody[field];
+      if (typeof value !== 'string' || value.trim().length === 0) continue;
+
+      const scanResult = scanText(value, 'listing');
+
+      if (scanResult.action === 'block') {
+        void logModerationFlag({
+          memberId: user.id,
+          context: 'listing',
+          action: 'block',
+          originalContent: scanResult.originalContent,
+          sourceId: id,
+        });
+        return NextResponse.json(
+          { error: `The ${field} contains content that violates our community guidelines.` },
+          { status: 422, headers: AUTH_CACHE_HEADERS },
+        );
+      }
+
+      if (scanResult.action === 'redact') {
+        filteredBody[field] = scanResult.filteredContent;
+        void logModerationFlag({
+          memberId: user.id,
+          context: 'listing',
+          action: 'redact',
+          originalContent: scanResult.originalContent,
+          filteredContent: scanResult.filteredContent,
+          sourceId: id,
+        });
+      }
+      // nudge_off_platform and nudge_negotiation are treated as 'pass' for listings
     }
 
     const { error: updateError } = await supabase
