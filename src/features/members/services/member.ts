@@ -1,6 +1,9 @@
 import { createClient } from '@/libs/supabase/client';
+import { post } from '@/libs/fetch';
 import type { Member, MemberUpdateInput } from '@/features/members/types/member';
 import { generateSlug as generateSlugShared } from '@/features/shared/utils/slug';
+
+const TEXT_MODERATED_FIELDS = ['bio', 'first_name', 'last_name'] as const;
 
 export async function getMember(userId: string): Promise<Member | null> {
   const supabase = createClient();
@@ -32,6 +35,12 @@ export async function getMemberBySlug(slug: string): Promise<Member | null> {
 }
 
 export async function updateMember(userId: string, data: MemberUpdateInput): Promise<Member> {
+  const hasTextFields = TEXT_MODERATED_FIELDS.some((field) => field in data);
+
+  if (hasTextFields) {
+    return post<Member>('/api/members/profile', data);
+  }
+
   const supabase = createClient();
   const { data: updated, error } = await supabase
     .from('members')

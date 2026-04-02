@@ -99,7 +99,15 @@ export async function createShop(data: {
   return body.shop;
 }
 
+const TEXT_MODERATED_FIELDS = ['shop_name', 'description'] as const;
+
 export async function updateShop(id: string, data: ShopUpdate): Promise<Shop> {
+  const hasTextFields = TEXT_MODERATED_FIELDS.some((field) => field in data);
+
+  if (hasTextFields) {
+    return patch<Shop>(`/api/shops/${id}/profile`, data);
+  }
+
   const supabase = createClient();
   const { data: updated, error } = await supabase
     .from('shops')
