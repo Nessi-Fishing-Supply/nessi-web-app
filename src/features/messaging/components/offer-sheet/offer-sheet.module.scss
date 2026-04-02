@@ -1,5 +1,12 @@
 @use '../../../../styles/mixins/breakpoints' as *;
 
+.modalTitle {
+  font-size: var(--font-size-800);
+  font-weight: var(--font-weight-700);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-400) 0;
+}
+
 .listingContext {
   display: flex;
   align-items: center;

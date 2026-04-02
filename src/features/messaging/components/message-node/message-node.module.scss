@@ -92,6 +92,11 @@
   gap: var(--spacing-100);
   border-radius: var(--radius-300);
   overflow: hidden;
+  width: 240px;
+
+  @include breakpoint(md) {
+    width: 280px;
+  }
 }
 
 .imageGridSingle {

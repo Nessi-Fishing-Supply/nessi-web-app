@@ -139,13 +139,15 @@ export default function MessageThread({
         }
 
         if (message.type === 'offer_node') {
-          const meta = message.metadata as {
-            offer_id?: string;
-            amount_cents?: number;
-            original_price_cents?: number;
-            status?: string;
-            expires_at?: string;
-          } | null;
+          const meta = message.metadata as Record<string, unknown> | null;
+          // Support both snake_case (new) and camelCase (legacy) metadata keys
+          const amountCents =
+            (meta?.amount_cents as number | undefined) ??
+            (meta?.amountCents as number | undefined) ??
+            0;
+          const originalPriceCents = (meta?.original_price_cents as number | undefined) ?? 0;
+          const status = (meta?.status as string | undefined) ?? 'expired';
+          const expiresAt = meta?.expires_at as string | undefined;
 
           return (
             <div key={message.id}>
@@ -160,10 +162,10 @@ export default function MessageThread({
               )}
               <div className={styles.nodeRow}>
                 <OfferBubble
-                  amount={meta?.amount_cents ?? 0}
-                  originalPrice={meta?.original_price_cents ?? 0}
-                  expiresAt={meta?.expires_at ? new Date(meta.expires_at) : new Date()}
-                  status={(meta?.status as OfferStatus | undefined) ?? 'expired'}
+                  amount={amountCents}
+                  originalPrice={originalPriceCents}
+                  expiresAt={expiresAt ? new Date(expiresAt) : new Date()}
+                  status={(status as OfferStatus | undefined) ?? 'expired'}
                 />
               </div>
             </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useId, useCallback } from 'react';
-import BottomSheet from '@/components/layout/bottom-sheet';
+import Modal from '@/components/layout/modal';
 import { useToast } from '@/components/indicators/toast/context';
 import { useCreateOffer } from '@/features/messaging/hooks/use-create-offer';
 import { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
@@ -150,12 +150,14 @@ export default function OfferSheet({
   const buyerFee = 0; // placeholder
   const totalCents = amountCents + buyerFee;
 
+  const titleId = `${errorId}-title`;
+
   return (
-    <BottomSheet
-      title={mode === 'create' ? 'Make an Offer' : 'Counter Offer'}
-      isOpen={isOpen}
-      onClose={onClose}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} ariaLabelledBy={titleId}>
+      <h2 id={titleId} className={styles.modalTitle}>
+        {mode === 'create' ? 'Make an Offer' : 'Counter Offer'}
+      </h2>
+
       <div className={styles.listingContext}>
         <div>
           <p className={styles.listingTitle}>{listingTitle}</p>
@@ -217,6 +219,6 @@ export default function OfferSheet({
       >
         {isPending ? 'Sending...' : mode === 'create' ? 'Send Offer' : 'Send Counter'}
       </button>
-    </BottomSheet>
+    </Modal>
   );
 }

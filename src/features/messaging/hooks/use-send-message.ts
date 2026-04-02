@@ -4,11 +4,17 @@ import type { MessageWithSender } from '@/features/messaging/types/message';
 
 type UseSendMessageOptions = {
   threadId: string;
+  currentUserId: string;
   onSuccess?: () => void;
   onError?: (error: Error) => void;
 };
 
-export function useSendMessage({ threadId, onSuccess, onError }: UseSendMessageOptions) {
+export function useSendMessage({
+  threadId,
+  currentUserId,
+  onSuccess,
+  onError,
+}: UseSendMessageOptions) {
   const queryClient = useQueryClient();
   const messagesKey = ['messages', 'threads', threadId, 'messages'];
   const threadsKey = ['messages', 'threads'];
@@ -23,7 +29,7 @@ export function useSendMessage({ threadId, onSuccess, onError }: UseSendMessageO
       const optimisticMessage: MessageWithSender = {
         id: crypto.randomUUID(),
         thread_id: threadId,
-        sender_id: '',
+        sender_id: currentUserId,
         type: 'text',
         content,
         metadata: null,
@@ -31,7 +37,7 @@ export function useSendMessage({ threadId, onSuccess, onError }: UseSendMessageO
         original_content: null,
         edited_at: null,
         created_at: new Date().toISOString(),
-        sender: { id: '', first_name: '', last_name: '', avatar_url: null },
+        sender: { id: currentUserId, first_name: '', last_name: '', avatar_url: null },
       };
 
       queryClient.setQueryData(messagesKey, (old: any) => {

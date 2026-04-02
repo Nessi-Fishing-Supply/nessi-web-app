@@ -90,7 +90,13 @@ export async function createOfferServer(userId: string, params: CreateOfferParam
     senderId: userId,
     content: `Offer: ${(params.amountCents / 100).toFixed(2)}`,
     type: 'offer_node',
-    metadata: { offerId: offer.id, amountCents: params.amountCents },
+    metadata: {
+      offer_id: offer.id,
+      amount_cents: params.amountCents,
+      original_price_cents: listing.price_cents,
+      status: 'pending',
+      expires_at: expiresAt,
+    },
   });
 
   return offer;
@@ -311,7 +317,13 @@ export async function counterOfferServer(
     senderId: userId,
     content: `Offer: ${(params.amountCents / 100).toFixed(2)}`,
     type: 'offer_node',
-    metadata: { offerId: counterOffer.id, amountCents: params.amountCents },
+    metadata: {
+      offer_id: counterOffer.id,
+      amount_cents: params.amountCents,
+      original_price_cents: listing.price_cents,
+      status: 'pending',
+      expires_at: expiresAt,
+    },
   });
 
   return counterOffer;

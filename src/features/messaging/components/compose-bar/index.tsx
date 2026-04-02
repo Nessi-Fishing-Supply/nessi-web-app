@@ -47,6 +47,7 @@ export default function ComposeBar({
 
   const { mutate, isPending } = useSendMessage({
     threadId,
+    currentUserId: user?.id ?? '',
     onSuccess: () => {
       setValue('');
       if (textareaRef.current) {
