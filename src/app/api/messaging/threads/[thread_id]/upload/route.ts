@@ -6,6 +6,8 @@ import { createMessageServer } from '@/features/messaging/services/messaging-ser
 import { scanImage } from '@/features/messaging/utils/image-moderation';
 import type { ImageAttachment } from '@/features/messaging/types/message';
 import { IMAGE_MESSAGE_PREVIEW } from '@/features/messaging/utils/constants';
+import { requireShopPermission } from '@/libs/shop-permissions';
+import { parseMessageContext } from '@/features/messaging/utils/parse-context';
 
 export const runtime = 'nodejs';
 
@@ -22,6 +24,14 @@ export async function POST(
 ) {
   try {
     const { thread_id } = await params;
+
+    const context = parseMessageContext(request);
+
+    if (context.type === 'shop') {
+      const result = await requireShopPermission(request, 'messaging', 'full');
+      if (result instanceof NextResponse) return result;
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -37,14 +47,18 @@ export async function POST(
     // Verify sender is a participant and get all participant IDs
     const { data: participants, error: participantsError } = await supabase
       .from('message_thread_participants')
-      .select('member_id')
+      .select('member_id, context_type, context_id')
       .eq('thread_id', thread_id);
 
     if (participantsError) {
       throw new Error(`Failed to get thread participants: ${participantsError.message}`);
     }
 
-    const isParticipant = participants?.some((p) => p.member_id === user.id);
+    const isParticipant =
+      context.type === 'shop'
+        ? participants?.some((p) => p.context_type === 'shop' && p.context_id === context.shopId)
+        : participants?.some((p) => p.member_id === user.id);
+
     if (!isParticipant) {
       return NextResponse.json(
         { error: 'You are not a participant in this thread' },
@@ -216,6 +230,49 @@ export async function POST(
             for (const p of recipientsToNotify) {
               sendNotificationEmail({ recipientId: p.member_id, subject, html });
             }
+
+            // Send email to shop members for shop participant threads
+            const shopParticipants = (participants ?? []).filter(
+              (p) => p.context_type === 'shop' && p.context_id,
+            );
+
+            if (shopParticipants.length > 0) {
+              const adminSupabase = (await import('@/libs/supabase/admin')).createAdminClient();
+              const { getShopMembersWithPermission } =
+                await import('@/features/messaging/utils/shop-notification');
+
+              for (const sp of shopParticipants) {
+                const { data: shopData } = await adminSupabase
+                  .from('shops')
+                  .select('shop_name')
+                  .eq('id', sp.context_id!)
+                  .single();
+
+                const shopName = shopData?.shop_name ?? undefined;
+                const { subject: shopSubject, html: shopHtml } = newMessage({
+                  senderName,
+                  messagePreview: IMAGE_MESSAGE_PREVIEW,
+                  threadId: thread_id,
+                  shopName,
+                });
+
+                const shopMembers = await getShopMembersWithPermission(
+                  sp.context_id!,
+                  'messaging',
+                  'view',
+                );
+
+                for (const sm of shopMembers) {
+                  if (sm.member_id !== user.id) {
+                    sendNotificationEmail({
+                      recipientId: sm.member_id,
+                      subject: shopSubject,
+                      html: shopHtml,
+                    });
+                  }
+                }
+              }
+            }
           }
         }
 
@@ -231,6 +288,33 @@ export async function POST(
             body: IMAGE_MESSAGE_PREVIEW,
             link: `/dashboard/messages/${thread_id}`,
           });
+        }
+
+        // Notify all shop members with messaging permission for shop participants
+        const { getShopMembersWithPermission } =
+          await import('@/features/messaging/utils/shop-notification');
+
+        const shopParticipants = (participants ?? []).filter(
+          (p) => p.context_type === 'shop' && p.context_id,
+        );
+
+        for (const sp of shopParticipants) {
+          const shopMembers = await getShopMembersWithPermission(
+            sp.context_id!,
+            'messaging',
+            'view',
+          );
+          for (const sm of shopMembers) {
+            if (sm.member_id !== user.id) {
+              dispatchNotification({
+                userId: sm.member_id,
+                type: 'new_message',
+                title: senderName,
+                body: IMAGE_MESSAGE_PREVIEW,
+                link: `/dashboard/messages/${thread_id}`,
+              });
+            }
+          }
         }
       } catch (err) {
         console.error('[image-upload-notification] failed:', err);

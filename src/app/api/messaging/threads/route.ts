@@ -8,12 +8,21 @@ import {
   createThreadServer,
   hasTransactionHistoryServer,
 } from '@/features/messaging/services/messaging-server';
+import { requireShopPermission } from '@/libs/shop-permissions';
+import { parseMessageContext } from '@/features/messaging/utils/parse-context';
 
 const VALID_THREAD_TYPES: ThreadType[] = ['inquiry', 'direct', 'offer', 'custom_request'];
 
 // List the authenticated user's message threads with optional type filter
 export async function GET(request: NextRequest) {
   try {
+    const context = parseMessageContext(request);
+
+    if (context.type === 'shop') {
+      const result = await requireShopPermission(request, 'messaging', 'view');
+      if (result instanceof NextResponse) return result;
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -35,7 +44,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const threads = await getThreadsServer(user.id, type ?? undefined);
+    const threads = await getThreadsServer(user.id, type ?? undefined, context);
 
     return NextResponse.json(threads, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
@@ -122,6 +131,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Determine context for each participant
+    let contextTypes: ('member' | 'shop')[] | undefined;
+    let contextIds: string[] | undefined;
+
+    if (body.listingId) {
+      const { data: listing } = await supabase
+        .from('listings')
+        .select('seller_id, shop_id')
+        .eq('id', body.listingId)
+        .single();
+
+      if (listing?.shop_id) {
+        // Seller participates as shop identity
+        contextTypes = ['member', 'shop'];
+        contextIds = [user.id, listing.shop_id];
+      }
+    }
+
     const { thread, existing } = await createThreadServer({
       type,
       createdBy: user.id,
@@ -129,6 +156,8 @@ export async function POST(request: NextRequest) {
       roles,
       listingId,
       shopId,
+      contextTypes,
+      contextIds,
     });
 
     if (existing) {

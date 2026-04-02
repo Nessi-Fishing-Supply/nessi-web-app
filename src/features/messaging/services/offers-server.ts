@@ -21,7 +21,7 @@ export async function createOfferServer(userId: string, params: CreateOfferParam
 
   const { data: listing, error: listingError } = await supabase
     .from('listings')
-    .select('id, title, price_cents, status, seller_id')
+    .select('id, title, price_cents, status, seller_id, shop_id')
     .eq('id', params.listingId)
     .single();
 
@@ -58,12 +58,22 @@ export async function createOfferServer(userId: string, params: CreateOfferParam
     throw new Error(`Failed to expire existing offers: ${expireError.message}`);
   }
 
+  const contextTypes: ('member' | 'shop')[] = ['member', 'member'];
+  const contextIds: string[] = [userId, params.sellerId];
+
+  if (listing.shop_id) {
+    contextTypes[1] = 'shop';
+    contextIds[1] = listing.shop_id;
+  }
+
   const { thread } = await createThreadServer({
     type: 'offer',
     createdBy: userId,
     participantIds: [userId, params.sellerId],
     roles: ['buyer', 'seller'],
     listingId: params.listingId,
+    contextTypes,
+    contextIds,
   });
 
   const expiresAt = new Date(Date.now() + OFFER_EXPIRY_HOURS * 60 * 60 * 1000).toISOString();
