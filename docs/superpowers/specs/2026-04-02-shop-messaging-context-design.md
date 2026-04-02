@@ -47,6 +47,7 @@ ALTER TABLE message_thread_participants
 ```
 
 Column semantics:
+
 - `member_id` — always the real human user (for auth, block checks, notification delivery). Never null.
 - `context_type` — `'member'` or `'shop'`. Determines which identity this participant represents.
 - `context_id` — the `member_id` (when `context_type='member'`) or `shop_id` (when `context_type='shop'`). Used for inbox filtering and display name resolution.
@@ -54,21 +55,25 @@ Column semantics:
 For shop participants, `member_id` is set to the user who created the thread or the shop owner. It's used for auth verification and as a fallback — the actual inbox visibility is determined by `context_type='shop' AND context_id={shopId}`, and any shop member with messaging permission can access it.
 
 **Display name resolution:**
+
 - `context_type='member'` → join `members` table on `context_id` for `first_name`, `last_name`, `avatar_url`
 - `context_type='shop'` → join `shops` table on `context_id` for `name`, `avatar_url`
 
 **RLS policy updates:**
+
 - Member inbox: `WHERE context_type='member' AND member_id = auth.uid()`
 - Shop inbox: `WHERE context_type='shop' AND context_id = {shopId}` — API layer verifies the authenticated user is a shop member with messaging permission via `requireShopPermission`
 
 ### Thread Creation
 
 When a buyer initiates a thread on a shop listing:
+
 - Buyer participant: `context_type='member'`, `context_id={buyer_member_id}`, `member_id={buyer_member_id}`
 - Seller participant: `context_type='shop'`, `context_id={shop_id}`, `member_id={listing.seller_id}` (the listing owner, used as auth fallback)
 - Thread's `shop_id` is set to the shop that owns the listing
 
 When a member initiates a direct message to another member:
+
 - Both participants: `context_type='member'`, `context_id={their_member_id}`
 - No change from current behavior
 
@@ -77,22 +82,26 @@ When a member initiates a direct message to another member:
 ### API Layer Changes
 
 **Thread list — `GET /api/messaging/threads`:**
+
 - Read `X-Nessi-Context` header
 - Member context (`'member'`): filter `WHERE context_type='member' AND member_id=auth.uid()`
 - Shop context (`'shop:{shopId}'`): validate user is shop member with messaging permission via `requireShopPermission`, then filter `WHERE context_type='shop' AND context_id={shopId}`
 - Response shape unchanged — `ThreadWithParticipants[]`
 
 **Thread detail — `GET /api/messaging/threads/{id}`:**
+
 - Verify participant access based on context:
   - Member context: user's `member_id` must be a participant with `context_type='member'`
   - Shop context: thread must have a participant with `context_type='shop' AND context_id={shopId}`, and user must be a shop member with messaging permission
 
 **Send message — `POST /api/messaging/threads/{id}/messages`:**
+
 - Same context-based participant verification as thread detail
 - For shop context: verify sender has messaging permission on the shop
 - Sender identity in the message: `sender_id` remains the `member_id` of the actual human (for audit trail). The UI resolves display identity from the participant's `context_type`/`context_id`.
 
 **Create thread — `POST /api/messaging/threads`:**
+
 - Read `X-Nessi-Context` header to determine the creator's context
 - If creating an inquiry on a shop listing: auto-set seller participant to `context_type='shop'`
 - If creating a direct message: both participants are `context_type='member'`
@@ -101,6 +110,7 @@ When a member initiates a direct message to another member:
 
 **Shop thread notifications:**
 When a message is sent in a shop thread (participant has `context_type='shop'`):
+
 1. Look up all members of the shop with messaging permission (`shop_members` + `shop_roles` where `messaging >= 'view'`)
 2. Dispatch in-app notification to each shop member: `dispatchNotification({ userId: shopMember.member_id, type: 'new_message', title: senderName, body: preview, link: '/dashboard/messages/{thread_id}' })`
 3. Send email to each shop member (respecting their notification preferences): subject includes shop name, e.g., "New message for Tight Lines Tackle Co."
@@ -109,27 +119,32 @@ When a message is sent in a shop thread (participant has `context_type='shop'`):
 No change from current behavior — dispatch to the individual `member_id`.
 
 **Email template updates:**
+
 - New message email: add context line "Message received by {shop_name}" or "Message received by {member_name}" depending on the thread participant context
 - Offer emails: same pattern — "Offer received on {listing_title} for {shop_name}"
 
 ### UI Changes
 
 **Shop dashboard sidebar:**
+
 - Add "Messages" nav item to the shop dashboard sidebar (currently missing)
 - Same position as in the member sidebar
 - Badge shows shop unread count
 
 **Messages page (`/dashboard/messages`):**
+
 - Already works for member context — no route change needed
 - When in shop context, the same route renders shop threads (API filters by context)
 - Thread list, thread detail, compose bar all work identically — only the data differs
 
 **Thread header and participant display:**
+
 - When the other participant has `context_type='shop'`: show shop name and shop avatar (joined from `shops` table)
 - When the other participant has `context_type='member'`: show member name and member avatar (existing behavior)
 - "View profile" link: points to `/shop/{slug}` for shop context, `/member/{slug}` for member context
 
 **Context bar (listing + offer reference):**
+
 - No change — already shows listing info from the thread's `listing_id`
 
 ### Types
@@ -185,12 +200,15 @@ The UI reads `participant.context_type` to decide whether to display `participan
 ## Out of Scope (Follow-up Tickets)
 
 ### Cross-context notification badges
+
 When a member is in member context and their shop receives a message, show an unread badge on the shop card in the context switcher dropdown. Implementation: query shop unread counts for all shops the user is a member of, display as badge on the shop cards in the avatar menu. This is a UI-only addition once the core data model is in place.
 
 ### Per-member notification preferences for shops
+
 Let individual shop members configure whether they receive email/in-app notifications for shop messages. Extends the existing `notification_preferences` pattern to include a `shop_messages` key scoped per shop.
 
 ### Shop-to-shop messaging
+
 Allow shops to message other shops directly (wholesale inquiries, collaborations). Requires both participants to be `context_type='shop'`. Not needed for launch.
 
 ## Migration Strategy

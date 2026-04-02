@@ -3,14 +3,18 @@ import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { markThreadReadServer } from '@/features/messaging/services/messaging-server';
+import { parseMessageContext } from '@/features/messaging/utils/parse-context';
 
-// Mark a thread as read for the authenticated user
+// Mark a thread as read for the authenticated user or shop context
 export async function PATCH(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ thread_id: string }> },
 ) {
   try {
     const { thread_id } = await params;
+
+    const context = parseMessageContext(request);
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -23,7 +27,7 @@ export async function PATCH(
       );
     }
 
-    await markThreadReadServer(user.id, thread_id);
+    await markThreadReadServer(user.id, thread_id, context);
 
     return NextResponse.json({ success: true }, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {

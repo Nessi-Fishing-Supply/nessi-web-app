@@ -14,29 +14,30 @@
 
 ## File Map
 
-| Action | File | Responsibility |
-|--------|------|----------------|
-| Create | `supabase/migrations/20260402100000_add_participant_context.sql` | DB migration: enum + columns + constraint |
-| Modify | `src/types/database.ts` | Regenerate types after migration |
-| Modify | `src/features/messaging/types/thread.ts` | Add `ParticipantContextType`, update `ThreadWithParticipants` |
-| Modify | `src/features/messaging/services/messaging-server.ts` | Context-aware thread queries, thread creation, participant building |
-| Modify | `src/app/api/messaging/threads/route.ts` | Read `X-Nessi-Context` header, filter threads by context |
-| Modify | `src/app/api/messaging/threads/[thread_id]/route.ts` | Context-aware participant verification for thread detail |
-| Modify | `src/app/api/messaging/threads/[thread_id]/messages/route.ts` | Context-aware send permission, shop notification dispatch |
-| Modify | `src/app/api/messaging/threads/[thread_id]/upload/route.ts` | Context-aware upload permission, shop notification dispatch |
-| Modify | `src/app/api/messaging/unread-count/route.ts` | Context-aware unread count |
-| Modify | `src/components/navigation/side-nav/index.tsx` | Add Messages nav item to shop sidebar |
-| Modify | `src/features/messaging/components/thread-list/thread-row.tsx` | Display shop name/avatar for shop participants |
-| Modify | `src/app/(frontend)/dashboard/messages/[thread_id]/thread-page.tsx` | Display shop identity in header for shop threads |
-| Modify | `src/features/messaging/services/messaging.ts` | No change needed — `X-Nessi-Context` already sent via `@/libs/fetch` |
-| Create | `src/features/messaging/services/__tests__/messaging-server-context.test.ts` | Tests for context-aware thread operations |
-| Modify | `src/features/messaging/CLAUDE.md` | Document context model |
+| Action | File                                                                         | Responsibility                                                       |
+| ------ | ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Create | `supabase/migrations/20260402100000_add_participant_context.sql`             | DB migration: enum + columns + constraint                            |
+| Modify | `src/types/database.ts`                                                      | Regenerate types after migration                                     |
+| Modify | `src/features/messaging/types/thread.ts`                                     | Add `ParticipantContextType`, update `ThreadWithParticipants`        |
+| Modify | `src/features/messaging/services/messaging-server.ts`                        | Context-aware thread queries, thread creation, participant building  |
+| Modify | `src/app/api/messaging/threads/route.ts`                                     | Read `X-Nessi-Context` header, filter threads by context             |
+| Modify | `src/app/api/messaging/threads/[thread_id]/route.ts`                         | Context-aware participant verification for thread detail             |
+| Modify | `src/app/api/messaging/threads/[thread_id]/messages/route.ts`                | Context-aware send permission, shop notification dispatch            |
+| Modify | `src/app/api/messaging/threads/[thread_id]/upload/route.ts`                  | Context-aware upload permission, shop notification dispatch          |
+| Modify | `src/app/api/messaging/unread-count/route.ts`                                | Context-aware unread count                                           |
+| Modify | `src/components/navigation/side-nav/index.tsx`                               | Add Messages nav item to shop sidebar                                |
+| Modify | `src/features/messaging/components/thread-list/thread-row.tsx`               | Display shop name/avatar for shop participants                       |
+| Modify | `src/app/(frontend)/dashboard/messages/[thread_id]/thread-page.tsx`          | Display shop identity in header for shop threads                     |
+| Modify | `src/features/messaging/services/messaging.ts`                               | No change needed — `X-Nessi-Context` already sent via `@/libs/fetch` |
+| Create | `src/features/messaging/services/__tests__/messaging-server-context.test.ts` | Tests for context-aware thread operations                            |
+| Modify | `src/features/messaging/CLAUDE.md`                                           | Document context model                                               |
 
 ---
 
 ### Task 1: Database Migration
 
 **Files:**
+
 - Create: `supabase/migrations/20260402100000_add_participant_context.sql`
 
 - [ ] **Step 1: Write the migration**
@@ -79,6 +80,7 @@ Expected: `src/types/database.ts` regenerated with `context_type` and `context_i
 - [ ] **Step 3: Verify migration applied**
 
 Check that `src/types/database.ts` contains:
+
 - `participant_context_type: "member" | "shop"` in Enums
 - `context_type` and `context_id` in `message_thread_participants` Row/Insert/Update types
 
@@ -94,6 +96,7 @@ git commit -m "feat(messaging): add participant context columns for shop messagi
 ### Task 2: Update TypeScript Types
 
 **Files:**
+
 - Modify: `src/features/messaging/types/thread.ts`
 
 - [ ] **Step 1: Add ParticipantContextType and update ThreadWithParticipants**
@@ -152,6 +155,7 @@ git commit -m "feat(messaging): add ParticipantContextType and shop display fiel
 ### Task 3: Update Server Service — buildThreadsWithParticipants
 
 **Files:**
+
 - Modify: `src/features/messaging/services/messaging-server.ts`
 
 This is the core change — update the participant builder to include context fields and resolve shop display info.
@@ -177,13 +181,14 @@ After fetching participants, collect all shop `context_id` values and batch-fetc
 // Batch fetch shop details for shop-context participants
 const shopContextIds = [
   ...new Set(
-    (participants ?? [])
-      .filter((p) => p.context_type === 'shop')
-      .map((p) => p.context_id),
+    (participants ?? []).filter((p) => p.context_type === 'shop').map((p) => p.context_id),
   ),
 ];
 
-const shopsByIdMap = new Map<string, { id: string; name: string; avatar_url: string | null; slug: string | null }>();
+const shopsByIdMap = new Map<
+  string,
+  { id: string; name: string; avatar_url: string | null; slug: string | null }
+>();
 if (shopContextIds.length > 0) {
   const { data: shops } = await supabase
     .from('shops')
@@ -212,7 +217,9 @@ return {
   is_blocked: p.is_blocked,
   context_type: p.context_type,
   context_id: p.context_id,
-  member: { /* existing member resolution */ },
+  member: {
+    /* existing member resolution */
+  },
   shop: p.context_type === 'shop' ? (shopsByIdMap.get(p.context_id) ?? null) : null,
 };
 ```
@@ -226,24 +233,18 @@ export async function getThreadsServer(
   userId: string,
   type?: ThreadType,
   context?: { type: 'member' } | { type: 'shop'; shopId: string },
-): Promise<ThreadWithParticipants[]>
+): Promise<ThreadWithParticipants[]>;
 ```
 
 Update the participant query to filter by context:
 
 ```typescript
-let participantQuery = supabase
-  .from('message_thread_participants')
-  .select('thread_id');
+let participantQuery = supabase.from('message_thread_participants').select('thread_id');
 
 if (context?.type === 'shop') {
-  participantQuery = participantQuery
-    .eq('context_type', 'shop')
-    .eq('context_id', context.shopId);
+  participantQuery = participantQuery.eq('context_type', 'shop').eq('context_id', context.shopId);
 } else {
-  participantQuery = participantQuery
-    .eq('context_type', 'member')
-    .eq('member_id', userId);
+  participantQuery = participantQuery.eq('context_type', 'member').eq('member_id', userId);
 }
 
 const { data: myParticipantRows, error: participantError } = await participantQuery;
@@ -258,7 +259,7 @@ export async function getThreadByIdServer(
   userId: string,
   threadId: string,
   context?: { type: 'member' } | { type: 'shop'; shopId: string },
-): Promise<ThreadWithParticipants | null>
+): Promise<ThreadWithParticipants | null>;
 ```
 
 Update the participant check to verify context-appropriate access:
@@ -313,7 +314,7 @@ export async function markThreadReadServer(
   userId: string,
   threadId: string,
   context?: { type: 'member' } | { type: 'shop'; shopId: string },
-): Promise<void>
+): Promise<void>;
 ```
 
 Update the query to find the right participant row:
@@ -337,7 +338,7 @@ if (context?.type === 'shop') {
 export async function getUnreadCountServer(
   userId: string,
   context?: { type: 'member' } | { type: 'shop'; shopId: string },
-): Promise<number>
+): Promise<number>;
 ```
 
 Filter the unread sum query by context, same pattern as `getThreadsServer`.
@@ -359,6 +360,7 @@ git commit -m "feat(messaging): context-aware thread queries, creation, and mark
 ### Task 4: Update API Routes
 
 **Files:**
+
 - Modify: `src/app/api/messaging/threads/route.ts`
 - Modify: `src/app/api/messaging/threads/[thread_id]/route.ts`
 - Modify: `src/app/api/messaging/threads/[thread_id]/messages/route.ts`
@@ -451,9 +453,10 @@ if (context.type === 'shop') {
 }
 
 // Update participant check to be context-aware
-const isParticipant = context.type === 'shop'
-  ? participants?.some((p) => p.context_type === 'shop' && p.context_id === context.shopId)
-  : participants?.some((p) => p.member_id === user.id && p.context_type === 'member');
+const isParticipant =
+  context.type === 'shop'
+    ? participants?.some((p) => p.context_type === 'shop' && p.context_id === context.shopId)
+    : participants?.some((p) => p.member_id === user.id && p.context_type === 'member');
 ```
 
 Update the notification dispatch for shop threads — notify all shop members with messaging permission:
@@ -462,9 +465,8 @@ Update the notification dispatch for shop threads — notify all shop members wi
 // For shop-context threads, notify all shop members with messaging permission
 const shopParticipant = participants?.find((p) => p.context_type === 'shop');
 if (shopParticipant) {
-  const { getShopMembersWithPermission } = await import(
-    '@/features/messaging/utils/shop-notification'
-  );
+  const { getShopMembersWithPermission } =
+    await import('@/features/messaging/utils/shop-notification');
   const shopMembers = await getShopMembersWithPermission(
     shopParticipant.context_id,
     'messaging',
@@ -516,7 +518,10 @@ Create `src/features/messaging/utils/shop-notification.ts`:
 
 ```typescript
 import { createAdminClient } from '@/libs/supabase/admin';
-import type { ShopPermissionFeature, ShopPermissionLevel } from '@/features/shops/types/permissions';
+import type {
+  ShopPermissionFeature,
+  ShopPermissionLevel,
+} from '@/features/shops/types/permissions';
 import { meetsLevel } from '@/features/shops/utils/check-permission';
 
 export async function getShopMembersWithPermission(
@@ -558,6 +563,7 @@ git commit -m "feat(messaging): context-aware API routes with shop permission ch
 ### Task 5: Update Shop Dashboard Sidebar
 
 **Files:**
+
 - Modify: `src/components/navigation/side-nav/index.tsx`
 
 - [ ] **Step 1: Add Messages to SHOP_NAV_ITEMS**
@@ -601,6 +607,7 @@ git commit -m "feat(messaging): add Messages nav item to shop dashboard sidebar"
 ### Task 6: Update Thread List UI — Shop Identity Display
 
 **Files:**
+
 - Modify: `src/features/messaging/components/thread-list/thread-row.tsx`
 - Modify: `src/app/(frontend)/dashboard/messages/[thread_id]/thread-page.tsx`
 
@@ -612,13 +619,17 @@ In `thread-row.tsx`, update the "other participant" resolution to use shop data 
 const other = thread.participants.find((p) => p.member.id !== currentUserId);
 
 // Resolve display identity — shop name/avatar if shop context, member otherwise
-const displayName = other?.context_type === 'shop' && other.shop
-  ? other.shop.name
-  : other ? `${other.member.first_name} ${other.member.last_name}` : 'Unknown';
+const displayName =
+  other?.context_type === 'shop' && other.shop
+    ? other.shop.name
+    : other
+      ? `${other.member.first_name} ${other.member.last_name}`
+      : 'Unknown';
 
-const displayAvatar = other?.context_type === 'shop' && other.shop
-  ? other.shop.avatar_url ?? undefined
-  : other?.member.avatar_url ?? undefined;
+const displayAvatar =
+  other?.context_type === 'shop' && other.shop
+    ? (other.shop.avatar_url ?? undefined)
+    : (other?.member.avatar_url ?? undefined);
 ```
 
 Use `displayName` and `displayAvatar` instead of `name` and `avatarUrl` in the JSX.
@@ -630,21 +641,24 @@ In `thread-page.tsx`, update the desktop and mobile headers to show shop name/av
 ```typescript
 const otherParticipant = thread?.participants.find((p) => p.member.id !== user?.id);
 
-const otherDisplayName = otherParticipant?.context_type === 'shop' && otherParticipant.shop
-  ? otherParticipant.shop.name
-  : otherParticipant
-    ? `${otherParticipant.member.first_name} ${otherParticipant.member.last_name}`
-    : 'Unknown';
+const otherDisplayName =
+  otherParticipant?.context_type === 'shop' && otherParticipant.shop
+    ? otherParticipant.shop.name
+    : otherParticipant
+      ? `${otherParticipant.member.first_name} ${otherParticipant.member.last_name}`
+      : 'Unknown';
 
-const otherDisplayAvatar = otherParticipant?.context_type === 'shop' && otherParticipant.shop
-  ? otherParticipant.shop.avatar_url ?? undefined
-  : otherParticipant?.member.avatar_url ?? undefined;
+const otherDisplayAvatar =
+  otherParticipant?.context_type === 'shop' && otherParticipant.shop
+    ? (otherParticipant.shop.avatar_url ?? undefined)
+    : (otherParticipant?.member.avatar_url ?? undefined);
 
-const otherProfileHref = otherParticipant?.context_type === 'shop' && otherParticipant.shop?.slug
-  ? `/shop/${otherParticipant.shop.slug}`
-  : otherParticipant?.member.slug
-    ? `/member/${otherParticipant.member.slug}`
-    : null;
+const otherProfileHref =
+  otherParticipant?.context_type === 'shop' && otherParticipant.shop?.slug
+    ? `/shop/${otherParticipant.shop.slug}`
+    : otherParticipant?.member.slug
+      ? `/member/${otherParticipant.member.slug}`
+      : null;
 ```
 
 Use these in the header Avatar, name display, and "View profile" link.
@@ -666,6 +680,7 @@ git commit -m "feat(messaging): display shop identity in thread list and chat he
 ### Task 7: Update Email Notifications for Shop Context
 
 **Files:**
+
 - Modify: `src/app/api/messaging/threads/[thread_id]/messages/route.ts`
 - Modify: `src/app/api/messaging/threads/[thread_id]/upload/route.ts`
 
@@ -676,13 +691,12 @@ In the fire-and-forget email notification block of the messages route, when the 
 ```typescript
 // For shop threads, email all shop members with messaging permission
 const shopParticipant = (participants ?? []).find(
-  (p) => p.context_type === 'shop' && p.member_id !== user.id
+  (p) => p.context_type === 'shop' && p.member_id !== user.id,
 );
 
 if (shopParticipant) {
-  const { getShopMembersWithPermission } = await import(
-    '@/features/messaging/utils/shop-notification'
-  );
+  const { getShopMembersWithPermission } =
+    await import('@/features/messaging/utils/shop-notification');
   const shopMembers = await getShopMembersWithPermission(
     shopParticipant.context_id,
     'messaging',
@@ -699,9 +713,7 @@ if (shopParticipant) {
   const shopName = shop?.name ?? 'your shop';
 
   const { newMessage } = await import('@/features/email/templates/new-message');
-  const { sendNotificationEmail } = await import(
-    '@/features/messaging/utils/notification-email'
-  );
+  const { sendNotificationEmail } = await import('@/features/messaging/utils/notification-email');
 
   const { subject, html } = newMessage({
     senderName,
@@ -759,6 +771,7 @@ git commit -m "feat(messaging): shop-context email notifications with shop name 
 ### Task 8: Update Thread Creation for Shop Listings
 
 **Files:**
+
 - Modify: `src/app/api/messaging/threads/route.ts`
 - Modify: `src/features/messaging/services/offers-server.ts`
 
@@ -837,6 +850,7 @@ git commit -m "feat(messaging): set shop context on threads created for shop lis
 ### Task 9: Update Participant Check in Messages Route
 
 **Files:**
+
 - Modify: `src/app/api/messaging/threads/[thread_id]/messages/route.ts`
 
 - [ ] **Step 1: Update participant select to include context columns**
@@ -862,7 +876,7 @@ if (context.type === 'shop') {
   if (permResult instanceof NextResponse) return permResult;
 
   const isShopParticipant = participants?.some(
-    (p) => p.context_type === 'shop' && p.context_id === context.shopId
+    (p) => p.context_type === 'shop' && p.context_id === context.shopId,
   );
   if (!isShopParticipant) {
     return NextResponse.json(
@@ -872,7 +886,7 @@ if (context.type === 'shop') {
   }
 } else {
   const isParticipant = participants?.some(
-    (p) => p.member_id === user.id && p.context_type === 'member'
+    (p) => p.member_id === user.id && p.context_type === 'member',
   );
   if (!isParticipant) {
     return NextResponse.json(
@@ -895,6 +909,7 @@ git commit -m "feat(messaging): context-aware participant verification in messag
 ### Task 10: Tests
 
 **Files:**
+
 - Create: `src/features/messaging/services/__tests__/messaging-server-context.test.ts`
 - Create: `src/features/messaging/utils/__tests__/parse-context.test.ts`
 
@@ -943,6 +958,7 @@ git commit -m "test(messaging): add parseMessageContext unit tests"
 ### Task 11: Update CLAUDE.md Documentation
 
 **Files:**
+
 - Modify: `src/features/messaging/CLAUDE.md`
 
 - [ ] **Step 1: Add Context Model section to CLAUDE.md**
