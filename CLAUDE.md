@@ -148,6 +148,20 @@ When adding a new feature domain:
 5. Keep API routes in `src/app/api/{domain}/` (Next.js requirement)
 6. Every API route handler **must** have a description comment (single-line `//` or JSDoc `/** */`) immediately above the `export async function`. These are extracted automatically for the docs site. Write for a product person, not a developer (e.g., `// Send a shop invite to a new member via email`).
 
+### Feature Domain Classification (nessi-docs)
+
+Features in this repo map to **domains** in nessi-docs for visualization grouping. Domain assignment is maintained in `nessi-docs/src/data/transforms/features.ts` (`FEATURE_TO_DOMAIN`) and `nessi-docs/src/constants/domains.ts`. When a feature grows significantly, it may need to be **promoted** to its own domain. A feature should be evaluated for domain promotion when it meets 3+ of these signals:
+
+1. **Own dashboard section** — has dedicated routes under `/dashboard/`
+2. **Own permission model** — feature-gated beyond basic auth (e.g., shop permissions)
+3. **Own infrastructure** — requires realtime, storage buckets, queues, or other infra beyond tables
+4. **Cross-domain reach** — touches 3+ existing domains as a dependency or integration point
+5. **Multiple journeys** — could support 2+ distinct journey files in `docs/journeys/`
+6. **Scale** — >10 components OR >8 endpoints OR >10 hooks
+7. **Own entity cluster** — owns 3+ database tables forming a cohesive data model
+
+When building a feature that hits these thresholds, flag it for domain evaluation in nessi-docs. New feature slugs missing from `FEATURE_TO_DOMAIN` will be **silently excluded** from all domain views in the docs app.
+
 ### State Management
 
 - **Server state (data fetching):** Tanstack Query (`@tanstack/react-query`). All data fetching should use `useQuery`/`useMutation` hooks, not `useEffect` + `useState`. Query hooks live in `features/{domain}/hooks/`. The `QueryClientProvider` is configured in `src/libs/providers.tsx` with 60s default `staleTime`.

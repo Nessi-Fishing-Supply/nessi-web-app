@@ -142,6 +142,12 @@ Update journey files when code changes:
 - Introduce a new user persona or flow branch
 - Add new touchpoints (toasts, emails, notifications)
 
+### Journey Domain Assignment
+
+Each journey file has a `domain` field that maps it to a feature domain in nessi-docs. Valid domains: `auth`, `shopping`, `messaging`, `cart`, `account`, `shops`, `listings`, `identity`. When creating a new journey, assign the domain based on the journey's **primary feature** — the feature the journey is fundamentally _about_, not every feature it touches. Cross-domain touchpoints are handled by the cross-link system in nessi-docs, not by domain assignment.
+
+If a journey primarily covers a feature that doesn't have its own domain yet, assign it to the parent domain and flag the feature for domain evaluation (see root CLAUDE.md "Feature Domain Classification").
+
 ### File ↔ Code Mapping
 
 | Changed code path                                                 | Affected journey files                                                                                           |
@@ -155,5 +161,7 @@ Update journey files when code changes:
 | `src/app/api/recently-viewed/` or `src/features/recently-viewed/` | `recently-viewed.json`                                                                                           |
 | `src/app/api/addresses/` or `src/features/addresses/`             | `buyer-addresses.json`                                                                                           |
 | `src/app/api/flags/` or `src/features/flags/`                     | `browse-and-search.json`                                                                                         |
+| `src/app/api/messaging/` or `src/features/messaging/`             | `buyer-seller-messaging.json`                                                                                    |
+| `src/app/api/offers/` or `src/features/messaging/`                | `buyer-seller-messaging.json` (offer flows)                                                                      |
 | `src/proxy.ts`                                                    | `route-protection.json`                                                                                          |
 | `src/features/email/`                                             | Any journey with `"layer": "email"` steps                                                                        |
