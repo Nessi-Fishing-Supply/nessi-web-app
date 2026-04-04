@@ -6,7 +6,6 @@ import type { ThreadType } from '@/features/messaging/types/thread';
 import {
   getThreadsServer,
   createThreadServer,
-  hasTransactionHistoryServer,
 } from '@/features/messaging/services/messaging-server';
 import { requireShopPermission } from '@/libs/shop-permissions';
 import { parseMessageContext } from '@/features/messaging/utils/parse-context';
@@ -118,16 +117,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (type === 'direct' && !listingId) {
-      const otherParticipantId = participantIds.find((id: string) => id !== user.id);
-      if (otherParticipantId) {
-        const hasHistory = await hasTransactionHistoryServer(user.id, otherParticipantId);
-        if (!hasHistory) {
-          return NextResponse.json(
-            { error: 'Direct messaging requires a prior transaction with this user.' },
-            { status: 403, headers: AUTH_CACHE_HEADERS },
-          );
-        }
+    // Block check: prevent thread creation when a block exists in either direction
+    const otherParticipantId = participantIds.find((id: string) => id !== user.id);
+    if (otherParticipantId) {
+      const { data: blockRow, error: blockError } = await supabase
+        .from('member_blocks')
+        .select('id')
+        .or(
+          `and(blocker_id.eq.${user.id},blocked_id.eq.${otherParticipantId}),and(blocker_id.eq.${otherParticipantId},blocked_id.eq.${user.id})`,
+        )
+        .maybeSingle();
+
+      if (blockError) {
+        throw new Error(`Failed to check blocks: ${blockError.message}`);
+      }
+
+      if (blockRow) {
+        return NextResponse.json(
+          { error: 'You cannot message this user' },
+          { status: 403, headers: AUTH_CACHE_HEADERS },
+        );
       }
     }
 

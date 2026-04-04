@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context';
 import { useToast } from '@/components/indicators/toast/context';
 import { useCreateThread } from '@/features/messaging/hooks/use-create-thread';
-import { FetchError } from '@/libs/fetch-error';
-
 import styles from './message-button.module.scss';
 
 type MessageButtonProps = {
@@ -28,15 +26,7 @@ export default function MessageButton({
     onSuccess: (thread) => {
       router.push(`/dashboard/messages/${thread.id}`);
     },
-    onError: (error) => {
-      if (error instanceof FetchError && error.status === 403) {
-        showToast({
-          message: 'Direct messaging unavailable',
-          description: 'Direct messaging requires a prior transaction with this user.',
-          type: 'error',
-        });
-        return;
-      }
+    onError: () => {
       showToast({
         message: 'Something went wrong',
         description: 'Please try again.',
