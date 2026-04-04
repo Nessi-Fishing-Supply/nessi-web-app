@@ -3,8 +3,14 @@
   "issue": 352,
   "title": "fix(messaging): allow direct messages between any members without prior transaction history",
   "branch": "fix/352/allow-direct-messages-without-prior-history",
-  "status": "complete",
-  "phase": { "current": 2, "total": 2, "tasks": { "completed": ["1.1", "1.2", "1.3", "2.1"], "current": null, "remaining": [] } },
+  "status": "pr_open",
+  "completedAt": "2026-04-04T12:30:00Z",
+  "pruneAfter": "2026-06-03T12:30:00Z",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "1.2", "1.3", "2.1"], "current": null, "remaining": [] }
+  },
   "health": { "build": "pass", "lint": "pass", "tests": "unknown" },
   "failureCount": { "currentTask": 0 },
   "timestamps": { "started": "2026-04-04T12:00:00Z", "lastActivity": "2026-04-04T12:00:00Z" }
