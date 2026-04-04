@@ -16,7 +16,7 @@ import { useTypingIndicator } from '@/features/messaging/hooks/use-typing-indica
 import { useOffer } from '@/features/messaging/hooks/use-offer';
 import { useOfferActions } from '@/features/messaging/hooks/use-offer-actions';
 import { isOnline } from '@/features/messaging/hooks/use-online-status';
-import type { ThreadType, ThreadWithParticipants } from '@/features/messaging/types/thread';
+import type { ThreadType } from '@/features/messaging/types/thread';
 import Tabs from '@/components/controls/tabs';
 import type { TabItem } from '@/components/controls/tabs';
 import Avatar from '@/components/controls/avatar';
