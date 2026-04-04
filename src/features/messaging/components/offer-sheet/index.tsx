@@ -70,7 +70,7 @@ export default function OfferSheet({
         type: 'success',
       });
       onClose();
-      onOfferCreated?.({ thread_id: (offer as { thread_id?: string }).thread_id ?? '' });
+      onOfferCreated?.({ thread_id: offer.thread_id });
     },
     onError: () => {
       showToast({
