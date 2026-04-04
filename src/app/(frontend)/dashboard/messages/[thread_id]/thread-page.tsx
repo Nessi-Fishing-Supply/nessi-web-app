@@ -100,11 +100,22 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
   const isOfferThread = thread?.type === 'offer';
   const { data: offer } = useOffer(isOfferThread ? latestOfferId : undefined);
   const offerActions = useOfferActions({ offerId: latestOfferId ?? '', onSuccess: () => {} });
-  // Used by offer thread UI (accept/decline/counter actions in context panel)
-  const _isOfferActionPending =
+  const isOfferActionPending =
     offerActions.accept.isPending ||
     offerActions.decline.isPending ||
     offerActions.counter.isPending;
+
+  // Find the message ID of the latest pending offer node for inline action buttons
+  const latestPendingOfferMsgId = data?.pages
+    .flatMap((page) => page.messages)
+    .find(
+      (m) =>
+        m.type === 'offer_node' &&
+        m.metadata &&
+        typeof m.metadata === 'object' &&
+        !Array.isArray(m.metadata) &&
+        (m.metadata as Record<string, unknown>).status === 'pending',
+    )?.id;
 
   const { ref: shellRef, height: shellHeight } = useAvailableHeight();
 
@@ -216,7 +227,7 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
     setIsOfferSheetOpen(true);
   };
 
-  const _handleCounterOffer = () => {
+  const handleCounterOffer = () => {
     if (!offer || offer.status !== 'pending' || isThreadInactive) return;
     setOfferSheetMode('counter');
     setIsOfferSheetOpen(true);
@@ -415,6 +426,12 @@ export default function ThreadPage({ threadId }: ThreadPageProps) {
                 messages={messages}
                 currentUserId={user?.id ?? ''}
                 otherParticipantLastReadAt={otherParticipant?.last_read_at}
+                onAcceptOffer={() => offerActions.accept.mutate()}
+                onDeclineOffer={() => setIsDeclineDialogOpen(true)}
+                onCounterOffer={handleCounterOffer}
+                isOfferActionPending={isOfferActionPending}
+                latestPendingOfferId={latestPendingOfferMsgId}
+                currentUserRole={currentUserRole}
               />
             )}
             {showNewMessagePill && (

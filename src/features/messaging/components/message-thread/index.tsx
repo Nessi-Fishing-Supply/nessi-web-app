@@ -19,6 +19,12 @@ interface MessageThreadProps {
   currentUserId: string;
   className?: string;
   otherParticipantLastReadAt?: string | null;
+  onAcceptOffer?: () => void;
+  onCounterOffer?: () => void;
+  onDeclineOffer?: () => void;
+  isOfferActionPending?: boolean;
+  latestPendingOfferId?: string;
+  currentUserRole?: string;
 }
 
 function formatDateSeparator(dateStr: string): string {
@@ -53,6 +59,12 @@ export default function MessageThread({
   currentUserId,
   className,
   otherParticipantLastReadAt,
+  onAcceptOffer,
+  onCounterOffer,
+  onDeclineOffer,
+  isOfferActionPending,
+  latestPendingOfferId,
+  currentUserRole,
 }: MessageThreadProps) {
   const [lightboxImages, setLightboxImages] = useState<ImageAttachment[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -178,6 +190,16 @@ export default function MessageThread({
                     originalPrice={originalPriceCents}
                     expiresAt={expiresAt ? new Date(expiresAt) : new Date()}
                     status={(status as OfferStatus | undefined) ?? 'expired'}
+                    {...(message.id === latestPendingOfferId &&
+                    status === 'pending' &&
+                    currentUserRole === 'seller'
+                      ? {
+                          onAccept: onAcceptOffer,
+                          onCounter: onCounterOffer,
+                          onDecline: onDeclineOffer,
+                          isPending: isOfferActionPending,
+                        }
+                      : {})}
                   />
                   <time className={styles.timestamp} dateTime={message.created_at}>
                     {formatTime(message.created_at)}

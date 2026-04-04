@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 350,
+  "title": "feat(messaging): wire offer accept/decline/counter actions to inline OfferBubble in chat",
+  "branch": "feat/350/wire-offer-actions-to-inline-offer-bubble",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 2,
+    "tasks": {
+      "completed": ["1.1", "1.2"],
+      "current": "2.1",
+      "remaining": ["2.2"]
+    }
+  },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-04-04T12:00:00Z", "lastActivity": "2026-04-04T12:04:00Z" }
+}
