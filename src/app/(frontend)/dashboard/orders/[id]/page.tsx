@@ -94,6 +94,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Price Breakdown</h2>
         <dl className={styles.priceList}>
+          {/* amount_cents = item price charged to buyer (Nessi fee is deducted from seller payout, not added to buyer total) */}
           <div className={styles.priceRow}>
             <dt>Item price</dt>
             <dd>{formatPrice(order.amount_cents)}</dd>

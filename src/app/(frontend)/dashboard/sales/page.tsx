@@ -24,6 +24,9 @@ export default function SalesPage() {
   const [activeTab, setActiveTab] = useState<SalesTab>('action_required');
   const [shipOrderId, setShipOrderId] = useState<string | null>(null);
 
+  // Fetch all seller orders once — filter client-side per tab for instant switching and accurate count badges.
+  // Trade-off: loads all orders upfront. Acceptable for typical seller volumes (<500 orders).
+  // If order volume grows significantly, switch to per-tab fetching with useSellerOrders(status).
   const { data: allOrders = [], isLoading } = useSellerOrders();
 
   const currentTabConfig = TABS.find((t) => t.key === activeTab)!;

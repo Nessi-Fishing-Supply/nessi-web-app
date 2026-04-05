@@ -72,6 +72,10 @@ ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 -- Note: No INSERT policy for users — orders are created by the webhook handler
 -- using the admin/service_role client which bypasses RLS.
+-- No UPDATE policy for users — all order mutations go through the admin/service_role client
+-- (API routes use createAdminClient). User-level UPDATE policies were dropped in
+-- migration 20260405100002_orders_restrict_update_rls to prevent buyers and sellers
+-- from directly modifying financial columns (amount_cents, nessi_fee_cents, escrow_status).
 -- No DELETE policy — orders are never deleted.
 
 DROP POLICY IF EXISTS "orders_buyer_select" ON public.orders;
@@ -83,18 +87,6 @@ CREATE POLICY "orders_buyer_select"
 DROP POLICY IF EXISTS "orders_seller_select" ON public.orders;
 CREATE POLICY "orders_seller_select"
   ON public.orders FOR SELECT
-  TO authenticated
-  USING (seller_id = (SELECT auth.uid()));
-
-DROP POLICY IF EXISTS "orders_buyer_update" ON public.orders;
-CREATE POLICY "orders_buyer_update"
-  ON public.orders FOR UPDATE
-  TO authenticated
-  USING (buyer_id = (SELECT auth.uid()));
-
-DROP POLICY IF EXISTS "orders_seller_update" ON public.orders;
-CREATE POLICY "orders_seller_update"
-  ON public.orders FOR UPDATE
   TO authenticated
   USING (seller_id = (SELECT auth.uid()));
 
