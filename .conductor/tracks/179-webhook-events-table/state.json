@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 179,
+  "title": "feat(webhooks): create webhook_events table for idempotent event processing",
+  "branch": "feat/179/webhook-events-table",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 2,
+    "tasks": {
+      "completed": ["1.1"],
+      "current": null,
+      "remaining": ["2.1", "2.2"]
+    }
+  },
+  "health": { "build": "unknown", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-04-04T12:00:00Z", "lastActivity": "2026-04-04T12:10:00Z" }
+}
