@@ -3,7 +3,7 @@
   "issue": 179,
   "title": "feat(webhooks): create webhook_events table for idempotent event processing",
   "branch": "feat/179/webhook-events-table",
-  "status": "implementing",
+  "status": "pr_open",
   "phase": {
     "current": 2,
     "total": 2,
@@ -13,7 +13,12 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-04-04T12:00:00Z", "lastActivity": "2026-04-04T12:15:00Z" }
+  "timestamps": {
+    "started": "2026-04-04T12:00:00Z",
+    "lastActivity": "2026-04-04T12:25:00Z",
+    "completedAt": "2026-04-04T12:25:00Z",
+    "pruneAfter": "2026-06-03T12:25:00Z"
+  }
 }
