@@ -7,11 +7,33 @@ export type {
   ReservationCheck,
 } from './types/reservation';
 
-// Server Services — uncomment when reservation-server.ts is created
-// export { ... } from './services/reservation-server';
+// Server Services
+export {
+  cleanupExpiredReservationsServer,
+  reserveListingsServer,
+  releaseReservationServer,
+  releaseAllReservationsServer,
+  getActiveReservationsServer,
+  extendReservationServer,
+  isListingReservedServer,
+} from './services/reservation-server';
 
-// Client Services — uncomment when reservation.ts is created
-// export { ... } from './services/reservation';
+// Client Services
+export {
+  reserveListings,
+  getActiveReservations,
+  releaseAllReservations,
+  releaseReservation,
+  extendReservation,
+  checkReservation,
+} from './services/reservation';
 
-// Hooks — uncomment when use-reservations.ts is created
-// export { ... } from './hooks/use-reservations';
+// Hooks
+export {
+  useActiveReservations,
+  useReserveListings,
+  useReleaseReservation,
+  useReleaseAllReservations,
+  useExtendReservation,
+  useCheckReservation,
+} from './hooks/use-reservations';
