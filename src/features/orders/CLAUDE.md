@@ -143,6 +143,14 @@ seller:members!orders_seller_id_fkey(first_name, last_name, avatar_url, stripe_a
 
 `getOrderByIdServer` enforces access control in the application layer: it fetches the order without a user filter, then checks `buyer_id === user.id || seller_id === user.id` and returns null on mismatch.
 
+### Stripe Transfer utility — `services/stripe-transfer.ts`
+
+Shared utility for executing Stripe Transfers from a PaymentIntent charge. Used by both the accept route and the auto-release cron.
+
+```ts
+executeStripeTransfer({ stripePaymentIntentId, amountCents, nessiFeeCents, sellerStripeAccountId }): Promise<Stripe.Transfer>
+```
+
 ### Client service — `services/order.ts`
 
 Thin wrappers around the `@/libs/fetch` helpers. Used exclusively from client components via Tanstack Query hooks.
@@ -280,10 +288,10 @@ Emails are fire-and-forget — API route handlers send them after updating the o
 
 Two cron jobs run on a scheduled basis (registered in `vercel.json`):
 
-| Job          | Schedule | Endpoint (to be created)        | What it does                                                                              |
-| ------------ | -------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
-| Auto-deliver | Daily    | `POST /api/cron/orders/deliver` | Advances `shipped` orders older than 30 days to `delivered`, sets `verification_deadline` |
-| Auto-release | Daily    | `POST /api/cron/orders/release` | Releases escrow for `verification` orders past their `verification_deadline`              |
+| Job          | Schedule | Endpoint                       | What it does                                                                              |
+| ------------ | -------- | ------------------------------ | ----------------------------------------------------------------------------------------- |
+| Auto-deliver | Daily    | `GET /api/cron/orders-deliver` | Advances `shipped` orders older than 30 days to `delivered`, sets `verification_deadline` |
+| Auto-release | Daily    | `GET /api/cron/orders-release` | Releases escrow for `verification` orders past their `verification_deadline`              |
 
 Both cron endpoints are protected by `CRON_SECRET` header validation (same pattern as `/api/cron/watchlist/price-drop`). Both use the admin client via `getOrdersForAutoDeliverServer` / `getOrdersForAutoReleaseServer`.
 

@@ -118,6 +118,7 @@ DELETE /api/auth/delete-account
 - `src/features/auth/` — Auth domain: services, types, validations, context, form components (see its CLAUDE.md)
 - `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its CLAUDE.md)
 - `src/features/listings/` — Listings domain: types, services, hooks, components for the full listing lifecycle — create wizard, edit wizard, photo management, status actions (see its CLAUDE.md)
+- `src/features/orders/` — Orders domain: escrow lifecycle (paid → shipped → delivered → verification → released), buyer/seller pages, Stripe Transfer, cron auto-release/auto-deliver (see its CLAUDE.md)
 - `src/features/addresses/` — Addresses domain: saved shipping addresses with CRUD, 5-cap, default management (see its CLAUDE.md)
 - `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
 - `src/features/messaging/` — Messaging domain: buyer-seller threads, direct messages, offer negotiations, safety filter, types + server/client services (see its CLAUDE.md)
