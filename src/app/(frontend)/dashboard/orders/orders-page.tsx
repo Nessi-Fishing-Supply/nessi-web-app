@@ -24,7 +24,9 @@ export default function OrdersPage() {
   const isOrderNotFound = isOrderSelected && !isLoading && !selectedOrder;
 
   function handleSelectOrder(orderId: string) {
-    router.push(`?orderId=${orderId}`, { scroll: false });
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('orderId', orderId);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   function handleClose() {
@@ -72,14 +74,17 @@ export default function OrdersPage() {
       </div>
 
       <div className={styles.detailColumn}>
-        <SlidePanel
-          isOpen={isOrderSelected && !isOrderNotFound}
-          onClose={handleClose}
-          ariaLabel="Order details"
-        >
+        <SlidePanel isOpen={isOrderSelected} onClose={handleClose} ariaLabel="Order details">
           {isDetailLoading ? (
             <div className={styles.detailLoading}>
               <p>Loading order details...</p>
+            </div>
+          ) : isOrderNotFound ? (
+            <div className={styles.notFound}>
+              <p className={styles.notFoundText}>Order not found</p>
+              <button type="button" className={styles.clearBtn} onClick={handleClose}>
+                Clear selection
+              </button>
             </div>
           ) : selectedOrder ? (
             <OrderDetailPanel order={selectedOrder} onClose={handleClose} />
@@ -88,14 +93,6 @@ export default function OrdersPage() {
         {!isOrderSelected && (
           <div className={styles.placeholder}>
             <p>Select an order to view details</p>
-          </div>
-        )}
-        {isOrderNotFound && (
-          <div className={styles.notFound}>
-            <p className={styles.notFoundText}>Order not found</p>
-            <button type="button" className={styles.clearBtn} onClick={handleClose}>
-              Clear selection
-            </button>
           </div>
         )}
       </div>

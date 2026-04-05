@@ -95,13 +95,11 @@ const SlidePanel: React.FC<SlidePanelProps> = ({ isOpen, onClose, children, aria
 
   // Body scroll lock (mobile only)
   useEffect(() => {
-    if (!isDesktop) {
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (isOpen && !isDesktop) {
+      document.body.style.overflow = 'hidden';
     }
     return () => {
-      if (!isDesktop) {
-        document.body.style.overflow = '';
-      }
+      document.body.style.overflow = '';
     };
   }, [isOpen, isDesktop]);
 
