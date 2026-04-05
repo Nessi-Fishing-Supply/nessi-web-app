@@ -1,9 +1,9 @@
 import type Stripe from 'stripe';
 import type { HandlerRegistry } from '@/features/webhooks/types/handler';
+import { handlePaymentIntentSucceeded } from './payment-intent-succeeded';
 
 const registry: HandlerRegistry = {
-  // Future tickets will register handlers here, e.g.:
-  // 'checkout.session.completed': handleCheckoutSessionCompleted,
+  'payment_intent.succeeded': handlePaymentIntentSucceeded,
 };
 
 export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
