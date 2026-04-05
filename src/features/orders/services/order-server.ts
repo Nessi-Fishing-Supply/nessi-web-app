@@ -1,5 +1,5 @@
 import { createClient } from '@/libs/supabase/server';
-import type { createAdminClient } from '@/libs/supabase/admin';
+import { createAdminClient } from '@/libs/supabase/admin';
 import type { OrderWithListing } from '@/features/orders/types/order';
 
 const ORDER_WITH_LISTING_SELECT = `
@@ -70,9 +70,9 @@ export async function updateOrderStatusServer(
   orderId: string,
   updates: Record<string, unknown>,
 ): Promise<OrderWithListing | null> {
-  const supabase = await createClient();
+  const admin = createAdminClient();
 
-  const { data, error } = await supabase
+  const { data, error } = await admin
     .from('orders')
     .update(updates)
     .eq('id', orderId)
