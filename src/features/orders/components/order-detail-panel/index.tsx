@@ -97,8 +97,7 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
         <div className={styles.listingInfo}>
           <p className={styles.listingTitle}>{order.listing?.title ?? 'Item'}</p>
           <p className={styles.sellerName}>
-            Sold by{' '}
-            <span className={styles.sellerLabel}>{sellerName}</span>
+            Sold by <span className={styles.sellerLabel}>{sellerName}</span>
           </p>
         </div>
       </div>

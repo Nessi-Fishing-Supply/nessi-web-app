@@ -3,7 +3,7 @@
   "issue": 220,
   "title": "buyer order history page at dashboard/orders/ with detail drawer",
   "branch": "feat/220/buyer-order-history-page",
-  "status": "implementing",
+  "status": "reviewing",
   "phase": {
     "current": 4,
     "total": 4,
