@@ -1,0 +1,74 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  padding: var(--spacing-400);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-200);
+  background-color: var(--color-white);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    gap: var(--spacing-600);
+  }
+}
+
+.label {
+  margin: 0;
+  font-size: var(--font-size-400);
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.amount {
+  margin: 0;
+  font-size: var(--font-size-1100);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.amountSecondary {
+  margin: 0;
+  font-size: var(--font-size-1000);
+  font-weight: 600;
+  color: var(--color-neutral-600);
+}
+
+.error {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-error-600);
+}
+
+.skeleton {
+  height: 80px;
+  border-radius: var(--radius-100);
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-100) 25%,
+    var(--color-neutral-200) 50%,
+    var(--color-neutral-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

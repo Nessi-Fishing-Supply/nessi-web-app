@@ -1,0 +1,117 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--font-size-800);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-200);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+
+  th,
+  td {
+    padding: var(--spacing-200) var(--spacing-300);
+    text-align: left;
+    font-size: var(--font-size-500);
+    white-space: nowrap;
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--color-neutral-500);
+    font-size: var(--font-size-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-neutral-200);
+    background-color: var(--color-neutral-50);
+  }
+
+  td {
+    color: var(--color-neutral-900);
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.orderLink {
+  color: var(--color-primary-500);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.noOrder {
+  color: var(--color-neutral-400);
+}
+
+.feeCell {
+  color: var(--color-neutral-500);
+}
+
+.netCell {
+  font-weight: 600;
+}
+
+.empty {
+  margin: 0;
+  padding: var(--spacing-800) 0;
+  text-align: center;
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-500);
+}
+
+.skeleton {
+  height: 48px;
+  border-radius: var(--radius-100);
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-100) 25%,
+    var(--color-neutral-200) 50%,
+    var(--color-neutral-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
