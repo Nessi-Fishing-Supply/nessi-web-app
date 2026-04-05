@@ -20,7 +20,7 @@ export default function OrdersPage() {
       ) : (
         <div className={styles.list}>
           {orders.map((order) => (
-            <OrderCard key={order.id} order={order} href={`/dashboard/orders/${order.id}`} />
+            <OrderCard key={order.id} order={order} />
           ))}
         </div>
       )}

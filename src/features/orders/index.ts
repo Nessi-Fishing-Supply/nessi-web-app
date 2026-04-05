@@ -41,3 +41,4 @@ export { getTimelineSteps } from './utils/get-timeline-steps';
 
 // Components
 export { default as OrderStatusBadge } from './components/order-status-badge';
+export { default as OrderCard } from './components/order-card';
