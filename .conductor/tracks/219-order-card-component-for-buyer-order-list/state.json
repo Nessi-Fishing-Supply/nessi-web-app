@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 219,
+  "title": "feat(orders): #31.3 — order card component for buyer order list",
+  "branch": "feat/219/order-card-component",
+  "status": "implementing",
+  "phase": {
+    "current": 1,
+    "total": 2,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3"],
+      "current": null,
+      "remaining": ["2.1"]
+    }
+  },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-04-05T14:55:00Z", "lastActivity": "2026-04-05T15:05:00Z" }
+}
