@@ -3,9 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Pill from '@/components/indicators/pill';
 import { formatPrice } from '@/features/shared/utils/format';
-import { STATUS_LABELS, STATUS_PILL_MAP } from '@/features/orders/types/order';
+import OrderStatusBadge from '@/features/orders/components/order-status-badge';
 import type { OrderStatus, OrderWithListing } from '@/features/orders/types/order';
 
 import styles from './order-card.module.scss';
@@ -47,7 +46,7 @@ export default function OrderCard({ order, href }: OrderCardProps) {
         </p>
       </div>
       <div className={styles.status}>
-        <Pill color={STATUS_PILL_MAP[status] ?? 'default'}>{STATUS_LABELS[status] ?? status}</Pill>
+        <OrderStatusBadge status={status} />
       </div>
     </Link>
   );
