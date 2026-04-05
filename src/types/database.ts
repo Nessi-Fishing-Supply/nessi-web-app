@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.4"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       addresses: {
@@ -742,6 +767,100 @@ export type Database = {
           },
         ]
       }
+      orders: {
+        Row: {
+          amount_cents: number
+          buyer_accepted_at: string | null
+          buyer_email: string
+          buyer_id: string | null
+          carrier: string | null
+          created_at: string
+          delivered_at: string | null
+          escrow_status: string
+          id: string
+          listing_id: string
+          nessi_fee_cents: number
+          released_at: string | null
+          seller_id: string
+          shipped_at: string | null
+          shipping_address: Json
+          shipping_cost_cents: number
+          status: string
+          stripe_payment_intent_id: string
+          tracking_number: string | null
+          updated_at: string
+          verification_deadline: string | null
+        }
+        Insert: {
+          amount_cents: number
+          buyer_accepted_at?: string | null
+          buyer_email: string
+          buyer_id?: string | null
+          carrier?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          escrow_status?: string
+          id?: string
+          listing_id: string
+          nessi_fee_cents: number
+          released_at?: string | null
+          seller_id: string
+          shipped_at?: string | null
+          shipping_address: Json
+          shipping_cost_cents?: number
+          status?: string
+          stripe_payment_intent_id: string
+          tracking_number?: string | null
+          updated_at?: string
+          verification_deadline?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          buyer_accepted_at?: string | null
+          buyer_email?: string
+          buyer_id?: string | null
+          carrier?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          escrow_status?: string
+          id?: string
+          listing_id?: string
+          nessi_fee_cents?: number
+          released_at?: string | null
+          seller_id?: string
+          shipped_at?: string | null
+          shipping_address?: Json
+          shipping_cost_cents?: number
+          status?: string
+          stripe_payment_intent_id?: string
+          tracking_number?: string | null
+          updated_at?: string
+          verification_deadline?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_drop_notifications: {
         Row: {
           created_at: string
@@ -1430,6 +1549,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       flag_reason: [

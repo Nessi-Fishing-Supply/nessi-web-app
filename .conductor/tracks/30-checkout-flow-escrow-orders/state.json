@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "issue": 30,
+  "title": "Checkout flow — guest + account with escrow capture",
+  "branch": "feat/30/checkout-flow-escrow-orders",
+  "status": "implementing",
+  "phase": {
+    "current": 2,
+    "total": 5,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7"],
+      "current": "2.1",
+      "remaining": ["2.2", "2.3", "2.4", "2.5", "2.6", "3.1", "3.2", "3.3", "3.4", "4.1", "4.2", "4.3", "4.4", "4.5", "5.1", "5.2", "5.3", "5.4", "5.5"]
+    }
+  },
+  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-04-05T12:00:00Z", "lastActivity": "2026-04-05T12:30:00Z" }
+}
