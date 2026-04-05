@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useSyncExternalStore, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './slide-panel.module.scss';
 
@@ -14,22 +14,27 @@ interface SlidePanelProps {
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
+const LG_QUERY = '(min-width: 1024px)';
+
+function subscribeToMediaQuery(callback: () => void) {
+  const mq = window.matchMedia(LG_QUERY);
+  mq.addEventListener('change', callback);
+  return () => mq.removeEventListener('change', callback);
+}
+
+function getIsDesktop() {
+  return window.matchMedia(LG_QUERY).matches;
+}
+
+function getIsDesktopServer() {
+  return false;
+}
+
 const SlidePanel: React.FC<SlidePanelProps> = ({ isOpen, onClose, children, ariaLabel }) => {
   const panelRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // SSR safety: only run client-side
-  useEffect(() => {
-    setMounted(true);
-    const mq = window.matchMedia('(min-width: 1024px)');
-    setIsDesktop(mq.matches);
-
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
+  const isDesktop = useSyncExternalStore(subscribeToMediaQuery, getIsDesktop, getIsDesktopServer);
+  const mounted = typeof window !== 'undefined';
 
   // Store trigger element and focus panel on open
   useEffect(() => {
