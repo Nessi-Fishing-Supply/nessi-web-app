@@ -125,6 +125,7 @@ DELETE /api/auth/delete-account
 - `src/features/notifications/` — Notifications domain: bell icon, activity feed, unread badges, server-side dispatch, 30s polling (see its CLAUDE.md)
 - `src/features/blocks/` — Blocks domain: view and unblock blocked members from account settings, optimistic unblock (see its CLAUDE.md)
 - `src/features/watchlist/` — Watchlist domain: watch/unwatch listings, price drop email alerts via Vercel Cron, optimistic UI (see its CLAUDE.md)
+- `src/features/reservations/` — Reservations domain: checkout-time inventory locking for 1-of-1 listings, 10-minute TTL, partial reservation support, admin client for cross-user status mutations (see its CLAUDE.md)
 - `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its CLAUDE.md)
 - `src/features/webhooks/` — Webhooks domain: Stripe webhook ingestion, signature verification, event deduplication, handler registry (see its CLAUDE.md)
 - `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)

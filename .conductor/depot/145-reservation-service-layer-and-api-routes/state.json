@@ -3,7 +3,7 @@
   "issue": 145,
   "title": "Reservation service layer and API routes",
   "branch": "feat/145/reservation-service-layer-and-api-routes",
-  "status": "fixing",
+  "status": "pr_open",
   "phase": {
     "current": 3,
     "total": 3,
@@ -15,5 +15,7 @@
   },
   "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-04-05T12:00:00Z", "lastActivity": "2026-04-05T13:00:00Z" }
+  "timestamps": { "started": "2026-04-05T12:00:00Z", "lastActivity": "2026-04-05T13:15:00Z" },
+  "completedAt": "2026-04-05T13:15:00Z",
+  "pruneAfter": "2026-06-04T13:15:00Z"
 }
