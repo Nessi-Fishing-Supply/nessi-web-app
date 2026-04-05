@@ -3,7 +3,7 @@
   "issue": 31,
   "title": "Seller Payouts, Fee Calculator & Dispute Webhook",
   "branch": "feat/31/seller-payouts-fee-calculator",
-  "status": "complete",
+  "status": "pr_open",
   "phase": {
     "current": 4,
     "total": 4,
@@ -28,7 +28,9 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-04-05T12:00:00Z", "lastActivity": "2026-04-05T12:01:00Z" }
+  "completedAt": "2026-04-05T13:00:00Z",
+  "pruneAfter": "2026-06-04T13:00:00Z",
+  "timestamps": { "started": "2026-04-05T12:00:00Z", "lastActivity": "2026-04-05T13:00:00Z" }
 }
