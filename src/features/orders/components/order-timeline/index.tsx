@@ -36,6 +36,7 @@ export default function OrderTimeline({ steps, currentStep, className }: OrderTi
           <li
             key={index}
             className={`${styles.step} ${isCompleted ? styles.completed : ''} ${isActive ? styles.active : ''} ${isPending ? styles.pending : ''}`}
+            aria-current={isActive ? 'step' : undefined}
           >
             <div className={styles.indicator}>
               <div className={styles.circle} aria-hidden="true">
