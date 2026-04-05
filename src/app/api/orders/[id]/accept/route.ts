@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import type Stripe from 'stripe';
 import { createClient } from '@/libs/supabase/server';
 import { AUTH_CACHE_HEADERS } from '@/libs/api-headers';
 import {
   getOrderByIdServer,
   updateOrderStatusServer,
 } from '@/features/orders/services/order-server';
-import { getStripe } from '@/libs/stripe/client';
+import { executeStripeTransfer } from '@/features/orders/services/stripe-transfer';
 
 // Buyer accepts delivery, releasing escrow funds to the seller
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -55,13 +54,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       );
     }
 
-    const stripe = getStripe();
-    const pi = await stripe.paymentIntents.retrieve(order.stripe_payment_intent_id, {
-      expand: ['latest_charge'],
-    });
-
-    const charge = pi.latest_charge as Stripe.Charge;
-    if (!charge?.id) {
+    try {
+      await executeStripeTransfer({
+        stripePaymentIntentId: order.stripe_payment_intent_id,
+        amountCents: order.amount_cents,
+        nessiFeeCents: order.nessi_fee_cents,
+        sellerStripeAccountId,
+      });
+    } catch {
       return NextResponse.json(
         { error: 'Could not retrieve payment charge' },
         { status: 500, headers: AUTH_CACHE_HEADERS },
@@ -69,13 +69,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
 
     const transferAmount = order.amount_cents - order.nessi_fee_cents;
-
-    await stripe.transfers.create({
-      amount: transferAmount,
-      currency: 'usd',
-      destination: sellerStripeAccountId,
-      source_transaction: charge.id,
-    });
 
     const now = new Date().toISOString();
     const updated = await updateOrderStatusServer(id, {

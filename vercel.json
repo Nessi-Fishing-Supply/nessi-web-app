@@ -9,6 +9,14 @@
     {
       "path": "/api/cron/offers-expiry",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/orders-release",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/orders-deliver",
+      "schedule": "0 0 * * *"
     }
   ]
 }
