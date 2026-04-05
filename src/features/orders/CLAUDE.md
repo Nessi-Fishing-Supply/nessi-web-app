@@ -226,6 +226,46 @@ const STATUS_ORDER: OrderStatus[] = ['paid', 'shipped', 'delivered', 'verificati
 const currentStep = STATUS_ORDER.indexOf(order.status as OrderStatus);
 ```
 
+### `order-detail-panel/`
+
+`src/features/orders/components/order-detail-panel/index.tsx`
+
+A client component that renders full order details inside the SlidePanel (mobile) or inline column (desktop). Receives an `OrderWithListing` prop — no data fetching. Sections: header with status badge + close button, listing photo + seller name, price breakdown (`<dl>`), OrderTimeline stepper, tracking number with carrier URL link, shipping address (`<address>`), accept-delivery action with ConfirmationDialog.
+
+```ts
+interface OrderDetailPanelProps {
+  order: OrderWithListing;
+  onClose: () => void;
+}
+```
+
+### `order-card-skeleton/`
+
+`src/features/orders/components/order-card-skeleton/index.tsx`
+
+Loading skeleton that mimics OrderCard dimensions. Renders `count` (default 4) shimmer-animated placeholder cards. Used in the orders page loading state with `role="status"` + `aria-live="polite"` wrapper.
+
+```ts
+interface OrderCardSkeletonProps {
+  count?: number;
+}
+```
+
+## Pages
+
+### `dashboard/orders/`
+
+`src/app/(frontend)/dashboard/orders/page.tsx` — Server component wrapper with `<Suspense>` boundary.
+
+`src/app/(frontend)/dashboard/orders/orders-page.tsx` — Client component with list+detail layout:
+
+- Mobile: full-width order list; selecting an order opens SlidePanel (`src/components/layout/slide-panel/`) with OrderDetailPanel
+- Desktop lg+: 60/40 CSS grid; left column is order list, right column is inline OrderDetailPanel
+- URL state via `?orderId=` param (shareable deep links)
+- Empty state: icon + "No orders yet" + Browse CTA
+- Error state: message + retry button
+- Loading state: OrderCardSkeleton with sr-only announcement
+
 ## API Routes
 
 These routes are to be built in Phase 2. The service layer and hooks are wired to these endpoints already.

@@ -44,3 +44,4 @@ export { getTrackingUrl } from './utils/get-tracking-url';
 export { default as OrderStatusBadge } from './components/order-status-badge';
 export { default as OrderCard } from './components/order-card';
 export { default as OrderDetailPanel } from './components/order-detail-panel';
+export { default as OrderCardSkeleton } from './components/order-card-skeleton';

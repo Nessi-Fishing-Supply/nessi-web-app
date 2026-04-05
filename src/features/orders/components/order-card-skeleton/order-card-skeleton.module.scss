@@ -1,0 +1,88 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+$bone: linear-gradient(
+  90deg,
+  var(--color-neutral-200) 25%,
+  var(--color-neutral-100) 50%,
+  var(--color-neutral-200) 75%
+);
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300);
+  border-radius: var(--radius-200);
+  border: 1px solid var(--color-neutral-200);
+  border-left: 3px solid transparent;
+
+  @include breakpoint(md) {
+    align-items: center;
+    padding: var(--spacing-400);
+  }
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-100);
+  flex-shrink: 0;
+  background: $bone;
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+
+  @include breakpoint(md) {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.lineTitle,
+.lineSeller,
+.lineMeta {
+  height: 14px;
+  border-radius: var(--radius-100);
+  background: $bone;
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.lineTitle {
+  width: 70%;
+}
+
+.lineSeller {
+  width: 45%;
+}
+
+.lineMeta {
+  width: 30%;
+}
+
+.badge {
+  width: 72px;
+  height: 24px;
+  border-radius: var(--radius-100);
+  flex-shrink: 0;
+  background: $bone;
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}

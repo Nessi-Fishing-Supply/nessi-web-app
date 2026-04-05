@@ -86,3 +86,121 @@
   font-size: var(--font-size-700);
   color: var(--color-neutral-500);
 }
+
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-neutral-300);
+}
+
+.emptyHeading {
+  margin: 0;
+  font-size: var(--font-size-800);
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+
+.browseCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--spacing-300) var(--spacing-500);
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-600);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-color);
+
+  &:hover {
+    background-color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-800) var(--spacing-400);
+  text-align: center;
+}
+
+.errorText {
+  margin: 0;
+  font-size: var(--font-size-600);
+  color: var(--color-error-600);
+}
+
+.retryBtn {
+  min-height: 44px;
+  padding: var(--spacing-200) var(--spacing-400);
+  background-color: transparent;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-700);
+  cursor: pointer;
+  transition: background-color var(--transition-color);
+
+  &:hover {
+    background-color: var(--color-neutral-50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.detailLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-800);
+  color: var(--color-neutral-500);
+}
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-800) var(--spacing-400);
+  text-align: center;
+}
+
+.notFoundText {
+  margin: 0;
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-500);
+}
+
+.clearBtn {
+  min-height: 44px;
+  padding: var(--spacing-200) var(--spacing-400);
+  background-color: transparent;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-neutral-50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
