@@ -3,7 +3,7 @@
   "issue": 180,
   "title": "feat(webhooks): POST /api/webhooks/stripe — signature verification and event router",
   "branch": "feat/180/stripe-webhook-endpoint",
-  "status": "reviewing",
+  "status": "fixing",
   "phase": {
     "current": 3,
     "total": 3,
@@ -13,7 +13,7 @@
       "remaining": []
     }
   },
-  "health": { "build": "pass", "lint": "unknown", "tests": "unknown" },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
   "failureCount": { "currentTask": 0 },
-  "timestamps": { "started": "2026-04-04T18:00:00Z", "lastActivity": "2026-04-04T18:22:00Z" }
+  "timestamps": { "started": "2026-04-04T18:00:00Z", "lastActivity": "2026-04-04T18:25:00Z" }
 }

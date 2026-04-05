@@ -32,7 +32,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ received: true });
   }
 
-  await insertWebhookEvent(event.id, event.type, 'stripe', event);
+  try {
+    await insertWebhookEvent(event.id, event.type, 'stripe', event);
+  } catch {
+    // Unique constraint violation — concurrent delivery of the same event
+    return NextResponse.json({ received: true });
+  }
 
   try {
     await handleStripeEvent(event);

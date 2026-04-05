@@ -16,12 +16,12 @@ No abstraction is provided over the Stripe SDK. Callers use the returned `Stripe
 
 ## Environment Variables
 
-| Variable                | Scope       | Description                                                                                    |
-| ----------------------- | ----------- | ---------------------------------------------------------------------------------------------- |
-| `STRIPE_SECRET_KEY`     | Server only | Stripe secret key (`sk_test_*` in dev, `sk_live_*` in prod)                                    |
-| `STRIPE_WEBHOOK_SECRET` | Server only | Stripe webhook signing secret (`whsec_*`) — used in webhook handler to verify event signatures |
+| Variable                | Scope       | Description                                                                                                                             |
+| ----------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `STRIPE_SECRET_KEY`     | Server only | Stripe secret key (`sk_test_*` in dev, `sk_live_*` in prod)                                                                             |
+| `STRIPE_WEBHOOK_SECRET` | Server only | Stripe webhook signing secret (`whsec_*`) — used in webhook handler (`src/app/api/webhooks/stripe/route.ts`) to verify event signatures |
 
-`STRIPE_SECRET_KEY` is required at runtime. `STRIPE_WEBHOOK_SECRET` is required in the webhook handler (`src/app/api/stripe/webhook/route.ts`).
+`STRIPE_SECRET_KEY` is required at runtime. `STRIPE_WEBHOOK_SECRET` is required in the webhook handler (`src/app/api/webhooks/stripe/route.ts`).
 
 ## Usage
 
