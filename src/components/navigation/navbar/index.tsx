@@ -15,6 +15,7 @@ import {
   HiCheckCircle,
   HiOutlineX,
   HiOutlineChatAlt2,
+  HiOutlineClipboardList,
 } from 'react-icons/hi';
 
 // Components
@@ -392,6 +393,11 @@ export default function Navbar() {
             <DropdownItem>
               <AppLink href="/dashboard/watchlist" icon={<HiOutlineHeart />}>
                 Watchlist
+              </AppLink>
+            </DropdownItem>
+            <DropdownItem>
+              <AppLink href="/dashboard/orders" icon={<HiOutlineClipboardList />}>
+                Orders
               </AppLink>
             </DropdownItem>
             <DropdownItem>

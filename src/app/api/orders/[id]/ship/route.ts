@@ -97,7 +97,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     })();
 
-    const { stripe_payment_intent_id, ...safeOrder } = updated;
+    const { stripe_payment_intent_id: _stripped, ...safeOrder } = updated;
 
     return NextResponse.json(safeOrder, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {

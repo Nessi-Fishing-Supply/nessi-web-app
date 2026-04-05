@@ -12,6 +12,8 @@ import {
   HiOutlineCog,
   HiOutlinePlusCircle,
   HiOutlineShieldCheck,
+  HiOutlineClipboardList,
+  HiOutlineCurrencyDollar,
 } from 'react-icons/hi';
 import AppLink from '@/components/controls/app-link';
 import useContextStore from '@/features/context/stores/context-store';
@@ -41,6 +43,12 @@ const SHOP_NAV_ITEMS: ShopNavItem[] = [
     href: '/dashboard/listings',
     icon: <HiOutlineShoppingBag />,
     label: 'Listings',
+    requiredFeature: 'listings',
+  },
+  {
+    href: '/dashboard/sales',
+    icon: <HiOutlineCurrencyDollar />,
+    label: 'Sales',
     requiredFeature: 'listings',
   },
   {
@@ -125,10 +133,22 @@ const SideNav = () => {
                 Following
               </AppLink>
             </li>
+            <li>
+              <AppLink href="/dashboard/orders" icon={<HiOutlineClipboardList />}>
+                Orders
+              </AppLink>
+            </li>
             {isSeller && (
               <li>
                 <AppLink href="/dashboard/listings" icon={<HiOutlineShoppingBag />}>
                   Listings
+                </AppLink>
+              </li>
+            )}
+            {isSeller && (
+              <li>
+                <AppLink href="/dashboard/sales" icon={<HiOutlineCurrencyDollar />}>
+                  Sales
                 </AppLink>
               </li>
             )}

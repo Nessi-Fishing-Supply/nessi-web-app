@@ -14,7 +14,6 @@ export function orderReleased({
   sellerFirstName,
   listingTitle,
   amountCents,
-  orderId,
 }: OrderReleasedParams): EmailTemplate {
   const safeName = escapeHtml(sellerFirstName);
   const safeTitle = escapeHtml(listingTitle);

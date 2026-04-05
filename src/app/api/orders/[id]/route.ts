@@ -28,7 +28,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       );
     }
 
-    const { stripe_payment_intent_id, ...safeOrder } = order;
+    const { stripe_payment_intent_id: _stripped, ...safeOrder } = order;
 
     return NextResponse.json(safeOrder, { headers: AUTH_CACHE_HEADERS });
   } catch (error) {
