@@ -125,6 +125,7 @@ DELETE /api/auth/delete-account
 - `src/features/blocks/` — Blocks domain: view and unblock blocked members from account settings, optimistic unblock (see its CLAUDE.md)
 - `src/features/watchlist/` — Watchlist domain: watch/unwatch listings, price drop email alerts via Vercel Cron, optimistic UI (see its CLAUDE.md)
 - `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its CLAUDE.md)
+- `src/features/webhooks/` — Webhooks domain: Stripe webhook ingestion, signature verification, event deduplication, handler registry (see its CLAUDE.md)
 - `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
 - `src/app/api/` — API routes (auth, listings, upload)
