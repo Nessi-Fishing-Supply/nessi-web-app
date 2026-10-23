@@ -89,7 +89,7 @@ Findings: {blocking}B / {warning}W / {info}I
 If a conductor plan exists (`.conductor/tracks/*/plan.md` or `.conductor/depot/*/plan.md`):
 1. Launch **superpowers:code-reviewer** agent to review implementation against:
    - The implementation plan (`plan.md`)
-   - Project coding standards (CLAUDE.md files)
+   - Project coding standards (AGENTS.md files)
    - Codebase patterns and conventions
    - The original GitHub issue acceptance criteria
 2. Merge code review findings into the categorized findings report

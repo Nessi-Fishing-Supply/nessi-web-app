@@ -272,7 +272,7 @@ import WatchButton from '@/features/watchlist/components/watch-button';
 
 ```
 src/features/watchlist/
-├── CLAUDE.md
+├── AGENTS.md
 ├── index.ts                              # Barrel export (types + hooks)
 ├── types/
 │   └── watcher.ts                        # Watcher, WatcherInsert, WatchStatus, WatchedListing, PriceDropNotification

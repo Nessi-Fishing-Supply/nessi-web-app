@@ -144,8 +144,8 @@ Skip components marked as "existing" in the placement report.
 ### 7. Update Dependents
 
 - Append to `src/components/controls/index.ts` barrel (the only barrel that exists)
-- Update feature CLAUDE.md files
-- Create new feature directories with minimal CLAUDE.md for domains that don't exist
+- Update feature AGENTS.md files
+- Create new feature directories with minimal AGENTS.md for domains that don't exist
 - Do NOT add scaffolds to the showcase page — add when finalized
 
 ### 8. Transition
@@ -163,4 +163,4 @@ Invoke the **writing-plans** skill (using `Skill` tool with `skill: 'superpowers
 - All extraction docs go in `docs/design/{version}/components/`, not scattered.
 - Screenshots go in `docs/design/{version}/components/screenshots/`.
 - Do NOT add scaffolded components to the showcase page.
-- When new feature domains are created, add a minimal CLAUDE.md.
+- When new feature domains are created, add a minimal AGENTS.md.

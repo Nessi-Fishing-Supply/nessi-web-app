@@ -64,7 +64,7 @@ If the dev server is running on localhost:3000 or can be started:
 If there is a conductor plan (`plan.md` in the active track) or recent git changes on the current branch:
 - Launch **superpowers:code-reviewer** agent to review implementation against:
   - The original plan (if available from conductor track)
-  - Project coding standards (from CLAUDE.md)
+  - Project coding standards (from AGENTS.md)
   - Codebase patterns and conventions
 - The agent reviews changed files and flags deviations from the plan or standards
 - This check is optional — preflight still passes without it, but reports "skipped"

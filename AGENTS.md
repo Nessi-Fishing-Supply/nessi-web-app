@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -110,42 +110,42 @@ DELETE /api/auth/delete-account
 1. Add a FK to `members.id` (or `auth.users.id`) with `ON DELETE CASCADE`
 2. If the resource has storage objects, add cleanup logic to `DELETE /api/auth/delete-account` (application layer). The `handle_member_deletion()` trigger only handles slug release — storage cleanup must be done in API routes because Supabase DB triggers cannot call the Storage API.
 3. If the resource is a blocking dependency for account deletion (like shop ownership), add an ownership gate in `DELETE /api/auth/delete-account` that returns 409 until the dependency is resolved
-4. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's CLAUDE.md
+4. If the resource has cross-references (e.g., buyer ↔ seller on an order), decide whether to cascade or soft-delete — document the decision in the feature's AGENTS.md
 5. Test the full deletion chain before shipping
 
 ### Key Directories
 
-- `src/features/auth/` — Auth domain: services, types, validations, context, form components (see its CLAUDE.md)
-- `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its CLAUDE.md)
-- `src/features/listings/` — Listings domain: types, services, hooks, components for the full listing lifecycle — create wizard, edit wizard, photo management, status actions (see its CLAUDE.md)
-- `src/features/orders/` — Orders domain: escrow lifecycle (paid → shipped → delivered → verification → released), buyer/seller pages, Stripe Transfer, cron auto-release/auto-deliver (see its CLAUDE.md)
-- `src/features/addresses/` — Addresses domain: saved shipping addresses with CRUD, 5-cap, default management (see its CLAUDE.md)
-- `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its CLAUDE.md)
-- `src/features/messaging/` — Messaging domain: buyer-seller threads, direct messages, offer negotiations, safety filter, types + server/client services (see its CLAUDE.md)
-- `src/features/notifications/` — Notifications domain: bell icon, activity feed, unread badges, server-side dispatch, 30s polling (see its CLAUDE.md)
-- `src/features/blocks/` — Blocks domain: view and unblock blocked members from account settings, optimistic unblock (see its CLAUDE.md)
-- `src/features/watchlist/` — Watchlist domain: watch/unwatch listings, price drop email alerts via Vercel Cron, optimistic UI (see its CLAUDE.md)
-- `src/features/reservations/` — Reservations domain: checkout-time inventory locking for 1-of-1 listings, 10-minute TTL, partial reservation support, admin client for cross-user status mutations (see its CLAUDE.md)
-- `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its CLAUDE.md)
-- `src/features/webhooks/` — Webhooks domain: Stripe webhook ingestion, signature verification, event deduplication, handler registry (see its CLAUDE.md)
-- `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its CLAUDE.md)
+- `src/features/auth/` — Auth domain: services, types, validations, context, form components (see its AGENTS.md)
+- `src/features/members/` — Members domain: profile data, onboarding wizard, account settings, avatar upload (see its AGENTS.md)
+- `src/features/listings/` — Listings domain: types, services, hooks, components for the full listing lifecycle — create wizard, edit wizard, photo management, status actions (see its AGENTS.md)
+- `src/features/orders/` — Orders domain: escrow lifecycle (paid → shipped → delivered → verification → released), buyer/seller pages, Stripe Transfer, cron auto-release/auto-deliver (see its AGENTS.md)
+- `src/features/addresses/` — Addresses domain: saved shipping addresses with CRUD, 5-cap, default management (see its AGENTS.md)
+- `src/features/shops/` — Shops domain: types, services, hooks for shop management (see its AGENTS.md)
+- `src/features/messaging/` — Messaging domain: buyer-seller threads, direct messages, offer negotiations, safety filter, types + server/client services (see its AGENTS.md)
+- `src/features/notifications/` — Notifications domain: bell icon, activity feed, unread badges, server-side dispatch, 30s polling (see its AGENTS.md)
+- `src/features/blocks/` — Blocks domain: view and unblock blocked members from account settings, optimistic unblock (see its AGENTS.md)
+- `src/features/watchlist/` — Watchlist domain: watch/unwatch listings, price drop email alerts via Vercel Cron, optimistic UI (see its AGENTS.md)
+- `src/features/reservations/` — Reservations domain: checkout-time inventory locking for 1-of-1 listings, 10-minute TTL, partial reservation support, admin client for cross-user status mutations (see its AGENTS.md)
+- `src/features/email/` — Email domain: Resend client, generic sender, branded templates with shared layout (see its AGENTS.md)
+- `src/features/webhooks/` — Webhooks domain: Stripe webhook ingestion, signature verification, event deduplication, handler registry (see its AGENTS.md)
+- `src/features/context/` — Context switching: Zustand store for member/shop identity switching (see its AGENTS.md)
 - `src/features/shared/` — Shared hooks (use-form, use-form-state) and types (FormState)
 - `src/app/api/` — API routes (auth, listings, upload)
 - `src/app/(frontend)/` — UI pages (App Router with route group)
 - `src/components/` — Shared React components: controls, layout, navigation, indicators
 - `src/types/` — Generated/infra types (database.ts)
-- `src/libs/` — Infrastructure: Supabase clients (`supabase/`), query client (`query-client.ts`), providers (`providers.tsx`), Zustand utilities (`create-selectors.ts`), text moderation (`moderation/` — see its CLAUDE.md)
+- `src/libs/` — Infrastructure: Supabase clients (`supabase/`), query client (`query-client.ts`), providers (`providers.tsx`), Zustand utilities (`create-selectors.ts`), text moderation (`moderation/` — see its AGENTS.md)
 - `src/styles/` — SCSS with variables, mixins, and utilities
 - `src/assets/` — Brand assets only (logos). UI icons use `react-icons`.
 
 ### Feature Organization
 
-Domain-specific code lives in `src/features/{domain}/` with its own services, types, validations, hooks, and components. Each feature has a `CLAUDE.md` for AI-assisted context. Shared UI primitives remain in `src/components/`, shared hooks and types in `src/features/shared/`.
+Domain-specific code lives in `src/features/{domain}/` with its own services, types, validations, hooks, and components. Each feature has a `AGENTS.md` for AI-assisted context. Shared UI primitives remain in `src/components/`, shared hooks and types in `src/features/shared/`.
 
 When adding a new feature domain:
 
 1. Create `src/features/{domain}/` with relevant subdirectories
-2. Add a `CLAUDE.md` documenting the feature's architecture and patterns
+2. Add a `AGENTS.md` documenting the feature's architecture and patterns
 3. Place Tanstack Query hooks in `features/{domain}/hooks/`
 4. Place Zustand stores in `features/{domain}/stores/` (when needed)
 5. Keep API routes in `src/app/api/{domain}/` (Next.js requirement)
@@ -180,7 +180,7 @@ When building a feature that hits these thresholds, flag it for domain evaluatio
 
 SCSS with CSS Modules for component-scoped styles. Global variables in `src/styles/variables/`, responsive breakpoints in `src/styles/mixins/breakpoints.scss`. CSS Modules use flat class names (not BEM) since module scoping makes BEM redundant.
 
-**Mobile-first is mandatory.** Nessi is a consumer marketplace — the majority of users browse, buy, and list gear on their phones. All styles must be written for the smallest screen first, then progressively enhanced with `@include breakpoint()` for larger viewports. Never write `max-width` media queries or desktop-first styles that get overridden downward. See `src/styles/CLAUDE.md` for the full mobile-first guide.
+**Mobile-first is mandatory.** Nessi is a consumer marketplace — the majority of users browse, buy, and list gear on their phones. All styles must be written for the smallest screen first, then progressively enhanced with `@include breakpoint()` for larger viewports. Never write `max-width` media queries or desktop-first styles that get overridden downward. See `src/styles/AGENTS.md` for the full mobile-first guide.
 
 ### SEO
 
@@ -241,7 +241,7 @@ Accessibility is a requirement, not a nice-to-have. Run `/a11y-audit` before com
 
 ## AI Development Fleet
 
-Nessi uses a fleet of Claude Code skills and agents for autonomous feature development. Skills live in `.claude/skills/`, agents in `.claude/agents/`. The Conductor pipeline (`.conductor/CLAUDE.md`) orchestrates ticket-to-PR automation.
+Nessi uses a fleet of Claude Code skills and agents for autonomous feature development. Skills live in `.claude/skills/`, agents in `.claude/agents/`. The Conductor pipeline (`.conductor/AGENTS.md`) orchestrates ticket-to-PR automation.
 
 ### Key Workflows
 
@@ -260,7 +260,7 @@ Nessi uses a fleet of Claude Code skills and agents for autonomous feature devel
 
 ### Development Tools
 
-- **`/feature-scaffold "{domain}"`** — Create `src/features/{domain}/` with CLAUDE.md, types, services, hooks
+- **`/feature-scaffold "{domain}"`** — Create `src/features/{domain}/` with AGENTS.md, types, services, hooks
 - **`/db-migrate "{change}"`** — Generate Supabase SQL migrations with RLS policies
 - **`/write-tests "{file}"`** — Generate Vitest tests following project patterns
 - **`/debug "{problem}"`** — 7-step investigation protocol (reproduce → isolate → fix → verify)

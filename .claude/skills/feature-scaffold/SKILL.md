@@ -1,13 +1,13 @@
 ---
 name: feature-scaffold
-description: Scaffold a new feature domain with directory structure, CLAUDE.md, types, services, hooks, and components following established patterns
+description: Scaffold a new feature domain with directory structure, AGENTS.md, types, services, hooks, and components following established patterns
 user-invocable: true
 argument-hint: "[domain-name] [description]"
 ---
 
 # Feature Scaffold
 
-You scaffold new feature domains following Nessi's established patterns. Every new domain gets the full directory structure, a CLAUDE.md, and starter files that match existing conventions.
+You scaffold new feature domains following Nessi's established patterns. Every new domain gets the full directory structure, a AGENTS.md, and starter files that match existing conventions.
 
 ## Input
 
@@ -26,7 +26,7 @@ Description: `{{ description }}`
 
 ```
 src/features/{{ domain }}/
-├── CLAUDE.md              # Feature documentation for AI-assisted development
+├── AGENTS.md              # Feature documentation for AI-assisted development
 ├── components/            # React components for this domain
 ├── hooks/                 # Tanstack Query hooks
 ├── services/              # API client functions
@@ -36,9 +36,9 @@ src/features/{{ domain }}/
 
 Only create directories that the feature will actually need. If there are no forms, skip `validations/`. If there's no API, skip `services/`. Ask the user or infer from the description.
 
-### Step 3: Generate CLAUDE.md
+### Step 3: Generate AGENTS.md
 
-Use the existing feature CLAUDE.md files as templates (read `src/features/auth/CLAUDE.md` and `src/features/products/CLAUDE.md`). Generate a CLAUDE.md that documents:
+Use the existing feature AGENTS.md files as templates (read `src/features/auth/AGENTS.md` and `src/features/products/AGENTS.md`). Generate a AGENTS.md that documents:
 - Feature overview
 - Architecture decisions
 - Key files and their purposes
@@ -62,14 +62,14 @@ If the feature needs API interaction, create `services/{domain}.ts` with stub fu
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Files created:
-  ✅ CLAUDE.md
+  ✅ AGENTS.md
   ✅ types/index.ts
   ✅ services/{domain}.ts
   ✅ hooks/ (empty, ready for Tanstack Query hooks)
   ✅ components/ (empty, ready for React components)
 
 Next steps:
-  1. Review and edit the generated CLAUDE.md
+  1. Review and edit the generated AGENTS.md
   2. Update types after database schema is defined
   3. /design-spec "{domain}" to generate UX specs for this feature
 ```
@@ -81,4 +81,4 @@ Next steps:
 - Use `@/*` path alias for all imports
 - Follow the established Tanstack Query pattern for hooks
 - Don't over-scaffold — only create files the feature will actually use
-- The CLAUDE.md must be genuinely useful, not boilerplate
+- The AGENTS.md must be genuinely useful, not boilerplate

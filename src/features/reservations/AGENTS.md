@@ -145,7 +145,7 @@ Thin fetch wrappers using `@/libs/fetch` (`get`, `post`, `del`, `patch`). Called
 
 ```
 src/features/reservations/
-├── CLAUDE.md
+├── AGENTS.md
 ├── types/
 │   └── reservation.ts          # Reservation, ReservationInsert, ReservationWithListing, ReservationResult, ReservationCheck
 ├── services/

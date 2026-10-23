@@ -99,7 +99,7 @@ src/
 
 ### Feature-Based Organization
 
-Domain code lives in `src/features/{domain}/` — each feature owns its services, types, hooks, validations, and components. Each feature has a `CLAUDE.md` for AI-assisted development context. Shared UI primitives stay in `src/components/`.
+Domain code lives in `src/features/{domain}/` — each feature owns its services, types, hooks, validations, and components. Each feature has a `AGENTS.md` for AI-assisted development context. Shared UI primitives stay in `src/components/`.
 
 ### State Management
 
@@ -171,7 +171,7 @@ Nessi uses a fleet of **14 AI agents** and **21 skills** for autonomous feature 
 /audit                                  # Combined quality + UX + accessibility dashboard
 
 # Development tools
-/feature-scaffold "messaging"           # New feature directory with CLAUDE.md
+/feature-scaffold "messaging"           # New feature directory with AGENTS.md
 /db-migrate "add orders table"          # Supabase migration with RLS
 /write-tests "src/features/products"    # Generate Vitest tests
 /debug "cart total is wrong"            # 7-step investigation protocol
@@ -192,7 +192,7 @@ Nessi uses a fleet of **14 AI agents** and **21 skills** for autonomous feature 
                                                 └── expert skills (auto-consulted)
 ```
 
-Skills live in `.claude/skills/`, agents in `.claude/agents/`, Conductor docs in `.conductor/CLAUDE.md`.
+Skills live in `.claude/skills/`, agents in `.claude/agents/`, Conductor docs in `.conductor/AGENTS.md`.
 
 ## Future Roadmap
 

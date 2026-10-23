@@ -143,9 +143,9 @@ For each NEW component (not existing), generate two files:
 
 - Append exports to `src/components/controls/index.ts` only (the only barrel file that exists)
 - Do NOT add scaffolded components to the showcase page — they are added when finalized
-- Update existing feature `CLAUDE.md` files to reference new components
-- Create new feature directories for domains that don't exist yet (messaging, search, orders, dashboard, editorial) with a minimal `CLAUDE.md` containing: domain name, purpose, component list, and a note that the feature is scaffolded but not yet implemented
-- Update root `CLAUDE.md` Key Directories section and Agents table
+- Update existing feature `AGENTS.md` files to reference new components
+- Create new feature directories for domains that don't exist yet (messaging, search, orders, dashboard, editorial) with a minimal `AGENTS.md` containing: domain name, purpose, component list, and a note that the feature is scaffolded but not yet implemented
+- Update root `AGENTS.md` Key Directories section and Agents table
 
 ## Phase Boundaries & Partial Completion
 
