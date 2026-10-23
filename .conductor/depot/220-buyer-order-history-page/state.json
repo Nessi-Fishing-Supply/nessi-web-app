@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "issue": 220,
+  "title": "buyer order history page at dashboard/orders/ with detail drawer",
+  "branch": "feat/220/buyer-order-history-page",
+  "status": "pr_open",
+  "phase": {
+    "current": 4,
+    "total": 4,
+    "tasks": {
+      "completed": [
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "2.1",
+        "2.2",
+        "2.3",
+        "3.1",
+        "3.2",
+        "3.3",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6"
+      ],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "completedAt": "2026-04-05T15:45:00Z",
+  "pruneAfter": "2026-06-04T15:45:00Z",
+  "timestamps": { "started": "2026-04-05T12:00:00Z", "lastActivity": "2026-04-05T15:45:00Z" }
+}

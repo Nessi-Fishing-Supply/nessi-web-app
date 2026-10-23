@@ -1,0 +1,53 @@
+{
+  "repo": "Nessi-Fishing-Supply/Nessi-Web-App",
+  "owner": "Nessi-Fishing-Supply",
+  "project": {
+    "number": 2,
+    "id": "PVT_kwDOCuq3-M4BSHz8",
+    "title": "Nessi Kanban",
+    "url": "https://github.com/orgs/Nessi-Fishing-Supply/projects/2"
+  },
+  "fields": {
+    "status": {
+      "id": "PVTSSF_lADOCuq3-M4BSHz8zg_v78E",
+      "options": {
+        "pre_launch": "ea8a21f9",
+        "todo": "f75ad846",
+        "in_progress": "47fc9ee4",
+        "blocked": "ead5882a",
+        "ready_for_review": "dab8b15c",
+        "done": "98236657"
+      }
+    },
+    "priority": {
+      "id": "PVTSSF_lADOCuq3-M4BSHz8zg_xN3Y",
+      "options": {
+        "p0_critical": "1ee63809",
+        "p1_high": "68f1fd0c",
+        "p2_medium": "992da10b",
+        "p3_low": "083808ea"
+      }
+    },
+    "area": {
+      "id": "PVTSSF_lADOCuq3-M4BSHz8zg_xOAk",
+      "options": {
+        "frontend": "817c90f6",
+        "backend": "b527601f",
+        "database": "f2f3efe1",
+        "full_stack": "c0014f38",
+        "infra": "2b579127"
+      }
+    },
+    "executor": {
+      "id": "PVTSSF_lADOCuq3-M4BSHz8zg_xOGc",
+      "options": {
+        "conductor": "1482d955",
+        "manual": "beec3bbf"
+      }
+    },
+    "feature": {
+      "id": "PVTF_lADOCuq3-M4BSHz8zg_07PY",
+      "type": "text"
+    }
+  }
+}

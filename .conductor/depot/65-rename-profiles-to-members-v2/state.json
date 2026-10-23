@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "issue": 65,
+  "title": "chore(database): rename profiles table to members",
+  "branch": "chore/65/rename-profiles-to-members",
+  "status": "complete",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "2.1", "2.2"], "current": null, "remaining": [] }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "n/a" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-20T18:00:00Z", "lastActivity": "2026-03-20T18:15:00Z" }
+}

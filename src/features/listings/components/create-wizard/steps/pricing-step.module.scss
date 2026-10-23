@@ -1,0 +1,217 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-800);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+}
+
+.heading {
+  font-size: var(--font-size-900);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-800);
+  margin-bottom: var(--spacing-200);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+// Price input
+
+.priceInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-300);
+  background-color: var(--color-white);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: var(--color-primary-500);
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  &.inputError {
+    border-color: var(--color-error-500);
+
+    &:focus-within {
+      outline-color: var(--color-error-500);
+    }
+  }
+}
+
+.currencyPrefix {
+  padding: var(--spacing-300) var(--spacing-200) var(--spacing-300) var(--spacing-400);
+  font-size: var(--font-size-1100);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  line-height: 1;
+  user-select: none;
+}
+
+.priceInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: var(--spacing-300) var(--spacing-400) var(--spacing-300) var(--spacing-100);
+  font-size: var(--font-size-1100);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  background: transparent;
+  min-width: 0;
+  line-height: 1;
+
+  &::placeholder {
+    color: var(--color-neutral-400);
+  }
+}
+
+.errorText {
+  margin-top: var(--spacing-100);
+  font-size: var(--font-size-500);
+  color: var(--color-error-500);
+}
+
+// Fee calculator card
+
+.feeCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  padding: var(--spacing-400);
+  background-color: var(--color-neutral-100);
+  border-radius: var(--radius-300);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.feeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feeRowNet {
+  padding-top: var(--spacing-200);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.feeLabel {
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-600);
+}
+
+.feeValue {
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-800);
+}
+
+.feeValueNet {
+  font-size: var(--font-size-800);
+  font-weight: 700;
+  color: var(--color-primary-500);
+}
+
+.feeComparison {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-100);
+  padding-top: var(--spacing-200);
+  margin-top: var(--spacing-100);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.feeComparisonLabel {
+  font-size: var(--font-size-200);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: 100%;
+}
+
+.feeComparisonItem {
+  font-size: var(--font-size-200);
+  color: var(--color-neutral-500);
+}
+
+.feeComparisonDot {
+  font-size: var(--font-size-200);
+  color: var(--color-neutral-400);
+}
+
+// Shipping toggle
+
+.shippingToggle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+  }
+}
+
+.shippingOption {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-100);
+  padding: var(--spacing-400);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-300);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+  min-height: 44px;
+
+  &:hover {
+    border-color: var(--color-primary-400);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  &.shippingOptionSelected {
+    border-color: var(--color-primary-500);
+    background-color: var(--color-surface-100);
+  }
+}
+
+.shippingOptionTitle {
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.shippingOptionDescription {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  line-height: 1.4;
+}

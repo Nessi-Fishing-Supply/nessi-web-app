@@ -1,0 +1,44 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.wrapper {
+  width: 100%;
+
+  button {
+    min-height: var(--min-touch-target);
+  }
+}
+
+.wrapperAuto {
+  button {
+    min-height: var(--min-touch-target);
+  }
+}
+
+.inCartLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--min-touch-target);
+  padding: var(--spacing-300) var(--spacing-600);
+  border-radius: var(--radius-300);
+  border: 2px solid var(--color-neutral-400);
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-700);
+  text-decoration: none;
+  transition: var(--transition-basic);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--color-neutral-600);
+    color: var(--color-neutral-800);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  @include breakpoint(md) {
+    width: 100%;
+  }
+}

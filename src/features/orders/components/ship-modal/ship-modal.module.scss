@@ -1,0 +1,85 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+  padding: var(--spacing-400);
+  min-width: 280px;
+
+  @include breakpoint(md) {
+    min-width: 360px;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-900);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.label {
+  font-size: var(--font-size-500);
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+
+.input,
+.select {
+  padding: var(--spacing-200) var(--spacing-300);
+  min-height: 44px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-900);
+  background-color: var(--color-white);
+  transition: border-color var(--transition-color);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 2px var(--color-primary-100);
+  }
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%236b7280'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-300) center;
+  padding-right: var(--spacing-700);
+}
+
+.submitBtn {
+  padding: var(--spacing-300) var(--spacing-500);
+  min-height: 44px;
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-600);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-color);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

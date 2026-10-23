@@ -1,0 +1,71 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+  padding: var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700);
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--font-size-1000);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.loading {
+  text-align: center;
+  color: var(--color-neutral-500);
+  padding: var(--spacing-800) 0;
+}
+
+.balanceRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+
+    > * {
+      flex: 1;
+    }
+  }
+}
+
+.onboardingCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  padding: var(--spacing-500);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-200);
+  background-color: var(--color-neutral-50);
+  text-align: center;
+}
+
+.onboardingTitle {
+  margin: 0;
+  font-size: var(--font-size-800);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.onboardingText {
+  margin: 0;
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-600);
+  line-height: 1.5;
+}

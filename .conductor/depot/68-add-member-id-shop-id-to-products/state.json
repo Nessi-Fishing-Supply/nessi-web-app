@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "issue": 68,
+  "title": "feat(database): add member_id and shop_id to products, drop user_id",
+  "branch": "feat/68/add-member-id-shop-id-to-products",
+  "status": "pr_open",
+  "phase": {
+    "current": 3,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3", "2.1", "2.2", "2.3", "3.1", "3.2"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-20T12:00:00Z", "lastActivity": "2026-03-20T12:30:00Z" },
+  "completedAt": "2026-03-20T12:30:00Z",
+  "pruneAfter": "2026-05-19T12:30:00Z"
+}

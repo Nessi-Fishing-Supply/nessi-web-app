@@ -1,0 +1,41 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  align-items: flex-start;
+}
+
+.count {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+}
+
+.capNote {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+}
+
+.empty {
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-500);
+  text-align: center;
+  padding: var(--spacing-600) 0;
+  margin: 0;
+}

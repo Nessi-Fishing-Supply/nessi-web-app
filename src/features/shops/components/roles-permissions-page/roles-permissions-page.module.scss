@@ -1,0 +1,89 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  max-width: 720px;
+  padding: var(--spacing-600) var(--spacing-300);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700) var(--spacing-600);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-400);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-400);
+  }
+}
+
+.title {
+  font-size: var(--font-size-1000);
+}
+
+.addButton {
+  width: 100%;
+
+  @include breakpoint(md) {
+    width: auto;
+    flex-shrink: 0;
+  }
+}
+
+.roles {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabList {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab {
+  flex-shrink: 0;
+  padding: var(--spacing-200) var(--spacing-400);
+  min-height: 44px;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast, 150ms ease),
+    border-color var(--transition-fast, 150ms ease);
+
+  &:hover {
+    color: var(--color-neutral-700);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500, #3b82f6);
+    outline-offset: -2px;
+  }
+}
+
+.tabActive {
+  color: var(--color-neutral-900);
+  border-bottom-color: var(--color-primary-600, #2563eb);
+}
+
+.tabPanel {
+  padding-top: var(--spacing-400);
+}
+
+.membersSection {
+  margin-top: var(--spacing-600);
+}

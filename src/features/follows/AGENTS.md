@@ -1,0 +1,297 @@
+# Follows Feature
+
+Part of #155 (social/follows parent feature).
+
+## Purpose
+
+Allows authenticated members to follow other members and shops. Drives social discovery and activity feeds. Follower counts are denormalized onto `members` and `shops` rows via a database trigger for fast display without joins.
+
+## Database Schema
+
+### `follows` table
+
+| Column        | Type        | Constraints                                                 |
+| ------------- | ----------- | ----------------------------------------------------------- |
+| `id`          | UUID        | PK, `gen_random_uuid()`                                     |
+| `follower_id` | UUID        | NOT NULL, FK `members(id) ON DELETE CASCADE`                |
+| `target_type` | TEXT        | NOT NULL, CHECK IN (`'member'`, `'shop'`)                   |
+| `target_id`   | UUID        | NOT NULL, polymorphic (no FK — references members or shops) |
+| `created_at`  | TIMESTAMPTZ | NOT NULL, DEFAULT `now()`                                   |
+
+**Constraints:**
+
+- `UNIQUE (follower_id, target_type, target_id)` — prevents duplicate follows
+- `CHECK NOT (target_type = 'member' AND follower_id = target_id)` — prevents self-follows (following your own shop is allowed)
+
+**Indexes:**
+
+- `follows_follower_id_idx` on `follower_id`
+- `follows_target_type_target_id_idx` on `(target_type, target_id)`
+
+### Polymorphic Target Pattern
+
+`target_type` + `target_id` is a polymorphic reference — `target_id` points to either `members.id` or `shops.id` depending on `target_type`. This avoids separate follow tables for each entity type. The same pattern is used by `flags`.
+
+The application layer must validate that `target_id` exists for the given `target_type` before inserting, since there is no FK constraint.
+
+### Denormalized `follower_count`
+
+Both `members` and `shops` have a `follower_count INTEGER NOT NULL DEFAULT 0` column maintained by the `update_follower_count()` database trigger:
+
+- **INSERT** on `follows` → increments the target's `follower_count`
+- **DELETE** on `follows` → decrements the target's `follower_count` (clamped to 0 via `GREATEST`)
+
+The trigger is `SECURITY DEFINER` to bypass RLS when updating the count.
+
+### RLS Policies
+
+| Policy                           | Operation | Roles               | Rule                                    |
+| -------------------------------- | --------- | ------------------- | --------------------------------------- |
+| Follows are viewable by everyone | SELECT    | authenticated, anon | `USING (true)`                          |
+| Users can insert own follows     | INSERT    | authenticated       | `WITH CHECK (follower_id = auth.uid())` |
+| Users can delete own follows     | DELETE    | authenticated       | `USING (follower_id = auth.uid())`      |
+
+## Architecture
+
+- **types/follow.ts** — Database-derived types: `Follow` (Row), `FollowInsert`, `FollowTargetType` (`'member' | 'shop'`), `FollowStatus` (`{ is_following: boolean }`), `FollowerCount` (`{ count: number }`), `FollowingItem` (denormalized follow with `name` and `avatar_url`)
+- **services/follow-server.ts** — Server-side Supabase queries (uses `@/libs/supabase/server`): `createFollowServer` (inserts follow, catches `23505` for duplicates, blocks self-follow), `deleteFollowServer` (deletes by composite match, returns `{ success: boolean }`), `getFollowStatusServer` (returns `{ is_following }` via `maybeSingle()`), `getFollowerCountServer` (reads denormalized `follower_count` from `members` or `shops` table), `getFollowingServer` (fetches all follows for a member, resolves names/avatars via separate member/shop queries, optional `targetType` filter)
+- **services/follow.ts** — Client-side fetch wrappers: `followTarget` (POST `/api/follows`), `unfollowTarget` (DELETE `/api/follows?target_type=&target_id=`), `getFollowStatus` (GET `/api/follows/status`), `getFollowerCount` (GET `/api/follows/count`), `getFollowing` (GET `/api/follows/following`)
+- **hooks/use-follow-status.ts** — `useFollowStatus(targetType, targetId)`: query key `['follows', 'status', targetType, targetId]`, enabled guard on both params
+- **hooks/use-follower-count.ts** — `useFollowerCount(targetType, targetId)`: query key `['follows', 'count', targetType, targetId]`, enabled guard on both params
+- **hooks/use-following.ts** — `useFollowing(targetType?)`: query key `['follows', 'following', targetType]`, optional filter; always enabled (returns all follows when no type given)
+- **hooks/use-follow-toggle.ts** — `useFollowToggle({ targetType, targetId, onSuccess?, onError? })`: mutation that follows or unfollows based on current state, with optimistic updates to both status and count caches; rolls back both on error; 409/404 responses treated as success (idempotent); invalidates status, count, and following queries on settle
+
+## API Routes
+
+| Method | Route                    | Handler                  | Auth Required | Status Codes        | Description                                                               |
+| ------ | ------------------------ | ------------------------ | ------------- | ------------------- | ------------------------------------------------------------------------- |
+| POST   | `/api/follows`           | `createFollowServer`     | Yes           | 201/400/401/409/500 | Follow a member or shop (409 on duplicate, 400 on self-follow)            |
+| DELETE | `/api/follows`           | `deleteFollowServer`     | Yes           | 200/400/401/404/500 | Unfollow a member or shop (params via query string, 404 if not following) |
+| GET    | `/api/follows/status`    | `getFollowStatusServer`  | Yes           | 200/400/401/500     | Check if the authenticated user follows a member or shop                  |
+| GET    | `/api/follows/count`     | `getFollowerCountServer` | No            | 200/400/500         | Get the follower count for a member or shop (public, no auth)             |
+| GET    | `/api/follows/following` | `getFollowingServer`     | Yes           | 200/400/401/500     | List members and shops the authenticated user follows                     |
+
+## Public API
+
+Consuming features import from the barrel export:
+
+```ts
+import {
+  Follow,
+  FollowInsert,
+  FollowTargetType,
+  FollowStatus,
+  FollowerCount,
+  FollowingItem,
+  FollowButtonProps,
+  FollowButton,
+  FollowingCardProps,
+  FollowingCard,
+  useFollowStatus,
+  useFollowerCount,
+  useFollowToggle,
+  useFollowing,
+} from '@/features/follows';
+```
+
+### useFollowStatus
+
+```ts
+const { data, isLoading } = useFollowStatus('member', memberId);
+// data: { is_following: boolean } | undefined
+```
+
+### useFollowerCount
+
+```ts
+const { data } = useFollowerCount('shop', shopId);
+// data: { count: number } | undefined
+```
+
+### useFollowToggle
+
+```ts
+const { mutate, isPending } = useFollowToggle({
+  targetType: 'shop',
+  targetId: shopId,
+  onSuccess: () => toast('Updated'),
+  onError: (error) => toast(error.message),
+});
+
+// Call with current follow state — mutation inverts it
+mutate(isCurrentlyFollowing);
+```
+
+- Optimistically updates both `useFollowStatus` and `useFollowerCount` caches before the request completes
+- Rolls back both caches on error
+- 409 (already following) and 404 (not following) are treated as success — no error toast
+
+### useFollowing
+
+```ts
+const { data } = useFollowing(); // all follows
+const { data } = useFollowing('shop'); // only shop follows
+// data: FollowingItem[] | undefined
+```
+
+`FollowingItem` shape:
+
+```ts
+{
+  id: string;
+  target_type: 'member' | 'shop';
+  target_id: string;
+  created_at: string;
+  name: string; // member full name or shop_name
+  avatar_url: string | null;
+}
+```
+
+## Components
+
+### FollowButton
+
+Reusable follow/unfollow button with optimistic count updates, auth gate, and full ARIA support.
+
+**Props (`FollowButtonProps`):**
+
+| Prop                   | Type               | Required | Description                                          |
+| ---------------------- | ------------------ | -------- | ---------------------------------------------------- |
+| `targetType`           | `FollowTargetType` | Yes      | `'member'` or `'shop'`                               |
+| `targetId`             | `string`           | Yes      | UUID of the target member or shop                    |
+| `targetName`           | `string`           | Yes      | Display name (used in aria-label and toast messages) |
+| `initialFollowerCount` | `number`           | No       | SSR hydration value before the query resolves        |
+| `size`                 | `'sm' \| 'md'`     | No       | Button size (default: `'md'`)                        |
+| `className`            | `string`           | No       | Additional class on the wrapper element              |
+
+**Visual states:**
+
+1. **Follow** (default) — outline button with primary border/text, transparent background
+2. **Following** (active) — filled primary background with white text
+3. **Unfollow** (hover on Following) — filled destructive background with white text
+
+**Auth gate:** Unauthenticated users see a sign-in toast instead of triggering the follow mutation. No redirect — the user stays on the current page.
+
+**Toast messages:**
+
+- Follow success: "Following — You are now following {targetName}."
+- Unfollow success: "Unfollowed — You unfollowed {targetName}."
+- Auth gate: "Sign in to follow — Create an account or sign in to follow {targetName}."
+- Error: "Something went wrong — Please try again."
+
+**ARIA attributes:**
+
+- `aria-pressed` — reflects current follow state
+- `aria-label` — "Follow {targetName}" or "Following {targetName}, activate to unfollow"
+- `aria-busy` — true when mutation is in progress
+
+**Usage:**
+
+```tsx
+import { FollowButton } from '@/features/follows';
+
+<FollowButton
+  targetType="shop"
+  targetId={shop.id}
+  targetName={shop.shop_name}
+  initialFollowerCount={shop.follower_count}
+/>;
+```
+
+## Key Patterns
+
+- **Server client** — All server services use `@/libs/supabase/server` (cookie-based auth, user JWT), not the admin client. The count endpoint does not require auth, so it omits auth headers.
+- **Optimistic updates** — `useFollowToggle` implements full optimistic UI: cancels in-flight queries, snapshots previous state, updates cache immediately, reverts on error. Mirrors the pattern in addresses.
+- **Polymorphic target** — `target_type` determines which table `target_id` references. `getFollowingServer` resolves member and shop details in two separate batch queries (using `.in()`) rather than N+1 individual lookups.
+- **409/404 handling** — `useFollowToggle` checks `error instanceof FetchError && (error.status === 409 || error.status === 404)` and routes to `onSuccess` instead of `onError`. These are not user-facing errors — they indicate the state was already correct.
+- **DELETE via query params** — The unfollow endpoint (`DELETE /api/follows`) reads `target_type` and `target_id` from `searchParams` (not the request body) because `DELETE` requests with bodies are unreliable in some clients. `unfollowTarget` in the client service builds the query string accordingly.
+- **Self-follow guard** — Blocking self-follows for `target_type = 'member'` is enforced at both the DB level (CHECK constraint) and the application layer (`createFollowServer` throws before the Supabase insert).
+- **Auth gate pattern** — `FollowButton` checks `useAuth().isAuthenticated` before calling the follow mutation. Unauthenticated users see a toast instead of being redirected — they stay on the current page. This pattern is reusable for any social action that requires auth.
+
+## Directory Structure
+
+```
+src/features/follows/
+├── AGENTS.md
+├── index.ts                          # Barrel export (types + hooks + components)
+├── types/
+│   ├── follow.ts                     # Follow, FollowInsert, FollowTargetType, FollowStatus, FollowerCount, FollowingItem
+│   └── follow-button.ts             # FollowButtonProps
+├── services/
+│   ├── follow-server.ts              # Server-side Supabase queries
+│   └── follow.ts                     # Client-side fetch wrappers
+├── hooks/
+│   ├── use-follow-status.ts          # Query: is the user following?
+│   ├── use-follower-count.ts         # Query: follower count for a target
+│   ├── use-follow-toggle.ts          # Mutation: follow/unfollow with optimistic updates
+│   └── use-following.ts              # Query: list of targets the user follows
+└── components/
+    ├── follow-button/
+    │   ├── index.tsx                  # FollowButton component (use client)
+    │   └── follow-button.module.scss # Three-state styles (Follow/Following/Unfollow)
+    └── following-card/
+        ├── index.tsx                  # FollowingCard component (use client)
+        └── following-card.module.scss # Card layout with avatar, name, pill, date, unfollow
+
+src/app/api/follows/
+├── route.ts                          # POST (follow), DELETE (unfollow)
+├── status/
+│   └── route.ts                      # GET follow status
+├── count/
+│   └── route.ts                      # GET follower count (public)
+└── following/
+    └── route.ts                      # GET following list
+```
+
+## Components
+
+### FollowingCard
+
+Displays a single followed entity in the `/dashboard/following` list. Self-contained: manages its own unfollow mutation via `useFollowToggle` internally, with toast feedback on success/error.
+
+**Props (`FollowingCardProps`):**
+
+| Prop | Type            | Required | Description                          |
+| ---- | --------------- | -------- | ------------------------------------ |
+| item | `FollowingItem` | Yes      | The followed entity (member or shop) |
+
+**Features:**
+
+- Avatar (with `isShop` flag for shop badge), linked name to profile, type Pill ("Member"/"Shop"), relative follow date, Unfollow button
+- Unfollow button uses `useFollowToggle` with `mutate(true)` — optimistic cache update removes item from following list
+- Toast on success: "Unfollowed — You unfollowed {name}."
+- Toast on error: "Something went wrong — Please try again."
+- `aria-label="Unfollow {name}"` on button
+- Mobile-first: stacks vertically on small screens, row layout on md+
+
+### Dashboard Following Page
+
+Located at `src/app/(frontend)/dashboard/following/page.tsx`. Protected by `proxy.ts` (all `/dashboard/*` routes require auth).
+
+- Fetches all following items via `useFollowing()` — sorted by `created_at DESC` (newest first)
+- Renders `FollowingCard` for each item
+- Loading state: 4 shimmer skeleton cards with `role="status"` and `aria-label`
+- Empty state: heart icon + "You are not following anyone yet" + Browse CTA
+- Error state: `ErrorState` component with `variant="banner"` and retry action
+- Metadata exported from `layout.tsx`: title "Following" → "Following | Nessi"
+- Side nav link: "Following" with `HiOutlineHeart` icon, visible for all authenticated members
+
+## Integrations
+
+FollowButton is rendered on two public profile pages:
+
+| Page           | Path                                        | Hidden When                                   | Props                                                                                                                                            |
+| -------------- | ------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Member profile | `src/app/(frontend)/member/[slug]/page.tsx` | `isOwnProfile` (currentUserId === member.id)  | `targetType="member"`, `targetId={member.id}`, `targetName={formatMemberName(...)}`, `initialFollowerCount={member.follower_count}`, `size="sm"` |
+| Shop page      | `src/app/(frontend)/shop/[slug]/page.tsx`   | `isOwnShop` (currentUserId === shop.owner_id) | `targetType="shop"`, `targetId={shop.id}`, `targetName={shop.shop_name}`, `initialFollowerCount={shop.follower_count}`, `size="sm"`              |
+
+Both pages also display `follower_count` in their stats sections:
+
+- **Member profile** — Followers stat appears for all members (not gated behind `is_seller`). Sellers see Followers alongside Sales, Reviews, and Response Time.
+- **Shop page** — Followers stat appears alongside Sales and Reviews.
+
+The `initialFollowerCount` prop comes from the server-fetched entity (`member.follower_count` or `shop.follower_count`), which is the denormalized count maintained by the `update_follower_count()` database trigger. The client-side `useFollowerCount` hook takes over after hydration for real-time updates.
+
+## Migration
+
+`supabase/migrations/20260326200000_create_follows.sql`

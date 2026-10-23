@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "issue": 233,
+  "title": "recently_viewed table, RLS policies, and view route integration",
+  "branch": "feat/233/recently-viewed-table-rls-view-route",
+  "status": "pr_open",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "1.2", "2.1", "2.2"], "current": null, "remaining": [] }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-24T12:00:00Z", "lastActivity": "2026-03-24T12:16:00Z" },
+  "completedAt": "2026-03-24T12:16:00Z",
+  "pruneAfter": "2026-05-23T12:16:00Z"
+}

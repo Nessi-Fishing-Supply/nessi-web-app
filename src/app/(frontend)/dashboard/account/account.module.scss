@@ -1,0 +1,440 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Account Page — clean white with warm accents
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.page {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface-100);
+}
+
+/* ── Clean hero with orange accent line ── */
+.hero {
+  position: relative;
+  width: 100%;
+  padding: var(--spacing-700) var(--spacing-400);
+  background: var(--color-surface-100);
+  border-bottom: 3px solid var(--color-accent-500);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-800) var(--spacing-700);
+  }
+
+  @include breakpoint(lg) {
+    padding: var(--spacing-800) var(--spacing-900);
+  }
+}
+
+.heroContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-600);
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.heroTitle {
+  font-size: var(--font-size-1000);
+  font-weight: 800;
+  color: var(--color-primary-500);
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.heroSubtitle {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.viewProfile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-50);
+  color: var(--color-primary-600);
+  font-size: var(--font-size-500);
+  text-decoration: none;
+  margin-top: var(--spacing-200);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.heroIcon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-surface-300);
+  font-size: var(--font-size-1300);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1400);
+  }
+
+  animation: swim 10s linear infinite;
+}
+
+@keyframes swim {
+  0% {
+    transform: translateX(-140px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  2% {
+    transform: translateX(-130px) translateY(0) rotate(-6deg);
+    opacity: 1;
+  }
+
+  /* Rotate up first, then Y follows */
+  4% {
+    transform: translateX(-118px) translateY(-3px) rotate(-8deg);
+  }
+
+  6.25% {
+    transform: translateX(-105px) translateY(-8px) rotate(-4deg);
+  }
+
+  /* Rotate down before Y peaks down */
+  9% {
+    transform: translateX(-88px) translateY(-2px) rotate(8deg);
+  }
+
+  12.5% {
+    transform: translateX(-70px) translateY(8px) rotate(4deg);
+  }
+
+  /* Rotate up before Y rises */
+  15.5% {
+    transform: translateX(-53px) translateY(2px) rotate(-8deg);
+  }
+
+  18.75% {
+    transform: translateX(-35px) translateY(-8px) rotate(-4deg);
+  }
+
+  22% {
+    transform: translateX(-18px) translateY(-2px) rotate(8deg);
+  }
+
+  25% {
+    transform: translateX(0) translateY(8px) rotate(4deg);
+  }
+
+  28% {
+    transform: translateX(18px) translateY(2px) rotate(-8deg);
+  }
+
+  31.25% {
+    transform: translateX(35px) translateY(-8px) rotate(-4deg);
+  }
+
+  34% {
+    transform: translateX(53px) translateY(-2px) rotate(8deg);
+  }
+
+  37.5% {
+    transform: translateX(70px) translateY(8px) rotate(4deg);
+  }
+
+  40.5% {
+    transform: translateX(88px) translateY(2px) rotate(-8deg);
+  }
+
+  43.75% {
+    transform: translateX(105px) translateY(-8px) rotate(-4deg);
+  }
+
+  47% {
+    transform: translateX(123px) translateY(-2px) rotate(8deg);
+  }
+
+  50% {
+    transform: translateX(140px) translateY(8px) rotate(4deg);
+  }
+
+  53% {
+    transform: translateX(158px) translateY(2px) rotate(-8deg);
+  }
+
+  56.25% {
+    transform: translateX(175px) translateY(-8px) rotate(-4deg);
+  }
+
+  59% {
+    transform: translateX(193px) translateY(-2px) rotate(8deg);
+  }
+
+  62.5% {
+    transform: translateX(210px) translateY(8px) rotate(4deg);
+  }
+
+  65.5% {
+    transform: translateX(228px) translateY(2px) rotate(-6deg);
+  }
+
+  68.75% {
+    transform: translateX(245px) translateY(-4px) rotate(-3deg);
+    opacity: 1;
+  }
+
+  72% {
+    transform: translateX(270px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  /* Invisible pause before reset */
+  85% {
+    transform: translateX(-140px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(-140px) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* ── Two-column layout ── */
+.layout {
+  width: 100%;
+  padding: var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-600);
+  }
+
+  @include breakpoint(lg) {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: var(--spacing-600);
+    padding: var(--spacing-700) var(--spacing-700);
+  }
+
+  @include breakpoint(xl) {
+    grid-template-columns: 420px 1fr;
+    gap: var(--spacing-700);
+    padding: var(--spacing-700) var(--spacing-900);
+  }
+}
+
+/* ── Left sidebar ── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+  margin-bottom: var(--spacing-600);
+
+  @include breakpoint(lg) {
+    position: sticky;
+    top: var(--spacing-600);
+    margin-bottom: 0;
+    align-self: start;
+  }
+}
+
+.profileCard {
+  background: var(--color-surface-100);
+  border-radius: var(--radius-600);
+  border: 1px solid var(--color-neutral-200);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+.completenessCard {
+  /* Glass treatment applied via member-completeness.module.scss */
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-300) var(--spacing-400);
+  font-size: var(--font-size-600);
+  font-weight: 500;
+  color: var(--color-neutral-700);
+  text-decoration: none;
+  border-radius: var(--radius-300);
+  transition: var(--transition-basic);
+  min-height: 44px;
+
+  &:hover {
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  svg {
+    font-size: var(--font-size-800);
+    flex-shrink: 0;
+  }
+}
+
+/* ── Sidebar footer: logout + delete ── */
+.sidebarFooter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+
+  button:first-child {
+    width: 50%;
+  }
+}
+
+.deleteLink {
+  background: none;
+  border: none;
+  padding: var(--spacing-200) var(--spacing-300);
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-error-700);
+  cursor: pointer;
+  transition: var(--transition-basic);
+  min-height: 44px;
+
+  &:hover {
+    color: var(--color-error-700);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-error-700);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+/* ── Expandable danger panel ── */
+.dangerPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.dangerPanelOpen {
+  grid-template-rows: 1fr;
+}
+
+.dangerPanelInner {
+  overflow: hidden;
+}
+
+.dangerPanelOpen .dangerPanelInner {
+  padding: var(--spacing-400);
+  background: var(--color-error-100);
+  border: 1px solid var(--color-error-200);
+  border-radius: var(--radius-300);
+}
+
+.dangerText {
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-500);
+  margin: 0 0 var(--spacing-400);
+  line-height: 1.6;
+}
+
+/* ── Right main content ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-600);
+  min-width: 0;
+  max-width: 720px;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+
+  @include breakpoint(md) {
+    gap: var(--spacing-600);
+  }
+}
+
+.sectionItem {
+  /* No entrance animation — clean and immediate */
+}
+
+/* ── Delete Modal ── */
+.deleteModal {
+  > h2 {
+    font-size: var(--font-size-900);
+    font-weight: 800;
+    color: var(--color-destructive-500);
+    margin-bottom: var(--spacing-300);
+  }
+
+  > p {
+    color: var(--color-neutral-600);
+    font-size: var(--font-size-500);
+    margin-bottom: var(--spacing-600);
+    line-height: 1.6;
+  }
+}
+
+.deleteActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    gap: var(--spacing-300);
+    justify-content: flex-end;
+  }
+}
+
+.shopWarning {
+  > p {
+    color: var(--color-neutral-600);
+    font-size: var(--font-size-500);
+    margin-bottom: var(--spacing-300);
+  }
+}
+
+.shopWarningHeading {
+  color: var(--color-warning-700);
+  font-size: var(--font-size-900);
+  margin-bottom: var(--spacing-300);
+}
+
+.shopList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--spacing-600);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.shopLink {
+  color: var(--color-primary-600);
+  font-size: var(--font-size-500);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

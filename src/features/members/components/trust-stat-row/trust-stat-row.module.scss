@@ -1,0 +1,113 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  width: 100%;
+  padding: var(--spacing-400);
+  background: var(--color-white);
+  border-radius: var(--radius-300);
+  border: 1px solid var(--color-neutral-200);
+  box-shadow: var(--shadow-100);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-500) var(--spacing-600);
+    border-radius: var(--radius-500);
+  }
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-50);
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--font-size-700);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
+}
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.starFull {
+  font-size: var(--font-size-500);
+  color: var(--color-accent-500);
+}
+
+.starHalf {
+  font-size: var(--font-size-500);
+  color: var(--color-accent-300);
+}
+
+.starEmpty {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-300);
+}
+
+.ratingValue {
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-700);
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-300);
+  padding-top: var(--spacing-300);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-50);
+  flex: 1;
+}
+
+.statLabel {
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-400);
+  white-space: nowrap;
+}
+
+.statValue {
+  font-size: var(--font-size-600);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-800);
+}
+
+.divider {
+  width: 1px;
+  height: 32px;
+  background-color: var(--color-neutral-300);
+  flex-shrink: 0;
+}

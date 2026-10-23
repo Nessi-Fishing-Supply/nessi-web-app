@@ -1,0 +1,148 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.system {
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+  text-align: center;
+  margin: 0;
+  padding: var(--spacing-200) var(--spacing-400);
+}
+
+.nudge {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-200) var(--spacing-400);
+}
+
+.listingNodeWrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-200) var(--spacing-400);
+}
+
+.listingNode {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-100);
+  border-radius: var(--radius-300);
+  text-decoration: none;
+  max-width: 280px;
+  width: 100%;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.listingNodeUnavailable {
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+  padding: var(--spacing-300);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-100);
+  border-radius: var(--radius-300);
+}
+
+.listingNodeThumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-200);
+  overflow: hidden;
+  background-color: var(--color-neutral-100);
+}
+
+.listingNodeThumbEmpty {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-neutral-200);
+}
+
+.listingNodeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  min-width: 0;
+}
+
+.listingNodeTitle {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-900);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listingNodePrice {
+  font-size: var(--font-size-500);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.imageGrid {
+  display: grid;
+  gap: var(--spacing-100);
+  border-radius: var(--radius-300);
+  overflow: hidden;
+  width: 240px;
+
+  @include breakpoint(md) {
+    width: 280px;
+  }
+}
+
+.imageGridSingle {
+  grid-template-columns: 1fr;
+}
+
+.imageGridDouble {
+  grid-template-columns: 1fr 1fr;
+}
+
+.imageGridQuad {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.imageCell {
+  position: relative;
+  aspect-ratio: 1;
+  background-color: var(--color-neutral-100);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+  }
+}
+
+.imageCellWide {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  max-width: 280px;
+  background-color: var(--color-neutral-100);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+  }
+
+  @include breakpoint(md) {
+    max-width: 320px;
+  }
+}

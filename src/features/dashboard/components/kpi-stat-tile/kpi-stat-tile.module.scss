@@ -1,0 +1,61 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  padding: var(--spacing-400);
+  background-color: var(--surface-raised);
+  border-radius: var(--radius-300);
+  box-shadow: var(--shadow-200);
+}
+
+.label {
+  font-size: var(--font-size-300);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-400);
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.value {
+  font-size: var(--font-size-1300);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0;
+  line-height: var(--line-height-100);
+}
+
+.trend {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-400);
+}
+
+.trendIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.trendValue {
+  font-weight: 600;
+}
+
+.trendPeriod {
+  color: var(--color-neutral-500);
+}
+
+.trendUp {
+  color: var(--color-success-500);
+}
+
+.trendDown {
+  color: var(--color-warning-500);
+}
+
+.trendFlat {
+  color: var(--color-neutral-400);
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/price-drops",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/offers-expiry",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/orders-release",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/orders-deliver",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

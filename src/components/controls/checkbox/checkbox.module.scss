@@ -1,0 +1,53 @@
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-400);
+  flex-wrap: wrap;
+}
+
+// Hide Input
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+}
+
+.requiredIndicator {
+  color: var(--color-error-500);
+}
+
+.customCheckbox {
+  width: var(--spacing-400);
+  height: var(--spacing-400);
+  border: 1px solid var(--color-neutral-900);
+  border-radius: var(--radius-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--spacing-200);
+  transition: all ease 0.25s;
+}
+
+.customCheckbox.checked {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.checkIcon {
+  color: var(--color-white);
+  width: var(--spacing-400);
+  height: var(--spacing-400);
+}
+
+.errorText {
+  margin-top: var(--spacing-100);
+  font-size: var(--font-size-500);
+  color: var(--color-error-500);
+}

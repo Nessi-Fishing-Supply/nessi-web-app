@@ -1,0 +1,48 @@
+.container {
+  position: relative;
+  display: inline-flex;
+}
+
+.bellButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  min-width: 44px;
+  min-height: 44px;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.icon {
+  width: var(--spacing-700);
+  height: var(--spacing-700);
+  color: var(--color-neutral-900);
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-error-500);
+  color: var(--color-white);
+  font-size: var(--font-size-100);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}

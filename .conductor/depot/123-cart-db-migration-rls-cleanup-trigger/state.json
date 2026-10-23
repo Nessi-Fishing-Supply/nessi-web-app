@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "issue": 123,
+  "title": "feat(cart): database migration, RLS policies, and cleanup trigger",
+  "branch": "feat/123/cart-db-migration-rls-cleanup-trigger",
+  "status": "pr_open",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": {
+      "completed": ["1.1", "2.1", "2.2"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": {
+    "build": "pass",
+    "lint": "pass",
+    "tests": "pass"
+  },
+  "failureCount": {
+    "currentTask": 0
+  },
+  "timestamps": {
+    "started": "2026-03-23T20:30:00Z",
+    "lastActivity": "2026-03-23T20:48:00Z",
+    "completedAt": "2026-03-23T20:48:00Z",
+    "pruneAfter": "2026-05-22T20:48:00Z"
+  }
+}

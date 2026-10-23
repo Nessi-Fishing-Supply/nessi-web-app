@@ -1,0 +1,126 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: var(--z-900);
+  pointer-events: none;
+  transition: background var(--duration-300) var(--easing-out);
+}
+
+.scrimVisible {
+  background: rgb(28 28 28 / 48%);
+  pointer-events: auto;
+}
+
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-1000);
+  background: var(--color-white);
+  border-radius: var(--radius-700) var(--radius-700) 0 0;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform var(--duration-300) var(--easing-out);
+  box-shadow: var(--shadow-500);
+
+  &:focus {
+    outline: none;
+  }
+
+  @include breakpoint(md) {
+    max-width: 640px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(100%);
+  }
+}
+
+.sheetOpen {
+  transform: translateY(0);
+
+  @include breakpoint(md) {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.handle {
+  width: 36px;
+  height: 4px;
+  background: var(--color-neutral-300);
+  border-radius: var(--radius-800);
+  margin: var(--spacing-300) auto var(--spacing-100);
+  flex-shrink: 0;
+}
+
+.header {
+  padding: var(--spacing-200) var(--spacing-600) var(--spacing-400);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-900);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  line-height: var(--line-height-200);
+  margin: 0;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--spacing-600);
+  overscroll-behavior: contain;
+
+  @include breakpoint(md) {
+    padding: 0 var(--spacing-700);
+  }
+}
+
+.footer {
+  flex-shrink: 0;
+  padding: var(--spacing-400) var(--spacing-600);
+  padding-bottom: calc(var(--spacing-400) + env(safe-area-inset-bottom, 0px));
+
+  @include breakpoint(md) {
+    padding: var(--spacing-400) var(--spacing-700);
+    padding-bottom: var(--spacing-400);
+  }
+}
+
+.ctaButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--height-btn-lg);
+  background: var(--color-primary-500);
+  color: var(--color-white);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-400);
+  cursor: pointer;
+  transition: var(--transition-color);
+
+  &:hover {
+    background: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-focus-primary);
+  }
+
+  &:active {
+    background: var(--color-primary-700);
+  }
+}

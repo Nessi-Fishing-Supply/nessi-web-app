@@ -1,0 +1,89 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+  width: 100%;
+  padding: var(--spacing-300);
+  border-radius: var(--radius-600);
+  box-shadow: 0 0 0 0 transparent;
+  cursor: pointer;
+  transition: var(--transition-basic);
+
+  &:hover,
+  &:focus,
+  &:active {
+    box-shadow: var(--shadow-500);
+  }
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 224px;
+  border-radius: var(--radius-300);
+  overflow: hidden;
+
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global(.swiper),
+  :global(.swiper-wrapper),
+  :global(.swiper-slide) {
+    height: 100%;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+
+  .conditionBadge {
+    position: absolute;
+    top: var(--spacing-200);
+    left: var(--spacing-200);
+    z-index: 20;
+  }
+
+  .watchButton {
+    position: absolute;
+    top: var(--spacing-200);
+    right: var(--spacing-200);
+    z-index: 20;
+  }
+
+  .slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+
+  .title {
+    font-weight: 700;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .priceSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .price {
+      font-weight: 700;
+      font-size: var(--font-size-800);
+      margin: 0;
+    }
+  }
+
+  .location {
+    font-size: var(--font-size-200);
+    color: var(--color-neutral-500);
+    margin: 0;
+  }
+}

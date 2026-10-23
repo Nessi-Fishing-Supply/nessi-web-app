@@ -1,0 +1,242 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-500);
+  padding: var(--spacing-400);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-300);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--font-size-1000);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-100);
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-800);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--transition-color);
+
+  &:hover {
+    color: var(--color-neutral-900);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.listingCard {
+  display: flex;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-200);
+}
+
+.listingThumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-100);
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--color-neutral-100);
+
+  @include breakpoint(md) {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-neutral-200);
+}
+
+.listingInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-100);
+  min-width: 0;
+}
+
+.listingTitle {
+  margin: 0;
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.sellerName {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+}
+
+.sellerLabel {
+  color: var(--color-neutral-700);
+  font-weight: 500;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.priceList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-700);
+
+  dt,
+  dd {
+    margin: 0;
+  }
+}
+
+.priceTotal {
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  border-top: 1px solid var(--color-neutral-200);
+  padding-top: var(--spacing-200);
+}
+
+.trackingInfo {
+  margin: 0;
+  display: flex;
+  gap: var(--spacing-200);
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-700);
+  flex-wrap: wrap;
+}
+
+.carrier {
+  font-weight: 600;
+}
+
+.trackingLink {
+  color: var(--color-primary-500);
+  text-decoration: underline;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.shippingAddress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-700);
+  font-style: normal;
+}
+
+.verificationNotice {
+  margin: 0;
+  padding: var(--spacing-300);
+  background-color: var(--color-warning-50);
+  border: 1px solid var(--color-warning-200);
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-500);
+  color: var(--color-warning-700);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  align-items: flex-start;
+}
+
+.acceptBtn {
+  padding: var(--spacing-300) var(--spacing-500);
+  min-height: 44px;
+  background-color: var(--color-success-500);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-600);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-color);
+
+  &:hover {
+    background-color: var(--color-success-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-success-500);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.disputeNote {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+}
+
+.disputeLink {
+  color: var(--color-primary-500);
+  text-decoration: underline;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}

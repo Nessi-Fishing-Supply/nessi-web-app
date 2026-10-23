@@ -1,0 +1,20 @@
+// Global form styles
+// Auth form layout
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+}
+
+// Form feedback messages
+.errorMessage {
+  color: var(--color-error-500);
+  font-size: var(--font-size-sm, 0.875rem);
+  margin: 0;
+}
+
+.successMessage {
+  color: var(--color-success-500);
+  font-size: var(--font-size-sm, 0.875rem);
+  margin: 0;
+}

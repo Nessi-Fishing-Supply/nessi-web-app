@@ -1,0 +1,146 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-600);
+  padding: var(--spacing-400) var(--spacing-700);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700) var(--spacing-900);
+  }
+}
+
+.backLink {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-neutral-900);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.stepHeader {
+  text-align: center;
+}
+
+.stepTitle {
+  font-size: var(--font-size-1000);
+  font-weight: 800;
+  color: var(--color-neutral-900);
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.stepSubtitle {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: var(--spacing-100) 0 0;
+  line-height: 1.5;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.label {
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-900);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--spacing-300) var(--spacing-400);
+  border: 1px solid var(--color-neutral-900);
+  border-radius: var(--radius-300);
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-900);
+  background: transparent;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--transition-fast, 0.2s ease);
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--color-neutral-500);
+  }
+
+  &:hover {
+    border-color: var(--color-primary-400);
+  }
+
+  &:focus {
+    border-color: var(--color-primary-400);
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 0;
+  }
+
+  @include breakpoint(md) {
+    min-height: 140px;
+  }
+}
+
+.charCounter {
+  align-self: flex-end;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+}
+
+.charCounterWarn {
+  color: var(--color-error-500);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-300);
+}
+
+.skipLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+    color: var(--color-neutral-900);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

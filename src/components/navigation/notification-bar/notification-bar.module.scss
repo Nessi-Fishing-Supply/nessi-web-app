@@ -1,0 +1,60 @@
+.container {
+  background-color: var(--color-primary-500);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-400);
+  padding: var(--spacing-300) var(--spacing-400);
+}
+
+.text {
+  color: var(--color-surface-100);
+  font-size: 12px;
+  text-transform: capitalize;
+  text-align: center;
+  margin: 0;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  color: var(--color-surface-300);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.icon {
+  width: var(--spacing-600);
+  height: var(--spacing-600);
+}
+
+.onboarding {
+  background-color: var(--color-warning-500);
+}
+
+.dismissButton {
+  background: none;
+  border: none;
+  color: var(--color-surface-100);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-100);
+  border-radius: var(--radius-100);
+
+  &:hover {
+    background-color: rgb(255 255 255 / 20%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-surface-100);
+    outline-offset: 2px;
+  }
+}

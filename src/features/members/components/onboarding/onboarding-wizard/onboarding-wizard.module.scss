@@ -1,0 +1,58 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.wizard {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  background: var(--color-white);
+  border-radius: var(--radius-600);
+  box-shadow: var(--shadow-400);
+  overflow: hidden;
+
+  @include breakpoint(md) {
+    flex: none;
+    border-radius: var(--radius-700);
+    box-shadow: var(--shadow-lg, var(--shadow-400));
+  }
+}
+
+.progressWrapper {
+  padding: var(--spacing-600) var(--spacing-700) 0;
+  background: var(--color-white);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700) var(--spacing-900) 0;
+  }
+}
+
+.stepContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  animation: fade-slide-in 0.3s ease-out;
+}
+
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-500);
+}

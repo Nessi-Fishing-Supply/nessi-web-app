@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "issue": 15,
+  "title": "Profiles table migration + RLS policies",
+  "branch": "feat/15/profiles-table-migration-rls-policies",
+  "status": "pr_open",
+  "pr": "https://github.com/Nessi-Fishing-Supply/Nessi-Web-App/pull/61",
+  "phase": {
+    "current": 3,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": {
+    "started": "2026-03-19T12:00:00Z",
+    "lastActivity": "2026-03-19T12:30:00Z",
+    "completedAt": "2026-03-19T12:30:00Z",
+    "pruneAfter": "2026-05-18T12:30:00Z"
+  }
+}

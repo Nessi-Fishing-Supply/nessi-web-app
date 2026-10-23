@@ -1,0 +1,19 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-400);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-300);
+}
+
+.icon {
+  flex-shrink: 0;
+  font-size: var(--font-size-500);
+}
+
+.urgent {
+  color: var(--color-error-500);
+  font-weight: var(--font-weight-500);
+}

@@ -1,0 +1,14 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.sentinel {
+  width: 100%;
+  height: 1px;
+  visibility: hidden;
+}
+
+.endMessage {
+  padding: var(--space-lg) var(--space-base);
+  color: var(--color-gray-500);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}

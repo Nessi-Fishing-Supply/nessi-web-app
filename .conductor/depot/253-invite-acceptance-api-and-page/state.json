@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "issue": 253,
+  "title": "feat(shops): Create invite acceptance API route and /invite/[token] page",
+  "branch": "feat/253/invite-acceptance-api-and-page",
+  "status": "pr_open",
+  "phase": {
+    "current": 3,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3", "2.1", "2.2", "2.3", "3.1", "3.2", "3.3"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": {
+    "build": "pass",
+    "lint": "pass",
+    "tests": "pass"
+  },
+  "failureCount": {
+    "currentTask": 0
+  },
+  "timestamps": {
+    "started": "2026-03-25T00:00:00Z",
+    "lastActivity": "2026-03-25T17:25:07Z",
+    "completedAt": "2026-03-25T17:25:07Z",
+    "pruneAfter": "2026-05-24T17:25:07Z"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "issue": 12,
+  "title": "Redirect authenticated users away from auth pages in proxy.ts",
+  "branch": "feat/12/redirect-authenticated-users-from-auth-pages",
+  "status": "pr_open",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "1.2", "2.1"], "current": null, "remaining": [] }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": {
+    "started": "2026-03-19T12:00:00Z",
+    "lastActivity": "2026-03-19T12:10:00Z",
+    "completedAt": "2026-03-19T12:10:00Z",
+    "pruneAfter": "2026-05-18T12:10:00Z"
+  }
+}

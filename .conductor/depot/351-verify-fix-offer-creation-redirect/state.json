@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "issue": 351,
+  "title": "fix(messaging): verify and fix offer creation redirect to message thread",
+  "branch": "fix/351/verify-fix-offer-creation-redirect",
+  "status": "pr_open",
+  "phase": {
+    "current": 1,
+    "total": 1,
+    "tasks": {
+      "completed": ["1.1", "1.2"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": {
+    "started": "2026-04-04T12:00:00Z",
+    "lastActivity": "2026-04-04T12:08:00Z"
+  },
+  "completedAt": "2026-04-04T12:08:00Z",
+  "pruneAfter": "2026-06-03T12:08:00Z"
+}

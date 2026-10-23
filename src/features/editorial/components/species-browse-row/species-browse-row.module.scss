@@ -1,0 +1,76 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.row {
+  display: flex;
+  gap: var(--spacing-400);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--spacing-200);
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-200);
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  min-width: 64px;
+
+  &:focus-visible .circle {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-circle);
+  background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-surface-300) 100%);
+  border: 3px solid transparent;
+  transition: var(--transition-basic);
+
+  .active & {
+    border-color: var(--color-primary-500);
+    background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-primary-200) 100%);
+  }
+
+  .inactive & {
+    border-color: var(--color-surface-400);
+  }
+
+  .inactive:hover & {
+    border-color: var(--color-primary-300);
+  }
+}
+
+.emoji {
+  font-size: 26px;
+  line-height: 1;
+  user-select: none;
+}
+
+.name {
+  font-size: var(--font-size-300);
+  font-weight: 600;
+  color: var(--color-neutral-700);
+  text-align: center;
+  white-space: nowrap;
+
+  .active & {
+    color: var(--color-primary-600);
+  }
+}

@@ -1,0 +1,29 @@
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutral-200);
+  border-top: none;
+  border-radius: 0 0 var(--radius-500) var(--radius-500);
+  box-shadow: var(--shadow-300);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-neutral-200);
+  margin: 0 var(--spacing-400);
+}
+
+.sectionHeader {
+  font-size: var(--font-size-200);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--spacing-300) var(--spacing-400) var(--spacing-100);
+}

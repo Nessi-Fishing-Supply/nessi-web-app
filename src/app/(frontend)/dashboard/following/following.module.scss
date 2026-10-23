@@ -1,0 +1,92 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+  padding: var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700);
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-300);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--font-size-1000);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-400);
+  padding: var(--spacing-800) var(--spacing-400);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: var(--font-size-1400);
+  color: var(--color-neutral-300);
+}
+
+.emptyText {
+  margin: 0;
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-500);
+}
+
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.skeletonCard {
+  height: 80px;
+  border-radius: var(--radius-300);
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-100) 25%,
+    var(--color-neutral-200) 50%,
+    var(--color-neutral-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+
+  @include breakpoint(md) {
+    height: 72px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

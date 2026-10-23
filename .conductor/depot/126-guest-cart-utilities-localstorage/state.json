@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "issue": 126,
+  "title": "feat(cart): #50.4 — guest cart utilities (localStorage)",
+  "branch": "feat/126/guest-cart-utilities-localstorage",
+  "status": "pr_open",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": {
+      "completed": ["1.1", "1.2", "2.1", "2.2"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": {
+    "started": "2026-03-23T19:00:00Z",
+    "lastActivity": "2026-03-23T19:22:00Z",
+    "completedAt": "2026-03-23T19:22:00Z"
+  },
+  "pruneAfter": "2026-05-22T19:22:00Z"
+}

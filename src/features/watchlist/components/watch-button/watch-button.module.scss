@@ -1,0 +1,40 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--min-touch-target);
+  height: var(--min-touch-target);
+  border: none;
+  border-radius: var(--radius-circle);
+  background-color: rgb(0 0 0 / 40%);
+  cursor: pointer;
+  transition: var(--transition-color);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    background-color: rgb(0 0 0 / 56%);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.iconDefault {
+  width: var(--spacing-500);
+  height: var(--spacing-500);
+  color: var(--color-white);
+  transition: color var(--duration-200) var(--easing-out);
+}
+
+.iconWatched {
+  width: var(--spacing-500);
+  height: var(--spacing-500);
+  color: var(--color-error-500);
+  transition: color var(--duration-200) var(--easing-out);
+}

@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "issue": 97,
+  "title": "Add shop storage cleanup to account deletion route",
+  "branch": "fix/97/add-shop-storage-cleanup-to-account-deletion",
+  "status": "pr_open",
+  "phase": {
+    "current": 1,
+    "total": 1,
+    "tasks": { "completed": ["1.1", "1.2"], "current": null, "remaining": [] }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-21T00:00:00Z", "lastActivity": "2026-03-21T00:05:00Z" },
+  "completedAt": "2026-03-21T00:05:00Z",
+  "pruneAfter": "2026-05-20T00:05:00Z"
+}

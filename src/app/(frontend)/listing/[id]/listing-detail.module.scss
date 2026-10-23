@@ -1,0 +1,295 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+// Page container
+.page {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 72px;
+
+  @include breakpoint(lg) {
+    padding-bottom: var(--spacing-800);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+// Two-column layout at lg
+.layout {
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint(lg) {
+    flex-direction: row;
+    gap: var(--spacing-800);
+    padding: var(--spacing-600) var(--spacing-400);
+  }
+}
+
+// Gallery column — left side on desktop
+.galleryColumn {
+  @include breakpoint(lg) {
+    flex: 0 0 58%;
+    max-width: 58%;
+  }
+}
+
+// Wrapper to position WatchButton over the gallery
+.galleryWrapper {
+  position: relative;
+}
+
+// WatchButton overlay — top-right corner of gallery
+.watchButtonOverlay {
+  position: absolute;
+  top: var(--spacing-200);
+  right: var(--spacing-200);
+  z-index: 21;
+}
+
+// Details column — right side, sticky on desktop
+.detailsColumn {
+  padding: var(--spacing-400);
+
+  @include breakpoint(lg) {
+    flex: 1;
+    position: sticky;
+    top: var(--spacing-600);
+    align-self: flex-start;
+    padding: 0;
+  }
+}
+
+// Condition badge row
+.conditionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  margin-bottom: var(--spacing-200);
+}
+
+.quantityBadge {
+  font-size: var(--font-size-200);
+  color: var(--color-neutral-600);
+  background-color: var(--color-neutral-100);
+  padding: var(--spacing-50) var(--spacing-200);
+  border-radius: var(--radius-100);
+  font-weight: 500;
+}
+
+// Title
+.title {
+  font-size: var(--font-size-900);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-200);
+  line-height: 1.3;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1000);
+  }
+}
+
+// Price
+.priceRow {
+  margin-bottom: var(--spacing-300);
+}
+
+.price {
+  font-size: var(--font-size-1100);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1300);
+  }
+}
+
+// Shipping
+.shippingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  margin-bottom: var(--spacing-600);
+  padding-bottom: var(--spacing-600);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.shippingIcon {
+  flex-shrink: 0;
+  font-size: var(--font-size-800);
+  color: var(--color-neutral-500);
+}
+
+.shippingLabel {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+}
+
+.shippingFree {
+  font-size: var(--font-size-500);
+  color: var(--color-success-500);
+  font-weight: 600;
+}
+
+// Sold banner
+.soldBanner {
+  padding: var(--spacing-600);
+  background-color: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-300);
+  text-align: center;
+  margin-bottom: var(--spacing-600);
+}
+
+.soldText {
+  font-weight: 600;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-700);
+}
+
+// Shop context notice
+.shopContextNotice {
+  padding: var(--spacing-400);
+  background-color: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-300);
+  text-align: center;
+  margin-bottom: var(--spacing-600);
+}
+
+.shopContextText {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  font-weight: 500;
+}
+
+// Action buttons
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  margin-bottom: var(--spacing-600);
+}
+
+.messageLink {
+  text-align: center;
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-primary-600);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: var(--spacing-200) 0;
+  transition: color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    color: var(--color-neutral-400);
+    cursor: not-allowed;
+  }
+}
+
+// Seller section
+.sellerSection {
+  padding-top: var(--spacing-300);
+}
+
+// Below-fold content
+.belowFold {
+  padding: 0 var(--spacing-400);
+
+  @include breakpoint(lg) {
+    padding: 0 var(--spacing-400);
+    max-width: 58%;
+  }
+}
+
+// Content sections with visual separation
+.contentSection {
+  padding: var(--spacing-600) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-800);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-300);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-900);
+  }
+}
+
+.descriptionText {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-700);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-700);
+  }
+}
+
+// Product specs table
+.specsTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.specRow {
+  display: flex;
+  padding: var(--spacing-200) 0;
+  border-bottom: 1px solid var(--color-neutral-100);
+  font-size: var(--font-size-500);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.specLabel {
+  flex: 0 0 140px;
+  color: var(--color-neutral-500);
+  font-weight: 500;
+}
+
+.specValue {
+  flex: 1;
+  color: var(--color-neutral-900);
+}
+
+// Sticky bar — mobile only
+.stickyBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-300);
+  padding: var(--spacing-200) var(--spacing-400);
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-neutral-200);
+  box-shadow: var(--shadow-400);
+
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
+.stickyPrice {
+  font-size: var(--font-size-900);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  white-space: nowrap;
+}

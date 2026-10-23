@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "issue": 71,
+  "title": "feat(onboarding): add buyer/seller branch point and seller opt-in steps",
+  "branch": "feat/71/add-buyer-seller-branch-point",
+  "status": "pr_open",
+  "phase": {
+    "current": 3,
+    "total": 3,
+    "tasks": {
+      "completed": ["1.1", "1.2", "1.3", "1.4", "1.5", "2.1", "2.2", "3.1", "3.2", "3.3", "3.4"],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-20T18:00:00Z", "lastActivity": "2026-03-20T18:32:00Z" },
+  "completedAt": "2026-03-20T18:32:00Z",
+  "pruneAfter": "2026-05-19T18:32:00Z"
+}

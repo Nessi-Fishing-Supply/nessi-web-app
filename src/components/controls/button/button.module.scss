@@ -1,0 +1,164 @@
+.base {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: var(--radius-300);
+  gap: var(--spacing-200);
+  padding: var(--spacing-300) var(--spacing-600);
+  font-size: var(--font-size-700);
+  background: none;
+  box-shadow: none;
+  cursor: pointer;
+  transition: var(--transition-basic);
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: var(--color-neutral-500);
+    border-color: var(--color-neutral-500);
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .loader {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgb(255 255 255 / 40%);
+    border-top-color: var(--color-white);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  // Set full width
+  &.fullWidth {
+    width: 100%;
+  }
+
+  // Set border radius
+  &.round {
+    border-radius: var(--radius-800);
+  }
+
+  // Set margin bottom {
+  &.marginBottom {
+    margin-bottom: var(--spacing-400);
+  }
+
+  // Base Outline styles
+  &.outline {
+    background-color: transparent;
+
+    &:disabled {
+      color: var(--color-neutral-500);
+    }
+
+    &:hover:not(:disabled) {
+      background-color: transparent;
+    }
+  }
+}
+
+.primary {
+  @extend .base;
+
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+  color: var(--color-white);
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+  }
+
+  &.outline {
+    color: var(--color-primary-500);
+  }
+}
+
+.secondary {
+  @extend .base;
+
+  background-color: var(--color-accent-500);
+  border-color: var(--color-accent-500);
+  color: var(--color-white);
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: var(--color-accent-600);
+    border-color: var(--color-accent-600);
+  }
+
+  &.outline {
+    color: var(--color-accent-500);
+  }
+}
+
+.dark {
+  @extend .base;
+
+  background-color: var(--color-neutral-900);
+  border-color: var(--color-neutral-900);
+  color: var(--color-white);
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: var(--color-neutral-800);
+    border-color: var(--color-neutral-800);
+  }
+
+  &.outline {
+    color: var(--color-neutral-900);
+  }
+}
+
+.light {
+  @extend .base;
+
+  background-color: var(--color-surface-100);
+  border-color: var(--color-surface-100);
+  color: var(--color-neutral-900);
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: var(--color-neutral-200);
+    border-color: var(--color-neutral-200);
+  }
+
+  &.outline {
+    color: var(--color-surface-100);
+  }
+}
+
+.danger {
+  @extend .base;
+
+  background-color: var(--color-error-700);
+  border-color: var(--color-error-700);
+  color: var(--color-white);
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: var(--color-error-700);
+    border-color: var(--color-error-700);
+  }
+
+  &.outline {
+    color: var(--color-error-700);
+  }
+}
+
+// Loading Animation
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

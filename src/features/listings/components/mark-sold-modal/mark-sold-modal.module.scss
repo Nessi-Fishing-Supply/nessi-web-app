@@ -1,0 +1,80 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-900);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.listingTitle {
+  margin: 0;
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-900);
+}
+
+.listedPrice {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.label {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-900);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--color-neutral-500);
+}
+
+.priceInputWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-100);
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary-500) 15%, transparent);
+  }
+}
+
+.currencyPrefix {
+  padding: 0 var(--spacing-200);
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  background-color: var(--color-neutral-100);
+  border-right: 1px solid var(--color-neutral-400);
+  line-height: 44px;
+}
+
+.priceInput {
+  flex: 1;
+  border: none;
+  padding: var(--spacing-200) var(--spacing-300);
+  font-size: var(--font-size-700);
+  min-height: 44px;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}

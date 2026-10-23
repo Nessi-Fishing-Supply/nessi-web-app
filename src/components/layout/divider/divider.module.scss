@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-200);
+
+  p {
+    color: var(--color-primary-500);
+    font-size: var(--font-size-500);
+  }
+
+  hr {
+    border: none;
+    width: 100%;
+    height: 1px;
+    background: var(--color-primary-500);
+  }
+}

@@ -1,0 +1,45 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgb(0 0 0 / 50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.overlayVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-white);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 250ms ease;
+  outline: none;
+}
+
+.panelOpen {
+  transform: translateX(0);
+}
+
+.desktopPanel {
+  @include breakpoint(lg) {
+    position: static;
+    width: auto;
+    max-width: none;
+    transform: none;
+    transition: none;
+    overflow-y: auto;
+  }
+}

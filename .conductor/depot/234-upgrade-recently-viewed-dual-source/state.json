@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "issue": 234,
+  "title": "feat(recommendations): #154.1b — upgrade useRecentlyViewed hook to dual-source (DB + localStorage)",
+  "branch": "feat/234/upgrade-recently-viewed-dual-source",
+  "status": "pr_open",
+  "phase": {
+    "current": 4,
+    "total": 4,
+    "tasks": {
+      "completed": [
+        "1.1",
+        "1.2",
+        "1.3",
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "3.1",
+        "3.2",
+        "4.1",
+        "4.2",
+        "4.3"
+      ],
+      "current": null,
+      "remaining": []
+    }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": {
+    "started": "2026-03-24T12:00:00Z",
+    "lastActivity": "2026-03-24T12:05:00Z",
+    "completedAt": "2026-03-24T12:05:00Z"
+  },
+  "pruneAfter": "2026-05-23T12:05:00Z"
+}

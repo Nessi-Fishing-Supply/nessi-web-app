@@ -1,0 +1,122 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  width: 100%;
+  padding: var(--spacing-400);
+  border-radius: var(--radius-400);
+  border-width: 1.5px;
+  border-style: solid;
+
+  @include breakpoint(md) {
+    padding: var(--spacing-500);
+    border-radius: var(--radius-500);
+  }
+}
+
+.pending {
+  background: var(--color-white);
+  border-color: var(--color-accent-500);
+}
+
+.floorWarning {
+  background: var(--color-error-100);
+  border-color: var(--color-error-500);
+}
+
+.accepted {
+  background: var(--color-success-100);
+  border-color: var(--color-success-500);
+}
+
+.amountRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-300);
+  flex-wrap: wrap;
+}
+
+.amount {
+  font-size: var(--font-size-1300);
+  font-weight: var(--font-weight-700);
+  color: var(--color-accent-500);
+  letter-spacing: var(--letter-spacing-100);
+  line-height: var(--line-height-100);
+}
+
+.amountError {
+  color: var(--color-error-500);
+}
+
+.originalPrice {
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-500);
+  text-decoration: line-through;
+}
+
+.expiry {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+}
+
+.expiryLabel {
+  font-weight: var(--font-weight-500);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-200);
+  margin-top: var(--spacing-100);
+
+  @include breakpoint(md) {
+    flex-wrap: nowrap;
+  }
+}
+
+.warningHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-200);
+}
+
+.warningIcon {
+  font-size: var(--font-size-800);
+  color: var(--color-error-500);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.warningText {
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-600);
+  color: var(--color-error-700);
+  line-height: var(--line-height-300);
+}
+
+.acceptedHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+}
+
+.acceptedIcon {
+  font-size: var(--font-size-800);
+  color: var(--color-success-500);
+  flex-shrink: 0;
+}
+
+.acceptedTitle {
+  font-size: var(--font-size-700);
+  font-weight: var(--font-weight-700);
+  color: var(--color-success-700);
+}
+
+.acceptedSub {
+  margin: 0;
+  font-size: var(--font-size-500);
+  color: var(--color-success-500);
+}

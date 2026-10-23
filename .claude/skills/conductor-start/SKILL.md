@@ -1,0 +1,243 @@
+---
+name: conductor-start
+description: Main conductor entry point — fetches a GitHub issue, plans implementation, and executes the full autonomous workflow through to PR creation
+user-invocable: true
+argument-hint: "[issue number, e.g. #42]"
+---
+
+# Conductor Start
+
+You are the Conductor — an autonomous workflow engine that takes a GitHub issue from ticket to PR.
+
+The full architecture reference is auto-loaded from `.conductor/AGENTS.md`. Every state transition MUST be persisted to disk immediately.
+
+## Input
+
+Parse the issue number from the argument: `{{ issue }}`
+
+## Execution Flow
+
+### Step 1: Initialize Track
+
+1. Read project config from `.conductor/github-project.json`
+2. Fetch the GitHub issue via `gh issue view {issue} --repo Nessi-Fishing-Supply/Nessi-Web-App --json title,body,labels,comments,assignees`
+3. Generate a track name: `{issue_number}-{kebab-title}` (max 50 chars for the kebab portion)
+4. Create directory: `.conductor/tracks/{track_name}/`
+5. Write initial `state.json`:
+   ```json
+   {
+     "version": "1.0.0",
+     "issue": <number>,
+     "title": "<title>",
+     "branch": "<type>/<issue>/<kebab-title>",
+     "status": "planning",
+     "phase": { "current": 0, "total": 0, "tasks": { "completed": [], "current": null, "remaining": [] } },
+     "health": { "build": "unknown", "lint": "unknown", "tests": "unknown" },
+     "failureCount": { "currentTask": 0 },
+     "timestamps": { "started": "<now>", "lastActivity": "<now>" }
+   }
+   ```
+6. Write `active.json` pointing to this track
+7. Move the GitHub issue to **In Progress** on the kanban board.
+   **IMPORTANT: Run each command as a SEPARATE Bash call — never chain with `$()` substitution.**
+
+   a. First, find the project item ID:
+   ```bash
+   gh project item-list 2 --owner Nessi-Fishing-Supply --format json | jq -r '.items[] | select(.content.number == {issue}) | .id'
+   ```
+   Capture the output as ITEM_ID. If empty/null, add the issue to the board first:
+   ```bash
+   gh project item-add 2 --owner Nessi-Fishing-Supply --url https://github.com/Nessi-Fishing-Supply/Nessi-Web-App/issues/{issue} --format json | jq -r '.id'
+   ```
+   Capture that output as ITEM_ID.
+
+   b. Then move to In Progress (use the ITEM_ID value from the previous step):
+   ```bash
+   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id 47fc9ee4
+   ```
+8. Create and checkout the feature branch
+
+Display a boarding banner:
+```
+🎫 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Conductor — #{issue}
+   Boarding: {title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Step 2: Planning
+
+1. Update `state.json` → `status: "planning"`, persist to disk
+2. Launch the **plan-architect** agent with:
+   - Full issue content (title, description, acceptance criteria, comments)
+   - Instruction to scan the codebase for relevant patterns, existing files, and conventions
+   - The project's tech stack context (Next.js 16 App Router, React 19, Supabase Auth + PostgreSQL + Storage, Tanstack Query, Zustand, SCSS with CSS Modules)
+3. Write the agent's output to `plan.md` in the track directory
+4. Parse the plan to populate `state.json` phase/task structure
+5. Persist `state.json` to disk
+
+Display the plan summary:
+```
+🚂 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Conductor — #{issue}
+   Plan: {phase_count} phases, {task_count} tasks
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Step 3: Implementation
+
+1. Update `state.json` → `status: "implementing"`, persist to disk
+2. For each phase:
+   a. Display phase banner:
+      ```
+      🚃 Phase {n}/{total}: {phase_title}
+      ```
+   b. For each task in the phase:
+      - Update `state.json` with current task, persist to disk
+
+      #### Expert Context Pre-Loading (within implementation loop)
+
+      If the current task has `Expert Domains` specified in the plan:
+      1. For each expert domain, invoke the corresponding expert skill
+      2. The skill provides guidance (recommended patterns, gotchas, code examples)
+      3. Include the skill's guidance in the task-executor's prompt as "Expert Context"
+      4. This happens BEFORE task-executor starts, not reactively during execution
+
+      Expert skill mapping:
+      | Domain | Skill |
+      |--------|-------|
+      | supabase | /ask-supabase |
+      | nextjs | /ask-nextjs |
+      | vercel | /ask-vercel |
+      | scss | /ask-scss |
+      | state-management | /ask-state |
+
+      Multiple expert skills can be invoked in parallel for a single task.
+
+      - Launch **task-executor** agent with task details + relevant spec context from plan.md + any expert context collected above
+      - **On success**: Mark task complete in state, reset `failureCount.currentTask`, persist
+      - **On failure**: Apply failure escalation (see below)
+   c. At phase boundary:
+      - Launch **phase-verifier** agent to run `pnpm build`
+      - If verification fails: attempt fix, re-verify once, escalate to blocked if still failing
+      - If passes: update health in `state.json`, persist
+      - **Format all changed files before committing:** `pnpm prettier --write $(git diff --name-only HEAD)` — this prevents CI `format:check` failures, especially on markdown files (AGENTS.md, plan.md) that Prettier reformats
+      - Stage conductor state alongside source changes: `git add .conductor/` (tracks state, plan, learnings)
+      - Commit phase: `{type}({scope}): #{issue} {phase description}` with task summaries in body
+      - Append any learnings to `learnings.md`
+      - Display checkpoint:
+        ```
+        🚉 Phase {n}/{total} complete ██████████░░░░░░░░░░ {percent}%
+        ```
+
+### Step 4: Review
+
+1. Update `state.json` → `status: "reviewing"`, persist to disk
+2. Invoke the `/preflight` skill (it runs build, lint, typecheck, format, tests, and code review)
+3. Launch **superpowers:code-reviewer** agent to review implementation against:
+   - The plan (`plan.md` from the track directory)
+   - Project coding standards (AGENTS.md files)
+   - Codebase patterns and conventions
+   - The original GitHub issue acceptance criteria
+4. Merge preflight output and code review findings into unified findings format ([B], [W], [I])
+5. Write findings to `findings.md`, append to `review-log.md`
+6. If all checks pass → `status: "complete"`. If any [B] blocking findings → `status: "needs_fixes"`
+
+### Step 5: Fix (if needed)
+
+1. Update `state.json` → `status: "fixing"`, persist to disk
+2. Launch **finding-resolver** agent to create fix tasks from findings
+3. Execute each fix task via **task-executor** agent
+4. Append outcomes to `review-log.md`
+5. Update `state.json` → `status: "reviewing"`, loop back to Step 4
+6. Maximum 2 review/fix cycles. If still failing, escalate to blocked.
+
+### Step 6: Documentation & Diagrams
+
+After review passes and before PR creation, update project documentation:
+
+1. **Feature AGENTS.md** — If a new feature domain was created (`src/features/{domain}/`), ensure its `AGENTS.md` is accurate and complete. If the feature was modified, update the existing AGENTS.md to reflect changes.
+
+2. **Root AGENTS.md** — If the changes affect architecture, add new key directories, change state management patterns, or introduce new conventions, update the relevant sections in the root `AGENTS.md`.
+
+3. **README.md** — If the changes add user-facing features, new scripts, or change the project structure, update the README accordingly.
+
+4. **Diagrams** — If the changes introduce a new data flow or significant architectural component, generate a Mermaid diagram via `/diagram` and save to `docs/diagrams/`. Update existing diagrams if the changes modify documented flows.
+
+5. **API documentation** — If new API routes were created or modified (`src/app/api/`), ensure the route's purpose, request/response format, and auth requirements are documented in the feature's AGENTS.md.
+
+Rules for this step:
+- Only update docs that are actually affected by the changes — don't touch unrelated docs
+- Documentation updates are committed as part of the final phase, not as a separate PR
+- If no documentation changes are needed (e.g., a pure bug fix with no architectural impact), skip this step and note "No doc updates needed" in the PR body
+- Architecture diagrams (docs/diagrams/) are optional unless the feature introduces a new data flow or system component
+
+### Step 7: PR Creation
+
+1. Update `state.json` → `status: "complete"`, persist to disk
+2. **Finalize conductor state BEFORE launching pr-creator:**
+   a. Update `state.json` → `status: "pr_open"`, add `completedAt` and `pruneAfter` (now + 60 days)
+   b. Move track directory from `tracks/` to `depot/`
+   c. Clear `active.json` → `{ "active": null, "lastAccessed": "<now>" }`
+   d. Stage and commit all conductor state changes:
+      ```bash
+      git add .conductor/
+      git commit -m "chore: #${issue} finalize conductor — move track to depot
+
+      Co-Authored-By: Conductor <noreply@conductor.dev>"
+      ```
+   **This commit MUST happen before the push.** The depot move is part of the branch history.
+3. Launch **pr-creator** agent to:
+   - Push the branch (which now includes the depot move commit)
+   - Create PR via `gh pr create` with title and body derived from plan + changes
+   - Include a "Documentation" section in the PR body listing what was updated
+   - Move GitHub issue to **Ready for Review** on kanban board
+4. Display completion:
+   ```
+   🏁 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Conductor — #{issue}
+      End of the line. PR created: {url}
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ```
+
+## Failure Escalation
+
+| Attempt | Strategy |
+|---------|----------|
+| 1st failure | Retry — same task, fresh context via task-executor |
+| 2nd failure | Retry — include prior error context via task-executor |
+| 3rd failure | Launch debug-investigator, then one more fix attempt via task-executor |
+| Still failing | Escalate to blocked |
+
+### Blocked Escalation
+
+1. Update `state.json` → `status: "blocked"`, persist to disk
+2. Move GitHub issue to **Blocked** column (use the ITEM_ID obtained earlier — if not available, fetch it with a separate `gh project item-list` call first):
+   ```bash
+   gh project item-edit --project-id PVT_kwDOCuq3-M4BSHz8 --id {ITEM_ID} --field-id PVTSSF_lADOCuq3-M4BSHz8zg_v78E --single-select-option-id ead5882a
+   ```
+3. Leave a comment on the issue with: what task failed, error details from all attempts, debug findings, suggested next steps:
+   ```bash
+   gh issue comment {issue} --repo Nessi-Fishing-Supply/Nessi-Web-App --body "$(cat <<'EOF'
+   {detailed blocked message}
+   EOF
+   )"
+   ```
+4. Display:
+   ```
+   🛑 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Conductor — #{issue}
+      Blocked: {reason}
+      Issue commented with details. Awaiting human intervention.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ```
+
+## Critical Rules
+
+- **EVERY state transition MUST be persisted to `state.json` on disk immediately.** This is the crash recovery mechanism.
+- **EVERY `git commit` MUST include `.conductor/` alongside source changes.** Never commit source files without also staging conductor state. Use `git add .conductor/ <source files>` in every commit command. This includes phase commits, review commits, fix commits, and the final depot-move commit.
+- **The depot move + active.json clear MUST be committed and pushed as part of the branch.** Do this BEFORE launching the pr-creator agent, not after. If the depot move isn't in the branch, it won't be in the PR merge and the track will be stranded in `tracks/` forever.
+- **EVERY `git commit` MUST be preceded by `pnpm prettier --write` on all changed files.** Run `pnpm prettier --write $(git diff --name-only HEAD)` before staging. This prevents CI `format:check` failures — especially on markdown files (AGENTS.md, plan.md) that Prettier reformats tables and line lengths.
+- **Append-only**: `review-log.md` is never overwritten, only appended to.
+- **Agent isolation**: Only launch agents for their designated purpose. task-executor writes code. pr-creator does git operations. phase-verifier only reports.
+- Always read `state.json` fresh before making decisions — never rely on in-memory state from earlier in the conversation.

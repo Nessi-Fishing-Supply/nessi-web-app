@@ -1,0 +1,57 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Linked Accounts — Provider row with
+   icon badge and connection status
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-300);
+  padding: var(--spacing-200);
+  border-radius: var(--radius-300);
+  transition: var(--transition-color);
+
+  &:hover {
+    background: var(--color-neutral-100);
+  }
+}
+
+.provider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-900);
+  height: var(--spacing-900);
+  border-radius: var(--radius-600);
+  background: linear-gradient(135deg, var(--color-neutral-100) 0%, var(--color-surface-300) 100%);
+  font-size: var(--font-size-1000);
+  color: var(--color-neutral-600);
+  box-shadow: var(--shadow-100);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-50);
+}
+
+.name {
+  font-size: var(--font-size-700);
+  font-weight: 500;
+  color: var(--color-neutral-900);
+}
+
+.status {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  font-style: italic;
+}

@@ -1,0 +1,150 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.matrix {
+  width: 100%;
+}
+
+// Mobile: stacked card list
+.mobileList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint(md) {
+    display: none;
+  }
+}
+
+.mobileRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.mobileFeatureLabel {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-700);
+}
+
+.mobileLevelBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  padding: var(--spacing-100) var(--spacing-300);
+  border-radius: var(--radius-800);
+  font-size: var(--font-size-300);
+  font-weight: 500;
+  min-height: var(--spacing-700);
+
+  &.level-full {
+    background: var(--color-success-50);
+    color: var(--color-success-700);
+  }
+
+  &.level-view {
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+
+  &.level-none {
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-500);
+  }
+}
+
+// Desktop: table/grid layout
+.table {
+  display: none;
+
+  @include breakpoint(md) {
+    display: grid;
+    grid-template-columns: 1fr repeat(3, minmax(var(--spacing-1100), 1fr));
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-200);
+    overflow: hidden;
+  }
+}
+
+.headerRow {
+  display: contents;
+}
+
+.headerCell {
+  padding: var(--spacing-300) var(--spacing-400);
+  background: var(--color-neutral-50);
+  font-size: var(--font-size-300);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-300);
+  border-bottom: 1px solid var(--color-neutral-200);
+  text-align: center;
+
+  &:first-child {
+    text-align: left;
+  }
+}
+
+.tableRow {
+  display: contents;
+
+  &:last-child > * {
+    border-bottom: none;
+  }
+}
+
+.featureCell {
+  padding: var(--spacing-300) var(--spacing-400);
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-700);
+  border-bottom: 1px solid var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.levelLabel {
+  font-size: var(--font-size-300);
+  font-weight: 500;
+}
+
+.levelCell {
+  padding: var(--spacing-300) var(--spacing-400);
+  border-bottom: 1px solid var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-600);
+  min-height: 44px;
+
+  &.inactive {
+    color: var(--color-neutral-200);
+  }
+
+  &.active-full {
+    background: var(--color-success-50);
+    color: var(--color-success-700);
+  }
+
+  &.active-view {
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+
+  &.active-none {
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-400);
+  }
+}

@@ -1,0 +1,272 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+// Container
+.photoManager {
+  width: 100%;
+}
+
+// Grid of photo thumbnails
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--spacing-200);
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--spacing-300);
+  }
+}
+
+// Drop zone (when no photos or for adding more)
+.dropZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-600);
+  border: 2px dashed var(--color-neutral-400);
+  border-radius: var(--radius-300);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-color),
+    background-color var(--transition-color);
+  min-height: 120px;
+  color: var(--color-neutral-500);
+
+  &:hover,
+  &.dragOver {
+    border-color: var(--color-primary-500);
+    background-color: rgb(0 0 0 / 2%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.dropZoneIcon {
+  font-size: var(--font-size-1100);
+  color: var(--color-neutral-500);
+}
+
+.dropZoneText {
+  font-size: var(--font-size-500);
+  text-align: center;
+}
+
+.dropZoneHint {
+  font-size: var(--font-size-200);
+  color: var(--color-neutral-500);
+  text-align: center;
+}
+
+// Individual photo tile
+.thumbnail {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-100);
+  overflow: hidden;
+  background-color: var(--color-neutral-100);
+}
+
+.thumbnailError {
+  border: 2px solid var(--color-error-500);
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.thumbnailImage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+// Progress bar at bottom of thumbnail
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgb(0 0 0 / 10%);
+  z-index: 2;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--color-primary-500);
+  transition: width var(--transition-basic);
+}
+
+// Error overlay with retry icon
+.errorOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(0 0 0 / 30%);
+  z-index: 2;
+}
+
+.retryButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  color: var(--color-error-500);
+  cursor: pointer;
+  font-size: var(--font-size-800);
+  box-shadow: var(--shadow-200);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+// Cover badge (top-left)
+.coverBadge {
+  position: absolute;
+  top: var(--spacing-100);
+  left: var(--spacing-100);
+  z-index: 2;
+}
+
+// Delete button (top-right)
+.deleteButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background-color: rgb(0 0 0 / 50%);
+  color: var(--color-white);
+  cursor: pointer;
+  border-radius: 0 var(--radius-100) 0 var(--radius-100);
+  font-size: var(--font-size-800);
+  opacity: 0;
+  transition: opacity var(--transition-color);
+  z-index: 3;
+
+  .thumbnail:hover &,
+  .thumbnail:focus-within &,
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  // Always visible on touch devices
+  @media (hover: none) {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+  }
+}
+
+// Add more button (grid item)
+.addButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-100);
+  aspect-ratio: 1;
+  border: 2px dashed var(--color-neutral-400);
+  border-radius: var(--radius-100);
+  cursor: pointer;
+  background: none;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-200);
+  transition:
+    border-color var(--transition-color),
+    color var(--transition-color);
+
+  &:hover {
+    border-color: var(--color-primary-500);
+    color: var(--color-primary-500);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.addButtonIcon {
+  font-size: var(--font-size-900);
+}
+
+// Minimum photos indicator
+.minPhotosHint {
+  margin-top: var(--spacing-200);
+  font-size: var(--font-size-200);
+  color: var(--color-neutral-500);
+}
+
+// Mobile bottom sheet for photo source selection
+.bottomSheet {
+  padding: var(--spacing-400);
+}
+
+.bottomSheetOption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  width: 100%;
+  padding: var(--spacing-300) var(--spacing-400);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-300);
+  background: none;
+  cursor: pointer;
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-900);
+  transition: background-color var(--transition-color);
+  min-height: 44px;
+
+  & + & {
+    margin-top: var(--spacing-200);
+  }
+
+  &:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.bottomSheetIcon {
+  font-size: var(--font-size-900);
+  color: var(--color-neutral-500);
+}
+
+// Error message below thumbnail after 3 failed retries
+.errorMessage {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-100);
+  background-color: var(--color-error-500);
+  color: var(--color-white);
+  font-size: 10px;
+  text-align: center;
+  z-index: 2;
+}

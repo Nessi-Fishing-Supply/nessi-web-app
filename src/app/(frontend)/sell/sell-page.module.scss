@@ -1,0 +1,111 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-800);
+  padding: var(--spacing-700) var(--spacing-page-sm);
+  max-width: 720px;
+  margin: 0 auto;
+
+  @include breakpoint(md) {
+    padding: var(--spacing-900) var(--spacing-page-md);
+    gap: var(--spacing-900);
+  }
+}
+
+// Hero
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  text-align: center;
+}
+
+.heading {
+  font-size: var(--font-size-1300);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin: 0;
+  line-height: var(--line-height-200);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1400);
+  }
+}
+
+.subheading {
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-600);
+  margin: 0;
+  line-height: var(--line-height-300);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-800);
+  }
+}
+
+// CTA
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-300);
+  text-align: center;
+  background: var(--color-primary-100);
+  border-radius: var(--radius-500);
+  padding: var(--spacing-700) var(--spacing-500);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-800) var(--spacing-700);
+  }
+}
+
+.ctaHeading {
+  font-size: var(--font-size-1100);
+  font-weight: 700;
+  color: var(--color-primary-700);
+  margin: 0;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1200);
+  }
+}
+
+.ctaText {
+  font-size: var(--font-size-600);
+  color: var(--color-primary-600);
+  margin: 0;
+  max-width: 480px;
+  line-height: var(--line-height-300);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-700);
+  }
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-200) var(--spacing-600);
+  min-height: 44px;
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border-radius: var(--radius-200);
+  font-size: var(--font-size-600);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--transition-color);
+
+  &:hover {
+    background-color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}

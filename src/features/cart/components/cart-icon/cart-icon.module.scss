@@ -1,0 +1,39 @@
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--min-touch-target);
+  min-height: var(--min-touch-target);
+  color: var(--color-neutral-900);
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--spacing-100);
+  }
+}
+
+.icon {
+  width: var(--spacing-700);
+  height: var(--spacing-700);
+}
+
+.badge {
+  position: absolute;
+  top: var(--spacing-100);
+  right: var(--spacing-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--spacing-400);
+  height: var(--spacing-400);
+  padding: 0 var(--spacing-50);
+  background-color: var(--color-accent-500);
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-700);
+  line-height: 1;
+  border-radius: var(--spacing-300);
+}

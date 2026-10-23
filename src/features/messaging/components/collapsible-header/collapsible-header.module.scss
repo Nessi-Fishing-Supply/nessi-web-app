@@ -1,0 +1,215 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-200) var(--spacing-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  text-align: left;
+  color: inherit;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -2px;
+  }
+
+  @include breakpoint(md) {
+    padding: var(--spacing-200) var(--spacing-500);
+  }
+}
+
+.toggleInner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+}
+
+.toggleName {
+  font-size: var(--font-size-400);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-800);
+}
+
+.chevron {
+  font-size: var(--font-size-300);
+  color: var(--color-neutral-400);
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.content {
+  overflow: hidden;
+  max-height: 500px;
+  transition:
+    max-height 250ms ease,
+    opacity 200ms ease;
+  opacity: 1;
+}
+
+.contentCollapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-250);
+  padding: var(--spacing-200) var(--spacing-400) var(--spacing-300);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-200) var(--spacing-500) var(--spacing-400);
+  }
+}
+
+.participantRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-250);
+}
+
+.participantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-50);
+  min-width: 0;
+}
+
+.participantName {
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-900);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+// Listing mini-card
+
+.listingCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-250);
+  padding: var(--spacing-200) var(--spacing-250);
+  background-color: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-200);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+
+  &:hover {
+    background-color: var(--color-neutral-200);
+    border-color: var(--color-neutral-300);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-200);
+  }
+}
+
+.listingThumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-100);
+  overflow: hidden;
+  background-color: var(--color-neutral-200);
+}
+
+.listingMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.listingTitle {
+  font-size: var(--font-size-400);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.listingPrice {
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-600);
+  color: var(--color-primary-600);
+  line-height: 1.3;
+}
+
+.listingRef {
+  margin: 0;
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-600);
+}
+
+.listingLink {
+  color: var(--color-primary-600);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+// Offer
+
+.offerBubble {
+  max-width: 320px;
+}
+
+.countdown {
+  margin: 0;
+  font-size: var(--font-size-300);
+  color: var(--color-warning-500);
+  font-weight: var(--font-weight-500);
+}
+
+.customRequestNote {
+  margin: 0;
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-600);
+  font-style: italic;
+}

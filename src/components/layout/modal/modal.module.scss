@@ -1,0 +1,53 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  position: relative;
+  background: var(--color-white);
+  padding: var(--spacing-600);
+  border-radius: var(--radius-600);
+  max-width: 384px;
+  width: 100%;
+  box-shadow: var(--shadow-500);
+}
+
+.closeButton {
+  position: absolute;
+  top: var(--spacing-300);
+  right: var(--spacing-300);
+  width: var(--spacing-700);
+  height: var(--spacing-700);
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--color-neutral-600);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  border-radius: var(--radius-100);
+
+  &:hover {
+    color: var(--color-neutral-900);
+    background-color: var(--color-neutral-200);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  > svg {
+    width: var(--spacing-600);
+    height: var(--spacing-600);
+  }
+}

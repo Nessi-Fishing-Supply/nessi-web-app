@@ -1,0 +1,202 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-raised);
+  border-radius: var(--radius-600);
+  overflow: hidden;
+  box-shadow: var(--shadow-200);
+}
+
+.hero {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 0%) 50%);
+  z-index: 1;
+}
+
+.shopBadge {
+  position: absolute;
+  top: var(--spacing-300);
+  right: var(--spacing-300);
+  z-index: 2;
+  padding: var(--spacing-50) var(--spacing-200);
+  background-color: var(--color-accent-500);
+  color: var(--color-white);
+  font-size: var(--font-size-200);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-400);
+  text-transform: uppercase;
+  border-radius: var(--radius-800);
+}
+
+.heroIdentity {
+  position: absolute;
+  bottom: var(--spacing-300);
+  left: var(--spacing-300);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-circle);
+  overflow: hidden;
+  border: 2px solid var(--color-white);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-primary-400);
+  color: var(--color-white);
+  font-size: var(--font-size-600);
+  font-weight: 700;
+}
+
+.heroMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heroName {
+  font-size: var(--font-size-600);
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 40%);
+}
+
+.heroLocation {
+  font-size: var(--font-size-300);
+  color: rgb(255 255 255 / 80%);
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+  padding: var(--spacing-400);
+}
+
+.quote {
+  font-size: var(--font-size-600);
+  color: var(--color-neutral-700);
+  margin: 0;
+  line-height: var(--line-height-400);
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-200);
+}
+
+.tag {
+  padding: var(--spacing-100) var(--spacing-300);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-600);
+  font-size: var(--font-size-400);
+  font-weight: 600;
+  border-radius: var(--radius-800);
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-200);
+}
+
+.previewItem {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-300);
+  overflow: hidden;
+}
+
+.previewPrice {
+  position: absolute;
+  bottom: var(--spacing-100);
+  left: var(--spacing-100);
+  right: var(--spacing-100);
+  font-size: var(--font-size-300);
+  font-weight: 700;
+  color: var(--color-white);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-500);
+  font-weight: 600;
+  color: var(--color-neutral-800);
+}
+
+.starIcon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-accent-500);
+}
+
+.sales {
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-500);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-200) var(--spacing-400);
+  font-size: var(--font-size-500);
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-primary-500);
+  text-decoration: none;
+  border-radius: var(--radius-800);
+  transition: var(--transition-basic);
+  min-height: 44px;
+
+  &:hover {
+    background-color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}

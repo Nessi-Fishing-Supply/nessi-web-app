@@ -1,0 +1,115 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300) var(--spacing-400);
+  background-color: var(--color-success-100);
+  border: 1px solid var(--color-success-200);
+  border-radius: var(--radius-500);
+  flex-wrap: wrap;
+}
+
+.bannerIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-success-500);
+  flex-shrink: 0;
+}
+
+.bannerText {
+  flex: 1;
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-800);
+  margin: 0;
+  min-width: 0;
+}
+
+.bannerTitle {
+  font-weight: 700;
+  color: var(--color-success-500);
+}
+
+.oldPriceBanner {
+  text-decoration: line-through;
+  color: var(--color-neutral-500);
+}
+
+.newPriceBanner {
+  font-weight: 700;
+  color: var(--color-success-500);
+}
+
+.dropBadge {
+  padding: var(--spacing-100) var(--spacing-200);
+  background-color: var(--color-success-500);
+  color: var(--color-white);
+  font-size: var(--font-size-300);
+  font-weight: 700;
+  border-radius: var(--radius-800);
+  flex-shrink: 0;
+}
+
+.savedRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-300) var(--spacing-400);
+  background-color: var(--surface-raised);
+  border-radius: var(--radius-300);
+}
+
+.thumbnail {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-200);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.savedInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+  flex: 1;
+  min-width: 0;
+}
+
+.savedName {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-900);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.savedPrices {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-200);
+}
+
+.newPrice {
+  font-size: var(--font-size-600);
+  font-weight: 700;
+  color: var(--color-success-500);
+}
+
+.oldPrice {
+  font-size: var(--font-size-400);
+  color: var(--color-neutral-400);
+  text-decoration: line-through;
+}
+
+.dropPill {
+  padding: var(--spacing-100) var(--spacing-200);
+  background-color: var(--color-success-100);
+  color: var(--color-success-500);
+  font-size: var(--font-size-300);
+  font-weight: 700;
+  border-radius: var(--radius-800);
+  flex-shrink: 0;
+}

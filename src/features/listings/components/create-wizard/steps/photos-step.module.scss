@@ -1,0 +1,103 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.photosStep {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-200);
+}
+
+.title {
+  font-size: var(--font-size-900);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.guidanceButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: var(--spacing-100);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  min-height: 44px;
+  min-width: 44px;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary-500);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.minPhotosHint {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.loadingPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 160px;
+  border: 2px dashed var(--color-neutral-300);
+  border-radius: var(--radius-600);
+  background: var(--color-neutral-100);
+}
+
+.loadingText {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.guidanceTitle {
+  font-size: var(--font-size-700);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-300);
+}
+
+.guidanceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+}
+
+.guidanceTip {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-700);
+  padding-left: var(--spacing-300);
+  position: relative;
+
+  &::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--color-primary-500);
+  }
+}

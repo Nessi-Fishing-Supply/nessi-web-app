@@ -1,0 +1,167 @@
+@use '../../../../styles/mixins/breakpoints' as *;
+
+.card {
+  display: block;
+  border-radius: var(--radius-600);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--shadow-200);
+  transition: var(--transition-basic);
+
+  &:hover {
+    box-shadow: var(--shadow-400);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.imageWrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 75%) 0%, rgb(0 0 0 / 20%) 45%, transparent 100%);
+  z-index: 1;
+}
+
+.topLeft {
+  position: absolute;
+  top: var(--spacing-300);
+  left: var(--spacing-300);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+}
+
+.featuredBadge {
+  padding: var(--spacing-100) var(--spacing-200);
+  background-color: var(--color-accent-500);
+  color: var(--color-white);
+  font-size: var(--font-size-200);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-400);
+  text-transform: uppercase;
+  border-radius: var(--radius-100);
+}
+
+.conditionPill {
+  padding: var(--spacing-100) var(--spacing-200);
+  font-size: var(--font-size-200);
+  font-weight: 600;
+  border-radius: var(--radius-100);
+  background-color: rgb(0 0 0 / 50%);
+  color: var(--color-white);
+}
+
+.watchBtn {
+  position: absolute;
+  top: var(--spacing-300);
+  right: var(--spacing-300);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: rgb(255 255 255 / 20%);
+  backdrop-filter: blur(8px);
+  border: none;
+  border-radius: var(--radius-circle);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: var(--transition-basic);
+  min-width: 44px;
+  min-height: 44px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background-color: rgb(255 255 255 / 35%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+}
+
+.heartFilled {
+  color: var(--color-accent-400);
+}
+
+.bottomOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: var(--spacing-400);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.sellerLine {
+  font-size: var(--font-size-300);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-400);
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 75%);
+  margin: 0;
+}
+
+.title {
+  font-size: var(--font-size-1000);
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  line-height: var(--line-height-200);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
+.price {
+  font-size: var(--font-size-1100);
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.orOffer {
+  font-size: var(--font-size-500);
+  color: rgb(255 255 255 / 70%);
+}
+
+.watchers {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  font-size: var(--font-size-400);
+  color: rgb(255 255 255 / 70%);
+  margin-left: auto;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "issue": 236,
+  "title": "Create shop_roles table and migrate shop_members.role to role_id FK",
+  "branch": "feat/236/shop-roles-table-migrate-role-id",
+  "status": "pr_open",
+  "phase": {
+    "current": 2,
+    "total": 2,
+    "tasks": { "completed": ["1.1", "1.2", "2.1", "2.2"], "current": null, "remaining": [] }
+  },
+  "health": { "build": "pass", "lint": "pass", "tests": "pass" },
+  "failureCount": { "currentTask": 0 },
+  "timestamps": { "started": "2026-03-24T10:00:00Z", "lastActivity": "2026-03-24T10:15:00Z" },
+  "completedAt": "2026-03-24T10:15:00Z",
+  "pruneAfter": "2026-05-23T10:15:00Z"
+}

@@ -1,0 +1,122 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700) var(--spacing-900);
+  }
+}
+
+.header {
+  margin-bottom: var(--spacing-300);
+}
+
+.back {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary-500);
+  font-size: var(--font-size-500);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.stepHeader {
+  text-align: center;
+  padding: 0 var(--spacing-400);
+}
+
+.stepTitle {
+  font-size: var(--font-size-1000);
+  font-weight: 800;
+  color: var(--color-neutral-900);
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.stepSubtitle {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: var(--spacing-100) 0 0;
+  line-height: 1.5;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-600);
+  flex: 1;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+}
+
+.sectionLabel {
+  font-size: var(--font-size-500);
+  font-weight: 600;
+  color: var(--color-neutral-800);
+  margin: 0;
+}
+
+.select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--spacing-200) var(--spacing-300);
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-300);
+  background: var(--color-white);
+  color: var(--color-neutral-800);
+  font-size: var(--font-size-700);
+  cursor: pointer;
+  appearance: auto;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    border-color: var(--color-neutral-500);
+  }
+
+  @include breakpoint(md) {
+    max-width: 320px;
+  }
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  padding: var(--spacing-400) 0 0;
+  background: linear-gradient(to top, var(--color-white) 80%, transparent);
+
+  @include breakpoint(md) {
+    position: static;
+    padding-top: var(--spacing-700);
+    background: var(--color-white);
+  }
+}

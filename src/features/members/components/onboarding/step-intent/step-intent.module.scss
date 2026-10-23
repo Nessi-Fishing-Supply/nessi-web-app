@@ -1,0 +1,142 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700) var(--spacing-900);
+  }
+}
+
+.header {
+  margin-bottom: var(--spacing-300);
+}
+
+.back {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary-500);
+  font-size: var(--font-size-500);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-100);
+  }
+}
+
+.stepHeader {
+  text-align: center;
+  padding: 0 var(--spacing-400);
+}
+
+.stepTitle {
+  font-size: var(--font-size-1000);
+  font-weight: 800;
+  color: var(--color-neutral-900);
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.stepSubtitle {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: var(--spacing-100) 0 0;
+  line-height: 1.5;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  flex: 1;
+  margin-top: var(--spacing-700);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    gap: var(--spacing-600);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-200);
+  padding: var(--spacing-700) var(--spacing-400);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-600);
+  background: var(--color-white);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  text-align: center;
+  min-height: 44px;
+  flex: 1;
+
+  &:hover {
+    border-color: var(--color-neutral-500);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.cardSelected {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 1px var(--color-primary-500);
+  background: var(--color-primary-400est, var(--color-neutral-100));
+}
+
+.cardIcon {
+  font-size: var(--font-size-1300);
+  color: var(--color-primary-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-size: var(--font-size-700);
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.cardDescription {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  line-height: 1.4;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  padding: var(--spacing-400) 0 0;
+  background: linear-gradient(to top, var(--color-white) 80%, transparent);
+
+  @include breakpoint(md) {
+    position: static;
+    padding-top: var(--spacing-700);
+    background: var(--color-white);
+  }
+}

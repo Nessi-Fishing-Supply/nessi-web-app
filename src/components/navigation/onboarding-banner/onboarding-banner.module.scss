@@ -1,0 +1,63 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-300);
+  padding: var(--spacing-200) var(--spacing-400);
+  background-color: var(--color-accent-300);
+  color: var(--color-neutral-900);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--font-size-500);
+  text-align: center;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-100);
+  color: var(--color-primary-700);
+  font-weight: 700;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--color-primary-500);
+  }
+
+  > svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--spacing-200);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutral-900);
+  flex-shrink: 0;
+
+  > svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: var(--color-neutral-700);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}

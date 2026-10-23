@@ -1,0 +1,177 @@
+.wrapper {
+  margin-bottom: var(--spacing-400);
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: var(--spacing-200);
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-900);
+
+  > span {
+    color: var(--color-error-500);
+  }
+}
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-neutral-900);
+  border-radius: var(--radius-300);
+  padding: var(--spacing-300) var(--spacing-400);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--color-primary-400);
+  }
+
+  &.focused {
+    border-color: var(--color-primary-400);
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 0;
+  }
+
+  &.error {
+    border-color: var(--color-error-500);
+  }
+
+  &.success {
+    border-color: var(--color-success-500);
+  }
+
+  &.disabled {
+    background-color: var(--color-neutral-400);
+    border-color: var(--color-neutral-400);
+  }
+}
+
+.input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-900);
+
+  &::placeholder {
+    color: var(--color-neutral-600);
+  }
+
+  &:disabled {
+    color: var(--color-neutral-400);
+  }
+}
+
+.icon {
+  position: absolute;
+  right: var(--spacing-400);
+  display: flex;
+  align-items: center;
+  color: var(--color-neutral-900);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-primary-500);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.helperText {
+  margin-top: var(--spacing-100);
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-900);
+}
+
+.errorText {
+  margin-top: var(--spacing-100);
+  font-size: var(--font-size-500);
+  color: var(--color-error-500);
+}
+
+// Password Specific Styles
+.toggleButton {
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  margin-left: var(--spacing-200);
+  cursor: pointer;
+
+  > svg {
+    width: var(--spacing-400);
+    height: var(--spacing-400);
+    color: var(--color-primary-500);
+  }
+}
+
+.passwordStrengthBar {
+  width: 100%;
+  margin-top: var(--spacing-200);
+  border-radius: var(--radius-100);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--spacing-300);
+    background-color: var(--color-neutral-300);
+    border-radius: var(--radius-100);
+    z-index: 1;
+  }
+}
+
+.passwordStrengthProgress {
+  height: var(--spacing-300);
+  border-radius: var(--radius-100);
+  position: relative;
+  z-index: 2;
+  transition: all 0.25s ease-in-out;
+
+  &.weak {
+    background-color: var(--color-error-500);
+  }
+
+  &.fair {
+    background-color: var(--color-warning-500);
+  }
+
+  &.good {
+    background-color: var(--color-success-500);
+  }
+
+  &.strong {
+    background-color: var(--color-success-500);
+  }
+}
+
+.passwordStrengthText {
+  margin-top: var(--spacing-200);
+  font-size: var(--font-size-200);
+  color: var(--color-neutral-500);
+}
+
+.passwordRequirements {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-size-500);
+
+    svg {
+      color: var(--color-success-500);
+    }
+  }
+}

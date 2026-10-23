@@ -1,0 +1,28 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.container {
+  display: grid;
+  gap: var(--spacing-200);
+  width: 100%;
+  grid-template-columns: 1fr;
+
+  @include breakpoint(md) {
+    &[data-columns='2'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &[data-columns='3'] {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &[data-columns='4'] {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @include breakpoint(lg) {
+    &[data-columns='5'] {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+}

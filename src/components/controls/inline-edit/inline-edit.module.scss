@@ -1,0 +1,203 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.displayValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  min-height: 44px;
+  padding: var(--spacing-100) var(--spacing-200);
+  background: none;
+  border: none;
+  border-radius: var(--radius-100);
+  cursor: pointer;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-700);
+  color: inherit;
+  text-align: left;
+  transition: var(--transition-basic);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-neutral-100);
+
+    .editIcon {
+      opacity: 1;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.displayText {
+  flex: 1;
+  overflow-wrap: break-word;
+}
+
+.placeholder {
+  color: var(--color-neutral-500);
+}
+
+.editIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-500);
+  opacity: 0;
+  transition: var(--transition-basic);
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+.editContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: var(--spacing-200) var(--spacing-300);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-900);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-100);
+  transition: var(--transition-basic);
+  box-sizing: border-box;
+  min-height: 44px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgb(30 74 64 / 15%);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.textarea {
+  min-height: 88px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.charCounter {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  text-align: right;
+  line-height: 1;
+}
+
+.charCounterOver {
+  color: var(--color-error-700);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--spacing-200);
+  background-color: var(--color-primary-500);
+  border: none;
+  border-radius: var(--radius-100);
+  color: var(--color-white);
+  font-size: var(--font-size-700);
+  cursor: pointer;
+  transition: var(--transition-basic);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-700);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.cancelBtn {
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-700);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-neutral-300);
+  }
+
+  &:focus-visible {
+    outline-color: var(--color-neutral-600);
+  }
+}
+
+.spinner {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgb(255 255 255 / 40%);
+  border-top-color: var(--color-white);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.compactContainer {
+  width: 100%;
+}
+
+.compactInput {
+  width: 100%;
+  padding: var(--spacing-200) var(--spacing-300);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-700);
+  color: var(--color-neutral-900);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-300);
+  transition: var(--transition-basic);
+  box-sizing: border-box;
+  min-height: 44px;
+
+  &::placeholder {
+    color: var(--color-neutral-500);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    background-color: var(--color-white);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

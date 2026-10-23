@@ -1,0 +1,44 @@
+{
+  "url": "https://0m34aamgen-7200.hosted.obvious.ai/design-system.html",
+  "version": "v1",
+  "timestamp": "2026-03-23T00:00:00Z",
+  "designSystemVersion": "v2.0",
+  "tokenCount": 238,
+  "categories": {
+    "colors": 62,
+    "colorAliases": 40,
+    "typography": 28,
+    "spacing": 13,
+    "radius": 9,
+    "shadows": 9,
+    "motion": 9,
+    "zIndex": 18,
+    "breakpoints": 5,
+    "heights": 11,
+    "surfaces": 6,
+    "fontAliases": 2,
+    "shadowAliases": 9,
+    "radiusAliases": 9,
+    "durationAliases": 5,
+    "easingAliases": 3,
+    "heightAliases": 9,
+    "spacingAliases": 1
+  },
+  "codebaseTokenCount": 59,
+  "diffSummary": {
+    "newTokens": 148,
+    "changedTokens": 27,
+    "removedTokens": 48,
+    "unchangedTokens": 18
+  },
+  "breakingChanges": [
+    "Font family: Inter -> DM Sans + DM Serif Display",
+    "Typography: modular scale -> fixed px sizes",
+    "Color naming: semantic (primary/secondary) -> palette-numeric (green-500/orange-500)",
+    "Grayscale: pure grey -> warm neutral tones",
+    "Spacing naming: size-based -> numeric scale",
+    "Breakpoint sm: 480px -> 375px",
+    "Breakpoint xl: 1200px -> 1280px"
+  ],
+  "previousVersion": null
+}

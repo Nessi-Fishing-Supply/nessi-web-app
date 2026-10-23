@@ -1,0 +1,40 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-300);
+  box-shadow: var(--shadow-200);
+  padding: var(--spacing-600) var(--spacing-400);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-200);
+  width: 100%;
+
+  @include breakpoint(md) {
+    padding: var(--spacing-700) var(--spacing-600);
+  }
+}
+
+.icon {
+  font-size: var(--font-size-1300);
+  color: var(--color-primary-500);
+}
+
+.heading {
+  font-size: var(--font-size-900);
+  font-weight: 600;
+  margin: 0;
+}
+
+.description {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: 0;
+  max-width: 360px;
+}
+
+.action {
+  margin-top: var(--spacing-200);
+}

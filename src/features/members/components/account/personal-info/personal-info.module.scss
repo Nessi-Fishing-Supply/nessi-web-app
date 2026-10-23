@@ -1,0 +1,207 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Personal Info — clean white profile card
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Clean light profile hero ── */
+.profileHero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-700) var(--spacing-400) var(--spacing-400);
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-neutral-200);
+  text-align: center;
+
+  @include breakpoint(md) {
+    padding: var(--spacing-800) var(--spacing-600) var(--spacing-700);
+  }
+}
+
+.profileHeroPattern {
+  display: none;
+}
+
+.avatarSection {
+  position: relative;
+  z-index: 1;
+  margin-bottom: var(--spacing-300);
+}
+
+.identityBlock {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-100);
+}
+
+.displayName {
+  font-size: var(--font-size-900);
+  font-weight: 800;
+  color: var(--color-primary-500);
+  letter-spacing: -0.01em;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1000);
+  }
+}
+
+.handle {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  color: var(--color-neutral-500);
+}
+
+/* ── Fields section below hero ── */
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  padding: var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-600);
+  }
+}
+
+.sectionDivider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  padding-bottom: var(--spacing-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  margin-bottom: var(--spacing-100);
+}
+
+.headingIcon {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary-500);
+  font-size: var(--font-size-800);
+}
+
+.heading {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-200);
+  font-weight: 700;
+  color: var(--color-primary-500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.nameRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    gap: var(--spacing-600);
+
+    > * {
+      flex: 1;
+    }
+  }
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.fieldLabel {
+  font-size: var(--font-size-200);
+  font-weight: 700;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fieldStatic {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-600);
+  font-style: italic;
+}
+
+.fieldValue {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.availabilityIcon {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-900);
+  pointer-events: none;
+}
+
+.iconSuccess {
+  color: var(--color-success-500);
+}
+
+.iconError {
+  color: var(--color-error-500);
+}
+
+.errorText {
+  font-size: var(--font-size-500);
+  color: var(--color-error-500);
+  margin: 0;
+}
+
+/* ── Email row with change link ── */
+.emailRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-200);
+  flex-wrap: wrap;
+}
+
+.emailValue {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-800);
+  overflow-wrap: break-word;
+  word-break: break-all;
+  min-width: 0;
+}
+
+.changeLink {
+  background: none;
+  border: none;
+  padding: var(--spacing-100) var(--spacing-200);
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-primary-500);
+  font-size: var(--font-size-400);
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary-700);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}

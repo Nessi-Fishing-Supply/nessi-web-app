@@ -1,0 +1,23 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-sm);
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-sm);
+}
+
+.description {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-md);
+}
+
+.link {
+  color: var(--color-primary-600);
+  font-size: var(--font-size-base);
+  text-decoration: none;
+}

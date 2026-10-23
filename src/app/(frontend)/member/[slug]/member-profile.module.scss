@@ -1,0 +1,156 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-600) var(--spacing-300);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-800) var(--spacing-600);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--spacing-700);
+}
+
+.avatarContainer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-800);
+  overflow: hidden;
+  margin-bottom: var(--spacing-300);
+  background-color: var(--color-neutral-300);
+
+  @include breakpoint(md) {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-500);
+  color: white;
+  font-size: var(--font-size-1100);
+  font-weight: 600;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1300);
+  }
+}
+
+.displayName {
+  font-size: var(--font-size-1000);
+  margin-bottom: var(--spacing-50);
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1100);
+  }
+}
+
+.handle {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-500);
+  margin-bottom: var(--spacing-50);
+}
+
+.memberSince {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-500);
+}
+
+.profileActions {
+  display: flex;
+  gap: var(--spacing-200);
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-300);
+}
+
+.preferences {
+  margin-bottom: var(--spacing-700);
+
+  > h2 {
+    font-size: var(--font-size-800);
+    margin-bottom: var(--spacing-300);
+  }
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-200);
+  margin-bottom: var(--spacing-200);
+}
+
+.homeState {
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-500);
+}
+
+.stats {
+  display: flex;
+  gap: var(--spacing-600);
+  margin-bottom: var(--spacing-700);
+  padding: var(--spacing-600);
+  background-color: var(--color-neutral-200);
+  border-radius: var(--radius-300);
+
+  @include breakpoint(md) {
+    gap: var(--spacing-700);
+  }
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statValue {
+  font-size: var(--font-size-900);
+  font-weight: 600;
+
+  @include breakpoint(md) {
+    font-size: var(--font-size-1000);
+  }
+}
+
+.statLabel {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-200);
+}
+
+.listings {
+  > h2 {
+    font-size: var(--font-size-800);
+    margin-bottom: var(--spacing-300);
+  }
+}
+
+.listingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 300px));
+  gap: var(--spacing-300);
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 300px));
+  }
+}
+
+.emptyState {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-500);
+  text-align: center;
+  padding: var(--spacing-800) 0;
+}

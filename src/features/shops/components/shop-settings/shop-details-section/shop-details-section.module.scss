@@ -1,0 +1,128 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-300);
+  box-shadow: var(--shadow-200);
+  padding: var(--spacing-300) var(--spacing-400);
+
+  @include breakpoint(md) {
+    padding: var(--spacing-400) var(--spacing-600);
+  }
+}
+
+.heading {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-800);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-300);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-700);
+  }
+}
+
+.avatarSection {
+  display: flex;
+  justify-content: center;
+
+  @include breakpoint(md) {
+    flex-shrink: 0;
+  }
+}
+
+.bannerSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200);
+  margin-top: var(--spacing-100);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+  flex: 1;
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.fieldLabel {
+  font-size: var(--font-size-500);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+}
+
+.fieldValue {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100);
+}
+
+.availabilityIcon {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-900);
+  pointer-events: none;
+}
+
+.iconSuccess {
+  color: var(--color-success-500);
+}
+
+.iconError {
+  color: var(--color-error-500);
+}
+
+.errorText {
+  font-size: var(--font-size-500);
+  color: var(--color-error-500);
+  margin: 0;
+}
+
+.slugPreview {
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-300);
+
+  h2 {
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-800);
+    font-weight: 600;
+    color: var(--color-neutral-900);
+    margin: 0;
+  }
+
+  p {
+    font-size: var(--font-size-500);
+    color: var(--color-neutral-700);
+    margin: 0;
+  }
+}
+
+.modalActions {
+  display: flex;
+  gap: var(--spacing-300);
+  justify-content: flex-end;
+  padding-top: var(--spacing-200);
+}

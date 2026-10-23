@@ -1,0 +1,51 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Toggle — reusable switch (button-based)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 52px;
+  height: 30px;
+  min-width: 52px;
+  min-height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-800);
+  background: var(--color-neutral-400);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease-out;
+
+  &:focus-visible {
+    outline: 3px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.trackOn {
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-400) 100%);
+}
+
+.thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: var(--shadow-200);
+  transition: transform 0.15s ease-out;
+  pointer-events: none;
+
+  .trackOn & {
+    transform: translateX(22px);
+  }
+}

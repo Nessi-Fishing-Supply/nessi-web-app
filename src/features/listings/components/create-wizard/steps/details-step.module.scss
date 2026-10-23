@@ -1,0 +1,32 @@
+@use '@/styles/mixins/breakpoints' as *;
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-800);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400);
+}
+
+.heading {
+  font-size: var(--font-size-900);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.counter {
+  margin-top: var(--spacing-100);
+  font-size: var(--font-size-500);
+  color: var(--color-neutral-500);
+  text-align: right;
+}
