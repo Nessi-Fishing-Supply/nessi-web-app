@@ -13,7 +13,7 @@ Approved: 2026-03-23
 
 ## New Feature Directories
 
-| Directory                 | CLAUDE.md                            |
+| Directory                 | AGENTS.md                            |
 | ------------------------- | ------------------------------------ |
 | `src/features/messaging/` | Minimal — messaging domain           |
 | `src/features/orders/`    | Minimal — orders domain              |

@@ -109,7 +109,7 @@ Thin fetch wrappers using `@/libs/fetch` helpers:
 
 ```
 src/features/notifications/
-├── CLAUDE.md
+├── AGENTS.md
 ├── index.ts
 ├── types/
 │   └── notification.ts

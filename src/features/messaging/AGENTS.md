@@ -345,7 +345,7 @@ pending ──→ accepted ──→ expired (4h checkout window)
 
 ## Blocks
 
-Member blocking prevents a blocked member from sending messages or initiating threads with the blocker. The blocking action itself is triggered from messaging or profile UIs; the management view (list + unblock) lives in `src/features/blocks/`. See `src/features/blocks/CLAUDE.md` for the full `member_blocks` schema, RLS policies, and enforcement points.
+Member blocking prevents a blocked member from sending messages or initiating threads with the blocker. The blocking action itself is triggered from messaging or profile UIs; the management view (list + unblock) lives in `src/features/blocks/`. See `src/features/blocks/AGENTS.md` for the full `member_blocks` schema, RLS policies, and enforcement points.
 
 ### Types (`src/features/messaging/types/block.ts`)
 
@@ -505,7 +505,7 @@ import ListingNode from '@/features/messaging/components/message-node/listing-no
 
 ```
 src/features/messaging/
-├── CLAUDE.md
+├── AGENTS.md
 ├── index.ts                                       # Barrel export (types + client services)
 ├── types/
 │   ├── thread.ts                                  # MessageThread, ThreadType, ThreadStatus, ThreadParticipant, ParticipantRole, ThreadWithParticipants

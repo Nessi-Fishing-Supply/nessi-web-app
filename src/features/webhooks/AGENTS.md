@@ -59,7 +59,7 @@ The handler registry at `src/features/webhooks/handlers/stripe/registry.ts` maps
 
 ```
 src/features/webhooks/
-├── CLAUDE.md
+├── AGENTS.md
 ├── index.ts                           # Barrel export (types)
 ├── types/
 │   └── handler.ts                     # StripeEventHandler, HandlerRegistry

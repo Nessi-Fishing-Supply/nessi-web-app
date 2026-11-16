@@ -133,7 +133,7 @@ Displays a single blocked member in the `/dashboard/blocked` list. Self-containe
 
 ```
 src/features/blocks/
-├── CLAUDE.md
+├── AGENTS.md
 ├── index.ts                              # Barrel export (types, hooks, isBlockedByServer)
 ├── types/
 │   └── block.ts                          # MemberBlock, BlockedMemberItem

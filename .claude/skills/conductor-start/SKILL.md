@@ -9,7 +9,7 @@ argument-hint: "[issue number, e.g. #42]"
 
 You are the Conductor — an autonomous workflow engine that takes a GitHub issue from ticket to PR.
 
-The full architecture reference is auto-loaded from `.conductor/CLAUDE.md`. Every state transition MUST be persisted to disk immediately.
+The full architecture reference is auto-loaded from `.conductor/AGENTS.md`. Every state transition MUST be persisted to disk immediately.
 
 ## Input
 
@@ -121,7 +121,7 @@ Display the plan summary:
       - Launch **phase-verifier** agent to run `pnpm build`
       - If verification fails: attempt fix, re-verify once, escalate to blocked if still failing
       - If passes: update health in `state.json`, persist
-      - **Format all changed files before committing:** `pnpm prettier --write $(git diff --name-only HEAD)` — this prevents CI `format:check` failures, especially on markdown files (CLAUDE.md, plan.md) that Prettier reformats
+      - **Format all changed files before committing:** `pnpm prettier --write $(git diff --name-only HEAD)` — this prevents CI `format:check` failures, especially on markdown files (AGENTS.md, plan.md) that Prettier reformats
       - Stage conductor state alongside source changes: `git add .conductor/` (tracks state, plan, learnings)
       - Commit phase: `{type}({scope}): #{issue} {phase description}` with task summaries in body
       - Append any learnings to `learnings.md`
@@ -136,7 +136,7 @@ Display the plan summary:
 2. Invoke the `/preflight` skill (it runs build, lint, typecheck, format, tests, and code review)
 3. Launch **superpowers:code-reviewer** agent to review implementation against:
    - The plan (`plan.md` from the track directory)
-   - Project coding standards (CLAUDE.md files)
+   - Project coding standards (AGENTS.md files)
    - Codebase patterns and conventions
    - The original GitHub issue acceptance criteria
 4. Merge preflight output and code review findings into unified findings format ([B], [W], [I])
@@ -156,15 +156,15 @@ Display the plan summary:
 
 After review passes and before PR creation, update project documentation:
 
-1. **Feature CLAUDE.md** — If a new feature domain was created (`src/features/{domain}/`), ensure its `CLAUDE.md` is accurate and complete. If the feature was modified, update the existing CLAUDE.md to reflect changes.
+1. **Feature AGENTS.md** — If a new feature domain was created (`src/features/{domain}/`), ensure its `AGENTS.md` is accurate and complete. If the feature was modified, update the existing AGENTS.md to reflect changes.
 
-2. **Root CLAUDE.md** — If the changes affect architecture, add new key directories, change state management patterns, or introduce new conventions, update the relevant sections in the root `CLAUDE.md`.
+2. **Root AGENTS.md** — If the changes affect architecture, add new key directories, change state management patterns, or introduce new conventions, update the relevant sections in the root `AGENTS.md`.
 
 3. **README.md** — If the changes add user-facing features, new scripts, or change the project structure, update the README accordingly.
 
 4. **Diagrams** — If the changes introduce a new data flow or significant architectural component, generate a Mermaid diagram via `/diagram` and save to `docs/diagrams/`. Update existing diagrams if the changes modify documented flows.
 
-5. **API documentation** — If new API routes were created or modified (`src/app/api/`), ensure the route's purpose, request/response format, and auth requirements are documented in the feature's CLAUDE.md.
+5. **API documentation** — If new API routes were created or modified (`src/app/api/`), ensure the route's purpose, request/response format, and auth requirements are documented in the feature's AGENTS.md.
 
 Rules for this step:
 - Only update docs that are actually affected by the changes — don't touch unrelated docs
@@ -237,7 +237,7 @@ Rules for this step:
 - **EVERY state transition MUST be persisted to `state.json` on disk immediately.** This is the crash recovery mechanism.
 - **EVERY `git commit` MUST include `.conductor/` alongside source changes.** Never commit source files without also staging conductor state. Use `git add .conductor/ <source files>` in every commit command. This includes phase commits, review commits, fix commits, and the final depot-move commit.
 - **The depot move + active.json clear MUST be committed and pushed as part of the branch.** Do this BEFORE launching the pr-creator agent, not after. If the depot move isn't in the branch, it won't be in the PR merge and the track will be stranded in `tracks/` forever.
-- **EVERY `git commit` MUST be preceded by `pnpm prettier --write` on all changed files.** Run `pnpm prettier --write $(git diff --name-only HEAD)` before staging. This prevents CI `format:check` failures — especially on markdown files (CLAUDE.md, plan.md) that Prettier reformats tables and line lengths.
+- **EVERY `git commit` MUST be preceded by `pnpm prettier --write` on all changed files.** Run `pnpm prettier --write $(git diff --name-only HEAD)` before staging. This prevents CI `format:check` failures — especially on markdown files (AGENTS.md, plan.md) that Prettier reformats tables and line lengths.
 - **Append-only**: `review-log.md` is never overwritten, only appended to.
 - **Agent isolation**: Only launch agents for their designated purpose. task-executor writes code. pr-creator does git operations. phase-verifier only reports.
 - Always read `state.json` fresh before making decisions — never rely on in-memory state from earlier in the conversation.

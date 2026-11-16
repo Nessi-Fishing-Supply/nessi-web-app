@@ -212,7 +212,7 @@ import { FollowButton } from '@/features/follows';
 
 ```
 src/features/follows/
-├── CLAUDE.md
+├── AGENTS.md
 ├── index.ts                          # Barrel export (types + hooks + components)
 ├── types/
 │   ├── follow.ts                     # Follow, FollowInsert, FollowTargetType, FollowStatus, FollowerCount, FollowingItem
